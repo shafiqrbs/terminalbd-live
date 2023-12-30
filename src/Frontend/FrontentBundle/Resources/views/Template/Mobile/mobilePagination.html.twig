@@ -1,0 +1,21 @@
+{# default Sliding pagination control implementation #}
+<div class="pagination">
+    <div class="right">
+        {% if previous is defined %}
+            <a style="float: left" class="o-buttons red" href="{{ path(route, query|merge({(pageParameterName): previous})) }}"><<</a>
+        {% endif %}
+        {% if pageCount > 1 %}
+        <form style="float: left" id="page-form"  name="page-form" method="get" action="">
+            {% set page = app.request.get('page') %}
+            <select id="page" name="page" class="page-select"  onchange='this.form.submit()'>
+                {% for i in 1..pageCount %}
+                    <option {% if page == i  %} selected="selected" {% endif %} value="{{ i }}"> {{ i }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        {% endif %}
+        {% if next is defined %}
+            <a class="o-buttons red" href="{{ path(route, query|merge({(pageParameterName): next})) }}">>></a>
+        {% endif %}
+    </div>
+</div>

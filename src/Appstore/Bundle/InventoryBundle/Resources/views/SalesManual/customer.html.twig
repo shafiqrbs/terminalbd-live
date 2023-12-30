@@ -1,0 +1,150 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Customer list
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Customer Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Customer list</div>
+                      </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span4">
+                                        <input type="text" id="mobile" name="mobile"  class="span12 select2Customer" value="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% endif %}"  autocomplete="off" placeholder="Customer mobile">
+                                    </div>
+                                    <div class="span4">
+                                        <input type="text" id="location" name="location"  class="span12 select2Location" value="{% if searchForm.location is defined %}{{ searchForm.location }}{% endif %}"  autocomplete="off" placeholder="Customer location">
+                                    </div>
+                                    <div class="span4">
+                                        <div class="controls">
+                                            <div class="input-append span9">
+                                                <input type="text" id="name" name="name"  class="m-wrap span12 search-input" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.name is defined %}{{ searchForm.name }}{% else %}Enter customer name{% endif %} ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric">Customer ID</th>
+                                    <th class="numeric">Name</th>
+                                    <th class="numeric">Mobile</th>
+                                    <th class="numeric">Location</th>
+                                    <th class="numeric">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td><span class="badge badge-warning toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+                                        <td>{{ entity.customerId }}</td>
+                                        <td>{{ entity.name }}</td>
+                                        <td class="numeric"><a href="tel:+88 {{ entity.mobile }}"> {{ entity.mobile }}</a></td>
+                                        <td class="numeric">{% if entity.location is not empty %}{{ entity.location.name }},{{ entity.location.parent.name }}{% endif %}</td>
+                                        <td class="numeric">
+                                            <a class="btn mini green" href="{{ path('inventory_customer_edit', { 'id': entity.id }) }}"><i class="icon-pencil"></i></a>
+                                            {% if entity.sales is empty %}
+                                            <a class="btn mini delete red" href="javascript:" rel="{{ path('inventory_customer_delete', { 'id': entity.id }) }}" >&nbsp;<i class="icon-trash"></i> </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                        {% if entity.sales is not empty %}
+                                        <tr id="show-{{ entity.id }}" class="showing-overview">
+                                            <td colspan="6">
+                                                <table class="table table-bordered table-striped table-condensed flip-content ">
+                                                    <thead class="flip-content ">
+                                                    <tr class="head-blue">
+                                                        <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                                        <th class="numeric" >Invoice</th>
+                                                        <th class="numeric" >Date</th>
+                                                        <th class="numeric" >Sub-Total</th>
+                                                        <th class="numeric" >Discount</th>
+                                                        <th class="numeric" >Net Total</th>
+                                                        <th class="numeric" >Payment</th>
+                                                        <th class="numeric" >Due</th>
+                                                        <th class="numeric" >Sales By</th>
+                                                        <th class="numeric" >Action</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="sales">
+                                                    {% for sales in entity.sales %}
+                                                        <tr id="salesRemove-{{ entity.id }}">
+                                                            <td>{{ loop.index }}</td>
+                                                            <td class="numeric" >{{ sales.invoice }}</td>
+                                                            <td class="numeric" >{{ sales.updated|date('d-m-Y') }}</td>
+                                                            <td class="numeric" >{{ sales.subTotal|number_format  }}</td>
+                                                            <th class="numeric" >{{ sales.discount|number_format  }}</th>
+                                                            <th class="numeric" >{{ sales.total|number_format  }}</th>
+                                                            <th class="numeric" >{{ sales.payment|number_format }}</th>
+                                                            <td class="numeric" >{{ sales.due|number_format }}</td>
+                                                            <td class="numeric" >{% if sales.salesBy %}{{ sales.salesBy.profile.name }}{% endif %}</td>
+                                                            <td class="numeric" >
+                                                                <a  class="btn mini purple" href="{{ path('inventory_salesmanual_show', { 'id': sales.id }) }}">View</a>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/editable.js'
+    '@InventoryBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    ApproveProcess();
+{% endblock %}

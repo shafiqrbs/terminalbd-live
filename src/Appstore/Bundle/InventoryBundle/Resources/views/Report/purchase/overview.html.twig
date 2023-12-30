@@ -1,0 +1,151 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Purchase Overview
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Purchase Overview</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box blue tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Purchase Overview</div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+
+                            <div class="row-fluid">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid">
+                                        <div class="span3">
+                                            <input type="text" id="grn" name="grn"  class="span12 m-wrap" value="{% if searchForm.grn is defined %}{{ searchForm.grn }}{% endif %}"  autocomplete="off" placeholder="goods receive no">
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="receiveDate" name="receiveDate"  class="span12 m-wrap date-picker" value="{% if searchForm.receiveDate is defined %}{{ searchForm.receiveDate }}{% endif %}"  autocomplete="off" placeholder="received date ">
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="vendor" name="vendor"  class="span12 m-wrap select2Vendor" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Enter vendor name ">
+                                        </div>
+                                        <div class="span3">
+                                            <div class="input-append span10">
+                                                <div class="controls">
+                                                    <input type="text" id="memo" name="memo"  class="span12 m-wrap" value="{% if searchForm.memo is defined %}{{ searchForm.memo }}{% endif %}"  autocomplete="off" placeholder="memo no">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </form>
+                            </div>
+                            <div class="form-actions portlet box green">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Purchase Cash Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Discount</th>
+                                    <td class="numeric" >{{ cashOverview.discount|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Vat</th>
+                                    <td class="numeric" >{{ cashOverview.vat|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Net Total</th>
+                                    <td class="numeric" >{{ cashOverview.total|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Payment</th>
+                                    <td class="numeric" >{{ cashOverview.payment|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Due</th>
+                                    <td class="numeric" >{{ cashOverview.due|number_format }}</td>
+                                </tr>
+                            </table>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="form-actions portlet box purple">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Transaction wise cash Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Transaction Method</th>
+                                    <th class="numeric" >Discount</th>
+                                    <th class="numeric" >Vat</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Due</th>
+                                </tr>
+                                {% for transaction in transactionCash %}
+                                    <tr>
+                                        <td class="numeric" >{{ transaction.transactionName|default }}</td>
+                                        <td class="numeric" >{{ transaction.discount|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.vat|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.total|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.payment|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.due|default|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                                <tfoot>
+                                <tr>
+
+                                    <th class="numeric" >Grand Total</th>
+                                    <th class="numeric" >{{ cashOverview.discount|number_format }}</th>
+                                    <th class="numeric" >{{ cashOverview.vat|number_format }}</th>
+                                    <th class="numeric" >{{ cashOverview.total|number_format }}</th>
+                                    <th class="numeric" >{{ cashOverview.payment|number_format }}</th>
+                                    <th class="numeric" >{{ cashOverview.due|number_format }}</th>
+                                </tr>
+                                </tfoot>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}
+
+
+
+
+

@@ -1,0 +1,9 @@
+parameters:
+  fos_rest.routing.loader.yaml_collection.class: Xiidea\Bundle\DomainBundle\Routing\Loader\RestYamlCollectionLoader
+
+services:
+    xiidea_domain.event_listener.domain_attribute_listener:
+      class: Xiidea\Bundle\DomainBundle\EventListener\DomainAttributeListener
+      arguments: [ '@router', '@request_stack' ]
+      tags:
+          - { name: kernel.event_subscriber }

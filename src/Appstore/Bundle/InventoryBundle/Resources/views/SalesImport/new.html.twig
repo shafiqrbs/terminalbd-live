@@ -1,0 +1,111 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN inventory_salesimport HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="inventory_salesimport-title">
+                    Sales Import
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_salesimport') }}">Sales Import</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Sales Import new/edit</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END inventory_salesimport HEADER-->
+        <!-- BEGIN inventory_salesimport CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Sales Import Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('inventory_salesimport_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('inventory_salesimport') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                    {% if(entity.id > 0 ) %}
+                                        <li><a href="{{ path('inventory_salesimport_edit',{'id':entity.id}) }}"><i class="icon-edit"></i>&nbsp;Edit</a></li>
+                                        <li><a href="{{ path('inventory_salesimport_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;Show</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+
+                            <div class="row-fluid">
+                                <div class="span11">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Sales excel file upload</label>
+                                        <div class="controls">
+                                            <div class="fileupload fileupload-new" data-provides="fileupload">
+                                                <div class="input-append">
+                                                    <div class="uneditable-input span8">
+                                                        <i class="icon-file fileupload-exists"></i>
+                                                        <span class="fileupload-preview"></span>
+                                                    </div>
+													<span class="btn btn-file">
+													<span class="fileupload-new">Select file</span>
+													<span class="fileupload-exists">Change</span>
+                                                        {{ form_widget(form.file) }}
+                                                        {{ form_errors(form.file) }}
+													</span>
+                                                    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="clearfix"><br/></div>
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-center">
+                                    <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                    <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                                    {% if(entity.id > 0 ) %}
+                                        <a href="{{ path('inventory_salesimport_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

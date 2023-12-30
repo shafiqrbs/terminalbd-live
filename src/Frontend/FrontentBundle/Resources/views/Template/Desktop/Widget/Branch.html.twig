@@ -1,0 +1,34 @@
+{% if entities is defined and entities is not empty  %}
+<section id="branch">
+    <div class="container">
+        <div class="text-center">
+            <h2>{% if pageModule.name is not empty %}{{ pageModule.name }}{% else %}Our Branches{% endif %}</h2>
+            <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+        </div>
+        <div class="row">
+            {% for key,branch in entities  %}
+            <div class="col-md-3 col-sm-6">
+                <div class="pricingTable btn-block black">
+                    <div class="pricingTable-header">
+                        <span>{{ branch.name }}</span>
+                    </div>
+                    <div class="pricingContent">
+                        <ul>
+                            <li><i class="fa fa-phone"></i>&nbsp;{{ branch.mobile }}</li>
+                            <li><i class="fa fa-envelope"></i>&nbsp;{{ branch.email }}</li>
+                            <li><i class="fa fa-user"></i>&nbsp;{{ branch.contactPerson }}</li>
+                            <li><i class="fa fa-bookmark"></i>&nbsp;{{ branch.designation }}</li>
+                        </ul>
+                    </div><!-- /  CONTENT BOX-->
+                    <div class="pricingTable-sign-up"><!-- BUTTON BOX-->
+                        <span class="price-value" ><i class="fa fa-home"></i>&nbsp;{{ branch.address }}</span>
+                        <div class="clearfix"></div>
+                        <a href="" class="btn btn-sm orange">Direction<i class="fa fa-map-marker"></i></a>
+                    </div><!-- BUTTON BOX-->
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}

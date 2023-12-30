@@ -1,0 +1,40 @@
+services:
+#    domain_user.example:
+#        class: Appstore\Bundle\DomainUserBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+    appstore.customer.event.listener:
+        class: Appstore\Bundle\DomainUserBundle\EventListener\CustomerListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore_gp_customer_import:
+        class: Appstore\Bundle\DomainUserBundle\Importer\GpCustomerExcel
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    appstore.importer.customer_excel_reader:
+       class: Appstore\Bundle\DomainUserBundle\Importer\GpCustomerDataReader
+       arguments: [ @phpexcel ]
+
+    appstore.customer.listener.association_sms:
+        class: Appstore\Bundle\DomainUserBundle\EventListener\AssociationSmsListener
+        arguments: [@doctrine, @setting_tool.sms_gateWay]
+        tags:
+            - { name: kernel.event_listener, event: appstore.customer.post.member_sms, method: sendSms }
+
+    app.twig_extension:
+       class: Appstore\Bundle\DomainUserBundle\Twig\CulculationExtension
+       public: false
+       tags:
+          - { name: twig.extension }
+
+    appstore_customer_import:
+            class: Appstore\Bundle\DomainUserBundle\Importer\CustomerExcel
+            calls:
+                - [ setContainer, [ @service_container ] ]
+
+    appstore.importer.customer_excel_data_reader:
+       class: Appstore\Bundle\DomainUserBundle\Importer\CustomerDataReader
+       arguments: [ @phpexcel ]
+

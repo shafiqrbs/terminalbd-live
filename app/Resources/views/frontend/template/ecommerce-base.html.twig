@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+    {% set currentPath = path(app.request.attributes.get('_route'),
+    app.request.attributes.get('_route_params')) %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta property="og:url"           content="htpp://www.{{ globalOption.domain }}{{ currentPath }}" />
+    <meta property="og:type"          content="website" />
+    <meta property="og:title"         content="{% if globalOption.templateCustomize.websiteTitle is not empty %}{{ globalOption.templateCustomize.websiteTitle }} {% else %} {{ globalOption.name }} {% endif %}" />
+    <meta property="og:description"   content="{{ globalOption.name }}-{% if globalOption.templateCustomize.metaDescription is not empty %}{{ globalOption.templateCustomize.metaDescription|raw }}{% endif %}" />
+    <meta property="og:image"         content="{{ image(globalOption.templateCustomize.webPath('logo')).resize() }}" />
+    <meta name="description"          content="{{ globalOption.name }}-{% if globalOption.templateCustomize.metaDescription is not empty %}{{ globalOption.templateCustomize.metaDescription|raw }}{% endif %}">
+    <meta name="keywords"             content="{{ globalOption.name }}-{% if globalOption.templateCustomize.metaKeyword is not empty %}{{ globalOption.templateCustomize.metaKeyword|raw }}{% endif %}">
+
+    <title>{% if globalOption.templateCustomize.websiteTitle is not empty %}{{ globalOption.templateCustomize.websiteTitle }} {% else %} {{ globalOption.name }} {% endif %}</title>
+    {% if globalOption.templateCustomize.favicon is not empty %}
+        <link  rel="shortcut icon" href="/uploads/domain/{{ globalOption.id }}/customizeTemplate/{{ globalOption.templateCustomize.favicon }}">
+    {% endif %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+    <!-- Google fonts - witch you want to use - (rest you can just remove) -->
+   {# <script type="text/javascript" src="https://www.google.com/recaptcha/api.js"></script>
+#}
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCgg9f-HbB1zWmQY_zsz-vPpYtQd6cA6JA"></script>
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Open+Sans:400,800,700italic,700,600italic,600,400italic,300italic,300|Roboto:100,300,400,500,700&amp;subset=latin,latin-ext' type='text/css' />
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- HEADER -->
+    <!-- HEADER -->
+    {% set template = globalOption.siteSetting.theme.folderName|lower %}
+    {#{% set csstemplate = "assets/template/desktop/{{ template }}/css/style.css" %}#}
+    {% stylesheets filter='cssrewrite'
+    'assets/template/desktop/css/bootstrap.min.css'
+    'assets/template/desktop/font-awesome/css/font-awesome.min.css'
+    'assets/template/feathericons/css/feather.css'
+    'assets/template/mobile/css/jquery.mmenu.all.css'
+    'assets/template/plugin/owl.carousel/owl.carousel.min.css'
+    'assets/template/plugin/owl.carousel/owl.theme.min.css'
+    'assets/template/plugin/owl.carousel/owl.transitions.css'
+    'assets/template/plugin/side.toolbar/vcore.sidebar.css'
+    'assets/template/plugin/pgslider/pgwslider.min.css'
+    'assets/template/plugin/revolution_slider/css/rs-style.css'
+    'assets/template/plugin/revolution_slider/rs-plugin/css/settings.css'
+    'assets/template/plugin/textillate/assets/animate.css'
+    'assets/template/plugin/wow/css/animate.css'
+    'assets/template/plugin/select2/select2.css'
+    'assets/template/plugin/sidenav/css/sidebar-menu.css'
+    'assets/template/plugin/range-slider/bootstrap-slider.css'
+    'assets/template/plugin/file-image-uploader/inputFileZone.css'
+    'assets/plugins/pop-modal/popModal.min.css'
+    'assets/template/desktop/css/css-loader.css'
+    'assets/template/plugin/message-box/messagebox.css'
+    'assets/template/desktop/css/module.css'
+    'assets/template/desktop/css/socialicon.css'
+    'assets/template/desktop/css/style.css'
+    'assets/template/plugin/bootsnav-master/css/bootsnav.css'
+    %}
+
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+      <link href="/assets/template/desktop/style/{{template}}.css" rel="stylesheet" />
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .grid-products {
+            grid-template-columns: repeat({{ globalOption.ecommerceConfig.perColumn }}, calc(100%/{{ globalOption.ecommerceConfig.perColumn }}));
+        }
+        .feature-grid-products {
+            grid-template-columns: repeat({{ globalOption.ecommerceConfig.gridProductColumn }}, calc(100%/{{ globalOption.ecommerceConfig.gridProductColumn }}));
+        }
+
+    </style>
+    {% block cssBlock %}{% endblock %}
+</head>
+<body data-spy="scroll" >
+{{ include('frontend/template/templateCustomize.html.twig')}}
+<!-- Navigation -->
+{% render controller("FrontendBundle:EcommerceWidget:header",{'globalOption':globalOption, 'menu':menu.id}) %}
+<div class="clearfix"></div>
+{% block body %}{% endblock %}
+{% if globalOption.templateCustomize.footerBlock == 1 %}
+    {{ include('@Frontend/Template/Desktop/'~globalOption.siteSetting.theme.folderName~'/footer.html.twig') }}
+{% endif %}
+<footer id="footer" class="copyright-bar">
+    <div class="container">
+        <div class="row myfooter">
+            <div class="col-sm-6">
+                <div class="pull-left">
+                    &copy; Copyright {{ globalOption.name }} {{ "now"|date('Y') }}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="pull-right">Designed & Developed by <a target="_blank" href="http://www.terminalbd.com">{{ portal_design_development }}</a></div>
+            </div>
+        </div>
+    </div>
+</footer>
+<div id="myModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" >
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+<div id="product-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" >
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="product-modal-content"></div>
+    </div>
+</div>
+<div class="loader loader-curtain" data-colorful data-text="Processing in Basket" ></div>
+<div id="email-confirm" style="display:none; text-align: left!important;">Thank you for your interest in {{ globalOption.domain }}. Your email has been sent successfully to our customer service department.</div>
+<div id="email-invalid" style="display:none; text-align: left!important;">Dear Customer, All ready your email/mobile has been send. Thank you for your interest in {{ globalOption.domain }}.</div>
+<div id="product-confirm" style="display:none; text-align: left!important;">Thank you for your interest in {{ globalOption.domain }}. Your order has been sent successfully to our customer service department.</div>
+<div id="mobile-confirm" style="display:none; text-align: left!important;"><span id="mobile-validate"></span></div>
+<div id="confirm-content" style="display:none">
+    <div class="confirmModal_content">
+        Are you sure went to confirm this record?
+    </div>
+    <div class="confirmModal_footer">
+        <button type="button" class="btn btn-danger" data-confirmmodal-but="cancel">Cancel</button>
+        <button type="button" class="btn btn-success" data-confirmmodal-but="ok">Confirm</button>
+    </div>
+</div>
+{#{% render controller("FrontendBundle:TemplateWidget:modalLogin",{'globalOption':globalOption.id}) %}#}
+{% if globalOption.templateCustomize.sidebarTooltip == 1 %}
+    <div class="side-toolbar" style=""></div>
+{% endif %}
+<!-- jQuery -->
+<!--Jquery Smooth Scrolling-->
+{% javascripts
+'assets/template/desktop/js/jquery-3.3.1.min.js'
+'assets/template/desktop/js/bootstrap.min.js'
+'assets/template/plugin/js/jquery.ajax-cross-origin.min.js'
+'assets/template/plugin/jquery-inputmask/jquery.inputmask.bundle.min.js'
+'assets/template/plugin/numeric/jquery.numeric.js'
+'assets/template/plugin/validation/jquery.validate-1.14.0.min.js'
+'assets/template/plugin/validation/jquery-validate.bootstrap-tooltip.min.js'
+'assets/template/plugin/validation/additional-methods.js'
+'assets/template/mobile/js/jquery.mmenu.min.all.js'
+'assets/template/plugin/owl.carousel/owl.carousel.min.js'
+'assets/template/plugin/wow/js/wow.min.js'
+'assets/template/plugin/treeview/treeview.js'
+'assets/template/plugin/matchHeight/height-match.js'
+'assets/template/plugin/side.toolbar/vcore.sidebar.js'
+'assets/template/plugin/range-slider/bootstrap-slider.min.js'
+'assets/template/plugin/textillate/assets/jquery.fittext.js'
+'assets/template/plugin/textillate/assets/jquery.lettering.js'
+'assets/template/plugin/slimscroll/jquery.slimscroll.js'
+'assets/template/plugin/message-box/messagebox.js'
+'assets/template/plugin/sidenav/js/sidebar-menu.js'
+'assets/plugins/pop-modal/popModal.js'
+'assets/template/desktop/js/jquery.scrollbar.min.js'
+'assets/template/plugin/jquery-zoom/zoom.js'
+'assets/template/plugin/file-image-uploader/inputFileZone.js'
+'assets/template/plugin/js/cookies.js'
+'assets/template/desktop/js/scripts.js'
+'assets/template/desktop/js/authentication.js'
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+
+{% endjavascripts %}
+<script>  subdomain = "{{ globalOption.subDomain }}"; </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+{% block javascriptBlock %}{% endblock %}
+<script>
+    $(document).ready(function(){
+        $("#mm-menu").mmenu();
+        {% if globalOption.templateCustomize.sidebarTooltip == 1 %}
+
+            $('.side-toolbar').vSidebar({
+                'items': [
+                    {% render controller("FrontendBundle:TemplateWidget:sidebar",{'globalOption':globalOption.id}) %}
+                ],
+                'position': 'right bottom'
+            });
+        {% endif %}
+
+        var height = $("#logo-area").height();
+        $(".bs-example-form").css({
+            height:height+"px",
+        });
+        $.sidebarMenu($('.sidebar-menu'));
+        $.sidebarMenu($('.sidebar-menu-rtl'));
+        $('#showLeft').click(function () {
+            $('.animate-menu-left').toggleClass('animate-menu-open')
+        })
+
+        $('#remove-nav').click(function () {
+            $('.animate-menu-left').removeClass('animate-menu-open')
+        })
+
+        $('#sidebar-scroll').slimScroll({
+            height: $(window).height()
+        });
+
+        $(document).on( "click", ".menuLink", function(e){
+            url = $(this).attr('data-action');
+            window.location = url;
+        });
+
+        {% block documentready %}{% endblock %}
+    });
+</script>
+{% if globalOption.templateCustomize.fbMessenger is not empty  %}
+    <div id="fb-root"></div>
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                xfbml            : true,
+                version          : 'v7.0'
+            });
+        };
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <!-- Your customer chat code -->
+    <div class="fb-customerchat"
+         attribution=setup_tool
+         page_id="{{ globalOption.templateCustomize.fbMessenger }}"
+         theme_color="#20cef5">
+    </div>
+{% endif %}
+
+{% if globalOption.templateCustomize.tawk is not empty  %}
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/{{ globalOption.templateCustomize.tawk }}/default';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+        })();
+    </script>
+{% endif %}
+
+{% if globalOption.templateCustomize.liveChat is not empty  %}
+    <script type="text/javascript">function add_chatinline(){var hccid={{ globalOption.templateCustomize.liveChat }};var nt=document.createElement("script");nt.async=true;nt.src="https://mylivechat.com/chatinline.aspx?hccid="+hccid;var ct=document.getElementsByTagName("script")[0];ct.parentNode.insertBefore(nt,ct);}
+        add_chatinline(); </script>
+{% endif %}
+
+{% if globalOption.templateCustomize.powr is not empty  %}
+    <div class="powr-chat" id="{{ globalOption.templateCustomize.powr }}"></div><script src="https://www.powr.io/powr.js?platform=html"></script>
+{% endif %}
+<style>
+
+    #mm-menu{
+        width:320px;
+    }
+    .mm-menu.mm-current{
+        z-index: 999;
+    }
+    .input-group-btn a{
+        color:#ffffff!important;
+    }
+    .confirmModal .confirmModal_body.open{
+        opacity: 1;
+        display: inline-table;
+    }
+    .modal-content{
+        top: 24px;
+    }
+
+    .pageheader{
+        margin-bottom: 30px;
+    }
+    .medium-list {
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+        border: 1px solid rgba(0,0,0,.125);
+        display: flex;
+        margin-bottom: 30px;
+        display: -ms-flexbox;
+        display: flex;
+        border-radius: .25rem;
+        position: relative;
+    }
+
+    .item.list-group-item:nth-of-type(odd):hover, .item.list-group-item:hover{
+        background:#f0f2f1;
+    }
+    .tag{
+        padding: 2px;
+        padding-left: 5px;
+        padding-right: 5px;
+        margin-top: 10px;
+        display: inline-block;
+    }
+    .menu-slider h4 small{
+        text-align: center!important;
+    }
+    .product-modal-content{
+        background: #ffffff;
+        margin-top: 9.7%;
+    }
+
+    .action{
+        width: 100%!important;
+    }
+    #searchResult {
+        list-style: none;
+        padding: 0;
+        width: 88%;
+        position: absolute;
+        margin: 0;
+        top: 35px;
+        left:15px!important;
+        max-height:220px;
+        overflow-y: scroll;
+        z-index: 999999999;
+        background: #f5f5f5;
+    }
+
+    #searchResult li{
+        background: #eeeeee;
+        padding: 4px;
+        margin-bottom: 1px;
+    }
+
+    #searchResult li:nth-child(even){
+        background: #f5f5f5;
+    }
+
+    #searchResult li:hover{
+        cursor: pointer;
+        background-color:#FF5400;
+        color: #ffffff;
+    }
+    #item-qnt {
+        position: absolute;
+        top: -12px;
+        font-size: 9px;
+        background: red;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        text-align: center;
+        line-height: 18px;
+        color: #fff;
+        font-weight: bold;
+        z-index: 99;
+    }
+    .bs-example-form {
+        display : flex;
+        align-items : center;
+        float: left!important;
+    }
+
+    .rounded-list ol > li p:before
+    {
+        background: #e47911!important;
+    }
+
+    .fixed-top{
+        z-index: 99999;
+        width: 100%;
+    }
+
+    .input-group-field {
+        border-radius: 0!important;
+    }
+    .search-field{
+        font-size: 13px;
+    }
+    .search-select {
+        height: 34px;
+        padding: 3px 10px;
+        line-height: 1.5;
+        border: none;
+        background-color: #F9FAFA;
+        border-radius:0!important;
+        border-right:1px solid #d0dde4!important;
+    }
+    .single-dropdown-menu {
+        margin-top: 1px!important;
+        z-index: 9999999;
+    }
+
+    .table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>thead>tr>th{
+        vertical-align: middle;
+    }
+
+    .select2{
+
+        border: 1px solid #ccc;
+    }
+
+    .select-location{
+        width: 100%!important;
+    }
+
+    .select2-container{
+        width: 100%!important;
+    }
+
+    .select2{
+        width: 100%!important;
+        border: 1px solid #cccccc;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+    }
+
+    .select2-dropdown{
+        margin-left: -15px!important;
+    }
+
+    .search-box {
+        border: 0!important;
+    }
+    .serarch-keyword {
+        border: 1px solid #cccccc!important;
+        border-radius: 0!important;
+    }
+    .messagebox_overlay{
+        z-index:9999!important;
+    }
+
+    p.help{
+        font-size: 11px;
+        margin-left: 53px;
+    }
+    .panel{
+        border:none;
+        -webkit-box-shadow:none;
+        box-shadow:none;
+    }
+
+    .modal-footer {
+        text-align: left;
+        border-top: 1px solid #e5e5e5;
+    }
+
+    #register-success{
+        margin-bottom: 3px;
+        padding: 6px;
+        width: 100%;
+        font-size: 12px;
+        color: #e20711;
+        display:none;
+        text-align: center;
+    }
+
+</style>
+{% if globalOption.templateCustomize.googleAnalytic is not empty  %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ globalOption.templateCustomize.googleAnalytic }}"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '{{ globalOption.templateCustomize.googleAnalytic }}');
+</script>
+{% endif %}
+{% if globalOption.templateCustomize.facebookPixel is not empty  %}
+    <!-- Facebook Pixel Code -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window,document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '{{ globalOption.templateCustomize.facebookPixel }}');
+        fbq('track', 'PageView');
+    </script>
+    <noscript>
+        <img height="1" width="1"
+             src="https://www.facebook.com/tr?id={{ globalOption.templateCustomize.facebookPixel }}&ev=PageView
+&noscript=1"/>
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+{% endif %}
+</body>
+</html>

@@ -1,0 +1,521 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- END PAGE HEADER-->
+        <div class="portlet-body">
+            <div class="row-fluid" >
+                <form action="javascript:" method="post" class="patient-global-search">
+                    <div class="row-fluid">
+                        <div class="span9">
+                            <input type="text" id="select2Invoice" name="select2Invoice"  class="m-wrap span12 select2Invoice" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% else %}Global Search For : Diagnostic,Visit,Admission for Patient Details{% endif %} ">
+                        </div>
+                        <div class="span3">
+                            <input type="text" id="barcode2Invoice" name="barcode2Invoice"  class="m-wrap span12" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% else %}Scan invoice barcode for invoice details{% endif %} ">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="row-fluid" style="margin-bottom:2px">
+                <div class="span4">
+                    {% if app.user.granted("ROLE_DOMAIN_HOSPITAL_OPERATOR") and  diagonesticProcesses is not empty and ('diagnostic' in option.hospitalConfig.invoiceProcess) %}
+                    <h5><strong>OPD Overview</strong></h5>
+                    <div id="diagonestic">
+                        {% for row in diagonesticProcesses %}
+                            <div class="item-1">
+                                <a class="process-box" href="{{ path('hms_invoice',{'process':row.process}) }}">
+                                    <span  class="btn red mini"> {{ row.total }}</span><br/>
+                                    <span>{{ row.process }} </span>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="span4">
+                    {% if app.user.granted("ROLE_DOMAIN_HOSPITAL_VISIT") and  visitProcesses is not empty and ('visit' in option.hospitalConfig.invoiceProcess) %}
+                    <h5><strong>Visit Overview</strong></h5>
+                    <div id="visit">
+                        {% for row in visitProcesses %}
+                            <div class="item-2">
+                                <a class="process-box" href="{{ path('hms_prescription',{'process':row.process}) }}">
+                                    <span class="btn red mini"> {{ row.total }}</span><br/>
+                                    <span>{{ row.process }} </span>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="span4">
+                    {% if app.user.granted("ROLE_DOMAIN_HOSPITAL_ADMISSION") and  admissionProcesses is not empty and ('admission' in option.hospitalConfig.invoiceProcess) %}
+                    <h5><strong>IPD Overview</strong></h5>
+                    <div id="admission">
+                        {% for row in admissionProcesses %}
+                            <div class="item-3">
+                                <a class="process-box" href="{{ path('hms_invoice_admission',{'process':row.process}) }}">
+                                    <span class="btn red mini"> {{ row.total }}</span><br/>
+                                    <span>{{ row.process }} </span>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row-fluid" >
+                <div class="span3">
+                    <div class="btn-group" style="width:88%!important">
+                        {% if ((app.user.granted("ROLE_DOMAIN_HOSPITAL_OPERATOR") and 'diagnostic' in option.hospitalConfig.invoiceProcess) or  (app.user.granted("ROLE_DOMAIN") and 'diagnostic' in  option.hospitalConfig.invoiceProcess)) %}
+                            <a href="{{ path('hms_invoice_particular') }}" style="width: 100%" class="btn yellow big"><i class="fa fa-truck"></i> Report Delivery</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="span5">
+                    <div class="btn-group" style="width: 100%!important;">
+                        {% if ((app.user.granted("ROLE_DOMAIN_HOSPITAL_OPERATOR") and 'diagnostic' in  option.hospitalConfig.invoiceProcess) or  (app.user.granted("ROLE_DOMAIN") and  'diagnostic' in  option.hospitalConfig.invoiceProcess) ) %}
+                        <a class="btn red big addPatient" style="width:26%" href="javascript:"> <i class="fa fa-ambulance"></i> Add Diagnostic  </a>
+                        {% endif %}
+                        {% if ((app.user.granted("ROLE_DOMAIN_HOSPITAL_OPERATOR") and 'diagnostic' in option.hospitalConfig.invoiceProcess) or  (app.user.granted("ROLE_DOMAIN") and  'diagnostic' in  option.hospitalConfig.invoiceProcess)) %}
+                            <a href="{{ path('hms_invoice') }}" style="width:27%" class="btn green big"><i class="fa fa-money"></i> Diagnostic</a>
+                        {% endif %}
+                        {% if (app.user.granted("ROLE_DOMAIN_HOSPITAL_LAB") and  'diagnostic' in  option.hospitalConfig.invoiceProcess) or ( app.user.granted("ROLE_DOMAIN_HOSPITAL_DOCTOR") and 'diagnostic' in  option.hospitalConfig.invoiceProcess) or  (app.user.granted("ROLE_DOMAIN") and  'diagnostic' in  option.hospitalConfig.invoiceProcess) %}
+                            <a href="{{ path('hms_invoice_report_process') }}" style="width: 27%" class="btn blue big"><i class="fa fa-stethoscope"></i> Report Prepared </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="span2">
+                    <div class="btn-group" style="width:100%!important;">
+                        {% if ((app.user.granted("ROLE_DOMAIN_HOSPITAL_VISIT") and 'visit' in option.hospitalConfig.invoiceProcess)) or  ('visit' in option.hospitalConfig.invoiceProcess and app.user.granted("ROLE_DOMAIN")) %}
+                            <a  href="{{ path('hms_prescription') }}" style="width: 88%" class="btn yellow big"><i class="fa fa-stethoscope"></i> Doctor Visit</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="span2">
+                    <div class="btn-group" style="width: 100%!important;">
+                        {% if ((app.user.granted("ROLE_DOMAIN_HOSPITAL_ADMISSION") and 'admission' in option.hospitalConfig.invoiceProcess)) or  ('admission' in option.hospitalConfig.invoiceProcess and app.user.granted("ROLE_DOMAIN")) %}
+                            <a  href="{{ path('hms_invoice_admission') }}" style="width:75%" class="btn red big"><i class="fa fa-ambulance"></i> Admission</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if ( app.user.granted("ROLE_DOMAIN_HOSPITAL_OPERATOR")  or  app.user.granted("ROLE_DOMAIN") ) %}
+        <div class="clearfix"><br/></div>
+        <div class="row-fluid">
+            <div class="span3">
+                <div class="row-fluid">
+                    <div class="row-fluid">
+                        <div class="portlet box red">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Today Overview</div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="portlet-body">
+                                <div class="row-fluid">
+                                    <div class="span8" style="margin-top:-10px">
+                                        <div class="portlet-body">
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div> Total Sales Tk.</div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div> Sales Receive Tk. </div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div> Commission Tk. </div>
+                                            </a>
+                                             <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div> Return Tk. </div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div> Due Receive Tk.</div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div> Grand Total Tk. </div>
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                    <div class="span4" style="margin-top:-10px">
+                                        <div class="portlet-body">
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div><span style="color: red"> {{ salesTodayTransactionOverview.total|number_format }}</span> </div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div><span style="color: red">{{ salesTodayTransactionOverview.receive|number_format }}</span> </div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div><span style="color: red">{{ salesTodaySalesCommission|number_format }}</span> </div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div><span style="color: red">{{ invoiceReturn|number_format }}</span> </div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div><span style="color: red">{{ previousSalesTransactionOverview.receive|number_format }}</span> </div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div><span style="color: red">{{ ((previousSalesTransactionOverview.receive + salesTodayTransactionOverview.receive)-salesTodaySalesCommission)|number_format }}</span> </div>
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span5">
+                <div class="row-fluid">
+                    <div class="span6 responsive" data-tablet="span6" data-desktop="span3">
+                        {% if app.user.granted("ROLE_DOMAIN_ACCOUNTING_CASH") or app.user.granted("ROLE_DOMAIN") %}
+                        <div class="dashboard-stat2 ">
+                            <div class="display">
+                                <div class="number">
+                                    <h3 class="font-green-sharp">
+                                        <span data-counter="counterup" data-value="">{{ ((transactionCashOverviews['openingBalance']+transactionCashOverviews['debit'])-transactionCashOverviews['credit'])|number_format }}</span>
+                                        <small class="font-green-sharp">BDT</small>
+                                    </h3>
+                                    <small>BALANCE</small>
+                                </div>
+                                <div class="icon">
+                                    <i class="icon-bar-chart"></i>
+                                </div>
+                            </div>
+                            <div class="progress-info">
+                                <div class="progress">
+                            <span style="width: 75%;" class="progress-bar progress-bar-success green-sharp">
+                                <span class="sr-only">75% progress</span>
+                            </span>
+                                </div>
+                                <div class="status">
+                                    <div class="status-number">
+                                        <a href="{{ path('account_transaction_cash_overview') }}" class="btn green mini">More <i class="icon-circle-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="span6 responsive" data-tablet="span6" data-desktop="span3">
+                        {% if app.user.granted("ROLE_DOMAIN_HOSPITAL_MANAGER") or  app.user.granted("ROLE_DOMAIN_HOSPITAL_DOCTOR") or  app.user.granted("ROLE_DOMAIN") %}
+                        <div class="dashboard-stat2 ">
+                            <div class="display">
+                                <div class="number">
+                                    <h3 class="font-red-haze">
+                                        <span data-counter="counterup" data-value="{{ expenditureOverview|number_format }}">{{ expenditureOverview|number_format }}</span>
+                                        <small class="font-red-sharp">BDT</small>
+                                    </h3>
+                                    <small>Expense</small>
+                                </div>
+                                <div class="icon">
+                                    <i class="icon-money"></i>
+                                </div>
+                            </div>
+                            <div class="progress-info">
+                                <div class="progress">
+                            <span style="width: 75%;" class="progress-bar progress-bar-success red-haze">
+                                <span class="sr-only">75% change</span>
+                            </span>
+                                </div>
+                                <div class="status">
+                                    <div class="status-number">
+                                        <a href="{{ path('account_expenditure') }}" class="btn red mini">More <i class="icon-circle-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+                <div class="row-fluid">
+                    {% if (app.user.granted("ROLE_DOMAIN_HOSPITAL_MANAGER") and 'diagnostic' in  option.hospitalConfig.invoiceProcess)  or  (app.user.granted("ROLE_DOMAIN") and 'diagnostic' in  option.hospitalConfig.invoiceProcess ) or  (app.user.granted("ROLE_DOMAIN_HOSPITAL_OPERATOR") and 'diagnostic' in  option.hospitalConfig.invoiceProcess) %}
+                        <div class="span6 responsive" data-tablet="span6" data-desktop="span3">
+                        <div class="dashboard-stat2 ">
+                            <div class="display">
+                                <div class="number">
+                                    <h3 class="font-purple-soft">
+                                        <span data-counter="counterup" data-value="{{ salesCashOverview['totalAmount'] }}">{{ salesCashOverview['totalAmount'] }}</span>
+                                        <small class="font-purple-soft">BDT</small>
+                                    </h3>
+                                    <small>Diagnostic</small>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-money"></i>
+                                </div>
+                            </div>
+                            <div class="progress-info">
+                                <div class="progress">
+                            <span style="width: 75%;" class="progress-bar progress-bar-success purple-soft">
+                                <span class="sr-only">85% change</span>
+                            </span>
+                                </div>
+                                <div class="status">
+                                    <div class="status-number">
+                                        <a href="{{ path('hms_invoice') }}" class="btn purple mini">More <i class="icon-circle-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if app.user.granted("ROLE_DOMAIN_HOSPITAL_MANAGER") or app.user.granted("ROLE_DOMAIN_HOSPITAL_ADMISSION")  or  app.user.granted("ROLE_DOMAIN") %}
+
+                    <div class="span6 responsive" data-tablet="span6" data-desktop="span3">
+                        <div class="dashboard-stat2 ">
+                            <div class="display">
+                                <div class="number">
+                                    <h3 class="font-blue-sharp">
+                                        <span data-counter="counterup" data-value="{{ salesCashAdmission['totalAmount'] }}">{{ salesCashAdmission['totalAmount'] }}</span>
+                                        <small class="font-blu-sharp">BDT</small>
+                                    </h3>
+                                    <small>Admission</small>
+                                </div>
+                                <div class="icon">
+                                    <i class="icon-shopping-cart"></i>
+                                </div>
+                            </div>
+                            <div class="progress-info">
+                                <div class="progress">
+                                    <span style="width: 75%;" class="progress-bar progress-bar-success blue-sharp">
+                                        <span class="sr-only">65% grow</span>
+                                    </span>
+                                </div>
+                                <div class="status">
+                                    <div class="status-number">
+                                        <a href="{{ path('hms_invoice_admission') }}" class="btn blue mini">More <i class="icon-circle-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="span4">
+                <div class="span6" style="margin-top:-10px">
+                            <div class="portlet-body">
+                                {% if app.user.granted("ROLE_DOMAIN_HOSPITAL_MANAGER") or  app.user.granted("ROLE_DOMAIN_HOSPITAL_COMMISSION") or  app.user.granted("ROLE_DOMAIN") %}
+                                <a href="{{ path('hms_doctor_commission_invoice') }}" class="icon-btn">
+                                    <i class="fa fa-money"></i>
+                                    <div> Commission </div>
+                                </a>
+                                <a href="{{ path('hms_doctor_invoice') }}" class="icon-btn">
+                                    <i class="fa fa-money"></i>
+                                    <div> Commission Payment  </div>
+                                </a>
+                                {% endif %}
+                                {% if app.user.granted("ROLE_DOMAIN_HOSPITAL_MANAGER") or  app.user.granted("ROLE_DOMAIN_HOSPITAL_ADMIN") or  app.user.granted("ROLE_DOMAIN")  %}
+                                <a href="{{ path('hms_doctor') }}" class="icon-btn">
+                                    <i class="fa fa-user"></i>
+                                    <div> Doctor </div>
+                                </a>
+                                <a href="{{ path('hms_referreddoctor') }}" class="icon-btn">
+                                    <i class="icon-truck"></i>
+                                    <div> Referred/PC </div>
+                                </a>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+                        <div class="span6" style="margin-top:-10px">
+                            <div class="portlet-body">
+
+                                {% if (app.user.granted("ROLE_DOMAIN_HOSPITAL_MANAGER") and 'diagnostic' in  option.hospitalConfig.invoiceProcess) or  (app.user.granted("ROLE_DOMAIN_HOSPITAL_ADMIN") and 'diagnostic' in  option.hospitalConfig.invoiceProcess) or  (app.user.granted("ROLE_DOMAIN") and 'diagnostic' in  option.hospitalConfig.invoiceProcess)  %}
+                                    <a href="{{ path('hms_pathology') }}" class="icon-btn">
+                                        <i class="icon-tags"></i>
+                                        <div> Diagnostic Test </div>
+                                    </a>
+                                {% endif %}
+                                {% if app.user.granted("ROLE_DOMAIN_HOSPITAL_MANAGER") or  app.user.granted("ROLE_DOMAIN_HOSPITAL_PURCHASE") or app.user.granted("ROLE_DOMAIN_HOSPITAL_SALES") or  app.user.granted("ROLE_DOMAIN")  %}
+                                    <a href="{{ path('hms_stockout') }}" class="icon-btn">
+                                        <i class="icon-bar-chart"></i>
+                                        <div> Item Issue </div>
+                                    </a>
+                                    <a href="{{ path('hms_stock') }}" class="icon-btn">
+                                        <i class="icon-signal"></i>
+                                        <div> Manage Stock </div>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if ( app.user.granted("ROLE_DOMAIN_HOSPITAL_MANAGER")  or  app.user.granted("ROLE_DOMAIN") ) %}
+            <div class="row-fluid">
+                <div class="span12">
+                <div class="row-fluid">
+                    <div class="portlet box blue">
+                        <div class="portlet-title">
+                            <div class="caption"><i class="icon-reorder"></i>Today Overview</div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="portlet-body">
+                            <style>
+                                .icon-btn-mini {
+                                    width: 100%;
+                                    height: 40px!important;
+                                    padding: 7px 0 0 0!important;
+                                }
+                                .userColumn{
+                                    display: grid;
+                                    grid-template-columns: repeat(
+                                            {{ salesTodayUsers|length }}, calc(100% / {{ salesTodayUsers|length }}));
+                                }
+                                .grid-item {
+                                    grid-column-start: auto;
+                                    grid-row-start: auto;
+                                    margin: 5px;
+                                }
+
+                            </style>
+                            <div class="row-fluid">
+                                <div class="span2" style="margin-top:-10px">
+                                    <div class="portlet-body">
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div> User Name</div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div> Total Sales Tk.</div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div> Sales Receive Tk. </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div> Commission Tk. </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div> Return Tk. </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div> Due Receive Tk.</div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div> Grand Total Tk. </div>
+                                        </a>
+
+                                    </div>
+                                </div>
+                                <div class="span8">
+                                    <div class="userColumn">
+                                    {% set userTodaySales = 0 %}
+                                    {% set userTodayReceive = 0 %}
+                                    {% set userPreviousReceive = 0 %}
+                                    {% set userCommission = 0 %}
+                                    {% set userReturn = 0 %}
+
+                                    {% set userTodaySalesTotal = 0 %}
+                                    {% set userTodayReceiveTotal = 0 %}
+                                    {% set userPreviousReceiveTotal = 0 %}
+                                    {% set userCommissionTotal = 0 %}
+                                    {% set userReturnTotal = 0 %}
+
+                                    {% for user in salesTodayUsers %}
+
+                                        {% set userTodaySales = salesTodayUserTransactionOverview[user.userId] is defined ? salesTodayUserTransactionOverview[user.userId].total : 0 %}
+                                        {% set userTodaySalesTotal = userTodaySalesTotal + userTodaySales %}
+                                        {% set userTodayReceive = salesTodayUserTransactionOverview[user.userId] is defined ? salesTodayUserTransactionOverview[user.userId].receive : 0 %}
+                                        {% set userTodayReceiveTotal = userTodayReceiveTotal + userTodayReceive %}
+                                        {% set userPreviousReceive = previousSalesTodayUserTransactionOverview[user.userId] is defined ? previousSalesTodayUserTransactionOverview[user.userId].total : 0 %}
+                                        {% set userPreviousReceiveTotal = userPreviousReceiveTotal + userPreviousReceive %}
+                                        {% set userCommission = userSalesTodaySalesCommission[user.userId] is defined ? userSalesTodaySalesCommission[user.userId].total : 0 %}
+                                        {% set userCommissionTotal = userCommissionTotal + userCommission %}
+                                        {% set userReturn = userInvoiceReturn[user.userId] is defined ? userInvoiceReturn[user.userId].total : 0 %}
+                                        {% set userReturnTotal = userReturnTotal + userReturn %}
+                                        <div class="span12 grid-item"  style="margin-top:-10px">
+                                            <div class="portlet-body">
+                                                <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                    <div><span style="color: green">{% if user.name is not empty %}{{ user.name }}{% else %}{{ user.createdBy }}{% endif %}</span> </div>
+                                                </a>
+                                                <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                    <div><span style="color: red">{{ userTodaySales|number_format(2) }}</span> </div>
+                                                </a>
+                                                <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                    <div><span style="color: red">{{ userTodayReceive|number_format(2) }}</span> </div>
+                                                </a>
+                                                <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                    <div><span style="color: red">{{ userCommission|number_format(2) }}</span> </div>
+                                                </a>
+                                                <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                    <div><span style="color: red">{{ userReturn|number_format(2) }}</span> </div>
+                                                </a>
+                                                <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                    <div><span style="color: red">{{ userPreviousReceive|number_format(2) }}</span> </div>
+                                                </a>
+                                                <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                    <div><span style="color: red">{{ ((userTodayReceive + userPreviousReceive) - (userCommission + userReturn))|number_format }}</span> </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                <div class="span2"  style="margin-top:-10px">
+                                    <div class="portlet-body">
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color:green"> Grant Total</span> </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: green">{{ userTodaySalesTotal|number_format(2) }}</span> </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: green">{{ userTodayReceiveTotal|number_format(2) }}</span> </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: green">{{ userCommissionTotal|number_format(2) }}</span> </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: green">{{ userReturnTotal|number_format(2) }}</span> </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: green">{{ userPreviousReceiveTotal|number_format(2) }}</span> </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: green">{{ ((userTodayReceiveTotal + userPreviousReceive) - (userCommissionTotal + userReturnTotal))|number_format }}</span> </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        {% endif %}
+</div>
+    <style>
+        #diagonestic {
+            grid-template-columns: repeat({{diagonesticProcesses|length}}, 1fr);
+        }
+        #visit {
+            grid-template-columns: repeat({{visitProcesses|length}}, 1fr);
+        }
+        #admission {
+            grid-template-columns: repeat({{admissionProcesses|length}}, 1fr);
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@MedicineBundle/Resources/public/css/dashboard.css'
+    '@HospitalBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/diagnostic.js'
+    '@HospitalBundle/Resources/public/js/datetimepicker_css.js'
+    '@HospitalBundle/Resources/public/js/editable.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

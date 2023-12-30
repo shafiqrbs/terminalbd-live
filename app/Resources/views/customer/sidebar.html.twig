@@ -1,0 +1,146 @@
+<ul class="page-sidebar-menu">
+    <li>
+        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+        <div class="sidebar-toggler hidden-phone"></div>
+        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+    </li>
+
+    <li class="start ">
+        <a href="{{ path('domain_customer_homepage',{'shop':globalOption.slug}) }}">
+            <i class="icon-home"></i>
+            <span class="title">Dashboard</span>
+        </a>
+    </li>
+
+    <!-- BEGIN FRONT DEMO -->
+    {% set arras = ['ecommerce','medicine'] %}
+    {% if globalOption.domainType is not empty and globalOption.domainType == 'website' %}
+        {% if globalOption.siteSetting.modules %}
+               {# <li >
+                    <a href="javascript:">
+                        <i class=" icon-truck"></i>
+                        <span class="title">Content</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        {% for  module in globalOption.siteSetting.modules %}
+                            {% if module.isSingle is empty %}
+                            <li><a href="{{ path('customerweb',{'shop':globalOption.slug,'module':module.id}) }}">{{ module.name }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>#}
+            <li >
+                <a href="{{ path('member_index',{'shop':globalOption.slug}) }}">
+                    <i class="icon-user"></i>
+                    <span class="title">Members</span>
+                </a>
+            </li>
+             <li >
+                <a href="{{ path('member_show_profile',{'shop':globalOption.slug}) }}">
+                    <i class="icon-user"></i>
+                    <span class="title">Profile View</span>
+                </a>
+            </li>
+            <li >
+                <a href="{{ path('member_edit_profile',{'shop':globalOption.slug}) }}">
+                    <i class="icon-user"></i>
+                    <span class="title">Update Profile</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:">
+                    <i class="icon-money"></i>
+                    <span class="title">Manage Payment</span>
+                </a>
+                <ul class="sub-menu">
+                    <li><a href="{{ path('customerweb_invoice',{'shop':globalOption.slug}) }}">Invoice</a></li>
+                    <li><a href="{{ path('customerweb_invoice_new',{'shop':globalOption.slug}) }}">New Invoice</a></li>
+                </ul>
+            </li>
+            <li >
+                <a href="javascript:">
+                    <i class="icon-table"></i>
+                    <span class="title">Manage Reports</span>
+                </a>
+                <ul class="sub-menu">
+                    <li><a href="{{ path('customerweb_report_cashoverview',{'shop':globalOption.slug}) }}">Cash Summary</a></li>
+                    <li><a href="{{ path('customerweb_report_ledger',{'shop':globalOption.slug}) }}">Ledger</a></li>
+                </ul>
+            </li>
+
+
+        {% endif %}
+    {% elseif globalOption.domainType is not empty and globalOption.domainType in arras %}
+    <li >
+        <a href="javascript:">
+            <i class=" icon-truck"></i>
+            <span class="title">Order</span>
+            <span class="arrow "></span>
+        </a>
+        <ul class="sub-menu">
+            <li >
+                <a href="{{ path('order',{'shop':globalOption.slug}) }}">
+                    <i class="icon-th-list"></i>
+                    <span class="title">Order</span>
+                </a>
+            </li>
+            <li >
+                <a href="{{ path('preorder',{'shop':globalOption.slug}) }}">
+                    <i class="icon-th-list"></i>
+                    <span class="title">Pre-order</span>
+                </a>
+            </li>
+           {# <li >
+                <a href="{{ path('wishlist',{'shop':globalOption.slug}) }}">
+                    <i class="icon-th-list"></i>
+                    <span class="title">Wishlist</span>
+                </a>
+            </li>#}
+
+        </ul>
+    </li>
+    <li >
+        <a href="{{ path('order_product', { 'shop': globalOption.slug}) }}">
+            <i class="icon-shopping-cart"></i>
+            <span class="title">New Order</span>
+        </a>
+    </li>
+    <li >
+        <a href="{{ path('preorder_new', { 'shop': globalOption.slug}) }}">
+            <i class="icon-th-list"></i>
+            <span class="title">Pre-order</span>
+        </a>
+    </li>
+    {% else %}
+
+        <li class="start ">
+            <a href="{{ path('customer') }}">
+                <i class="icon-home"></i>
+                <span class="title">Dashboard</span>
+            </a>
+        </li>
+        <li class="start " >
+            <a href="javascript:">
+                <i class="icon-umbrella"></i>
+                <span class="title">Agent Client</span>
+                <span class="arrow "></span>
+            </a>
+            <ul class="sub-menu">
+                <li >
+                    <a href="{{ path('agentclient') }}">
+                        <i class="icon-cloud"></i>
+                        <span class="title">Client</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('agentclient_new') }}">
+                        <i class="icon-shopping-cart"></i>
+                        <span class="title">New Client</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+    {% endif %}
+</ul>

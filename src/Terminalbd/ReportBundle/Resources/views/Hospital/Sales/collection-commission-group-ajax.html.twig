@@ -1,0 +1,39 @@
+<div class="row print-header">
+    <div class="col-md-4"></div>
+    <div class="col-md-4 text-center">
+        <p><strong style="font-size:18px">{{ option.name }}</strong></p>
+        <p><strong>Name of Report: Commission Group</strong></p>
+        <p><strong>Start/End Date: {% if searchForm.startDate is defined %}{{ searchForm.startDate|date('d-m-Y') }}{% endif %} To {% if searchForm.endDate is defined %}{{ searchForm.endDate|date('d-m-Y') }}{% endif %}</strong></p>
+    </div>
+    <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}</div>
+</div>
+<div class="row">
+    <table class="table">
+        <thead class="flip-content ">
+        <tr class="head-green">
+            <th class="numeric" >S/N</th>
+            <th class="numeric" >Name</th>
+            <th class="numeric" >Total</th>
+            <th class="numeric" >Amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set grandTotal = 0 %}
+        {% for entity in entities %}
+            {% set  grandTotal = grandTotal + entity.total %}
+            <tr id="delete-{{ entity.id }}">
+                <td class="numeric" >{{ loop.index }}</td>
+                <td class="numeric" >{{ entity.name }}</td>
+                <td class="numeric" >{{ entity.totalInvoice }}</td>
+                <th class="numeric" >{{ entity.total|number_format(2) }}</th>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="3"><span class="pull-right">Grand Total</span></th>
+            <th>{{ grandTotal|number_format(2) }}</th>
+        </tr>
+        </tfoot>
+    </table>
+</div>

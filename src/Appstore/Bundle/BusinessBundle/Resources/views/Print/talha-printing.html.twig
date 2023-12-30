@@ -1,0 +1,200 @@
+{% extends '::baseprint.html.twig' %}
+{% block body %}
+    <script type="text/javascript">
+        window.print();
+        setTimeout(function () {
+            window.open('', '_self', '');
+            window.close();
+        }, 2000);
+    </script>
+    <div id="invoice">
+        <div class="invoice overflow-auto" style="margin-top:{{ config.printTopMargin }}px!important;">
+            <div style="min-width: 600px">
+                <header>
+                    {% if config.isPrintHeader == 1 %}
+                        <div class="row">
+                            <div class="col">
+                            <span>
+                              {% if config.webPath is not empty %}
+                                  <img  src="{{ image(config.webPath) }}" style="width:100%;">
+                              {% endif %}
+                            </span>
+                            </div>
+                            {% if config.address is not empty %}
+                            <div class="col company-details">
+                                {{ config.address|raw }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        {% if entity.process == 'Chalan' %}
+                            <div class="caption"><strong>CHALAN</strong></div>
+                        {% elseif entity.process == 'Quotation' %}
+                            <div class="caption"><strong>QUOTATION</strong></div>
+                        {% else %}
+                            <div class="caption"><strong>INVOICE/BILL</strong></div>
+                        {% endif %}
+                    </div>
+                </header>
+                <main>
+                    <div class="row contacts">
+                        <div class="col invoice-to">
+                            <div class="text-gray-light">INVOICE TO:</div>
+                            {% if entity.customer %}
+                                {% if  entity.customer.name is not empty  %}
+                                    <h4 class="to">{{ entity.customer.name }}</h4>
+                                {% endif %}
+                                {% if  entity.customer.mobile is not empty %}
+                                    <div class="address">{{ entity.customer.mobile }}</div>
+                                {% endif %}
+                                {% if  entity.customer.address is not empty  %}
+                                    <div class="address"><i class=" icon-map-marker"></i>&nbsp;{{ entity.customer.address|raw }}</div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="col invoice-details">
+                            <h5 class="invoice-id">INVOICE {{ entity.invoice }}</h5>
+                            <div class="date">Date of Invoice: {{ entity.created|date('d-m-Y') }}</div>
+                            {% if entity.transactionMethod is not empty %}<div class="date">Method: {{ entity.transactionMethod.name }}</div>{% endif %}
+                            {% if entity.paymentMobile is not empty %}<div class="date">{{ entity.paymentMobile }}/{{ entity.transactionId }}</div>{% endif %}
+                            {% if entity.cardNo is not empty %}<div class="date">{{ entity.bank.name  }}/{{ entity.cardNo }}</div>{% endif %}
+                        </div>
+                    </div>
+                    {% if print == 'print' %}
+                        {% if entity.businessInvoiceParticulars is defined and  entity.businessInvoiceParticulars is not empty  %}
+                            <table class="table table-body" style="border: 1px solid #999999!important; margin-top: 20px">
+                                <thead class="table-head">
+                                <tr class="table-header">
+                                    <th>S/N</th>
+                                    <th><strong>Description</strong></th>
+                                    <th>Size</th>
+                                    <th>S.Feet</th>
+                                    <th>Qnt</th>
+                                    <th>Unit</th>
+                                    <th>Rate</th>
+                                    <th><strong class="pull-right" >Amount</strong></th>
+                                </tr>
+                                </thead>
+                                <tbody class="table-body">
+                                {% for index,item in entity.businessInvoiceParticulars %}
+                                    <tr>
+                                        <td>{{ loop.index }}.</td>
+                                        <td>{{ item.particular }}</td>
+                                        <td>
+                                            {% if item.subQuantity is not empty %}
+                                                {{ item.height }}x{{ item.width }}
+                                            {% endif %}
+                                        </td>
+                                        <td>{% if item.subQuantity is not empty %}{{ item.subQuantity }}{% endif %}</td>
+                                        <td>{% if item.quantity > 0  %}{{ item.quantity|number_format() }}{% endif %}</td>
+                                        <td>{% if item.unit is not empty %}{{ item.unit }}{% endif %}</td>
+                                        <td>{{ item.price|number_format(2) }}</td>
+                                        <td ><strong class="pull-right" >{{ item.subTotal|number_format() }}</strong></td>
+                                    </tr>
+                                {% endfor %}
+                                {% if entity.comment is not empty %}
+                                    <tr> <td colspan="8" style="border-top:1px solid #999999; text-align: left!important; background: #FFFFFF!important;border-bottom: 1px solid #000000"><strong>PC No. </strong> : {{ entity.comment|raw }}</td></tr>
+                                {% endif %}
+                                </tbody>
+                                {% if entity.process != 'Quotation' %}
+                                    <tbody style="border-top: 2px solid #33383e">
+                                    <tr>
+                                        <td colspan="3"  style="width: 33%; border-right:1px solid #999999">
+                                            <table style="width: 100%;">
+                                                <tr><td>Previous Due</td><td><strong  class="pull-right">{% if balance > 0 %}{{ (balance - entity.due)|number_format }}{% endif %}</strong></td></tr>
+                                                <tr><th>Sales Amount</th><td><strong  class="pull-right">{{ entity.total|number_format() }}</strong></td></tr>
+                                                <tr><td>Current Due</td><td><strong  class="pull-right">{{ entity.due|number_format() }}</strong></td></tr>
+                                                <tr><td colspan="2"  style="border-bottom:3px solid #000!important; height: 1px"></td></tr>
+                                                <tr><th>Out Standing</th><td><strong  class="pull-right">{% if balance > 0 %} {{ balance|number_format }}{% else %}{{ entity.due|number_format() }}{% endif %}</strong></td></tr>
+                                            </table>
+                                        </td>
+                                        <td colspan="2" style="width: 33%; text-align: center!important;">
+                                            <span class="barcode" style="margin-top: 8px; text-align: center!important;">{{ customerBarcode|raw }}</span>
+                                        </td>
+                                        <td colspan="3" style="width: 33%; border-left: 1px solid #999999">
+                                            <table style="width: 100%">
+                                                <tr><td ><span class="pull-left" >SUB TOTAL</span></td><td><strong  class="pull-right">{{ entity.subTotal|number_format(2) }}</strong></td></tr>
+                                                <tr><td ><span class="pull-left" >DISCOUNT</span></td><td><strong  class="pull-right">{{ entity.discount|number_format(2) }}</strong></td></tr>
+                                                <tr><td ><strong class="pull-left" >GRAND TOTAL</strong></td><td ><strong class="pull-right">{{ entity.total|number_format(2) }}</strong></td></tr>
+                                                <tr><td colspan="2"  style="border-bottom:3px solid #000!important; height: 2px; "></td></tr>
+                                                <tr><td><strong class="pull-left" >PAID</strong></td><td><strong  class="pull-right">{{ entity.received|number_format(2) }}</strong></td></tr>
+
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr><td colspan="8" style="border-top:3px solid #333333;padding-left: 5px!important;"><strong>In words: {{ entity.paymentInWord }} </strong></td></tr>
+                                    </tbody>
+                                {% endif %}
+
+                            </table>
+                        {% endif %}
+                    {% endif %}
+                    <div style="clear: both; display: flex"></div>
+                    <div class="thanks">Thank you!</div>
+                    <div class="notices">
+                        <div>NOTICE:</div>
+                        <div class="notice">{{ entity.comment }}</div>
+                    </div>
+                </main>
+            </div>
+            <!--DO NOT DELETE THIS div. IT is responsible for showing footer always at the bottom-->
+        </div>
+    </div>
+    <style>
+        .invoice table .no {
+             color: #000000;
+             background:transparent;
+        }
+        .invoice table td h3 {
+            margin: 0;
+            font-weight: normal;
+            color: #000000;
+        }
+        .invoice table .unit {
+            background:transparent;
+        }
+        .table-body tr.table-header th{
+            background: #DDDDDD;
+            font-weight: bold;
+        }
+        .invoice table td, .invoice table th {
+            padding: 5px;
+            background:#ffffff;
+        }
+        .invoice table thead.table-head th{
+            border-bottom: 2px solid #333333;
+        }
+        .invoice table tbody.table-body td{
+            border-bottom: 1px solid #333333;
+        }
+        .invoice table .total {
+            background:transparent;
+            color: #000000;
+        }
+        .invoice table .no , .invoice table td h3 ,.invoice table .qty , .invoice table .unit , .invoice table .total{
+            font-size: 1em;
+        }
+        .caption{
+            text-align: center;
+            width: 100%;
+            height: 45px;
+        }
+        .invoice table.main-table th{
+            background-color: #313131;
+            color: #FFFFff;
+        }
+        .invoice table.main-table td , .invoice table.main-table th {
+            padding: 5px;
+            border: 2px solid #231f1f!important;
+        }
+        .invoice table.tfoot-table td , .invoice table.tfoot-table th {
+            padding: 5px;
+            border: none!important;
+        }
+    </style>
+{% endblock %}
+
+
+
+

@@ -1,0 +1,156 @@
+<!-- modal -->
+<div id="email-modal" class="mfp-hide">
+    <div class="login-modal">
+        <div class="booking-info">
+            <h3><a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{{ globalOption.name }}</a></h3>
+        </div>
+        <div class="login-form">
+            <form action="{{ path(globalOption.subDomain ~ '_webservice_email_receive') }}" id="sendEmail" name="sendEmail" method="post">
+                <div class="input-group ">
+                    <span class="input-group-addon" ><i class="fa fa-user"></i></span>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name/company" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group ">
+                    <span class="input-group-addon" ><i class="fa fa-mobile"></i></span>
+                    <input type="text" class="form-control mobile" id="mobile" name="mobile" placeholder="Enter your mobile no" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group ">
+                    <span class="input-group-addon" ><i class="fa fa-envelope"></i></span>
+                    <input type="text" class="form-control" id="email" name="email" placeholder="Enter your valid email address" aria-describedby="basic-addon1">
+                </div>
+                <div>
+                    <textarea class="col-md-12 comment" name="content" id="content" placeholder="Enter any comment"></textarea>
+                </div>
+                <div class="clearfix"></div>
+                <p>
+                    <input type="hidden" class="hiddenRecaptcha required" name="mobileRecaptcha" id="mobileRecaptcha">
+                <div class="g-recaptcha" data-sitekey="6LdSLy8UAAAAAO3p8W8JcrplH4x-bcXFOOJ9ZJhL"></div>
+                </p>
+                <div class="clearfix"></div>
+                <p class="text-center"><button class="btn comment col-md-12 label-primary"  type="submit" value="Sign In"><i class="fa fa-send"></i>&nbsp;Send</button></p>
+            </form>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+<div id="sms-modal" class="mfp-hide">
+    <div class="login-modal">
+        <div class="booking-info">
+            <h3><a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{{ globalOption.name }}</a></h3>
+        </div>
+        <div class="login-form">
+            <form action="{{ path(globalOption.subDomain ~ '_webservice_sms_receive') }}" id="sendSms" name="sendSms" method="post">
+                <div class="input-group ">
+                    <span class="input-group-addon" ><i class="fa fa-mobile"></i></span>
+                    <input type="text" class="form-control mobile" name="mobile" id="mobile" placeholder="Enter your mobile no" aria-describedby="basic-addon1">
+                </div>
+                <div>
+                    <textarea class="col-md-12 comment sms-content" name="content" maxlength="140" id="content" placeholder="Enter any comment"></textarea>
+                </div>
+                <p class="text-center"><button class="comment btn col-md-12 label-primary"  type="submit" value="Sign In"><i class="fa fa-send"></i>&nbsp;Send</button></p>
+            </form>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div id="login-modal" class="mfp-hide" >
+    <div class="modal-content  col-xs-12 col-md-12">
+        <form class="register" id="loginForm" action="{{ path("fos_user_security_check") }}" method="post" novalidate="novalidate">
+            <div class="modal-header">
+                <h4 class="modal-title">LOGIN</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                            <input type="text" id="_username" data-action="{{ path(globalOption.subDomain ~ '_webservice_customer_mobile_validation') }}" name="_username" required="required" class="userMobile form-control" placeholder="Enter your mobile no">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                            <input type="password" id="_password" name="_password" required="required" class="form-control secured" placeholder="Enter your password">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                <div class="col-xs-8 col-md-8 text-left" >
+                    Don't have an account yet ?&nbsp;
+                    <a href="#register-modal" class="popup-top-anim register-btn">Create an account</a>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit"  class="btn btn-sm btn-blue pull-right" role="button">Log in</button>
+                </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div><!-- /.modal -->
+<!-- Modal -->
+
+<style>
+    .paginate-form-group label, .form-group label {
+        font-weight: normal;
+        color: #000;
+        font-size: 14px;
+    }
+    .required{
+        color:#ff2515;
+    }
+    #registration-title {
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        color: green;
+        font-weight: bold;
+    }
+    .btn-blue {
+        background: #285e8e!important;
+        color: #ffffff!important;
+    }
+</style>
+<div id="register-modal" class="mfp-hide">
+    <div class="modal-content  col-xs-12 col-md-12">
+        <form class="register" name="registerForm" id="registerForm" action="{{ path(globalOption.subDomain ~ '_webservice_ecommerce_signup') }}" method="post" novalidate="novalidate">
+            <div class="modal-header">
+                <h4 class="modal-title" style="line-height: 18px!important;">SIGN IN</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                            <input type="text" id="name" name="registration_name" required="required" class=" form-control" placeholder="Enter your full name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>
+                            <input type="text" id="mobile" name="registration_mobile" required="required" class="mobile form-control" placeholder="Enter your mobile no">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-home"></span></span>
+                            <input type="text" id="address" name="registration_address" required="required" class="form-control" placeholder="Enter your address">
+                        </div>
+                    </div>
+                    <div class="checkbox"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                    <span style="text-align: left; display:block; float: left">Click here for
+                    <a href="#login-modal" class="popup-top-anim" id="register-btn">Login</a></span>
+                <input type="hidden" name="token" value="{{ csrf_token('valid') }}"/>
+                <button type="submit"  class="btn btn-sm btn-blue pull-right" role="button">Register</button>
+            </div>
+        </form>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+<!-- Modal -->
+<!-- //modal -->

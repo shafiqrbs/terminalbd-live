@@ -1,0 +1,93 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    View Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('sitesetting') }}">Site Setting</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Basic Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="tabbable portlet-tabs">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a  href="{{ path('sitesetting') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                <li class=""><a  href="{{ path('sitesetting_new') }}"><i class="icon-plus"></i>&nbsp;Add</a></li>
+
+                            </ul>
+                            <div class="tab-content">
+                                <div class="portlet-body flip-scroll">
+                                    {% include('flash-message.html.twig')  %}
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                        <thead class="flip-content ">
+                                        <tr class="head-grey">
+                                            <th class="numeric" >User Name </th>
+                                            <th class="numeric" >Web theme </th>
+                                            <th class="numeric" >Mobile theme </th>
+                                            <th class="numeric" >Action</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% for entity in pagination %}
+
+                                            <tr>
+
+                                                <td class="numeric" ><a href="{{ path('sitesetting_edit',{'id': entity.id })}}">{{ entity.user }}</a></td>
+                                                <td class="numeric" >{% if(entity.webTheme) %}{{ entity.webTheme.name }}{% endif %}</td>
+                                                <td class="numeric" >{% if(entity.mobileTheme) %}{{ entity.mobileTheme.name }}{% endif %}</td>
+                                                <td class="numeric" >
+                                                    <a class="btn mini green-stripe btn-action" href="{{ path('sitesetting_edit', { 'id': entity.id }) }}">Edit</a>
+                                                    <a class="btn mini blue-stripe btn-action" href="{{ path('sitesetting_show', { 'id': entity.id }) }}">View</a>
+                                                    <a class="btn mini red-stripe btn-action confirm" title="Are you sure went to delete ?" href="{{ path('sitesetting_delete', { 'id': entity.id }) }}" >Delete</a>
+                                                </td>
+                                            </tr>
+
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                    <div class="pagination" >
+                                        {{ knp_pagination_render(pagination) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

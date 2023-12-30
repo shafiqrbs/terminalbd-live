@@ -1,0 +1,54 @@
+{% for item in entity.invoiceParticulars %}
+    <tr id="remove-{{item.id}}">
+        <td class="span1">
+            {% if item.particular.service.id == 1 %}
+                <span class="badge badge-warning toggle badge-custom" id="{{ item.id  }}" ><span>[+]</span></span>
+            {% endif %}
+        </td>
+        <td  class="span1">{{ loop.index }}</td>
+        <td  class="span2">{{ item.created|date('d-m-Y h:i A') }}</td>
+        <td class="span4">{{ item.particular.name }}</td>
+        <td class="span1">{{ item.particular.service.name }}</td>
+        <td class="span1">{% if item.particular.service.hasQuantity == 1 %}{{ item.quantity }}{% endif %}</td>
+        <td class="span1">{{ item.salesPrice }}</td>
+        <td class="span1">{{ item.subTotal|number_format }}</td>
+        <td class="span1"><a id="{{ item.id }}" data-id="{{ item.id }}"  data-url="{{ path('hms_invoice_admission_particular_delete',{'invoice': entity.id ,'id': item.id }) }}" href="javascript:" class="btn red mini particularDelete" ><i class="icon-trash"></i></a></td>
+    </tr>
+    {% if item.particular.service.id == 1 %}
+        <tr id="show-{{ item.id }}" class="showing-overview">
+            <td colspan="9">
+                <table class="table table-bordered table-striped table-condensed ">
+                    <tr class="">
+                        <th class="span3" >Instruction</th>
+                        <td class="span9" >{{ item.particular.instruction }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    {% endif %}
+{% endfor %}
+<tr>
+    <td colspan="9" class="span12" style="border: 1px double #000"></td>
+</tr>
+<tr>
+    <td colspan="7" class="span9"><span class="pull-right"><strong>Total Amount TK.</strong> =</span></td>
+    <td class="span2"><strong class="subTotal">{{ entity.subTotal|number_format }}</strong></td>
+    <td class="span1"></td>
+</tr>
+<tr>
+    <td colspan="7" class="span9"><span class="pull-right"><strong>Vat/Tax TK.</strong> =</span></td>
+    <td class="span2"><strong class="vat">{{ entity.vat|number_format }}</strong></td>
+    <td class="span1"></td>
+</tr>
+<tr>
+    <td colspan="7" class="span9"><span class="pull-right"><strong>Discount TK.</strong> =</span></td>
+    <td class="span2"><strong class="discountAmount">{{ entity.discount|number_format }}</strong></td>
+    <td class="span1">
+        <a href="javascript:" id=""  data-trigger="hover" data-original-title="Delete discount amount" data-url="{{ path('hms_invoice_discount_delete',{'id':entity.id}) }}" class=" btn red mini removeDiscount tooltips"><i class="icon-trash"></i></a>
+    </td>
+</tr>
+<tr>
+    <td colspan="7" class="span9"><span class="pull-right"><strong>Received TK.</strong> =</span></td>
+    <td class="span2"><strong class="paymentAmount">{{ entity.payment|number_format }}</strong></td>
+    <td class="span1"></td>
+</tr>

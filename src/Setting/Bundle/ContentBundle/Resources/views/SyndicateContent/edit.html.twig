@@ -1,0 +1,120 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="portlet box grey">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-cogs"></i>Syndicate Content Page
+
+            </div>
+            <div id="" class="date-tooltip" >
+                <i class="fa fa-calendar"></i>
+                {{ "now"|date("d-F-Y") }}
+            </div>
+        </div>
+        <div>
+
+            <ul class="Syndicate Content Page-breadcrumb breadcrumb">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" >Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('syndicatecontent') }}" >Syndicate Content Page</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    Create
+                </li>
+
+                <li class="pull-right custom-pull-right" >
+                    <a class="btn purple-stripe blue" href="{{ path('syndicatecontent') }}">Listing<i class="icon-headphones"></i></a>
+                </li>
+            </ul>
+        </div>
+        {% include('flash-message.html.twig')  %}
+        <div class="form-group form-group-custom backgroundWhite ">
+            <div class="modal-dialog modal-dialog-form" >
+                <div class="modal-content" >
+
+                    <div class="modal-body ">
+                        <div class="portlet box">
+                            {{ form_start(edit_form) }}
+                            {{ form_row(edit_form._token) }}
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Title :</label>
+                                <div class="col-md-9 form-group-error">
+                                    <div class="input-icon">
+                                        {{ form_widget(edit_form.name) }}
+                                        {{ form_errors(edit_form.name) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="content"  class="control-label col-md-2 required">Content :</label>
+                                <div class="col-md-10">
+                                    {{ form_widget(edit_form.content) }}
+                                    {{ form_errors(edit_form.content) }}
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Add Photo Gallery :</label>
+                                <div class="col-md-9">
+                                    <div class="input-icon">
+                                        {{ form_widget(edit_form.photo_gallery) }}
+                                        {{ form_errors(edit_form.photo_gallery) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Feature Image:</label>
+                                <div class="col-md-9 form-group-error">
+                                    <div class="input-icon">
+                                        <div class="fileupload fileupload-new" data-provides="fileupload">
+                                            <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
+                                                {% if(entity.webPath) %}
+                                                    <img src="/{{ entity.webPath }}" alt="" />
+                                                {% else %}
+                                                    <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt="" />
+                                                {% endif %}
+                                            </div>
+                                            <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
+                                            <div>
+													<span class="btn btn-file"><span class="fileupload-new">Select image</span>
+													<span class="fileupload-exists">Change</span>
+                                                        {{ form_widget(edit_form.file) }}</span>
+                                                <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Status:</label>
+                                <div class="col-md-9">
+                                    <label class="checkbox line">
+                                        {{ form_widget(edit_form.status) }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="edit_form-actions">
+                                <label for="item_itemName"  class="control-label col-md-2 required"></label>
+                                <div class="col-md-9">
+                                    {{ form_widget(edit_form.submit) }}{{ form_widget(edit_form.reset) }}
+                                </div>
+                            </div>
+
+
+                            {{ form_end(edit_form) }}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

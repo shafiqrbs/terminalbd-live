@@ -1,0 +1,415 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- END PAGE HEADER-->
+        <div class="portlet-body">
+            <div class="row-fluid" >
+
+                <div class="span1">
+                    {% if  globalOption.webPath is defined and globalOption.webPath('file') is not empty %}
+                        <img style="max-width: 180px; max-height: 60px" src="/{{ globalOption.webPath('file') }}" />
+                    {% endif %}
+                </div>
+                <div class="span3" style="text-align: right; line-height: 54px">
+                    {% set totalExpense = 0 %}
+                   {# {% for expense in income.expenditures %}
+                        {% set totalExpense = totalExpense + expense.amount  %}
+                    {% endfor %}#}
+                    {% if ( app.user.granted("ROLE_MEDICINE_MANAGER") or  app.user.granted("ROLE_DOMAIN") ) %}
+                    <strong>INCOME BDT. {{ (income.sales - income.purchase)|number_format }}</strong>
+                    {% endif %}
+                </div>
+                <div class="span4">
+                    <div class="btn-group span12">
+                        {% if ( app.user.granted("ROLE_MEDICINE_SALES") or  app.user.granted("ROLE_DOMAIN") ) %}
+                            <a class="btn blue  big span6"  href="{{ path('medicine_sales_temporary_new') }}"><i class="icon-shopping-cart"></i> Sales</a>
+                            {#<a class="btn blue  big span6"  href="{{ path('medicine_sales_new') }}"><i class="icon-shopping-cart"></i> Sales</a>#}
+                        {% endif %}
+                        {% if ( app.user.granted("ROLE_DOMAIN_ACCOUNTING_SALES") or  app.user.granted("ROLE_DOMAIN") ) %}
+                            <a href="{{ path('account_sales_new') }}" class="btn yellow big span6"><i class="icon-money"></i> Receive</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="span4">
+                    <div class="btn-group span12">
+                        {% if ( app.user.granted("ROLE_MEDICINE_PURCHASE") or  app.user.granted("ROLE_DOMAIN") ) %}
+                            <a href="{{ path('medicine_purchase') }}"  class="btn green span6 big"><i class="icon-truck"></i> Purchase</a>
+                        {% endif %}
+                        {% if ( app.user.granted("ROLE_DOMAIN_ACCOUNTING_PURCHASE") or  app.user.granted("ROLE_DOMAIN") ) %}
+                            <a href="{{ path('account_purchase_new') }}"  class="btn span6 yellow big"><i class="icon-money"></i> Payment</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"><br/></div>
+        <div class="row-fluid">
+            <div class="span8">
+                <div class="row-fluid">
+                    <div class="span6 responsive" data-tablet="span6" data-desktop="span3">
+                        {% if ( app.user.granted("ROLE_DOMAIN_ACCOUNTING_CASH") or  app.user.granted("ROLE_DOMAIN") ) %}
+                        <div class="dashboard-stat2 ">
+                            <div class="display">
+                                <div class="number">
+                                    <h3 class="font-green-sharp">
+                                        <span data-counter="counterup" data-value="">{{ ((transactionCashOverviews['openingBalance']+transactionCashOverviews['debit'])-transactionCashOverviews['credit'])|number_format(2) }}</span>
+                                        <small class="font-green-sharp">BDT</small>
+                                    </h3>
+                                    <small>BALANCE</small>
+                                </div>
+                                <div class="icon">
+                                    <i class="icon-bar-chart"></i>
+                                </div>
+                            </div>
+                            <div class="progress-info">
+                                <div class="progress">
+                            <span style="width: 75%;" class="progress-bar progress-bar-success green-sharp">
+                                <span class="sr-only">75% progress</span>
+                            </span>
+                                </div>
+                                <div class="status">
+                                    <div class="status-number">
+                                        <a href="{{ path('account_transaction_cash_overview') }}" class="btn green mini">More <i class="icon-circle-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="span6 responsive" data-tablet="span6" data-desktop="span3">
+                        {% if ( app.user.granted("ROLE_DOMAIN_ACCOUNTING_EXPENDITURE") or  app.user.granted("ROLE_DOMAIN") ) %}
+                        <div class="dashboard-stat2 ">
+                            <div class="display">
+                                <div class="number">
+                                    <h3 class="font-red-haze">
+                                        <span data-counter="counterup" data-value="{{ expenditureOverview|number_format(2) }}">{{ expenditureOverview|number_format }}</span>
+                                        <small class="font-red-sharp">BDT</small>
+                                    </h3>
+                                    <small>Expense</small>
+                                </div>
+                                <div class="icon">
+                                    <i class="icon-money"></i>
+                                </div>
+                            </div>
+                            <div class="progress-info">
+                                <div class="progress">
+                            <span style="width: 75%;" class="progress-bar progress-bar-success red-haze">
+                                <span class="sr-only">65% change</span>
+                            </span>
+                                </div>
+                                <div class="status">
+                                    <div class="status-number">
+                                        <a href="{{ path('account_expenditure') }}" class="btn red mini">More <i class="icon-circle-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+                <div class="row-fluid">
+                    <div class="span6 responsive" data-tablet="span6" data-desktop="span3">
+                        {% if ( app.user.granted("ROLE_MEDICINE_PURCHASE") or  app.user.granted("ROLE_DOMAIN") ) %}
+                        <div class="dashboard-stat2 ">
+                            <div class="display">
+                                <div class="number">
+                                    <h3 class="font-blue-sharp">
+                                        <span data-counter="counterup" data-value="{{ purchaseCashOverview['total'] }}">{{ purchaseCashOverview['total']|number_format(2) }}</span>
+                                        <small class="font-blu-sharp">BDT</small>
+                                    </h3>
+                                    <small>Purchase</small>
+                                </div>
+                                <div class="icon">
+                                    <i class="icon-shopping-cart"></i>
+                                </div>
+                            </div>
+                            <div class="progress-info">
+                                <div class="progress">
+                            <span style="width: 75%;" class="progress-bar progress-bar-success blue-sharp">
+                                <span class="sr-only">75% grow</span>
+                            </span>
+                                </div>
+                                <div class="status">
+                                    <div class="status-number">
+                                        <a href="{{ path('medicine_purchase') }}" class="btn blue mini">More <i class="icon-circle-arrow-right"></i></a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="span6 responsive" data-tablet="span6" data-desktop="span3">
+                        {% if ( app.user.granted("ROLE_MEDICINE_SALES") or  app.user.granted("ROLE_DOMAIN") ) %}
+                        <div class="dashboard-stat2 ">
+                            <div class="display">
+                                <div class="number">
+                                    <h3 class="font-purple-soft">
+                                        <span data-counter="counterup" data-value="{{ salesCashOverview['total'] }}">{{ salesCashOverview['total']|number_format(2) }}</span>
+                                        <small class="font-purple-soft">BDT</small>
+                                    </h3>
+                                    <small>SALES</small>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-money"></i>
+                                </div>
+                            </div>
+                            <div class="progress-info">
+                                <div class="progress">
+                            <span style="width: 75%;" class="progress-bar progress-bar-success purple-soft">
+                                <span class="sr-only">75% change</span>
+                            </span>
+                                </div>
+                                <div class="status">
+                                    <div class="status-number">
+                                        <a href="{{ path('medicine_sales') }}" class="btn purple mini">More <i class="icon-circle-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+            <div class="span4">
+                      <div class="span6" style="margin-top:-10px">
+                            <div class="portlet-body">
+                                {% if ( app.user.granted("ROLE_DOMAIN_ACCOUNTING_SALES") or  app.user.granted("ROLE_DOMAIN") ) %}
+                                <a href="{{ path('report_customer_outstanding') }}" class="icon-btn">
+                                    <i class="fa fa-group"></i>
+                                    <div> Customer OutStanding</div>
+                                </a>
+                                {% endif %}
+                                {% if ( app.user.granted("ROLE_MEDICINE_MANAGER") or  app.user.granted("ROLE_DOMAIN") ) %}
+                                <a href="{{ path('medicine_report_sales_summary') }}" class="icon-btn">
+                                    <i class="icon-tags"></i>
+                                    <div> Sales Overview </div>
+                                </a>
+                                {% endif %}
+                                {% if ( app.user.granted("ROLE_DOMAIN_ACCOUNTING_PURCHASE") or  app.user.granted("ROLE_DOMAIN") ) %}
+                                <a href="{{ path('report_vendor_outstanding') }}" class="icon-btn">
+                                    <i class="fa fa-user"></i>
+                                    <div> Vendor OutStanding </div>
+                                </a>
+                                {% endif %}
+                                {% if ( app.user.granted("ROLE_MEDICINE_MANAGER") or  app.user.granted("ROLE_DOMAIN") ) %}
+                                <a href="{{ path('medicine_report_purchase_summary') }}" class="icon-btn">
+                                    <i class="icon-truck"></i>
+                                    <div> Purchase Overview </div>
+                                </a>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+                        <div class="span6" style="margin-top:-10px">
+                            <div class="portlet-body">
+                                <a href="{{ path('medicine_stock') }}" class="icon-btn">
+                                    <i class="icon-bar-chart"></i>
+                                    <div> Stock </div>
+                                </a>
+                                <a href="{{ path('medicine_stock_short_item') }}" class="icon-btn">
+                                    <i class="icon-signal"></i>
+                                    <div> Current Short List </div>
+                                    <span class="badge badge-important">{{ shortMedicineCount }}</span>
+                                </a>
+                                <a href="{{ path('medicine_expiry_item') }}" class="icon-btn">
+                                    <i class=" icon-list-ol"></i>
+                                    <div> Expiration </div>
+                                    <span class="badge badge-important">{{ expiryMedicineCount }}</span>
+                                </a>
+                                <a href="{{ path('medicine_purchase_item') }}" class="icon-btn">
+                                    <i class="icon-th"></i>
+                                    <div> Stock Details </div>
+                                </a>
+                            </div>
+
+                        </div>
+            </div>
+
+        </div>
+        {% if ( app.user.granted("ROLE_MEDICINE_MANAGER") or  app.user.granted("ROLE_DOMAIN") ) %}
+            <div class="portlet-body form">
+                <div class="portlet box blue">
+
+                    <div class="portlet-body">
+                        <div class="row-fluid" >
+                            <div class="span6">
+                                <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+                            </div>
+                            <div class="span6">
+                                <div id="userDailySales" style="height: 300px; width: 100%;"></div>
+                            </div>
+                        </div>
+
+                    </div>
+            </div>
+                <div class="portlet box yellow">
+                    <div class="portlet-body">
+                        <div class="row-fluid" >
+                            <div class="span12">
+                                <div id="optionsYearlyMonthlyDailyHourlySales" style="height: 330px; width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet box blue">
+                    <div class="portlet-body">
+                        <div class="row-fluid" >
+                            <div class="span12">
+                                <div id="optionsYearlyMonthlyDailySales" style="height: 330px; width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         {% endif %}
+
+    </div>
+    <style>
+        .btn-group .big{
+            height: 54px!important;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@MedicineBundle/Resources/public/css/dashboard.css'
+    '@MedicineBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/temporary-sales.js'
+    '@MedicineBundle/Resources/public/js/approveProcess.js'
+    '@MedicineBundle/Resources/public/js/jquery-canvas.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    jqueryTemporaryLoad();
+    jqueryInstantTemporaryLoad();
+    $('#salesTemporaryItem_stockName').focus();
+    {% if ( app.user.granted("ROLE_DOMAIN_MEDICINE_MANAGER") or  app.user.granted("ROLE_DOMAIN") ) %}
+    window.onload = function () {
+    var optionsUserSales = {
+    animationEnabled: true,
+    title: {
+    text: "User Monthly Sales - {{ "now"|date("F,Y") }}"
+    },
+    axisY: {
+    title: "Growth Rate (in %)",
+    suffix: "%",
+    includeZero: false
+    },
+    axisX: {
+    title: "User Monthly Sales - {{ "now"|date("F,Y") }}"
+    },
+    data: [{
+    type: "column",
+    yValueFormatString: "#,##0.0#"%"",
+    dataPoints: [
+    {% set month = "now"|date("m") %}
+        {% for employee in employees %}
+            {% set monthSales =  employee.id~month|number_format %}
+            {% if employee.monthlySales > 0 %}
+            { label: "{{ employee.username|capitalize }}", y: {% if userSalesAmount[monthSales] is defined and userSalesAmount[monthSales] is not empty %} {{ ((userSalesAmount[monthSales]*100)/employee.monthlySales)|number_format }}{% else %}0{% endif %},indexLabel: "BDT {% if  userSalesAmount[monthSales] is defined and userSalesAmount[monthSales] is not empty %} {{ userSalesAmount[monthSales]|number_format }}{% else %}0{% endif %}" },
+            {% endif %}
+        {% endfor %}
+    ]
+    }]
+    };
+    $("#chartContainer").CanvasJSChart(optionsUserSales);
+
+    var userDailySales = {
+    exportEnabled: true,
+    animationEnabled: true,
+    title:{
+    text: "User Today Sales"
+    },
+    legend:{
+    horizontalAlign: "right",
+    verticalAlign: "center"
+    },
+    data: [{
+    type: "pie",
+    showInLegend: true,
+    toolTipContent: "<b>{name}</b>: ${y} (#percent%)",
+    indexLabel: "{name}",
+    legendText: "{name} (#percent%)",
+    indexLabelPlacement: "inside",
+    yValueFormatString: "BDT#,##0",
+    dataPoints: [
+    {% for entity in salesUserReport %}
+        {% if entity.total > 0  %}
+        { y: {{ entity.total }}, name: "{{ entity.salesBy|capitalize }}" },
+        {% endif %}
+    {% endfor %}
+    ]
+    }]
+    };
+    $("#userDailySales").CanvasJSChart(userDailySales);
+
+    var optionsYearlyMonthlyDailySales = {
+    animationEnabled: true,
+    title: {
+    text: "Monthly Day wise Sales : {{ "now"|date("01-m-Y") }} To {{ "now"|date("t-m-Y") }}"
+    },
+    axisY: {
+    title: "",
+    suffix: "",
+    includeZero: false
+    },
+    axisX: {
+    title: "Monthly Day wise Sales : {{ "now"|date("01-m-Y") }} To {{ "now"|date("t-m-Y") }}"
+    },
+    data: [{
+    type: "column",
+    yValueFormatString: "#,##0.0#",
+    dataPoints: [
+    {% set start_date = "now"|date('01-m-Y') %}
+    {% set end_date = "now"|date('t-m-Y') %}
+    {% for key,x in range(start_date|date('U'), end_date|date('U'), 86400 ) %}
+        { label: "{{ x|date('d') }}", y: {% if key in medicineSalesDaily|keys %}{{ medicineSalesDaily[key] }}{% else %}0{% endif %},indexLabel: "{% if key in medicineSalesDaily|keys %}{{ medicineSalesDaily[key]|number_format }}{% endif %}" },
+    {% endfor %}
+    ]
+    }]
+    };
+
+    $("#optionsYearlyMonthlyDailySales").CanvasJSChart(optionsYearlyMonthlyDailySales);
+
+    var optionsYearlyMonthlyDailyHourlySales = {
+    animationEnabled: true,
+    title: {
+    text: "Daily Hourly Sales : {{ "now"|date("d-m-Y") }}"
+    },
+    axisY: {
+    title: "",
+    suffix: "",
+    includeZero: false
+    },
+    axisX: {
+    title: "Daily Hourly Sales : {{ "now"|date("d-m-Y") }}"
+    },
+    data: [{
+    type: "column",
+    yValueFormatString: "#,##0.0#",
+    dataPoints: [
+        {% for key,x in range(0, 24) %}
+            { label: "{{ x }}", y: {% if key in medicineSalesHourly|keys %}{{ medicineSalesHourly[key] }}{% else %}0{% endif %},indexLabel: "{% if key in medicineSalesHourly|keys %}{{ medicineSalesHourly[key]|number_format }}{% endif %}" },
+        {% endfor %}
+    ]
+    }]
+    };
+    $("#optionsYearlyMonthlyDailyHourlySales").CanvasJSChart(optionsYearlyMonthlyDailyHourlySales);
+}
+    {% endif %}
+{% endblock %}
+

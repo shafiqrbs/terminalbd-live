@@ -1,0 +1,173 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Member list
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('domain') }}">Member List</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Member List</div>
+                        <div class="actions">
+                          {#  <div class="btn-group">
+                                <a class="btn red" href="{{ path('domain_association_new') }}"><i class="icon-user"></i>&nbsp;New Member</a>
+                            </div>#}
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span4">
+                                        <input type="text" id="mobile" name="mobile"  class="span12 m-wrap select2Customer" value="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% endif %}"  autocomplete="off" placeholder="Search member name/mobile">
+                                    </div>
+                                    <div class="span3">
+                                       <select class="m-wrap span12 select2" name="studentBatch" id="studentBatch">
+                                           <option value="">Select Student Batch</option>
+                                           {% for batch in batches %}
+                                           <option {% if searchForm.studentBatch is defined and searchForm.studentBatch == batch  %} selected {% endif %} value="{{ batch }}">{{ batch }}</option>
+                                           {% endfor %}
+                                       </select>
+                                    </div>
+                                    <div class="span2">
+                                       <select class="m-wrap span12 select2" name="bloodGroup" id="bloodGroup">
+                                           <option value="">Select Blood Group</option>
+                                           {% for blood in bloods %}
+                                           <option {% if searchForm.bloodGroup is defined and searchForm.bloodGroup == blood  %} selected {% endif %} value="{{ blood }}">{{ blood }}</option>
+                                           {% endfor %}
+                                       </select>
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span9">
+                                                <input type="text" id="startDate" name="startDate"  class="m-wrap span6 search-input dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Enter DOB Start Date{% endif %} ">
+                                                <input type="text" id="endDate" name="endDate"  class="m-wrap span6 search-input dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}Enter DOB End Date{% endif %} ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            {% include('flash-message.html.twig')  %}
+
+                            <table class="table table-bordered table-striped table-condensed flip-content" >
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i> Member ID</td>
+                                    <th class="numeric">Created</th>
+                                    <th class="numeric">Image</th>
+                                    <th class="numeric">Name</th>
+                                    <th class="numeric">Mobile</th>
+                                    <th class="numeric">Batch</th>
+                                    <th class="numeric">Blood</th>
+                                    <th class="numeric">Status</th>
+                                    <th class="numeric">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td>{{ entity.customerId }}</td>
+                                        <td>{{ entity.created|date('d-m-Y') }}</td>
+                                        <td>
+                                            {% if(entity.webPath) %}
+                                                <img class="fileupload-preview fileupload-exists thumbnail" alt="" src="{{ image(entity.webPath).resize(80,80) }}">
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ entity.name }}</td>
+                                        <td class="numeric"><a href="tel:+88 {{ entity.mobile }}"> {{ entity.mobile }}</a></td>
+                                        <td>
+                                            <a  data-type="select" class="editable" id="studentBatch" data-name="StudentBatch" href="#" data-source="{{ path('domain_association_batch_select') }}"  data-url="{{ path('domain_association_inline_update') }}" data-pk="{{ entity.id }}" data-value="{{ entity.studentBatch }}" data-original-title="Enter Student Batch">{{ entity.studentBatch }}</a>
+                                        </td>
+                                        <td>
+                                            <a  data-type="select" class="editable" id="bloodGroup" data-name="BloodGroup" href="#" data-source="{{ path('domain_association_blood_select') }}"  data-url="{{ path('domain_association_inline_update') }}" data-pk="{{ entity.id }}" data-value="{{ entity.bloodGroup }}" data-original-title="Enter Blood Group">{{ entity.bloodGroup }}</a>
+                                        </td>
+                                        <td>{{ entity.process }}</td>
+                                        <td class="numeric">
+                                            <div class="btn-group">
+                                            {% if (app.user.granted("ROLE_DOMAIN")) or (app.user.granted("ROLE_MEMBER_ASSOCIATION_MODERATOR")) or (app.user.granted("ROLE_MEMBER_ASSOCIATION_ADMIN"))  %}
+                                                <a class="btn mini green" href="{{ path('domain_association_profile_edit', { 'id': entity.id }) }}"><i class="icon-pencil"></i></a>
+                                            {% endif %}
+                                            {% if ((app.user.granted("ROLE_DOMAIN")) and entity.process != "Approved") or (app.user.granted("ROLE_MEMBER_ASSOCIATION_ADMIN") and entity.process != "Approved")  %}
+                                                    <a class="btn mini delete red" href="javascript:" data-url="{{ path('domain_association_profile_delete', { 'id': entity.id }) }}" >&nbsp;<i class="icon-trash"></i> </a>
+                                            {% endif %}
+                                            {% if (app.user.granted("ROLE_DOMAIN")) or (app.user.granted("ROLE_MEMBER_ASSOCIATION"))  %}
+                                                <a data-title="{{ entity.name }}" class="btn mini view blue" href="javascript:" data-url="{{ path('domain_association_show', { 'id': entity.id }) }}" >&nbsp;<i class="icon-eye-open"></i> </a>
+                                                <a data-title="{{ entity.name }}" id="" class="btn mini sms purple" href="javascript:" data-url="{{ path('domainuser_member_sms', { 'id': entity.id }) }}" >SMS</a>
+                                            {% endif %}
+                                            {% if (app.user.granted("ROLE_MEMBER_ASSOCIATION_MODERATOR") and entity.process == "Pending") or (app.user.granted("ROLE_DOMAIN")  and entity.process == "Pending") %}
+                                                <a data-title="{{ entity.name }}" class="btn mini approve  yellow" href="javascript:" data-url="{{ path('domain_association_process', { 'id': entity.id }) }}" >&nbsp;<i class="icon-refresh"></i> Checked</a>        {% endif %}
+                                            {% if (app.user.granted("ROLE_MEMBER_ASSOCIATION_ADMIN") and entity.process == "Checked") or (app.user.granted("ROLE_DOMAIN")  and entity.process == "Checked") %}
+                                                <a data-title="{{ entity.name }}" class="btn mini approve yellow" href="javascript:" data-url="{{ path('domain_association_process', { 'id': entity.id }) }}" >&nbsp;<i class="icon-refresh"></i> Approved</a>        {% endif %}
+                                            {% if app.user.granted("ROLE_MEMBER_ASSOCIATION_MODERATOR") or app.user.granted("ROLE_MEMBER_ASSOCIATION_ADMIN")  or app.user.granted("ROLE_DOMAIN")  %}
+                                            <a data-title="{{ entity.name }}" class="btn mini yellow" href="{{ path('domain_association_invoice_new', { 'customer': entity.customerId }) }}"  >&nbsp;<i class="icon-money"></i></a>
+                                            {% endif %}
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <link href="{{ asset('assets/css/pages/timeline.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@DomainUserBundle/Resources/public/css/style.css'
+    '@DomainUserBundle/Resources/public/css/messagebox.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@DomainUserBundle/Resources/public/js/messagebox.js'
+    '@DomainUserBundle/Resources/public/js/editable.js'
+    '@DomainUserBundle/Resources/public/js/approveProcess.js'
+    '@DomainUserBundle/Resources/public/js/association.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    AssociationProcess();
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Account of Cash Reconciliation
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_cashreconciliation') }}">Account of Cash Reconciliation</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Account of Cash Reconciliation Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account Cash Reconciliation</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('account_cashreconciliation_new') }}"><i class="icon-plus-sign"></i>&nbsp;Add New</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body">
+                            {% include('flash-message.html.twig') %}
+                        </div>
+                        <div class="portlet-body flip-scroll">
+
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i> Created</td>
+                                    <th class="numeric" >Cash System</th>
+                                    <th class="numeric" >Cash</th>
+                                    <th class="numeric" >Bank System</th>
+                                    <th class="numeric" >Bank</th>
+                                    <th class="numeric" >Mobile System</th>
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Total System</th>
+                                    <th class="numeric" >Total</th>
+                                    <th class="numeric" >Less/More</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr id="remove-{{ entity.id }}">
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.systemCash }}</td>
+                                        <td class="numeric" >{{ entity.cash }}</td>
+                                        <td class="numeric" >{{ entity.systemBank }}</td>
+                                        <td class="numeric" >{{ entity.bank }}</td>
+                                        <td class="numeric" >{{ entity.systemMobile }}</td>
+                                        <td class="numeric" >{{ entity.mobile }}</td>
+                                        <td class="numeric" >{{ (entity.systemCash + entity.systemBank + entity.systemMobile)|number_format }}</td>
+                                        <td class="numeric" >{{ (entity.cash + entity.bank + entity.mobile)|number_format }}</td>
+                                        <td class="numeric" >{{ ((entity.cash + entity.bank + entity.mobile)-(entity.systemCash + entity.systemBank + entity.systemMobile))|number_format }}</td>
+                                        <td class="" >
+                                            <div class="actions">
+                                                <div class="btn-group">
+                                                    {% if entity.created|date('Y-m-d') == "now"|date('Y-m-d') or (entity.globalOption.accountingConfig.accountClose == 1 and entity.created|date('Y-m-d') == "yesterday"|date('Y-m-d') ) %}
+                                                    <a href="javascript:" id="delete-{{ entity.id }}" data-id="{{ entity.id }}" class="btn red mini delete"  data-url="{{ path('account_cashreconciliation_delete',{'id':entity.id}) }}"><i class="icon-trash"></i></a>
+                                                    <a  class="btn blue mini" href="{{ path('account_cashreconciliation_edit',{'id':entity.id}) }}"><i class="icon-pencil"></i></a>
+                                                    {% endif %}
+                                                    {% if  app.user.granted("ROLE_DOMAIN") %}
+                                                        <a href="javascript:" id="delete-{{ entity.id }}" data-id="{{ entity.id }}" class="btn red mini delete"  data-url="{{ path('account_cashreconciliation_delete',{'id':entity.id}) }}">Force Delete</a>
+                                                    {% endif %}
+                                                    <a  class="btn green mini"  href="{{ path('account_cashreconciliation_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i></a>
+                                                    <a  target="_blank" class="btn yellow mini"  href="{{ path('account_cashreconciliation_pdf',{'id':entity.id}) }}"><i class="icon-download"></i> Download</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/editable.js'
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    AccountingApproveProcess();
+    $('.mobileBankHide').hide();
+    $('.bankHide').hide();
+    $(document).on('change', '.transactionMethod', function() {
+
+    var transactionMethod = $(this).val();
+    if(transactionMethod == 2 ){
+    $('.bankHide').show(500);
+    $('.mobileBankHide').hide(500);
+    }else if(transactionMethod == 3 ){
+    $('.bankHide').hide(500);
+    $('.mobileBankHide').show(500);
+    }else{
+    $('.bankHide').hide(500);
+    $('.mobileBankHide').hide(500);
+    }
+
+    });
+
+
+{% endblock %}
+
+
+

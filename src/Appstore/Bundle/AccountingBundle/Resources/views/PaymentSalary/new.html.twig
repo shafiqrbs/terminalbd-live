@@ -1,0 +1,255 @@
+    {% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN account_salarysetting HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="account_salarysetting-title">
+                    Salary Payment
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_salarysetting') }}">Salary Payment</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Salary Payment new/edit</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END account_salarysetting HEADER-->
+        <!-- BEGIN account_salarysetting CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Salary Payment Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('account_paymentsalary') }}"><i class="icon-plus-sign"></i> New Invoice</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+                                <div class="span3">
+                                    <h4>Employee info:</h4>
+                                    <ul class="unstyled">
+                                        <li>{{ user.profile.name }}</li>
+                                        <li>{% if user.profile.designation is not empty %}{{ user.profile.designation.name }}{% endif %}</li>
+                                        <li>{{ user.profile.mobile }}</li>
+                                        <li>{{ user.profile.address }}</li>
+
+                                    </ul>
+                                </div>
+                                <div class="span3">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+                                        <li>Joining Date:&nbsp;{{ user.profile.joiningDate|date('d-m-Y') }}</li>
+                                        {% if user.profile.bank is not empty %}
+                                            <li>Bank name:&nbsp;{{ user.profile.bank.name }}</li>
+                                            <li>Account no:&nbsp;{{ user.profile.accountNo }}</li>
+                                            <li>Branch:&nbsp;{{ user.profile.branch }}</li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                                <div class="span3 invoice-payment">
+                                    <h4>Invoice Details:</h4>
+                                    <ul class="unstyled">
+                                        <li>Basic BDT:&nbsp;{{ invoiceAmountOverview.basicAmount|number_format }}</li>
+                                        <li>Bonus BDT:&nbsp;{{ invoiceAmountOverview.bonusAmount|number_format }}</li>
+                                        <li>Other BDT:&nbsp;{{ invoiceAmountOverview.otherAmount|number_format }}</li>
+                                        <li>Advance BDT:&nbsp;{{ invoiceAmountOverview.advanceAmount|number_format }}</li>
+                                        <li>Total amount BDT:&nbsp;{{ invoiceAmountOverview.totalAmount|number_format }}</li>
+                                    </ul>
+                                </div>
+                                <div class="span3 invoice-payment">
+                                    <h4>Payment Details:</h4>
+                                    <ul class="unstyled">
+                                        <li>Adjustment BDT:&nbsp;{{ paymentAmountOverview.adjustmentAmount|number_format }}</li>
+                                        <li>Total Payment BDT:&nbsp;{{ paymentAmountOverview.totalAmount|number_format }}</li>
+                                        <li>Due BDT:&nbsp;{{ paymentAmountOverview.dueAmount|number_format }}</li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                            <div class="form-actions portlet box blue">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Salary Payment Information</div>
+                                </div>
+                            </div>
+                            <div class="clearfix"><br/></div>
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+
+                            <div class="row-fluid">
+                                <div class="span4" >
+                                    <div class="row-fluid" >
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="Expenditure">Salary</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.salarySetting) }}
+                                                    {{ form_errors(form.salarySetting) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span4" >
+                                    <div class="row-fluid" >
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="transactionMethod">Transaction Method</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.transactionMethod) }}
+                                                    {{ form_errors(form.transactionMethod) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid bankHide">
+                                        <div class="span12">
+                                            <div class="control-group ">
+                                                <label class="control-label" for="accountBank">
+                                                    {{ form_widget(form.accountBank) }}
+                                                    {{ form_errors(form.accountBank) }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid mobileBankHide">
+                                        <div class="span12">
+                                            <div class="control-group ">
+                                                <label class="control-label" for="accountMobileBank">
+                                                    {{ form_widget(form.accountMobileBank) }}
+                                                    {{ form_errors(form.accountMobileBank) }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span4" >
+                                    <div class="row-fluid" >
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="Expenditure">Salary Month/Year</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.salaryMonth) }}
+                                                    {{ form_errors(form.salaryMonth) }}
+                                                    {{ form_widget(form.salaryYear) }}
+                                                    {{ form_errors(form.salaryYear) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid" >
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="otherAmount">
+                                               <input type="text" id="salaryAmount" name="salaryAmount" readonly="readonly" class="m-wrap span12 numeric" placeholder="Salary amount">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid" >
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="adjustmentAmount">
+                                                    {{ form_widget(form.adjustmentAmount) }}
+                                                    {{ form_errors(form.adjustmentAmount) }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid" >
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="totalAmount">
+                                                    <input type="text" id="totalAmount" name="totalAmount" readonly="readonly" class="m-wrap span12 numeric" placeholder="Total amount">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row-fluid" >
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="paidAmount">
+                                                    {{ form_widget(form.paidAmount) }}
+                                                    {{ form_errors(form.paidAmount) }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                           <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" for="remark">
+                                            {{ form_widget(form.remark) }}
+                                            {{ form_errors(form.remark) }}
+                                        </label>
+                                    </div>
+                                </div>
+                           </div>
+                             <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green payment"><i class="icon-ok"></i>&nbsp;Payment</button>
+                                    <button type="reset" class="btn red"><i class="icon-refresh"></i>&nbsp;Cancel</button>
+                                    {% if(entity.id > 0 ) %}
+                                        <a href="{{ path('account_salarysetting_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/paymentsalary.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    PaymentSalary();
+{% endblock %}

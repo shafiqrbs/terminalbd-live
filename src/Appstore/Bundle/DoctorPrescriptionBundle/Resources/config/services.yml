@@ -1,0 +1,14 @@
+services:
+#    appstore_dms.example:
+#        class: Appstore\Bundle\DoctorPrescriptionBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+    
+  appstore.dps.particular.event.listener:
+        class: Appstore\Bundle\DoctorPrescriptionBundle\EventListener\DpsParticularListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+  appstore.dps.invoice.event.listener:
+        class: Appstore\Bundle\DoctorPrescriptionBundle\EventListener\DpsInvoiceListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }

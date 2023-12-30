@@ -1,0 +1,532 @@
+
+<style>
+    @media print{@page {size: landscape}}
+    @media print {
+        h1 , h2 , h3 , h4 , h5 , h6,p{
+            display: block;
+            padding: 0;
+            margin: 0;
+        }
+        h3 {
+            font-size: 24px;
+            line-height: 45px;
+            height: 45px;
+        }
+
+        body{
+            background-color:#fff!important;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 10px;
+        }
+
+        ul{
+            list-style: none;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        ul li {
+            list-style: none;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .portlet{
+            background: #0c0c0c;
+            color: #ffffff;
+            font-size: 15px;
+            line-height: 30px;
+            height: 30px;
+            font-weight: bold;
+            padding-left: 15px;
+        }
+
+        .pull-right {
+            float: right;
+            text-align: right;
+            width: 220px!important;
+        }
+
+        .table-margin{
+            margin-bottom: 15px!important;
+            margin-top: 15px !important;
+        }
+
+        label{
+            text-decoration:underline;
+            font-size:13px
+        }
+
+        table.table {
+            clear: both;
+            margin-bottom: 6px !important;
+            max-width: none !important;
+            font-family: Helvetica, Arial, sans-serif;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+
+
+
+        table.table-border{
+            border: 1px solid #777777!important;
+        }
+
+        table.table-no-border {
+            clear: both;
+            max-width: none !important;
+            border-collapse: collapse;
+            width: 100%;
+            border: none!important;
+        }
+
+        .print-header{
+            height: 50px;
+            border: 1px solid #777777;
+        }
+        .print-header .title{
+            float: left;
+            padding-left: 10px;
+            line-height: 50px;
+            font-size: 18px;
+            clear: both;
+            display: inline-block;
+
+        }
+        .print-header .title-center{
+            padding-left: 10px;
+            line-height: 50px;
+            font-size: 18px;
+            clear: both;
+            display: inline-block;
+        }
+
+        .print-header .barcode-left{
+            float: left;
+            padding-left: 10px;
+            margin-top: 5px;
+        }
+
+        .print-header .barcode-right{
+            float: right;
+            padding-right: 10px;
+            margin-top: 5px;
+        }
+
+        .print-header .barcode{
+            float: right;
+            padding-right: 10px;
+            margin-top: 5px;
+        }
+
+
+        .table td {
+            padding:1px;
+            line-height: 20px;
+            vertical-align: top;
+            font-size: 11px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+        }
+        .table thead tr th {
+            font-size: 11px;
+            line-height: 30px;
+            padding-left: 10px!important;
+            padding-right: 10px!important;
+        }
+        .table-bordered tr td{
+            border: 1px solid #444 !important;
+        }
+
+        .table-no-border tr td{
+            border: 0!important;
+            padding: 0!important;
+        }
+
+        .table-no-border tr td .table-bordered tr td{
+            padding-left: 8px!important;
+            padding-right: 8px!important;
+        }
+
+
+        .table-striped tbody>tr:nth-child(add)>td,
+        .table-striped tbody>tr:nth-child(add)>th {
+            background-color: #313131;
+        }
+        .table-striped tbody>tr:nth-child(odd)>td,
+        .table-striped tbody>tr:nth-child(odd)>th {
+            background-color: #f9f9f9;
+        }
+
+        .head-blue{
+            background:#ddd!important;
+            height: 30px;
+            color: #000;
+            line-height: 30px;
+            border:1px solid #dddddd;
+            text-align: left;
+            padding-left:10px;
+        }
+
+        .header .navbar-inner{
+            display: none;
+        }
+        .page-sidebar{
+            display: none;
+        }
+
+        .page-content{
+            margin-left: 0 !important;
+        }
+        .table{
+            border: none!important;
+        }
+        .table th, .table td{
+            border-top: none;
+        }
+        .table th .span4, .table td .span4{
+            width: 100%;
+        }
+        .table-bordered th, .table-bordered td{
+            border-left:none;
+        }
+
+        .footer{
+            display: none!important;
+        }
+        .page-content{
+            margin: 0 auto !important;
+            width: 100%;
+        }
+
+        .barcode-block {
+            text-align: center!important;
+            white-space: nowrap;
+            width: 140px;
+            float: left;
+            height: 80px;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-top: none;
+        }
+
+        /* The ghost, nudged to maintain perfect centering */
+        .barcode-block:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -0.25em; /* Adjusts for spacing */
+        }
+
+        /* The element to be centered, can also be of any width and height */
+        .centered {
+            display: inline-block;
+            vertical-align: middle;
+            width: 113px;
+        }
+        .centered p{
+            padding: 0!important;
+            margin: 0!important;
+            display: block;
+            height: 14px;
+            font-size: 11px;
+            line-height: 13px;
+            font-weight: bold;
+        }
+
+        .centered .left{
+            text-align: left;
+            float: left;
+            display: inline-block;
+            height: 14px;
+            font-size: 9px;
+        }
+        .centered .center{
+            text-align: center;
+            display: inline-block;
+            height: 14px;
+        }
+        .centered .right{
+            text-align: right;
+            float: right;
+            display: inline-block;
+            height: 14px;
+            font-size: 9px;
+        }
+
+        .text-left{
+            text-align: left!important;
+        }
+        .text-center{
+            text-align: center !important;
+        }
+        .text-right{
+            text-align: right !important;
+        }
+        .span12{
+            width: 100%
+        }
+        .span9{
+            width:75%
+        }
+        .span8{
+            width:66.66666667%
+        }
+        .span6{
+            width: 50%
+        }
+        .span4{
+            width: 33.33333333%
+        }
+        .span3{
+            width: 25%
+        }
+        .span2{
+            width: 12.50%
+        }
+        .span1{
+            width: 8.33333333%
+        }
+
+        .approve-box{
+            height:30px;
+            padding-top: 40px;
+            text-align:center;
+            font-weight:bold;
+            float: left;
+        }
+
+
+        h1 , h2 , h3 , h4 , h5 , h6,p{
+            display: block;
+            padding: 0;
+            margin: 0;
+        }
+        h1 {
+            font-size: 22px;
+            line-height: 36px;
+            height: 36px;
+            text-transform:uppercase ;
+        }
+
+         h3 {
+            font-size: 18px;
+            line-height: 36px;
+            height: 36px;
+        }
+
+        h4 {
+            font-size: 14px;
+            line-height: 32px;
+            height: 32px;
+        }
+
+        .table{
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            font-family:tahoma, geneva, sans-serif;
+        }
+        .table tr.head th, .table tr.head td{
+            font-size: 15px;
+            background: #333;
+            color: #fff;
+            height: 40px;
+        }
+
+        .table tr.sub-head th, .table tr.sub-head td{
+            font-size: 15px;
+            background: #666;
+            color: #fff;
+            height: 40px;
+        }
+
+        .table th, .table td{
+            border: 1px solid rgba(97, 101, 221, 0.09);
+            text-align: left;
+            height: 30px;
+            line-height: 30px;
+
+        }
+        h3 {
+            font-size: 24px;
+            display: block;
+            padding: 0;
+            margin: 0;
+            line-height: 45px;
+            height: 45px;
+        }
+        .pull-center{
+            background: #e5e5e5;
+            text-align: center!important;
+
+        }
+        .pull-right{
+            text-align: right!important;
+            display: block;
+            padding-right: 20px;
+        }
+
+        .unstyled li{
+            margin: 0;
+            padding: 0;
+            list-style: none!important;
+        }
+
+        .span12, .span9, .span8, .span6,.span5, .span4, .span3, .span2, .span1{
+            display: inline-block;
+        }
+    }
+
+
+</style>
+{% set startDate = searchForm.month is defined ? searchForm.month :"now"|date("d-m-Y") %}
+{% set endDate = searchForm.year is defined ? searchForm.year :"now"|date("d-m-Y") %}
+
+ {% set methods = ['Cash','Bank','Mobile'] %}
+<!-- BEGIN FORM-->
+<h1 style="text-align: center">
+   {{ entity.globalOption.name }}
+</h1>
+<p style="text-align: center">{{ entity.globalOption.mobile }}</p>
+<p style="height: 20px; line-height: 20px; margin-top: 20px">
+    <span style="float: left">Reconciliation Date:{{ entity.created|date('d-m-Y') }}</span>
+    <span style="float: right">Download Date:{{ "now"|date('d-m-Y') }}</span>
+</p>
+<div class="clearfix"><br/></div>
+<div class="portlet">
+    Reconciliation Summary Reports
+</div>
+<div class="clearfix"><br/></div>
+<table class="table">
+    <tr>
+        <th>Name of Transaction</th>
+        <th>System</th>
+        <th>Reconciliation</th>
+        <th>Less/More</th>
+    </tr>
+    <tbody>
+    <tr>
+        <td>Bank</td>
+        <td>{{ entity.systemBank|number_format }}</td>
+        <td>{{ entity.bank|number_format }}</td>
+        <td>{{ (entity.systemBank - entity.bank)|number_format }}</td>
+    </tr>
+    <tr>
+        <td>Mobile</td>
+        <td>{{ entity.systemMobile|number_format }}</td>
+        <td>{{ entity.mobile|number_format }}</td>
+        <td>{{ (entity.systemMobile - entity.mobile)|number_format }}</td>
+    </tr>
+    <tr>
+        <td>Cash</td>
+        <td>{{ entity.systemCash|number_format }}</td>
+        <td>{{ entity.cash|number_format }}</td>
+        <td>{{ (entity.systemCash - entity.cash)|number_format }}</td>
+    </tr>
+    <tr>
+        <th>Grand Total</th>
+        <th>{{ (entity.systemBank + entity.systemMobile + entity.systemCash)|number_format }}</th>
+        <th>{{ (entity.bank + entity.mobile + entity.cash)|number_format }}</th>
+        <th>{{ ((entity.systemBank + entity.systemMobile + entity.systemCash) - (entity.bank + entity.mobile + entity.cash))|number_format }}</th>
+    </tr>
+    </tbody>
+</table>
+<div class="clearfix"><br/></div>
+<div class="portlet">Bank Account Reconciliation </div>
+<div class="clearfix"><br/></div>
+
+{% if transactionBankCashOverviews.result is not empty %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Bank Account Name</th>
+            <th>System Amount</th>
+            <th >Amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set sumBank = 0 %}
+        {% for note in entity.cashReconciliationMetas %}
+            {% if note.TransactionMethod == 'Bank' %}
+                <tr>
+                    <td >{{ note.metaKey }}</td>
+                    <td>{{ note.systemAmount }}</td>
+                    <td>{{ note.amount }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+        <tr>
+            <th><span class="pull-right">Grand Total</span></th>
+            <td><strong id="">{{ entity.systemBank|number_format }}</strong></td>
+            <td><strong id="bankTotal">{{ entity.bank|number_format }}</strong></td>
+        </tr>
+    </table>
+{% endif %}
+<div class="clearfix"><br/></div>
+<div class="portlet">Mobile Account Reconciliation</div>
+<div class="clearfix"><br/></div>
+
+{% if transactionMobileBankCashOverviews.result is not empty %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Mobile Account</th>
+            <th>System Amount</th>
+            <th>Amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set sumTotal = 0 %}
+        {% for note in entity.cashReconciliationMetas %}
+            {% if note.TransactionMethod == 'Mobile' %}
+                <tr>
+                    <td>{{ note.metaKey }}</td>
+                    <td>{{ note.systemAmount }}</td>
+                    <td>{{ note.amount }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+        <tr>
+            <th class="numeric"><span class="pull-right">Grand Total</span></th>
+            <td class="numeric" ><strong id="mobileTotal">{{ entity.systemMobile|number_format }}</strong></td>
+            <td class="numeric" ><strong id="">{{ entity.mobile|number_format }}</strong></td>
+        </tr>
+    </table>
+{% endif %}
+<div class="clearfix"><br/></div>
+<div class="portlet">Notes Reconciliation</div>
+<div class="clearfix"><br/></div>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Note/Particular</th>
+        <th>Amount</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% set sumTotal = 0 %}
+    {% for note in entity.cashReconciliationMetas %}
+        {% if note.TransactionMethod == 'Cash' %}
+            <tr>
+                <td>{{ note.metaKey }}</td>
+                <td> {{ note.amount }}</td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+    </tbody>
+    <tr>
+        <th><span class="pull-right">Grand Total</span></th>
+        <th>{{ entity.systemCash|number_format }}</th>
+    </tr>
+</table>
+<div class="clearfix">&nbsp;</div>
+

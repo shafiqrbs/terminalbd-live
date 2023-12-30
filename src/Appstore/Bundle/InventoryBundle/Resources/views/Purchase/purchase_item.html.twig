@@ -1,0 +1,246 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Purchase
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('purchaseorder') }}">Purchase</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Add/Edit purchase</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Purchase Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('purchaseorder_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('purchaseorder') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                    {% if(entity.id > 0 ) %}
+                                        <li><a href="{{ path('purchaseorder_edit',{'id':entity.id}) }}"><i class="icon-edit"></i>&nbsp;Edit</a></li>
+                                        <li><a href="{{ path('purchaseorder_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;Show</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Vendor name<span class="required">*</span></label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                {{ form_widget(form.vendor) }}
+                                                {{ form_errors(form.vendor) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Purchase & Payment Amount<span class="required">*</span></label>
+                                        <div class="controls">
+                                                {{ form_widget(form.totalAmount) }}
+                                                {{ form_errors(form.totalAmount) }}
+                                                {{ form_widget(form.paymentAmount) }}
+                                                {{ form_errors(form.paymentAmount) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Memo & Invoice no</label>
+                                        <div class="controls">
+
+                                                {{ form_widget(form.memo) }}
+                                                {{ form_errors(form.memo) }}
+                                                {{ form_widget(form.invoice) }}
+                                                {{ form_errors(form.invoice) }}
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Commission & Due Amount</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.commissionAmount) }}
+                                            {{ form_errors(form.commissionAmount) }}
+                                            {{ form_widget(form.dueAmount) }}
+                                            {{ form_errors(form.dueAmount) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Receive Date</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                {{ form_widget(form.receiveDate) }}
+                                                {{ form_errors(form.receiveDate) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Total Item & Qnt<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.totalItem) }}
+                                            {{ form_errors(form.totalItem) }}
+                                            {{ form_widget(form.totalQnt) }}
+                                            {{ form_errors(form.totalQnt) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="clearfix">&nbsp;</div>
+                            <!--/row-->
+                            <div class="form-actions portlet box blue">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Add item</div>
+                                    <div class="tools">
+                                        <a href="#" class="btn purple icn-only"><i class="icon-plus m-icon-white"></i></a>
+                                        <a href="#" class="btn red icn-only"><i class="icon-trash m-icon-white"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+
+                            <div class="row-fluid">
+                                <div class="span3">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="item">
+                                </div>
+                               <div class="span1">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="Qnt">
+                                </div>
+                               <div class="span2">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="Purchase price">
+                                </div>
+                               <div class="span2">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="Sales price">
+                               </div>
+                                <div class="span2">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="Web price">
+                               </div>
+                               <div class="span2">
+                                   <a href="#" class="btn blue icn-only"><i class="icon-plus-sign m-icon-white"></i></a>
+                                   <a href="#" class="btn red icn-only"><i class="icon-trash m-icon-white"></i></a>
+                               </div>
+
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span3">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="item">
+                                </div>
+                               <div class="span1">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="Qnt">
+                                </div>
+                               <div class="span2">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="Purchase price">
+                                </div>
+                               <div class="span2">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="Sales price">
+                               </div>
+                                <div class="span2">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="Web price">
+                               </div>
+                               <div class="span2">
+                                   <a href="#" class="btn blue icn-only"><i class="icon-plus-sign m-icon-white"></i></a>
+                                   <a href="#" class="btn red icn-only"><i class="icon-trash m-icon-white"></i></a>
+                               </div>
+
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span3">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="item">
+                                </div>
+                               <div class="span1">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="Qnt">
+                                </div>
+                               <div class="span2">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="Purchase price">
+                                </div>
+                               <div class="span2">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="Sales price">
+                               </div>
+                                <div class="span2">
+                                    <input type="text" id="" name="" class="m-wrap span12" placeholder="Web price">
+                               </div>
+                               <div class="span2">
+                                   <a href="#" class="btn blue icn-only"><i class="icon-plus-sign m-icon-white"></i></a>
+                                   <a href="#" class="btn red icn-only"><i class="icon-trash m-icon-white"></i></a>
+
+                               </div>
+
+                            </div>
+                            <!--/span-->
+
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-center">
+                                    <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                    <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                                    {% if(entity.id > 0 ) %}
+                                        <a href="{{ path('purchase_order_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+    <!-- BEGIN category HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="category-title">
+                Vendor Stock no #  <strong>{{ entity.grn }}</strong>
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li>
+                    <a href="{{ path('business_vendor_stock') }}">Vendor Stock</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li><a href="#">Manage Vendor Stock</a></li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END category HEADER-->
+    <!-- BEGIN category CONTENT-->
+    <div class="row-fluid">
+    <div class="span12">
+
+    <div class="portlet box green tabbable">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Vendor Stock Information</div>
+            <div class="actions">
+                <div class="btn-group">
+                    <a class="btn yellow" href="{{ path('business_vendor_stock_item') }}"><i class="icon-th-list"></i> Vendor Stock Item</a>
+                    <a class="btn" href="{{ path('business_vendor_stock') }}"><i class="icon-th-list"></i> Vendor Stock</a>
+                </div>
+            </div>
+        </div>
+    <div class="portlet-body">
+        <div class="portlet-body form">
+            {% include('flash-message.html.twig')  %}
+            <!-- BEGIN FORM-->
+            <form class="" id="purchaseItem" name="purchaseItem" method="post" action="{{ path('business_vendor_stock_particular_add',{'invoice':entity.id}) }}">
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="row-fluid particular-info" >
+                        <div class="span7" style="margin-left:15px">
+                            <select id="particular" name="particular" class="span12 select2">
+                                <option value="">--- Select product name ---</option>
+                                {% for particular in particulars %}
+                                    <option value="{{ path('business_vendor_stock_particular_search',{'id':particular.id}) }}">{{ particular.particularCode }}-{{ particular.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="span3">
+                            <div class="input-append">
+                                <div class="input-group">
+                                    <input type="text" class="m-wrap span8" id="price"  name="price" placeholder="Vendor Stock price" value="" maxlength="8" autocomplete="off">
+                                    <input type="number" class="m-wrap span4 form-control input-number" id="quantity" name="quantity" value="1" min="1" autocomplete="off">
+                                    <input type="hidden" id="particularId" name="particularId" value="">
+                                    <button type="button" class="btn yellow"  id="unit" >Unit</button>
+                                    <button type="submit" class="btn blue" id="addParticular" ><i class="icon-save"></i> Add</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            </form>
+            <div class="row-fluid">
+                <div class="span12" id="particular-table">
+
+                </div>
+            </div>
+            {{ form_start(form) }}
+            {{ form_row(form._token) }}
+            <div class="clearfix">&nbsp;</div>
+            <div class="row-fluid">
+                <div class="span8">
+                    <table class="table table-bordered table-striped table-condensed table-fixed">
+                        <thead class="flip-content ">
+                        <tr class="head-blue">
+                            <th class="span1">&nbsp;&nbsp;<i class="icon-list"></i></th>
+                            <th class="span3">Name</th>
+                            <th class="span1">Price</th>
+                            <th class="span1">Qnt</th>
+                            <th class="span1">Unit</th>
+                            <th class="span1">Sub Total</th>
+                            <th class="span1"><i class="icon-trash"></i></th>
+                        </tr>
+                        </thead>
+                        <tbody id="invoiceParticulars">
+                        {% if entity.businessVendorStockItems is not empty %}
+                            {% for item in entity.businessVendorStockItems %}
+                                <tr id="remove-{{ item.id }}">
+                                    <td  class="span1">{{ loop.index }}</td>
+                                    <td class="span3">{{ item.particular.name }}</td>
+                                    <td class="span1">{{ item.price }}</td>
+                                    <td class="span1">{{ item.quantity }}</td>
+                                    <td class="span1">{% if item.particular.unit is not empty %}{{ item.particular.unit.name }}{% endif %}</td>
+                                    <td class="span1">{{ item.subTotal|number_format }}</td>
+                                    <td class="span1"><a id="{{ item.id }}" title="Are you sure went to delete ?" data-url="{{ path('business_vendor_stock_particular_delete',{'invoice': entity.id ,'id': item.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a></td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="7" class="span12" style="border: 1px double #000"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="span9"><span class="pull-right"><strong>Total TK.</strong> =</span></td>
+                            <td class="span2"><strong id="subTotal">{{ entity.subTotal|number_format }}</strong></td>
+                            <td class="span1"></td>
+                        </tr>
+
+                        </tfoot>
+                    </table>
+               </div>
+                <div class="span4 payment-info">
+                    <div class="clearfix"></div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="control-group">
+                                {{ form_widget(form.vendor) }}
+                                {{ form_errors(form.vendor) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="control-group">
+                                {{ form_widget(form.commission) }}
+                                {{ form_errors(form.commission) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="control-group">
+                                {{ form_widget(form.remark) }}
+                                {{ form_errors(form.remark) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="clearfix">&nbsp;</div>
+            <div class="form-actions portlet box grey">
+                <input type="hidden" name="Vendor StockId" id="Vendor StockId" value="{{ entity.id }}">
+                <div class="pull-right">
+                    <button type="button" class="btn blue span12 confirmSubmit" id="receiveBtn"><i class="icon-save"></i> Save</button>
+                </div>
+            </div>
+            {{ form_end(form) }}
+            <!-- END FORM-->
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block cssBlock %}
+{% stylesheets filter='cssrewrite'
+    '@BusinessBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BusinessBundle/Resources/public/js/vendorStock.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $('input[name=particular]').focus();
+{% endblock %}
+

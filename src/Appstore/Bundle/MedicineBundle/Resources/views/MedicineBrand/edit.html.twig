@@ -1,0 +1,92 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage New Medicine: {{ entity.name }}/{{ entity.medicineGeneric.name }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">New Medicine</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage New Medicine</div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="portlet-body ">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="row-fluid">
+                                <!--/span-->
+                                <div class="span4">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Strength<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.strength) }}
+                                            {{ form_errors(form.strength) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Medicine Form<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.medicineForm) }}
+                                            {{ form_errors(form.medicineForm) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Pack Size</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.packSize) }}
+                                            {{ form_errors(form.packSize) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green" id="submitBtn" ><i class="icon-save"></i> Update Medicine</button>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                        <div class="clearfix"><br/></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/medicine.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}

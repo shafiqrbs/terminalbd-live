@@ -1,0 +1,15 @@
+<div class="row">
+    {% if globalOption.featureWidgets is defined and globalOption.featureWidgets is not empty %}
+        <section class="feature-widget-body-bottom" >
+            {% render controller("FrontendBundle:EcommerceWidget:featureTemplateWidget",{'globalOption':globalOption.id,'menu':menu.id,'position':'sidebar-top'}) %}
+        </section>
+    {% endif %}
+    <div class="clearfix"></div>
+    {% render controller("FrontendBundle:EcommerceWidget:sidebarTemplateProductFilter",{'globalOption':globalOption.id,'searchForm':searchForm}) %}
+    <div class="clearfix"></div>
+    {% if globalOption.featureWidgets is defined and globalOption.featureWidgets is not empty %}
+        <section class="feature-widget-body-bottom" >
+            {% render controller("FrontendBundle:EcommerceWidget:featureTemplateWidget",{'globalOption':globalOption.id,'menu':menu.id,'position':'sidebar-bottom'}) %}
+        </section>
+    {% endif %}
+</div>

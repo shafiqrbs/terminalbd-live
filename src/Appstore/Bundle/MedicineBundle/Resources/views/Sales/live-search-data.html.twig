@@ -1,0 +1,199 @@
+<style>
+    .table-responsive {
+        position: absolute;
+        background: #d9dde1;
+        z-index: 999;
+        border: 2px solid #0052cc;
+        padding-left: 7px;
+        padding-right: 7px;
+        width: 99%;
+    }
+    .row-fluid-header, .row-fluid-footer, .row-fluid-body{
+        font-size: 15px;
+        font-weight: bold;
+        line-height: 35px;
+    }
+
+    .row-fluid-header [class*="span"], .row-fluid-footer [class*="span"], .row-fluid-body [class*="span"]{
+        margin-left: 0px;
+    }
+    .row-fluid-body [class*="span"]{
+        margin-left: 0px;
+        line-height: 34px;
+    }
+    .row-fluid-header{
+        margin-bottom: 5px;
+    }
+    .row-fluid-footer{
+        margin-top: 5px;
+    }
+    .row-fluid-body{
+        margin-bottom:0;
+        padding-bottom: 0;
+        font-size: 13px;
+        line-height: 20px;
+    }
+    .row-fluid-body:nth-of-type(odd) {
+        background-color:#f4f4f4;
+    }
+
+    .row-fluid-body:nth-of-type(even) {
+        background-color:#fff;
+    }
+    .row-fluid-body [class*="span"] .input-prepend, .row-fluid-body [class*="span"] .input-append {
+        border: 0;
+        display: inline-block;
+        padding-bottom: 0;
+        margin-bottom: 0;
+        margin-top:3px;
+    }
+    .row-fluid-body [class*="span"] .input-prepend .input-group, .row-fluid-body [class*="span"] .input-append .input-group {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        height: 33px;
+    }
+    .row-fluid-body .sino{
+        float: left;
+        display: block;
+        width: 25px;
+        line-height: 25px;
+        padding-left: 5px;
+    }
+    .row-fluid-body .name{
+        line-height: 15px;
+        display: block;
+        padding-top:3px;
+        text-align: left;
+    }
+
+    .row-fluid-body span.brand-name{
+        font-weight: normal;
+        font-size: 13px;
+        color: #0b0b0b;
+        text-decoration: none!important;
+    }
+
+    .row-fluid-body label{
+        float: left;
+        width: 75px;
+    }
+
+    .custom-control-input {
+        position: absolute;
+        z-index: -1;
+        opacity: 0;
+    }
+    .custom-checkbox {
+        min-height: 1rem;
+        padding-left: 0;
+        margin-right: 0;
+        cursor: pointer;
+    }
+    .custom-checkbox .custom-control-indicator {
+        content: "";
+        display: inline-block;
+        position: relative;
+        width: 30px;
+        height: 10px;
+        background-color: #818181;
+        border-radius: 15px;
+        -webkit-transition: background .3s ease;
+        transition: background .3s ease;
+        vertical-align: middle;
+        margin: 0 16px;
+        box-shadow: none;
+    }
+    .custom-checkbox .custom-control-indicator:after {
+        content: "";
+        position: absolute;
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        background-color: #f1f1f1;
+        border-radius: 21px;
+        box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4);
+        left: -2px;
+        top: -4px;
+        -webkit-transition: left .3s ease, background .3s ease, box-shadow .1s ease;
+        transition: left .3s ease, background .3s ease, box-shadow .1s ease;
+    }
+    .custom-checkbox .custom-control-input:checked ~ .custom-control-indicator {
+        background-color:#0052cc;
+        background-image: none;
+        box-shadow: none !important;
+    }
+    .custom-checkbox .custom-control-input:checked ~ .custom-control-indicator:after {
+        background-color:#0052cc;
+        left: 15px;
+    }
+    .custom-checkbox .custom-control-input:focus ~ .custom-control-indicator {
+        box-shadow: none !important;
+    }
+
+</style>
+<div class="table-responsive">
+    <div class="row-fluid row-fluid-header">
+        <div class="span4 text-left">Item Name & Brand</div>
+        <div class="span1">Rack</div>
+        <div class="span1">PP</div>
+        <div class="span1">MRP</div>
+        <div class="span1">Stock</div>
+        <div class="span4"></div>
+    </div>
+
+    <div class="search-scroll">
+        {% for item in items %}
+        <div class="row-fluid row-fluid-body" >
+            <div class="span4">
+                <span class="sino">{{ loop.index }}.</span>
+                <a href="javascript:" data-id="{{ item.id }}" class="inlineAddItem">
+                <span class="name">{{ item.name }}<br/>
+                    <span class="brand-name">{{ item.brand }}</span>
+                </span>
+                </a>
+            </div>
+            <div class="span1">
+                {{ item.rack }}
+            </div>
+            <div class="span1">
+                {{ item.purchasePrice }}
+            </div>
+            <div class="span1">
+                {{ item.salesPrice }}
+            </div>
+            <div class="span1">
+                {{ item.remainQty }}
+            </div>
+            <div class="span4">
+                <div class="input-append">
+                    <div class="input-group">
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="isShort-{{ item.id }}" id="isShort-{{ item.id }}" value="1">
+                            <span class="custom-control-indicator"></span>
+                        </label>
+                        <input type="text" id="salesPrice-{{ item.id }}" name="salesPrice-{{ item.id }}" required="required" class="m-wrap span3 input" autocomplete="off" value="{{ item.salesPrice }}" placeholder="{{ item.salesPrice }}" aria-required="true">
+                        <input type="text" id="quantity-{{ item.id }}" name="quantity-{{ item.id }}" required="required" class="m-wrap span3 form-control input-number input" autocomplete="off" placeholder="quantity" aria-required="true" value="1">
+                        <button class="btn yellow">{{ item.unit }}</button>
+                        <select id="itemPercent-{{ item.id }}" name="itemPercent-{{ item.id }}" class="m-wrap span3 input select2">
+                            <option value="">-Disc(%)-</option>
+                            {% for percent in discountPercentLists %}
+                            <option value="{{ percent }}">{{ percent }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="hidden" class="btn blue" id="item-{{ item.id }}" value="{{ item.id }}">
+                        <button type="submit" class="btn blue addAjaxItem" data-action="{{ path('medicine_sales_temporary_item_ajax',{'id':item.id}) }}" data-id="{{ item.id }}" id="">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="row-fluid row-fluid-footer">
+        <div class="span4 text-left">Item Name & Brand</div>
+        <div class="span1">Rack</div>
+        <div class="span1">PP</div>
+        <div class="span1">MRP</div>
+        <div class="span1">Stock</div>
+        <div class="span4"></div>
+    </div>
+</div>

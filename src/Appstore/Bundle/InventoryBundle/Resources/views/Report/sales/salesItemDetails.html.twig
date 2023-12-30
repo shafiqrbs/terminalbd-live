@@ -1,0 +1,171 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                     Sales Item Details Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> Sales Item Details Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i> Sales Item Details Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn yellow" href="{{ path('inventory_report_sales_overview') }}"><i class="icon-bar-chart"></i>&nbsp;Sales Overview</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="item" name="item"  class="span12 m-wrap select2Item" value="{% if searchForm.item is defined %}{{ searchForm.item }}{% endif %}"  autocomplete="off" placeholder="Search product name">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="barcode" name="barcode"  class="span12 m-wrap" value="{% if searchForm.barcode is defined %}{{ searchForm.barcode }}{% endif %}"  autocomplete="off" placeholder="Enter barcode">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="serialNo" name="serialNo"  class="span12 m-wrap" value="{% if searchForm.serialNo is defined %}{{ searchForm.serialNo }}{% endif %}"  autocomplete="off" placeholder="Search serial no">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="vendor" name="vendor"  class="span12 m-wrap select2Vendor" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Search purchase vendor">
+                                    </div>
+                                </div>
+                                {% if inventory.globalOption.isBranch == 1 %}
+                                    <div class="clearfix"><br/></div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <select name="branch" id="branch" class="span12 m-wrap">
+                                                <option value=""> ---Select Branch --- </option>
+                                                {% for bran in branches %}
+                                                    <option {% if searchForm.branch is defined and searchForm.branch == bran.id %} selected="selected" {% endif %} value="{{ bran.id }}">{{ bran.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="clearfix"><br/></div>
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="customer" name="customer"  class="span12 m-wrap select2Customer" value="{% if searchForm.customer is defined %}{{ searchForm.customer }}{% endif %}"  autocomplete="off" placeholder="Enter customer mobile no ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="customer" name="customer"  class="span12 m-wrap select2CustomerName" value="{% if searchForm.customer is defined %}{{ searchForm.customer }}{% endif %}"  autocomplete="off" placeholder="Enter customer name ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="toUser" name="toUser"  class="span12 m-wrap select2User" value="{% if searchForm.toUser is defined %}{{ searchForm.toUser }}{% endif %}"  autocomplete="off" placeholder="Enter sales user">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="startDate" name="startDate"  class="span6 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                                <input type="text" id="endDate" name="endDate"  class="span6 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric" ><i class="icon-reorder"></i> Created</th>
+                                <th class="numeric" >Invoice</th>
+                                <th class="numeric" >Customer</th>
+                                <th class="numeric" >Barcode</th>
+                                <th class="numeric" >SerialNo</th>
+                                <th class="numeric" >Assurance</th>
+                                <th class="numeric" >Expiry</th>
+                                <th class="numeric" >Vendor/GRN</th>
+                                <th class="numeric" >Vendor Expiry</th>
+                                <th class="numeric" >Qnt</th>
+                                <th class="numeric" >Price</th>
+                                <th class="numeric" >Sub-Total</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for entity in entities %}
+                                <tr {% if entity.purchaseExpiredDate is not empty and entity.purchaseExpiredDate|date('Y-m-d') > entity.salesCreated|date('Y-m-d') %} class="min-qnt" aria-disabled="true" {% endif %}>
+                                    <td class="numeric" >{{ entity.salesCreated|date('d-m-y') }}</td>
+                                    <td class="numeric" >{{ entity.salesInvoice }}</td>
+                                    <td class="numeric" >{{ entity.customerName }}</td>
+                                    <td class="numeric" >{{ entity.barcode }}</td>
+                                    <td class="numeric" >{{ entity.serialNo }}</td>
+                                    <td class="numeric" >{{ entity.assuranceType }} </td>
+                                    <td class="numeric" >
+                                        {% if entity.assuranceToCustomer is not empty %}
+                                            <span class="btn red mini">{{ entity.assuranceToCustomer }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="numeric" >{{ entity.vendorCode }}/{{ entity.purchaseGrn }}</td>
+                                    <td class="numeric" >
+                                        {% if entity.purchaseExpiredDate is not empty %}
+                                            {{ entity.purchaseExpiredDate|date('d-m-Y') }} /
+                                            <span class="btn yellow mini">{{ date(entity.purchaseExpiredDate|date).diff(date("now")).days }} Days</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="numeric" >{{ entity.quantity }}</td>
+                                    <td class="numeric" >{{ entity.salesPrice|number_format }}</td>
+                                    <td class="numeric" >{{ (entity.quantity * entity.salesPrice)|number_format }}</td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                        <div class="pagination pull-center"  >
+                            {{ knp_pagination_render(entities) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .disabled{
+            opacity: 0.5;
+        }
+        .table-bordered tr.min-qnt td{
+            background-color: #bbbb038f!important;
+        }
+    </style>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}
+

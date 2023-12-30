@@ -1,0 +1,101 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Purchase Excel import Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_excelimproter') }}">Purchase Excel import</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Purchase Excel importer Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Purchase Excel import Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('inventory_excelimproter_new') }}"><i class="icon-plus-sign"></i> Create</a>
+                                <a class="btn" href="{{ path('inventory_excelimproter') }}"><i class="icon-th-list"></i> Sales</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Created By</th>
+                                    <th class="numeric" >Name </th>
+                                    <th class="numeric" >Mode </th>
+                                    <th class="numeric" >File</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="numeric" ></td>
+                                    <td class="numeric" >System</td>
+                                    <td class="numeric" >Sample File No Change Header Label</td>
+                                    <td class="numeric" ><a target="_blank" href="{{ asset('uploads/setting/sample/purchase-import-sample.xls') }}">Download File</a> </td>
+                                    <td class="numeric" >Purchase Import</td>
+                                </tr>
+                                {% for entity in entities %}
+                                    <tr>
+
+                                        <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.createdBy }}</td>
+                                        <td class="numeric" ><a href="{{ path('inventory_excelimproter_edit',{'id': entity.id })}}">{{ entity.name }}</a></td>
+                                        <td class="numeric" >{{ entity.mode }}</td>
+                                        <td class="numeric" ><a href="/{{ entity.webPath }}">Download File</a> </td>
+                                        <td class="numeric" >
+                                             {% if entity.progress != 'invalid'  %}
+                                                <a title="" href="{{ path('inventory_excelimproter_migration', { 'id': entity.id }) }}" class="btn blue mini" ><i class="icon-upload-alt">&nbsp;Import Purchase</i></a>
+                                            {% endif %}
+                                                <a  href="{{ path('inventory_excelimproter_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                            {% if entity.progress == 'migrated' and entity.mode == 'purchase'   %}
+                                                <a title="" target="_blank" href="{{ path('purchase') }}" class="btn green mini" ><i class="icon-ok-circle">&nbsp;Purchase Approve</i></a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+

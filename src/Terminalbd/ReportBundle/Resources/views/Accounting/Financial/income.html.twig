@@ -1,0 +1,46 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 print-bar">
+            <form name="searchForm" id="searchForm" action="{{ ajaxPath }}" method="post">
+                <div class="row">
+                    <div class="col-md-5 margin-top"></div>
+                    <div class="col-md-3 margin-top">
+                        <label>Start Date</label>
+                        <input type="date" class="m-wrap" id="startDate" name="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>End Date</label>
+                        <input type="date" class="m-wrap" id="endDate" name="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-1 margin-top">
+                        <label>&nbsp;</label>
+                        <div class="col-md-1 margin-top">
+                            <label>&nbsp;</label>
+                            <button type="button" class='btn btn-download btn-margin-left ajax-btn' value="search" name="submit" ><i class='fa fa-search'></i> Search</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="loader loader-double" ></div>
+    <div id="print-area">
+        <div class="row print-header">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size:18px">{{ option.name }}</strong></p>
+                <p><strong>Name of Report: Income Report Date Range</strong></p>
+            </div>
+            <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table" id="data-load">
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

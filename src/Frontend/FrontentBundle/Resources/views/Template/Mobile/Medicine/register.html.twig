@@ -1,0 +1,86 @@
+{% extends ':frontend/template/mobile:ecommerce-base.html.twig' %}
+{% block body %}
+
+<div class="bannerPane bannerPane-webbuilder"  {% if details.webPath() is defined and details.webPath() is not empty %} style="background-repeat:no-repeat!important; background-position:center center!important;background:url('{{ image(details.webPath()).resize() }}')" {% endif %} >
+    <div class="overlay"></div>
+    <div class="s-banner-content">
+        <div><img width="100" src="{{ image(globalOption.templateCustomize.webPath('logo')).resize() }}" /></div>
+       Register Form
+    </div>
+</div>
+<div id="content" class="content-margin">
+    {{ form_start(form) }}
+    {{ form_row(form._token) }}
+    <div>
+        <label for="" class="required">Name</label>
+        {{ form_errors(form.profile.name) }}
+        <p><span class="fa-icon"><i class="fa  fa-user"></i></span>
+            {{ form_widget(form.profile.name) }}
+        </p>
+    </div>
+    <div>
+        <label for="" class="required">Mobile</label>
+        {{ form_errors(form.profile.mobile) }}
+        <p><span class="fa-icon"><i class="fa  fa-mobile-phone"></i></span>
+            {{ form_widget(form.profile.mobile) }}<span id="checking"></span>
+        </p>
+    </div>
+    {#<div>
+        <label for="" class="required">User name</label>
+         {{ form_errors(form.username) }}
+        <p><span class="fa-icon"><i class="fa fa-user-secret"></i></span>
+            {{ form_widget(form.username) }}
+        </p>
+    </div>
+    <div>
+         <label for="" class="required">Password</label>
+          {{ form_errors(form.plainPassword.first) }}
+        <p><span class="fa-icon"><i class="fa fa-lock"></i></span>
+             {{ form_widget(form.plainPassword.first,{ 'attr': {'class': '', 'placeholder': 'Enter your password minimum 4 digit', 'id': '' }}) }}
+        </p>
+    </div>
+     <div>
+         <label for="" class="required">Repeat Password</label>
+          {{ form_errors(form.plainPassword.second) }}
+        <p><span class="fa-icon"><i class="fa fa-lock"></i></span>
+             {{ form_widget(form.plainPassword.second,{ 'attr': {'class': '', 'placeholder': 'Enter your repeat password', 'id': '' }}) }}
+        </p>
+    </div>#}
+    <div>
+         <label for="" class="required">Email</label>
+        {{ form_errors(form.email) }}
+        <p><span class="fa-icon"><i class="fa fa-envelope"></i></span>
+            {{ form_widget(form.email) }}
+        </p>
+    </div>
+    <div>
+         <label for="" class="required">Location</label>
+        {{ form_errors(form.profile.location) }}
+        <p>{{ form_widget(form.profile.location) }}</p>
+    </div>
+     <div>
+         <label for="" class="required">Address</label>
+        {{ form_errors(form.profile.address) }}
+        <p><span class="fa-icon"><i class="fa fa-home"></i></span>
+            {{ form_widget(form.profile.address) }}
+        </p>
+    </div>
+    <div>
+        <label for="" class="required">Additional Phone</label>
+        {{ form_errors(form.profile.additionalPhone) }}
+        <p><span class="fa-icon"><i class="fa fa-phone"></i></span>
+            {{ form_widget(form.profile.additionalPhone) }}
+        </p>
+    </div>
+    <div>
+    {{ form_errors(form.profile.termsConditionAccept) }}
+    <p class="checkbox">
+    {{ form_widget(form.profile.termsConditionAccept) }}
+    <span style="line-height: 32px">&nbsp;I agree to &nbsp;<a target="_blank"  href="{{ path('bindu_page_content',{'slug':'terms-of-service'}) }}">Terms</a>&nbsp;&&nbsp;<a target="_blank" id="PrivacyLink" href="{{ path('bindu_page_content',{'slug':'privacy-policy'}) }}">Privacy</a></span>
+    </p>
+    </div>
+     <div><p class="form-suphobmit" style="text-align:center"><input id="signup" class="btn blue" type="submit" value="REGISTER" name="submit"></p></div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
+

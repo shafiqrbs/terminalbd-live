@@ -1,0 +1,105 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Sales Android
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Sales Android</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box blue">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Sales Android</div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="loader loader-double" ></div>
+                    <div class="clearfix">&nbsp;</div>
+                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                        <thead class="flip-content ">
+                        <tr class="head-green">
+                            <th>Created</th>
+                            <th>Time</th>
+                            <th>Total Invoice</th>
+                            <th>Sub-Total</th>
+                            <th>Discount</th>
+                            <th>Total</th>
+                            <th>Receive</th>
+                            <th>Due</th>
+                            <th>Device</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        {% for entity in entities %}
+                            <tr>
+                                <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                <td class="numeric" >{{ entity.created|date('h:i A') }}</td>
+                                <td class="numeric" >{{ entity.itemCount|number_format }}</td>
+                                <td class="numeric" >{% if sales[entity.id] is defined and sales[entity.id] is not empty %}{{ sales[entity.id].subTotal|number_format }}{% endif %}</td>
+                                <td class="numeric" >{% if sales[entity.id] is defined and sales[entity.id] is not empty %}{{ sales[entity.id].discount|number_format }}{% endif %}</td>
+                                <td class="numeric" >{% if sales[entity.id] is defined and sales[entity.id] is not empty %}{{ sales[entity.id].total|number_format }}{% endif %}</td>
+                                <td class="numeric" >{% if sales[entity.id] is defined and sales[entity.id] is not empty %}{{ sales[entity.id].salesReceive|number_format }}{% endif %}</td>
+                                <td class="numeric" >{% if sales[entity.id] is defined and sales[entity.id] is not empty %}{{ (sales[entity.id].total-sales[entity.id].salesReceive)|number_format }}{% endif %}</td>
+                                <td class="numeric" >{{ entity.device }}</td>
+                                <td class="numeric" >{% if entity.status == 1 %}<span class="btn mini purple">Success</span>{% else %}<span class="btn mini red">Waiting</span>{% endif %}</td>
+                                 <td class="numeric" >
+                                     {% if entity.status == 1 %}
+                                         <a  id="{{ entity.id }}" data-id="{{ entity.id }}"  href="{{ path('inventory_sales',{'device':entity.id}) }}" class="btn blue mini" ><i class="icon-eye-open"></i> View</a>
+                                    {% else %}
+                                        <a  id="{{ entity.id }}" data-id="{{ entity.id }}" data-url="{{ path('android_inventory_process',{'android':entity.id}) }}" href="javascript:" class="btn green mini androidProcess" ><i class="icon-retweet"></i> Process</a>
+                                     {% endif %}
+                                     {% if (app.user.granted("ROLE_DOMAIN")) %}
+                                     <a  id="{{ entity.id }}" data-id="{{ entity.id }}"  href="{{ path('android_inventory_sales_duplicate_delete',{'android':entity.id}) }}" class="btn red mini" ><i class="icon-trash"></i> Remove</a>
+                                     {% endif %}
+                                 </td>
+                            </tr>
+                        {% endfor %}
+
+                    </table>
+                        <div class="pagination pull-center" >
+                            {{ knp_pagination_render(entities) }}
+                        </div>
+                    <div class="clearfix">&nbsp;</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}
+
+
+
+
+

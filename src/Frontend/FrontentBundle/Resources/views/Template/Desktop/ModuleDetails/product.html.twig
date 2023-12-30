@@ -1,0 +1,192 @@
+{% set commentID = globalOption.id~'-'~menu.module.slug~'-'~page.id %}
+<div class="page-title-bar">
+    <div class="col-md-12">
+        <div class="btn-group pull-left">
+            <div class="page-title"><span class="glyphicon glyphicon-bookmark"></span>&nbsp;{{ page.name }}</div>
+        </div>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div id="catlist">
+    <dl class="entity-list">
+        <dd><span><i class="fa fa-tags"></i>
+                {% for cat in page.moduleCategory %}
+                    <a href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'module':'porduct' ,'slug':cat.slug }) }}">{{ cat.name }}</a>{% if not loop.last %},{% endif %}
+                {% endfor %}
+            </span>
+        </dd>
+    </dl>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-8">
+        {% if page.photoGallery is not empty %}
+            <div class="carousel-container">
+                <div id="carousel" class="carousel slide carousel-fade" style="width: 100%" >
+                    <div class="carousel-inner">
+                        {% if page.webPath is not empty %}
+                            <div class="carousel-item item active" data-slide-no="0">
+                                <img class="img-responsive"   src="{{ image(page.webPath).scaleResize(1024,512,'#000000') }}" alt="{{ page.name }}" />
+                                <div class="carousel-caption " >
+                                    <h4>{{ page.name }}</h4>
+                                    <p>{{ page.content|truncate(150)|raw }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% for slide in page.photoGallery.galleryImages %}
+                            <div  class="carousel-item item " data-slide-no="{{ loop.index }}" >
+                                <img class="img-responsive" src="{{ image(slide.getAbsolutePath(page.globalOption.id,page.photoGallery.id)).scaleResize(1024,512,'#000000') }}" alt="...">
+                                <div class="carousel-caption " >
+                                    {% if slide.caption is not empty %}<h4>{{ slide.caption }}{% endif %}</h4>
+                                    {% if slide.description is not empty %}<p>{{ slide.description|raw }}</p>{% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <!-- Navigation -->
+                    <a class="carousel-post-control left" href="#carousel" data-slide="prev">‹</a>
+                    <a class="carousel-post-control right" href="#carousel" data-slide="next">›</a>
+                </div>
+            </div>
+        {% elseif page.webPath is not empty %}
+            <img class="img-responsive"  src="{{ image(page.webPath).forceResize(640,359) }}" alt="{{ page.name }}" />
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+        <h4><strong>Description</strong></h4>
+        {% if page.content is not empty %}<p>{{ page.content|raw }}</p> <hr>{% endif %}
+        {% if page.price is not empty and page.price > 0 %}
+            <div class="row meta-label"><div class="col-xs-12 col-md-12">Price: {% if page.pricePrefix is not empty %}{{ page.pricePrefix.currency }}. {% endif %}<strong>{{ page.price }}</strong></div></div>
+        {% endif %}
+        {% if page.skuCode is not empty %}
+        <div class="row meta-label"><div class="col-xs-12 col-md-12">SKU: {{ page.skuCode }}</div></div>
+        {% endif %}
+        <hr>
+        {% if  page.pageMetas is defined and page.pageMetas is not empty %}
+            {% for meta in page.pageMetas %}
+                {% if meta.metaKey is not empty and meta.metaValue is empty %}
+                    <div class="row meta-label"><div class="col-xs-12 col-md-12">{{ meta.metaKey|capitalize }}</div></div>
+                {% elseif meta.metaKey is empty and meta.metaValue is not empty %}
+                    <div class="row meta-value"><div class="col-xs-12 col-md-12">{{ meta.metaValue }}</div></div>
+                {% else %}
+                    <div class="row meta-key-value"><div class="col-xs-4 col-md-4">{{ meta.metaKey }}<span class="meta-key-clone">:</span></div><div class="col-xs-8 col-md-8 ">{{ meta.metaValue  }}</div></div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="" >
+    <ul class="mbm_social" style="margin-top: 8px">
+        <li><a class="social-facebook" target="_blank" href="https://www.facebook.com/share.php?u={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}&picture={{ app.request.getSchemeAndHttpHost() }}/{{ page.webPath }}&title={{ page.name }}&description={{ page.content|striptags|truncate(250)|raw }}">
+                <i class="fa fa-facebook"></i>
+                <div class="tooltip"><span>facebook</span></div>
+            </a>
+        </li>
+        <li><a class="social-google-plus" target="_blank" href="//plus.google.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                <i class="fa fa-google-plus"></i>
+                <div class="tooltip"><span>Google</span></div>
+            </a>
+        </li>
+        <li><a class="social-twitter" target="_blank" href="//twitter.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                <i class="fa fa-twitter"></i>
+                <div class="tooltip"><span>Twitter</span></div>
+            </a>
+        </li>
+        <li><a class="social-instagram" target="_blank" href="//instagram.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                <i class="fa  fa-instagram"></i>
+                <div class="tooltip"><span>Instagram</span></div>
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div>{{ page.content|raw }}</div>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="page-title-bar">
+    <div class="btn-group pull-left">
+        <div class="page-title"><i class="fa fa-tags"></i>&nbsp;{{ page.moduleCategory[0].name }}</div>
+    </div>
+</div>
+<div class="clearfix"><br/></div>
+<div class="row">
+    <div id="categories-list" class="list-group">
+    {% for entity in page.moduleCategory[0].pages|slice(0,4) %}
+        <div  class="item  {% if globalOption.templateCustomize.showSidebar == 1 and globalOption.featureWidgets is empty  %} col-md-4 col-xs-4 col-lg-4 {% else %}  col-md-3 col-xs-3 col-lg-3 {% endif %}">
+            <div class="thumbnail" data-match-height="medium-list">
+                <img class="group list-group-image" style="max-height: 250px; min-height: 250px"  src="{{ image(entity.webPath).forceResize(400,250) }}" alt="" />
+                <div class="caption">
+                    <h4 class="group inner list-group-item-heading">{{ entity.name }}</h4>
+                    <p class="group inner list-group-item-text">{{ entity.content|striptags|raw|truncate(150) }}</p>
+                    <p class="group inner list-group-item-text"> {% if entity.moduleCategory is not empty %}
+                            {% for cat in entity.moduleCategory  %}
+                                <a class="" href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'module': entity.module.slug,'slug':cat.slug }) }}"> {{ cat.name }}</a>
+                                {% if not loop.last %},{% endif %}
+                            {% endfor %}
+                        {% endif %}</p>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-8">
+                            {% if entity.price is not empty and entity.price > 0 %}
+                               {% if entity.pricePrefix is not empty %}{{ entity.pricePrefix.currency }}. {% endif %}<strong>{{ entity.price }}</strong>
+                            {% endif %}
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <a class="btn btn-warning" href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': entity.module.slug,'slug':entity.slug }) }}">Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+
+<div class="clearfix"></div>
+{#<div class="bhoechie-tab-content">
+    <div class="clearfix"></div>
+    {% include 'FOSCommentBundle:Thread:async.html.twig' with {'id': commentID } %}
+    <div class="clearfix"></div>
+</div>#}
+<div class="clearfix"></div>
+
+<style>
+
+    .meta-caption{
+        background-color: #E5E7E7;
+        height: 35px;
+        line-height: 35px;
+        font-size: 16px;
+        color: #000;
+        margin-bottom: 15px;
+    }
+    .meta-label{
+        background-color: #EEF0F0;
+        height: 30px;
+        line-height: 30px;
+        font-size: 16px;
+        color: #000;
+        text-transform: capitalize!important;
+    }
+    .meta-value{
+        padding-bottom: 5px;
+        padding-top: 5px;
+    }
+    .meta-key-clone{
+        float: right;
+        font-weight: bold;
+    }
+    .meta-key-value{
+        padding-bottom: 5px;
+        padding-top: 5px;
+    }
+    .meta-key-value:nth-of-type(even){
+        background-color: #F6F7F7;
+    }
+    .meta-key-value:nth-of-type(odd){
+        background-color: #F9FAFA;
+    }
+</style>

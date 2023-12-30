@@ -1,0 +1,320 @@
+    {% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN item HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="item-title">
+                    Form Details
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('item') }}">Item SKU</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Item Details</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END item HEADER-->
+        <!-- BEGIN item CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Item Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('item') }}"><i class="icon-th-list"></i>&nbsp; Stock</a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+                        <!--/span-->
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid" >
+                            <!--/span-->
+                            <div class="span8">
+                                <div class="row-fluid">
+                                    {#<div class="row-fluid">
+                                        <div class="span9">
+                                            <div class="control-group">
+                                                <label class="control-label" for="">Item Group</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.itemGroup) }}
+                                                    {{ form_errors(form.itemGroup) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>#}
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Category Name<span class="required">*</span></label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.category) }}
+                                                    {{ form_errors(form.category) }}
+                                                    <datalist id="categories" >
+                                                        {% if categories is not empty %}
+                                                            {% for item in categories %}
+                                                                <option data-value="{{ item.name }}" value="{{ item.name }}">{{ item.name }}</option>
+                                                            {% endfor %}
+                                                         {% endif %}
+                                                    </datalist>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Item Name<span class="required">*</span></label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.name) }}
+                                                    {{ form_errors(form.name) }}
+                                                    <datalist id="masterItem" >
+                                                        {% if items is not empty %}
+                                                        {% for item in items %}
+                                                        <option value="{{ item.name }}">
+                                                            {% endfor %}
+                                                            {% endif %}
+                                                    </datalist>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Item Name(Bangla)</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.nameBn) }}
+                                                    {{ form_errors(form.nameBn) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if inventory.isModel == 1  %}
+                                        <div class="row-fluid">
+                                            <div class="span9">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName">Model Name <span class="required">*</span></label>
+                                                    <div class="controls">
+                                                        {{ form_widget(form.model) }}
+                                                        {{ form_errors(form.model) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="row-fluid">
+                                        {% if inventory.usingBarcode == "item" %}
+                                            <div class="span6">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName">Barcode</label>
+                                                    <div class="controls">
+                                                        {{ form_widget(form.barcode) }}
+                                                        {{ form_errors(form.barcode) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+
+                                    </div>
+
+                                    {% if inventory.isBrand == 1  %}
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName">Brand Name<span class="required">*</span></label>
+                                                    <div class="controls">
+                                                        {{ form_widget(form.brand) }}
+                                                        {{ form_errors(form.brand) }}
+                                                        <datalist id="brands" >
+                                                            {% if brands is not empty %}
+                                                                {% for item in brands %}
+                                                                    <option value="{{ item.name }}">
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        </datalist>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    {% if inventory.isVendor == 1  %}
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName">Vendor Name<span class="required">*</span></label>
+                                                    <div class="controls">
+                                                        {{ form_widget(form.vendor) }}
+                                                        {{ form_errors(form.vendor) }}
+                                                        <datalist id="vendors" >
+                                                            {% if brands is not empty %}
+                                                                {% for item in vendors %}
+                                                                    <option value="{{ item.name }}">
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        </datalist>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="row-fluid">
+                                        <div class="span6">
+                                            <div class="control-group">
+                                                <label class="control-label" for="">Item Unit</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.itemUnit) }}
+                                                    {{ form_errors(form.itemUnit) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span6">
+                                            <div class="control-group">
+                                                <label class="control-label" for="">Purchase Price</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.purchasePrice) }}
+                                                    {{ form_errors(form.purchasePrice) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span6">
+                                            <div class="control-group">
+                                                <label class="control-label" for="">Sales Price</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.salesPrice) }}
+                                                    {{ form_errors(form.salesPrice) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                {% if inventory.isSize == 1  %}
+                                    <div class="row-fluid">
+                                        <div class="span9">
+                                            <div class="control-group">
+                                                <label class="control-label" for="">Size/Weight<span class="required">*</span></label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.size) }}
+                                                    {{ form_errors(form.size) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% if inventory.isColor ==1  %}
+                                    <div class="row-fluid">
+                                        <div class="span9">
+                                            <div class="control-group">
+                                                <label class="control-label" for="">Color<span class="required">*</span></label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.color) }}
+                                                    {{ form_errors(form.color) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                            </div>
+                           {# <div class="span4">
+                                <div class="row-fluid">
+                                    <div class="control-group">
+                                        <div class="">
+                                            <p><strong>Feature Image</strong></p>
+                                            <div data-provides="fileupload" class="fileupload fileupload-new">
+                                                <div  class="fileupload-new thumbnail">
+                                                    {% if(entity.webPath) %}
+                                                        <img class="fileupload-preview fileupload-exists" alt="" src="{{ image(entity.webPath).resize(250,150) }}">
+                                                    {% else %}
+                                                        <img alt="" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
+                                                    {% endif %}
+                                                </div>
+                                                <div  class="fileupload-preview fileupload-exists thumbnail"></div>
+                                                <div>
+                                            <span class="btn btn-file">
+                                                <span class="fileupload-new">Select image</span>
+                                                <span class="fileupload-exists">Change</span>
+                                                {{ form_widget(form.file) }}
+                                                {{ form_errors(form.file) }}
+                                            </span>
+                                                    <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>#}
+                        </div>
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-right">
+                                <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                <a href="{{ path('item_new') }}" class="btn purple"><i class="icon-refresh"></i> Reset</a>
+                                {% if(entity.id > 0 ) %}
+                                    <a href="{{ path('item_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                        <!-- END FORM-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/item.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $("#item_model").on("keydown change", function(e) {
+        var mrp = $(this).val();
+        $('#item_barcode').val(mrp);
+    });
+    $("#item_model").on("keydown change", function(e) {
+        var mrp = $(this).val();
+        $('#item_barcode').val(mrp);
+    });
+    $("input").keydown(function(){
+        $("input").css("background-color", "#f5f5f5");
+    });
+    $("input").keyup(function(){
+        $("input").css("background-color", "#e6e6e6");
+    });
+    InventoryItemEditPage({{ entity.id ? entity.id : 0 }});
+{% endblock %}

@@ -1,0 +1,235 @@
+dps_invoice:
+    path:     /
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:index" }
+
+dps_invoice_show:
+    path:     /{id}/show
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:show" }
+
+dps_invoice_new:
+    path:     /new
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:new" }
+    options:
+            expose: true
+
+dps_invoice_create:
+    path:     /create
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:create" }
+    methods:  POST
+
+dps_invoice_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:edit" }
+
+dps_invoice_particular_procedure:
+    path:     /{invoice}/{service}/particular-procedure
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:particularProcedure" }
+    methods:  POST
+    options:
+            expose: true
+
+dps_invoice_treatment_search:
+    path:     /{id}/treatment-search
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:treatmentParticularSearch" }
+
+dps_invoice_treatment_add:
+    path:     /{invoice}/add-treatment-particular
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:treatmentParticularAdd" }
+    methods:  POST
+    options:
+            expose: true
+
+
+dps_invoice_treatment_payment:
+    path:     /{id}/invoice-treatment-payment
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:treatmentPayment" }
+    methods:  POST
+    options:
+            expose: true
+
+dps_invoice_treatment_delete:
+    path:     /{invoice}/{id}/treatment-delete
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:treatmentDelete" }
+
+dps_invoice_appointment_datetime_check:
+    path:     /treatment-appointment-datetime-check
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:treatmentAppointmentDatetime" }
+    methods:  POST
+    options:
+            expose: true
+
+dps_invoice_appointment_datetime_select:
+    path:     /inline-appointment-datetime-select
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:appointmentTime" }
+    options:
+           expose: true
+
+dps_invoice_medicine_add:
+    path:     /{invoice}/medicine-add
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:addMedicine" }
+    methods:  POST
+    options:
+            expose: true
+
+dps_invoice_medicine_delete:
+    path:     /{id}/medicine-delete
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:deleteMedicine" }
+
+dps_invoice_prescription_preview:
+    path:     /{id}/prescription-preview
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:invoicePrintPreview" }
+
+
+
+dps_invoice_accessories_add:
+    path:     /{invoice}/accessories-add
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:addAccessories" }
+    methods:  POST
+    options:
+            expose: true
+
+dps_invoice_accessories_delete:
+    path:     /{id}/accessories-delete
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:deleteAccessories" }
+
+dps_invoice_accessories_approved:
+    path:     /{id}/accessories-approved
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:approvedAccessories" }
+
+
+dps_invoice_approved:
+    path:     /{id}/invoice-approved
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:approve" }
+    methods:  POST
+    options:
+            expose: true
+
+dps_invoice_update:
+    path:     /{id}/update
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:update" }
+    methods:  [POST, PUT]
+
+dps_invoice_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:delete" }
+
+dps_invoice_reverse_show:
+    path:     /{id}/invoice-reverse-show
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:InvoiceReverseShow" }
+
+
+dps_invoice_confirm:
+    path:     /{id}/invoice-confirm
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:confirm" }
+
+dps_invoice_particular_delete:
+    path:     /{invoice}/{id}/particular-delete
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:invoiceParticularDelete" }
+
+dps_invoice_print_invoice:
+    path:     /{id}/print
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:invoicePrint" }
+
+dps_prescription_preview:
+    path:     /{invoice}/print-preview
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:invoicePrintPreview" }
+
+dps_invoice_patient_load:
+    path:     /{id}/patient-load
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:patientLoad" }
+
+dps_invoice_process_update:
+    path:     /hms-invoice/upadte-process
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:invoiceProcessUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+dps_invoice_status_select:
+    path:     /invoice-status-select
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:statusSelect" }
+    options:
+           expose: true
+
+dps_invoice_empty_delete:
+    path:     /delete/empty-invoice
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:deleteEmptyInvoice" }
+
+dps_invoice_customer_details:
+    path:     /invoice-patient-details
+    defaults: { _controller: "DomainUserBundle:CustomerHms:details" }
+    methods:  POST
+    options:
+           expose: true
+
+dps_invoice_add_patient:
+    path:     /{id}/invoice-patient-add
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:addPatient" }
+    methods:  [POST, PUT]
+    options:
+            expose: true
+
+dps_treatment_inline_update:
+    path:     /inline-update
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:inlineUpdate" }
+
+
+dps_invoice_procedure_search:
+    path:     /procedure-search
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:procedureSearch" }
+    options:
+            expose: true
+
+dps_invoice_procedure_diseases_search:
+    path:     /procedure-diseases-search
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:procedureDiseasesSearch" }
+    options:
+            expose: true
+
+dps_invoice_auto_particular_search:
+    path:     /auto-particular-search
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:autoParticularSearch" }
+    options:
+            expose: true
+
+dps_invoice_investigation_search:
+    path:     /auto-investigation-search
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:autoInvestigationSearch" }
+    options:
+            expose: true
+
+dps_invoice_investigation_procedure:
+    path:     /{invoice}/investigation-file-procedure
+    defaults: { _controller: "DoctorPrescriptionBundle:Invoice:investigationProcedure" }
+    methods:  POST
+    options:
+           expose: true
+
+dps_treatment_plan:
+    path:     /treatment-plan
+    defaults: { _controller: "DoctorPrescriptionBundle:TreatmentPlan:index" }
+
+dps_treatment_appointment_schedule:
+    path:     /treatment-appointment-date
+    defaults: { _controller: "DoctorPrescriptionBundle:TreatmentPlan:appointmentDateSchedule" }
+    methods:  POST
+    options:
+           expose: true
+
+dps_invoice_appointment_schedule_time:
+    path:     /treatment-appointment-free-time
+    defaults: { _controller: "DoctorPrescriptionBundle:TreatmentPlan:appointmentFreeTimeSchedule" }
+    options:
+           expose: true
+
+dps_treatment_date_wise_schedule:
+    path:     /treatment-appointment-date-wise-schedule
+    defaults: { _controller: "DoctorPrescriptionBundle:TreatmentPlan:dateWiseSchedule" }
+    methods:  POST
+    options:
+           expose: true
+
+dps_treatment_plan_sms:
+    path:     /{patient}/{id}/send-sms
+    defaults: { _controller: "DoctorPrescriptionBundle:TreatmentPlan:sendSmsPlan" }
+

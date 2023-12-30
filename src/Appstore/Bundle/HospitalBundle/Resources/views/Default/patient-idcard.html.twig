@@ -1,0 +1,52 @@
+{% extends '::print-patient.html.twig' %}
+{% block body %}
+    <div style="width: 420px; margin: 0 auto">
+        <table class="table table-border" >
+            {% if hospital.globalOption.templateCustomize.webPath('logo') is not empty and hospital.invoicePrintLogo == 1 %}
+            <tr>
+                <td colspan="2">
+                     <img style="max-width: 180px; max-height: 60px" src="/{{ hospital.globalOption.templateCustomize.webPath('logo') }}">
+                </td>
+            </tr>
+            {% endif %}
+            <tr class="print-header">
+                <th colspan="2">
+                    <strong class="title">{{ entity.name }}</strong>
+                    <span class="barcode" style="margin-top: 8px">{{ barcode|raw }}</span>
+                </th>
+            </tr>
+            <thead class="flip-content ">
+            </thead>
+            <tr>
+                <td>
+                    <ul class="unstyled">
+                        {% if entity is not empty %}<li><strong>Contact No:</strong>&nbsp;{{ entity.mobile }}</li>{% endif %}
+                        {% if entity is not empty %}<li><strong>Gender:</strong>&nbsp;{{ entity.gender }}</li>{% endif %}
+                        {% if entity is not empty %}<li><strong>Age:</strong>&nbsp;{{ entity.age }}-{{ entity.ageType }}</li>{% endif %}
+                    </ul>
+                </td>
+                <td>
+                    <ul class="unstyled">
+                        <ul class="unstyled">
+                            {% if entity is not empty %}<li><strong>Date of Birth:</strong>{%  if entity.dob is not empty %}&nbsp;{{ entity.dob|date('d-m-Y') }}{% endif %}</li>{% endif %}
+                            {% if entity is not empty %}<li><strong>Blood Group:</strong>&nbsp;{{ entity.bloodGroup }}</li>{% endif %}
+                            {% if entity is not empty %}<li><strong>Address</strong>&nbsp;{{ entity.address|raw }}</li>{% endif %}
+                        </ul>
+                    </ul>
+                </td>
+            </tr>
+            <tr><td colspan="2" style="text-align: center">
+                        {% if entity is not empty %}<strong>Registration Date: {{ entity.created|date('d-m-Y') }}</strong>{% endif %}
+                    </td>
+            </tr>
+            <tr><td colspan="2" style="text-align: center;
+    background: #0bc52a;
+    color: #ffffff;
+    font-size: 15px;
+    height: 32px;
+    vertical-align: middle;"><strong>{{ hospital.globalOption.name }}</strong></td></tr>
+            <tr><td colspan="2" style="text-align: center;
+    font-size: 10px;">{{ hospital.address|raw }}{% if hospital.globalOption.hotline %}<br/>Contact No. <strong>+88 {{ hospital.globalOption.hotline }}</strong>{% endif %}</td></tr>
+        </table>
+    </div>
+{% endblock %}

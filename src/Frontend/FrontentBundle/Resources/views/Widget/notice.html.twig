@@ -1,0 +1,11 @@
+<ul>
+    {% for notice in notices %}
+        <li>
+            <h4><a href="{{ path('frontend_subdomain_module_content',{'subdomain':notice.user.globalOption.slug|default(''),'module':'noticeboard','slug':notice.slug|default('')}) }}">
+                    {{ notice.name }}
+                </a></h4>
+            <i>{{ notice.created|date('F j, Y') }}</i>
+        </li>
+    {% endfor  %}
+
+</ul>

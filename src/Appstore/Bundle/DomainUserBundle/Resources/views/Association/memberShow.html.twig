@@ -1,0 +1,175 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Customer : {{ entity.name }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_customer') }}">Sales</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Add/Edit sales</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>c
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Sales Details</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('inventory_customer_new') }}"><i class="icon-plus-sign"></i>&nbsp;New Customer</a></li>
+                                    <li><a href="{{ path('inventory_sales_new',{'customer': entity.id }) }}"><i class="icon-plus-sign"></i>&nbsp;Add Sales</a></li>
+                                    <li><a href="{{ path('inventory_customer') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+
+                                <div class="span4">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Customer #</strong>&nbsp;{{ entity.name }}</li>
+                                       <li><strong>Mobile #</strong>&nbsp;{{ entity.mobile }}</li>
+                                        <li><strong>Address #</strong>&nbsp;{{ entity.address }}</li>
+                                       <li><strong>Location #</strong>&nbsp;{% if entity.location is not empty %}{{ entity.location.name }}, {{ entity.location.parent.name }}{% endif %}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% include('flash-message.html.twig')  %}
+                            {% if entity.sales is not empty %}
+                                <tr id="show-{{ entity.id }}" class="showing-overview">
+                                    <td colspan="7">
+                                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                                            <thead class="flip-content ">
+                                            <tr class="head-green">
+                                                <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                                <th class="numeric" >Invoice</th>
+                                                <th class="numeric" >Date</th>
+                                                <th class="numeric" >Sub-Total</th>
+                                                <th class="numeric" >Net Total</th>
+                                                <th class="numeric" >Payment</th>
+                                                <th class="numeric" >Due</th>
+                                                <th class="numeric" >Sales By</th>
+                                                <th class="numeric" >Process & Courier</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="sales">
+                                            {% for sales in entity.sales %}
+                                                <tr id="salesRemove-{{ entity.id }}">
+                                                    <td> {% if sales.salesItems is defined and  sales.salesItems is not empty  %}<span class="badge badge-success toggle badge-custom" id="{{ sales.id  }}" ><span>[+]</span></span>{% endif %}</td>
+                                                    <td class="numeric" >{{ sales.invoice }}</td>
+                                                    <td class="numeric" >{{ sales.updated|date('d-m-Y') }}</td>
+                                                    <td class="numeric" >{{ sales.subTotal|number_format  }}</td>
+                                                    <th class="numeric" >{{ sales.total|number_format  }}</th>
+                                                    <th class="numeric" >{{ sales.payment|number_format }}</th>
+                                                    <td class="numeric" >{{ sales.due|number_format }}</td>
+                                                    <td class="numeric" >{% if sales.salesBy %}{{ sales.salesBy.profile.name }}{% endif %}</td>
+                                                    <td class="numeric" >
+                                                        {% if sales.process == 'Paid' %}
+                                                            <a  class="btn mini blue">{% if sales.process is not empty %}{{ sales.process }}{% endif %}</a>
+                                                            <a class="btn mini green" >{{sales.courierInvoice}}</a>
+                                                        {% elseif sales.process == 'Return & Cancel' %}
+                                                            <a  class="btn mini red">{% if sales.process is not empty %}{{ sales.process }}{% endif %}</a>
+                                                            <a class="btn mini green" >{{sales.courierInvoice}}</a>
+                                                        {% else %}
+                                                            <a  data-type="select" class="btn mini green-stripe btn-action editable" id="process" data-name="process" href="#" data-source="{{ path('inventory_sales_inline_status_select') }}"  data-url="{{ path('inventory_sales_inline_process_update') }}" data-pk="{{ sales.id }}" data-value="{% if sales.process is not empty %}{{ sales.process }}{% endif %}" data-original-title="Enter invoice process">{% if sales.process is not empty %}{{ sales.process }}{% endif %}</a>
+                                                            <a class="btn mini green-stripe btn-action editable"  href="#"  data-url="{{ path('inventory_sales_inline_update') }}" data-type="text" data-pk="{{ sales.id }}" data-original-title="Enter courier invoice">{{sales.courierInvoice}}</a>
+                                                        {% endif %}
+                                                        <a target="_blank" class="btn mini purple" href="{{ path('inventory_customer_show', { 'id': sales.id }) }}">View</a>
+                                                    </td>
+                                                </tr>
+                                                <tr id="show-{{ sales.id }}" class="showing-overview">
+                                                    <td colspan="9">
+                                                        {% if sales.salesItems is defined and  sales.salesItems is not empty  %}
+                                                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                                                <thead class="flip-content ">
+                                                                <tr class="head-green">
+                                                                    <td>&nbsp;&nbsp;<i class="icon-reorder"></i></td>
+                                                                    <th class="numeric" >Item</th>
+                                                                    <th class="numeric" >Barcode</th>
+                                                                    <th class="numeric" >Qnt</th>
+                                                                    <th class="numeric" >Estimate price</th>
+                                                                    <th class="numeric" >Sales price</th>
+                                                                    <th class="numeric" >Sub-total</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                {% for salesItem in sales.salesItems %}
+                                                                    <tr>
+                                                                        <td class="numeric" >{{ loop.index }}</td>
+                                                                        <td class="numeric" >{{ salesItem.item.name }}/{{ salesItem.item.sku }}</td>
+                                                                        <td class="numeric" >{{ salesItem.purchaseItem.barcode }}</td>
+                                                                        <td class="numeric" >{{ salesItem.quantity }}</td>
+                                                                        <td class="numeric" >{{ salesItem.estimatePrice|number_format() }}</td>
+                                                                        <td class="numeric" >{{ salesItem.salesPrice|number_format() }}</td>
+                                                                        <td class="numeric" >{{ salesItem.subTotal|number_format() }}</td>
+
+                                                                    </tr>
+                                                                {% endfor %}
+                                                                </tbody>
+                                                            </table>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            <div class="clearfix">&nbsp;</div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/editable.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+{% endblock %}

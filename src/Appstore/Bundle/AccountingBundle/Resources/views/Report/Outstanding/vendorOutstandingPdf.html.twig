@@ -1,0 +1,103 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    h1 , h2 , h3 , h4 , h5 , h6,p{
+        display: block;
+        padding: 0;
+        margin: 0;
+    }
+    h3 {
+        font-size: 18px;
+        line-height: 36px;
+        height: 36px;
+    }
+
+    h4 {
+        font-size: 16px;
+        line-height: 32px;
+        height: 32px;
+    }
+
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+<table class="table">
+    <thead>
+    <tr><td class="pull-center" colspan="5"><h3>{{ globalOption.name }}</h3></td></tr>
+    <tr>
+        <th class="pull-center" colspan="5"><h4><strong>VENDOR OUTSTANDING</strong></h4></th>
+    </tr>
+    <tr>
+        <th class="pull-left"  colspan="5">Printed Date: {{ "now"|date("d-m-Y") }}</span></th>
+    </tr>
+    <tr>
+        <th class="numeric" ><i class="icon-reorder"></i></th>
+        <th class="numeric" >Company Name</th>
+        <th class="numeric" >Name</th>
+        <th class="numeric" >Mobile</th>
+        <th class="numeric" >Outstanding</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% set total = 0  %}
+    {% for entity in entities %}
+        {% set total = total +  entity.customerBalance %}
+        <tr>
+            <td>{{ loop.index }}.</td>
+            <td class="numeric" >{{ entity.companyName }}</td>
+            <td class="numeric" >{{ entity.vendorName }}</td>
+            <td class="numeric" >{{ entity.vendorMobile }}</td>
+            <th class="numeric" >{{ entity.customerBalance|number_format }}</th>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+    <tr>
+        <th colspan="4"><span class="pull-right">Grand Total</span><th>{{ total|number_format }}</th>
+    </tr>
+    </tfoot>
+</table>

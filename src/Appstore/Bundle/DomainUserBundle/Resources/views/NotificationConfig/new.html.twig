@@ -1,0 +1,112 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN appsetting_branchshop HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="appsetting_branchshop-title">
+                    Notification Setup
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="">Notification Setup</a>
+                    </li>
+                      <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END appsetting_branchshop HEADER-->
+        <!-- BEGIN appsetting_branchshop CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Notification Setup Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="row-fluid">
+                                <div class="span8">
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        <i class="icon-phone"></i>
+                                                        {{ form_widget(form.mobile) }}
+                                                        {{ form_errors(form.mobile) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        <i class="icon-phone"></i>
+                                                        {{ form_widget(form.paymentNotification) }}
+                                                        {{ form_errors(form.paymentNotification) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Sms Active&nbsp; {{ form_widget(form.smsActive) }}
+                                                    {{ form_errors(form.smsActive) }}</label>
+                                                <label class="control-label" for="firstName">Customer Order&nbsp; {{ form_widget(form.customerBaseOrder) }}
+                                                    {{ form_errors(form.customerBaseOrder) }}</label>
+                                                <label class="control-label" for="firstName">Online Order&nbsp; {{ form_widget(form.onlineOrder) }}
+                                                    {{ form_errors(form.onlineOrder) }}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="clearfix"><br/></div>
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+ <style>
+     .check-list label{
+         width: 29%;
+     }
+ </style>
+{% endblock %}

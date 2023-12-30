@@ -1,0 +1,128 @@
+{% extends ':template:base.html.twig' %}
+{% block body %}
+
+    <div class="bannerPane bannerPane-business-locaton"  {% if product.webPath() is defined and product.webPath() is not empty %} style="background-repeat:no-repeat!important; background-position:center center!important;background:url('{{ image(product.webPath()).resize() }}')" {% endif %} >
+        <div class="overlay"></div>
+        <div class="s-banner-content">
+            <div><img width="100" src="{{ image(globalOption.templateCustomize.webPath('logo')).resize() }}" /></div>
+            Product View
+        </div>
+    </div>
+    <div id="content" class="content-margin">
+        <article>
+            <div class="module-title">
+                <p>{% if product.masterItem %}{{ product.masterItem.name }}{% endif %}{% if product.webName %} - {{ product.webName }}{% endif %}</p>
+                <i class="fa fa-product-hunt"></i>&nbsp;{% if product.masterItem.category is defined and product.masterItem.category is not empty %}<a href="{{ path('webservice_product',{'subdomain':globalOption.subDomain,'cat':product.masterItem.category.id }) }}">{{ product.masterItem.category.name }}</a>{% endif %}&nbsp;&nbsp;&nbsp;
+                <i class="fa fa-calendar"></i>&nbsp;{{ product.updated|date('F j, Y') }}&nbsp;&nbsp;&nbsp;
+                {% if product.itemGalleries is defined and product.itemGalleries is not empty %}
+                <div id="Gallery">
+                    <i class="fa fa-file-image-o"></i>&nbsp;<a href="{{ image(product.webPath()).resize() }}">Preview</a>
+                    {% for photo in product.itemGalleries %}
+                    <a href="/{{ photo.getWebPath(product.purchase.inventoryConfig.globalOption.id,product.id) }}" rel="external"></a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="product-single-meta">
+                <div class="p-single-meta-likes">
+                    <iframe src="https://www.facebook.com/plugins/share_button.php?href=http://www.tlsbd.org&layout=button_count&size=small&mobile_iframe=true&appId=369724209850316&width=88&height=20" width="88" height="20" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+                </div>
+                <div class="p-single-meta-share">
+                    <iframe src="https://www.facebook.com/plugins/like.php?href=http://www.tlsbd.org&width=150&layout=standard&action=like&size=small&show_faces=false&share=false&height=20&appId=369724209850316" width="150" height="20" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+                </div>
+                <!-- Your like button code -->
+            </div>
+
+            <div class="product">
+                <div class="product-details" style="border-top: none; padding: 0">
+                    <form>
+                    <table>
+                        {% set quantity = 1 %}
+                        <tr><td colspan="2"><strong>Product Details</strong></td></tr>
+                        <tr><td>Price</td><td class="left">BDT <strong>{{ product.webPrice|format }}</strong></td></tr>
+                        <tr><td>Stock in</td><td class="left"><strong>{{ product.purchaseStockItem  }}</strong></td></tr>
+                        {% if product.gender is not empty %}<tr><td>Gender</td><td class="left">{{ product.gender }}</td></tr>{% endif %}
+                        {% if product.ageGroup is not empty %}<tr><td>Age Group</td><td class="left">{{ product.ageGroup }}</td></tr>{% endif %}
+                        {% if product.brand is not empty %}<tr><td>Brand</td><td class="left">{{ product.brand.name }}</td></tr>{% endif %}
+                        {% if product.country is not empty %}<tr><td>Made in</td><td class="left">{{ product.country.name }}</td></tr>{% endif %}
+                        <tr><td class="left" colspan="2"><strong>Attributes</strong></td></tr>
+                        {%  for attribute in product.itemMetaAttributes %}
+                            {% if  attribute.value %}
+                            <tr><td>{{ attribute.itemAttribute.name }}</td><td class="left">
+                                    {% if attribute.itemAttribute.dropDown == 1 %}
+                                        {% set vals = attribute.value |split('|') %}
+                                        <select name="metaValue[]">
+                                        {% for val in vals %}
+                                            <option value="val">{{ val }}</option>
+                                        {% endfor %}
+                                        </select>
+                                        <input type="hidden" name="metaKey[]" value="{{ attribute.itemAttribute.id }}" >
+                                    {% else %}
+                                    {{ attribute.value }}
+                                    {% endif %}
+
+                                </td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                        <tr><td>Description</td><td class="left">{{ product.content|raw }}</td></tr>
+                    </table>
+                    <div class="left" style="width: 100%">
+                        <input  type="number" value="1" id="numberBox"  min="1" max="{{ product.purchaseStockItem  }}" class="numeric" maxlength="{{ product.purchaseStockItem  }}">
+                        <select class="dropdown" id="color" name="color">
+                            <option value="">---Color/Shade---</option>
+                            {% for color in product.colors  %}
+                            <option value="{{ color }}">{{ color }}</option>
+                            {% endfor %}
+                        </select>
+                        <select class="dropdown" id="size" name="size">
+                            <option value="">---Size/Weight/Dimension---</option>
+                            {% for size in product.sizes  %}
+                                <option value="{{ size }}">{{ size }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="center" style="width:100%; text-align: center"><a href="javascript:" id="cart" data-content="" data-url="{{ path('webservice_product_cart',{'subdomain':globalOption.subDomain,'cart':'cart','item':product.id}) }}" class="o-buttons green"><i class="fa fa-cart-plus"></i>&nbsp;Add to cart</a><a href="{{ path('webservice_product_wishlist',{'subdomain':globalOption.subDomain,'wishlist':'wishlist','item':product.id}) }}" class="o-buttons firoza wishlist">Wish list</a></div>
+                    </form>
+                </div>
+            </div>
+        </article>
+        {% if(products) %}
+            <h3 class="title"><i class="fa fa-th-list"></i>&nbsp;<strong>Related Products</strong></h3>
+        {% for item in products %}
+            {% if item.id != product.id %}
+        <article>
+            <a href="{{ path('webservice_product_details',{'subdomain':globalOption.subDomain,'product':'product','item':item.id}) }}">
+                <div class="article-img-pane">
+                    <img src="{{ image(item.webPath()).resize() }}" />
+                </div>
+                <h2>{% if item.masterItem %}{{ item.masterItem.name }}{% endif %}{% if item.webName %} - {{ item.webName }}{% endif %}</h2>
+                <div class="prod-pricePane">
+                    <span class="current-price">{{ item.webPrice|format() }}</span>
+                </div>
+            </a>
+            <div class="a-meta">
+                <span><i class="fa fa-shopping-cart"></i>&nbsp;{{ product.purchaseStockItem  }}</span>
+                <div class="products-ratings">
+                    <iframe src="https://www.facebook.com/plugins/share_button.php?href=http://www.tlsbd.org&layout=button_count&size=small&mobile_iframe=true&appId=369724209850316&width=88&height=20" width="88" height="20" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+                </div>
+            </div>
+        </article>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@FrontendBundle/Resources/public/template/mobile/css/product.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}
+
+

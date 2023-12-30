@@ -1,0 +1,34 @@
+{% extends ':frontend/template/mobile:base.html.twig' %}
+{% block body %}
+    {% if ( menu.module.slug == 'news') %}
+        {{ include('@Frontend/Template/Mobile/ModuleDetails/news.html.twig')}}
+    {% elseif( menu.module.slug == 'blog') %}
+        {{ include('@Frontend/Template/Mobile/ModuleDetails/blog.html.twig')}}
+    {% elseif( menu.module.slug == 'event') %}
+        {{ include('@Frontend/Template/Mobile/ModuleDetails/event.html.twig')}}
+    {% elseif( menu.module.slug == 'noticeboard' ) %}
+        {{ include('@Frontend/Template/Mobile/ModuleDetails/noticeboard.html.twig')}}
+    {% elseif( menu.module.slug == 'service' ) %}
+        {{ include('@Frontend/Template/Mobile/ModuleDetails/service.html.twig')}}
+    {% elseif( menu.module.slug == 'team' ) %}
+        {{ include('@Frontend/Template/Mobile/ModuleDetails/team.html.twig')}}
+    {% elseif( menu.module.slug == 'products' ) %}
+        {{ include('@Frontend/Template/Mobile/ModuleDetails/product.html.twig')}}
+    {% else %}
+        {{ include('@Frontend/Template/Mobile/Module/default.html.twig')}}
+    {% endif %}
+    {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+        {% render controller("FrontendBundle:WebsiteWidget:featureMobileWidget",{'globalOption':globalOption.id, 'menu': menu.id,'position':'mobile'}) %}
+    {% endif %}
+    <!--//welcome-->
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@FrontendBundle/Resources/public/template/mobile/js/common.js'
+    '@FrontendBundle/Resources/public/template/mobile/js/page.js'
+    '@FrontendBundle/Resources/public/template/mobile/js/corporate.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}

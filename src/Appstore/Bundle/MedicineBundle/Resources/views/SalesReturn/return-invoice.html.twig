@@ -1,0 +1,106 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Return Invoice
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Return Invoice</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Return Invoice Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn purple" href="{{ path('medicine_sales_customer_item') }}"><i class="icon-user"></i> Add Invoice Return</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Customer</th>
+                                    <th class="numeric" >Invoice</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Adjustment</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if entities is not empty %}
+                                    {% for entity in entities %}
+                                        <tr>
+                                            <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                            <td class="numeric" >{{ entity.customer.name }}</td>
+                                            <td class="numeric" >{{ entity.invoice }}</td>
+                                             <td class="numeric" >{{ entity.payment }}</td>
+                                            <td class="numeric" >{{ entity.adjustment }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                {% if entity.process != 'approved' %}
+                                                    <a href="{{ path('medicine_sales_return_invoice_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                                    <a href="javascript:" data-id="{{ entity.id }}" data-url="{{ path('medicine_sales_return_invoice_approve',{'id':entity.id}) }}" class="btn green confirm mini"><i class="icon-ok"></i> Approve</a>
+                                                {% else %}
+                                                    <a href="javascript:"  class="btn mini green "><i class="icon-ok"></i> Approved</a>
+                                                {% endif %}
+                                                    <a href="{{ path('medicine_sales_return_invoice_show', { 'id': entity.id }) }}"  class="btn mini blue"><i class="icon-eye-open"></i></a>
+                                                    <a target="_blank" href="{{ path('medicine_sales_return_invoice_print', { 'id': entity.id }) }}"  class="btn mini yellow"><i class="icon-print"></i></a>
+                                                    {% if entity.process == 'approved' and app.user.granted("ROLE_DOMAIN") %}
+                                                        <a href="{{ path('medicine_sales_return_invoice_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}
+
+

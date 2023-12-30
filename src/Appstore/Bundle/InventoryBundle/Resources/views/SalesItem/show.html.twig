@@ -1,0 +1,48 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>SalesItem</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Quantity</th>
+                <td>{{ entity.quantity }}</td>
+            </tr>
+            <tr>
+                <th>Salesprice</th>
+                <td>{{ entity.salesPrice }}</td>
+            </tr>
+            <tr>
+                <th>Purchaseprice</th>
+                <td>{{ entity.purchasePrice }}</td>
+            </tr>
+            <tr>
+                <th>Estimateprice</th>
+                <td>{{ entity.estimatePrice }}</td>
+            </tr>
+            <tr>
+                <th>Customprice</th>
+                <td>{{ entity.customPrice }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('salesitem') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('salesitem_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

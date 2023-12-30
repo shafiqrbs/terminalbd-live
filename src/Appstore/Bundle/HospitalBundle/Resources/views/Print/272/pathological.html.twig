@@ -1,0 +1,290 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>{{ entity.hmsInvoice.customer.name }}-{{ entity.hmsInvoice.invoice }}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}">
+    {% stylesheets filter='cssrewrite'
+        'assets/plugins/font-awesome/css/font-awesome.min.css'
+        'assets/css/print.css'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+    <script type="text/javascript">
+        window.print();
+        setTimeout(function () {
+            window.open('', '_self', '');
+            window.close();
+        }, 2000);
+    </script>
+</head>
+<body>
+<div style="margin-top:{{ entity.hmsInvoice.hospitalConfig.printMarginReportTop }}px;margin-left:{{ entity.hmsInvoice.hospitalConfig.printMarginReportLeft }}px;">
+    {% if global.webPath('file') is not empty %}<img style="max-height:100px" src="/{{ global.webPath('file') }}">{% endif %}
+    <table class="table table-border reportTable" style="border: 3px solid #383939!important" >
+        <tr class="print-header">
+            <td colspan="3" style="position: relative">
+                <span class="barcode-left">{#{{ barcodeInvoice|raw }}#}</span>
+                <strong class="title title-center" >{{ entity.particular.category.name }} REPORT</strong>
+                <span class="barcode-right">{{ barcodeReport|raw }}</span>
+            </th>
+        </tr>
+        <tr>
+            <td style="width: 35%!important;">
+                <ul class="unstyled">
+                    <li><label>Invoice No:</label> {{ entity.hmsInvoice.invoice }}</li>
+                    <li><label>Patient ID:</label> {{ entity.hmsInvoice.customer.customerId }}</li>
+                    <li><label>Name:</label> {{ entity.hmsInvoice.customer.name }}</li>
+                    <li><label>Sample:</label> {{ entity.particular.sepcimen }}</li>
+                    <li><label>Ref. By:</label> {% if entity.hmsInvoice.assignDoctor is not empty %}<strong>{{ entity.hmsInvoice.assignDoctor.name }}</strong>{% endif %}</li>
+                </ul>
+            </td>
+            <td class="" style="width:30%!important;">
+                <ul class="unstyled" >
+                    <li><label>Age:</label> {{ entity.hmsInvoice.customer.age }} {{ entity.hmsInvoice.customer.ageType }}</li>
+                    <li><label>Gender:</label> {{ entity.hmsInvoice.customer.gender }} </li>
+                    <li><label>Blood Group:</label> {{ entity.hmsInvoice.customer.bloodGroup }} </li>
+                    <li><label>Mobile:</label> {{ entity.hmsInvoice.customer.mobile }}</li>
+                    {% if entity.hmsInvoice.cabin %}<li><label>Cabin/Bed No:</label>{{ entity.hmsInvoice.cabin.name }} </li>{% endif %}
+                </ul>
+            </td>
+            <td class="" style="width: 35%!important;">
+                <ul class="unstyled">
+                    <li><label>Report No:</label> {{ entity.particular.particularCode }}-{{ entity.reportCode }}</li>
+                    <li><label>Invoice Date:</label> {{ entity.hmsInvoice.updated|date('d-m-y') }}</li>
+                    <li><label>Delivery Date:</label> {{ entity.hmsInvoice.deliveryDateTime }}</li>
+                    <li><label>Coll. Time:</label> {{ entity.collectionDate|date('d-m-y h:i A') }}</li>
+                    <li><label>Coll. By:</label> {{ entity.sampleCollectedBy }}</li>
+                </ul>
+            </td>
+        </tr>
+        <tr><td colspan="3"><strong>Investigation Name:</strong> {{ entity.particular.name }}</td></tr>
+    </table>
+    {% if entity.particular.reportFormat == 1 %}
+        {% if entity.particular.pathologicalReports is defined and  entity.particular.pathologicalReports is not empty  %}
+            <table class="table reportTable" style="margin-top:20px;min-height:{{  entity.hmsInvoice.hospitalConfig.reportHeight }}px">
+                <tbody>
+                <tr>
+                    <td>
+                        {% if entity.particular.pathologicalReports is not empty %}
+                            {% for item in entity.particular.pathologicalReports %}
+                                {% if item.children is not empty %}
+                                    <div class="span6" data-match-height="report-block" style="float: left; display:block; margin-bottom:15px!important;">
+                                        <ul class="unstyled span12">
+                                            <li><h2><strong>{{ item.name }}</strong></h2></li>
+                                            {% for child in item.children %}
+                                                <li><span class="span3" style="display:inline-block;width:180px">{{ child.name }}</span> {% if report is not empty and report[child.id] is defined and report[child.id] is not empty %}{{ report[child.id].result }}{% endif %}
+                                                    {% if entity.particular.reportUnitHide != 1 %}  {{ child.unit }} {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if  entity.invoicePathologicalReports is defined and entity.invoicePathologicalReports is not empty %}
+                    <tr><td>&nbsp;</td></tr>
+                    {% for meta in entity.invoicePathologicalReports %}
+                        {% if meta.metaValue is not empty %}
+                            <tr><td><span class="span3" style="display:inline-block">{{ meta.metaKey }}</span>{{ meta.metaValue|raw }}</td></tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                <tr><td colspan="4">Comment: {{ entity.comment|raw }}</td></tr>
+                </tbody>
+            </table>
+        {% endif %}
+    {% else %}
+        {% if entity.particular.pathologicalReports is defined and  entity.particular.pathologicalReports is not empty  %}
+
+            <table class=" reportTable" style="margin-top:20px;">
+                <thead>
+                <tr class="head-black">
+                    <td class="span3">Name</th>
+                    <td class="right">Result</th>
+                    {% if entity.particular.reportUnitHide != 1 %}
+                        <td class="span2">Unit</th>
+                    {% endif %}
+                    <td class="span4">Reference</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if entity.particular.pathologicalReports is not empty %}
+                    {% for item in entity.particular.pathologicalReports %}
+                        {% if item.children is not empty %}
+                            <tr id="remove-{{ item.id }}">
+                                <td  class="span12" colspan="5"><strong>{{ item.name }}</strong></td>
+                            </tr>
+                            {% for child in item.children %}
+                                <tr>
+                                    <td  class="span3">{{ child.name }}</td>
+                                    <td class="right">{% if report is not empty and report[child.id] is defined and report[child.id] is not empty %}{{ report[child.id].result }}{% endif %}</td>
+                                    {% if entity.particular.reportUnitHide != 1 %}
+                                        <td class="span2">{{ child.unit }}</td>
+                                    {% endif %}
+                                    <td class="span4">{{ child.referenceValue|raw }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% elseif item.parent is empty %}
+                            <tr id="remove-{{ item.id }}">
+                                <td  class="span4">{{ item.name }}</td>
+                                <td class="right">{% if item.children is empty %}{% if report is not empty and report[item.id] is defined and report[item.id] is not empty %}{{ report[item.id].result }}{% endif %}{% endif %}</td>
+                                {% if entity.particular.reportUnitHide != 1 %}
+                                    <td class="span2">{{ item.unit }}</td>
+                                {% endif %}
+                                <td class="span4">{{ item.referenceValue|raw }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {% if  entity.invoicePathologicalReports is defined and entity.invoicePathologicalReports is not empty %}
+                    {% for meta in entity.invoicePathologicalReports %}
+                        {% if meta.metaValue is not empty %}
+                            <tr><td class="numeric span3">{{ meta.metaKey }}</td><td colspan="3">{{ meta.metaValue|raw }}</td></tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                <tr><td colspan="4">Comment: {{ entity.comment|raw }}</td></tr>
+                </tbody>
+            </table>
+        {% endif %}
+    {% endif %}
+    {% if entity.reportContent and entity.particular.isReportContent == 1 %}
+        {{ entity.reportContent|raw }}
+    {% endif %}
+    {% if  entity.particular.isReportContent != 1 and entity.particular.pathologicalReports is defined and  entity.particular.pathologicalReports is empty %}
+        <table class="reportTable">
+            <tr><td>Comment: {{ entity.comment|raw }}</td></tr>
+        </table>
+    {% endif %}
+    <table class="table print-footer" style="position: fixed; bottom: 40px"  >
+        <tr>
+            <td class="left span4">
+                {% if(entity.assignLabuser and entity.assignLabuser.webSignaturePath is not empty) %}
+                <ul class="unstyled">
+                    <li>Prepared By</li>
+                    <li>
+                        {% if(entity.assignLabuser and entity.assignLabuser.webSignaturePath is not empty) %}
+                            <img class="fileupload-preview fileupload-exists" alt="" src="{{ image(entity.assignLabuser.webSignaturePath).resize(180,100) }}">
+                        {% endif %}
+                    </li>
+                    <li><strong>{{ entity.assignLabuser.name }}</strong></li>
+                    <li>{% if entity.assignLabuser.doctorSignature is not empty %}{{ entity.assignLabuser.doctorSignature|raw }}{% endif %}</li>
+                </ul>
+                {% endif %}
+            </td>
+            <td class="center span4">
+                <ul class="unstyled">
+                    <li>Printed By</li>
+                    <li><strong>{{ printUser.profile.name }}</strong></li>
+                    <li>{% if printUser.profile and printUser.profile.designation is not empty %}{{ printUser.profile.designation.name }}{% endif %}</li>
+                    <li>{{ "now"|date('d-m-Y h:i A') }}</li>
+                </ul>
+            </td>
+            <td class="span4">
+                {% if entity.assignDoctor is not empty %}
+                    <ul class="unstyled">
+                        <li> {% if(entity.assignDoctor and entity.assignDoctor.webSignaturePath is not empty) %}
+                                <img class="fileupload-preview fileupload-exists" alt="" src="{{ image(entity.assignDoctor.webSignaturePath).resize(180,100) }}">
+                            {% endif %}
+                        </li>
+                        <li><strong>{{ entity.assignDoctor.name }}</strong></li>
+                        <li>{{ entity.assignDoctor.doctorSignature|raw }}</li>
+                    </ul>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+<style>
+    ul li {
+        list-style: none;
+        padding: 0 !important;
+        margin: 0 !important;
+        height: 18px;
+        line-height: 18px;
+    }
+    table.reportTable{
+        width: 100%!important;
+        collapse: 0;
+        border-collapse: collapse;
+        border: 1px solid #000000;
+        font-size: 12px!important;
+    }
+    table.reportTable tr td , table.reportTable tr th{
+        text-align: left;
+        padding-left: 8px;
+        border: 1px solid #000000;
+        height: 24px;
+        line-height: 24px;
+        font-size: 12px!important;
+    }
+    table.reportTable tr:first-child td , table.reportTable tr:first-child th{
+        font-weight: bold;
+    }
+    table.reportTable tr th.center, table.reportTable tr td.center{
+        text-align: right;
+        padding-left: 8px;
+    }
+    table.reportTable tr td.left{
+        text-align: left;
+        padding-left: 8px;
+    }
+    table.reportTable tr td.right{
+        text-align: right;
+        padding-right: 15px;
+    }
+
+    table label{
+        width: 90px;
+        display: inline-block;
+        text-decoration: none;
+    }
+
+    .print-header {
+        height: 50px;
+        border: 1px solid #100f0f;
+        font-size: 11px;
+    }
+
+    .print-header .title-center{
+        float: none!important;
+        text-align: center;
+        text-transform: uppercase;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        position: absolute;
+    }
+    .print-header .barcode-left{
+        float: left;
+        padding-left: 10px;
+    }
+    .print-header .barcode-right{
+        float: right;
+        padding-right: 10px;
+    }
+    .print-footer .left{
+        margin-left: 30px;
+    }
+    .print-footer .center{
+        text-align: center;
+    }
+    .print-footer .right{
+        float: right;
+        padding-right:30px;
+    }
+    table.report-table {
+        display:inline-block;
+        width: 100%;
+    {% if entity.hmsInvoice.hospitalConfig.reportHeight  %}
+        min-height:{{ entity.hmsInvoice.hospitalConfig.reportHeight }}px;
+    {% endif %}
+    }
+</style>
+</html>

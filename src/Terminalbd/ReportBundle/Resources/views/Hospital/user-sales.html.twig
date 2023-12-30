@@ -1,0 +1,540 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 print-bar">
+            <form action="" method="get">
+                <div class="row">
+                    <div class="col-md-5 margin-top">
+                    </div>
+                    <div class="col-md-2 margin-bottom-5">
+                        <label>Start Date</label>
+                        <input type="datetime-local" class="search-input span12 m-wrap" required="required" id="startDate" name="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-2 margin-bottom-5">
+                        <label>End Date</label>
+                        <input type="datetime-local" class="search-input span12 m-wrap" required="required" id="endDate" name="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-1 margin-top">
+                        <label>&nbsp;</label>
+                        <button class='btn btn-download btn-margin-left' ><i class='fa fa-search'></i> Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="print-area">
+        <div class="row print-header">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong>{{ option.name }}</strong></p>
+                <p><strong>Name of Report: Hospital & Diagnostic</strong></p>
+                <p>Start to End Date: {% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %} To {% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <tr>
+                        <th>Invoice Mode</th>
+                        <th class="text-right">SudTotal</th>
+                        <th class="text-right">Discount</th>
+                        <th class="text-right">Total</th>
+                        <th class="text-right">Received</th>
+                        <th class="text-right">Due</th>
+                    </tr>
+                    <tbody>
+                    {% if summary is not empty %}
+                        {% for sumr in summary %}
+                            <tr class="head-blue">
+                                <th class="">{{ sumr.invoiceMode|capitalize }}</th>
+                                <td class="text-right">{{ sumr.subTotal|number_format(2) }}</td>
+                                <td class="text-right">{{ sumr.discount|number_format(2) }}</td>
+                                <td class="text-right">{{ sumr.netTotal|number_format(2) }}</td>
+                                <td class="text-right">{{ sumr.netPayment|number_format(2) }}</td>
+                                <td class="text-right">{{ sumr.netDue|number_format(2) }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="print-header">
+            <div class="col-md-12 text-center"><p><strong>Users Base Sales Overview</strong></p></div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" style="margin-top: 30px; padding-left: 30px">
+                    <style>
+                        .icon-btn-mini {
+                            width: 100%;
+                            padding: 7px 0 0 0!important;
+                        }
+                        .userColumn{
+                            display: grid;
+                            grid-template-columns: repeat(
+                                            {{ salesTodayUsers|length }}, calc(100% / {{ salesTodayUsers|length }}));
+                        }
+                        .grid-item {
+                            grid-column-start: auto;
+                            grid-row-start: auto;
+                            margin: 5px;
+                        }
+                        .dashboard-stat2 {
+                            -webkit-border-radius: 4px;
+                            -moz-border-radius: 4px;
+                            -ms-border-radius: 4px;
+                            -o-border-radius: 4px;
+                            border-radius: 4px;
+                            background: #fff;
+                            padding: 15px 15px 30px 15px;
+                            margin-bottom: 20px;
+                        }
+                        .dashboard-stat2 .display {
+                            margin-bottom: 20px;
+                        }
+                        .dashboard-stat2 .display:before, .dashboard-stat2 .display:after {
+                            content: " ";
+                            display: table;
+                        }
+                        .dashboard-stat2 .display:after {
+                            clear: both;
+                        }
+                        .dashboard-stat2 .display .number {
+                            float: left;
+                            display: inline-block;
+                        }
+                        .dashboard-stat2 .display .number h3 {
+                            margin: 0 0 2px 0;
+                            padding: 0;
+                            font-size: 30px;
+                            font-weight: 400;
+                        }
+                        .dashboard-stat2 .display .number h3 > small {
+                            font-size: 23px;
+                        }
+                        .dashboard-stat2 .display .number small {
+                            font-size: 14px;
+                            color: #AAB5BC;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                        }
+                        .dashboard-stat2 .display .icon {
+                            display: inline-block;
+                            float: right;
+                            padding: 7px 0 0 0;
+                        }
+                        .dashboard-stat2 .display .icon > i {
+                            color: #cbd4e0;
+                            font-size: 26px;
+                        }
+                        .dashboard-stat2 .progress-info {
+                            clear: both;
+                        }
+                        .dashboard-stat2 .progress-info .progress {
+                            margin: 0;
+                            height: 4px;
+                            clear: both;
+                            display: block;
+                        }
+                        .dashboard-stat2 .progress-info .status {
+                            margin-top: 5px;
+                            font-size: 11px;
+                            color: #AAB5BC;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                        }
+                        .dashboard-stat2 .progress-info .status .status-title {
+                            float: left;
+                            display: inline-block;
+                        }
+                        .dashboard-stat2 .progress-info .status .status-number {
+                            float: right;
+                            display: inline-block;
+                        }
+
+                        /* Statistic Block */
+                        .dashboard-stat.green-sharp {
+                            background-color: #4DB3A2;
+                        }
+                        .dashboard-stat.green-sharp.dashboard-stat-light:hover {
+                            background-color: #46a595;
+                        }
+                        .dashboard-stat.green-sharp .visual > i {
+                            color: #FFFFFF;
+                            opacity: 0.1;
+                            filter: alpha(opacity=10);
+                        }
+                        .dashboard-stat.green-sharp .details .number {
+                            color: #FFFFFF;
+                        }
+                        .dashboard-stat.green-sharp .details .desc {
+                            color: #FFFFFF;
+                            opacity: 1;
+                            filter: alpha(opacity=100);
+                        }
+                        .dashboard-stat.green-sharp .more {
+                            color: #FFFFFF;
+                            background-color: #46a595;
+                        }
+
+                        /* General Element */
+                        .bg-green-sharp {
+                            border-color: #4DB3A2 !important;
+                            background-image: none !important;
+                            background-color: #4DB3A2 !important;
+                            color: #FFFFFF !important;
+                        }
+
+                        /* General Text & Icon Font Colors */
+                        .font-green-sharp {
+                            color: #4DB3A2 !important;
+                        }
+
+                        .progress-bar.green-sharp {
+                            background: #4DB3A2 !important;
+                            color: #FFFFFF !important;
+                        }
+
+                        /***
+                        Green Sharp
+                        ***/
+                        /* Button */
+                        .green-soft.btn {
+                            color: #FFFFFF;
+                            background-color: #3faba4;
+                        }
+                        .green-soft.btn:hover, .green-soft.btn:focus, .green-soft.btn:active, .green-soft.btn.active {
+                            color: #FFFFFF;
+                            background-color: #35918b;
+                        }
+                        .open .green-soft.btn.dropdown-toggle {
+                            color: #FFFFFF;
+                            background-color: #35918b;
+                        }
+                        .green-soft.btn:active, .green-soft.btn.active {
+                            background-image: none;
+                            background-color: #2f7e79;
+                        }
+                        .green-soft.btn:active:hover, .green-soft.btn.active:hover {
+                            background-color: #318680;
+                        }
+                        .open .green-soft.btn.dropdown-toggle {
+                            background-image: none;
+                        }
+                        .green-soft.btn.disabled, .green-soft.btn.disabled:hover, .green-soft.btn.disabled:focus, .green-soft.btn.disabled:active, .green-soft.btn.disabled.active, .green-soft.btn[disabled], .green-soft.btn[disabled]:hover, .green-soft.btn[disabled]:focus, .green-soft.btn[disabled]:active, .green-soft.btn[disabled].active, fieldset[disabled] .green-soft.btn, fieldset[disabled] .green-soft.btn:hover, fieldset[disabled] .green-soft.btn:focus, fieldset[disabled] .green-soft.btn:active, fieldset[disabled] .green-soft.btn.active {
+                            background-color: #3faba4;
+                        }
+                        .green-soft.btn .badge {
+                            color: #3faba4;
+                            background-color: #FFFFFF;
+                        }
+
+                        /* Button Strip */
+                        .btn.green-soft-stripe {
+                            border-left: 3px solid #3faba4;
+                        }
+
+                        /* Portlet */
+                        .portlet > .portlet-body.green-soft,
+                        .portlet.green-soft {
+                            background-color: #3faba4;
+                        }
+
+                        .portlet.solid.green-soft > .portlet-title,
+                        .portlet.solid.green-soft > .portlet-body {
+                            border: 0;
+                            color: #FFFFFF;
+                        }
+                        .portlet.solid.green-soft > .portlet-title > .caption {
+                            font-weight: 400;
+                        }
+                        .portlet.solid.green-soft > .portlet-title > .caption > i {
+                            color: #FFFFFF;
+                        }
+
+                        .portlet.box.green-soft {
+                            border: 1px solid #5bc2bc;
+                            border-top: 0;
+                        }
+                        .portlet.box.green-soft > .portlet-title {
+                            background-color: #3faba4;
+                        }
+                        .portlet.box.green-soft > .portlet-title > .caption {
+                            color: #FFFFFF;
+                        }
+                        .portlet.box.green-soft > .portlet-title > .caption > i {
+                            color: #FFFFFF;
+                        }
+                        .portlet.box.green-soft > .portlet-title > .actions .btn-default {
+                            background: transparent !important;
+                            border: 1px solid #87d3ce;
+                            color: #9adad6;
+                        }
+                        .portlet.box.green-soft > .portlet-title > .actions .btn-default > i {
+                            color: #a5deda;
+                        }
+                        .portlet.box.green-soft > .portlet-title > .actions .btn-default:hover, .portlet.box.green-soft > .portlet-title > .actions .btn-default:focus, .portlet.box.green-soft > .portlet-title > .actions .btn-default:active, .portlet.box.green-soft > .portlet-title > .actions .btn-default.active {
+                            border: 1px solid #ade1dd;
+                            color: #bfe7e5;
+                        }
+
+                        /* Statistic Block */
+                        .dashboard-stat.green-soft {
+                            background-color: #3faba4;
+                        }
+                        .dashboard-stat.green-soft.dashboard-stat-light:hover {
+                            background-color: #3a9c96;
+                        }
+                        .dashboard-stat.green-soft .visual > i {
+                            color: #FFFFFF;
+                            opacity: 0.1;
+                            filter: alpha(opacity=10);
+                        }
+                        .dashboard-stat.green-soft .details .number {
+                            color: #FFFFFF;
+                        }
+                        .dashboard-stat.green-soft .details .desc {
+                            color: #FFFFFF;
+                            opacity: 1;
+                            filter: alpha(opacity=100);
+                        }
+                        .dashboard-stat.green-soft .more {
+                            color: #FFFFFF;
+                            background-color: #3a9c96;
+                        }
+
+                        /* General Element */
+                        .bg-green-soft {
+                            border-color: #3faba4 !important;
+                            background-image: none !important;
+                            background-color: #3faba4 !important;
+                            color: #FFFFFF !important;
+                        }
+
+                        /* General Text & Icon Font Colors */
+                        .font-green-soft {
+                            color: #3faba4 !important;
+                        }
+
+                        .progress-bar.green-soft {
+                            background: #3faba4 !important;
+                            color: #FFFFFF !important;
+                        }
+
+                        .progress-bar.red-haze {
+                            background: #f36a5a!important;
+                            color: #fff!important;
+                        }
+
+                        .progress-bar.green-sharp {
+                            background: #2ab4c0!important;
+                            color: #FFF!important;
+                        }
+
+                        .progress-bar.green-sharp {
+                            background: #2ab4c0!important;
+                            color: #FFF!important;
+                        }
+                        .progress-bar-success {
+                            background-color: #36c6d3;
+                        }
+                        .progress-bar {
+                            float: left;
+                            width: 0;
+                            height: 100%;
+                            font-size: 12px;
+                            line-height: 20px;
+                            color: #fff;
+                            text-align: center;
+                            background-color: #337ab7;
+                            -webkit-box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+                            box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+                            -webkit-transition: width .6s ease;
+                            -o-transition: width .6s ease;
+                            transition: width .6s ease;
+                        }
+
+                        .font-purple-soft {
+                            color: #8877a9!important;
+                        }
+                        .font-red-haze {
+                            color: #f36a5a!important;
+                        }
+                        .font-blue-sharp {
+                            color: #5C9BD1!important;
+                        }
+
+                        .icon-btn{
+                            width: 100%;
+                        }
+                        .icon-btn div{
+                            font-size: 13px;
+                            font-weight: bold;
+                            color:#217ebd !important;
+                        }
+                        .dashboard-stat .visual{
+                            width: auto;
+                            float: none;
+                            padding:0;
+                            padding-top: 15px;
+                            padding-bottom: 15px;
+                        }
+                        .dashboard-stat .visual:hover{
+                            text-decoration: none;
+                        }
+                        .dashboard-stat .more {
+                            clear: both;
+                            display: block;
+                            padding: 5px 10px 5px 10px;
+                            text-transform: uppercase;
+                            font-size: 16px;
+                            color: #fff;
+                            opacity:1;
+                            font-weight: bold;
+                        }
+                        .unstyled{
+                            height: 100px;
+                        }
+
+
+
+                    </style>
+                    <div class="col-md-2" style="margin-top:-10px">
+                        <div class="portlet-body">
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div> User Name</div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div> SubTotal Tk.</div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div> Discount Tk.</div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div> Total Tk.</div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div> Receive Tk. </div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div> Commission Tk. </div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div> Return Tk. </div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div> Due Receive Tk.</div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div> Grand Total Tk. </div>
+                            </a>
+
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="userColumn">
+                            {% set userTodaySales = 0 %}
+                            {% set userTodayReceive = 0 %}
+                            {% set userPreviousReceive = 0 %}
+                            {% set userCommission = 0 %}
+                            {% set userReturn = 0 %}
+
+                            {% set userTodaySalesSubTotal = 0 %}
+                            {% set userTodayDiscountTotal = 0 %}
+                            {% set userTodaySalesTotal = 0 %}
+                            {% set userTodayReceiveTotal = 0 %}
+                            {% set userPreviousReceiveTotal = 0 %}
+                            {% set userCommissionTotal = 0 %}
+                            {% set userReturnTotal = 0 %}
+
+                            {% for user in salesTodayUsers %}
+
+                                {% set userTodaySubTotalSales = salesTodayUserTransactionOverview[user.userId] is defined ? salesTodayUserTransactionOverview[user.userId].subTotal : 0 %}
+                                {% set userTodaySalesSubTotal = userTodaySalesSubTotal + userTodaySubTotalSales %}
+                                {% set userTodaySalesDiscount = salesTodayUserTransactionOverview[user.userId] is defined ? salesTodayUserTransactionOverview[user.userId].discount : 0 %}
+                                {% set userTodayDiscountTotal = userTodayDiscountTotal + userTodaySalesDiscount %}
+                                {% set userTodaySales = salesTodayUserTransactionOverview[user.userId] is defined ? salesTodayUserTransactionOverview[user.userId].total : 0 %}
+                                {% set userTodaySalesTotal = userTodaySalesTotal + userTodaySales %}
+                                {% set userTodayReceive = salesTodayUserTransactionOverview[user.userId] is defined ? salesTodayUserTransactionOverview[user.userId].receive : 0 %}
+                                {% set userTodayReceiveTotal = userTodayReceiveTotal + userTodayReceive %}
+                                {% set userPreviousReceive = previousSalesTodayUserTransactionOverview[user.userId] is defined ? previousSalesTodayUserTransactionOverview[user.userId].total : 0 %}
+                                {% set userPreviousReceiveTotal = userPreviousReceiveTotal + userPreviousReceive %}
+                                {% set userCommission = userSalesTodaySalesCommission[user.userId] is defined ? userSalesTodaySalesCommission[user.userId].total : 0 %}
+                                {% set userCommissionTotal = userCommissionTotal + userCommission %}
+                                {% set userReturn = userInvoiceReturn[user.userId] is defined ? userInvoiceReturn[user.userId].total : 0 %}
+                                {% set userReturnTotal = userReturnTotal + userReturn %}
+
+                                <div class="span12 grid-item"  style="margin-top:-10px">
+                                    <div class="portlet-body">
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: green">{% if user.name is not empty %}{{ user.name }}{% else %}{{ user.createdBy }}{% endif %}</span> </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: red">{{ userTodaySubTotalSales|default(0)|number_format(2) }}</span> </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: red">{{ userTodaySalesDiscount|default(0)|number_format(2) }}</span> </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: red">{{ userTodaySales|default(0)|number_format(2) }}</span> </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: red">{{ userTodayReceive|default(0)|number_format(2) }}</span> </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: red">{{ userCommission|default(0)|number_format(2) }}</span> </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: red">{{ userReturn|default(0)|number_format(2) }}</span> </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: red">{{ userPreviousReceive|default(0)|number_format(2) }}</span> </div>
+                                        </a>
+                                        <a href="javascript:" class="icon-btn icon-btn-mini">
+                                            <div><span style="color: red">{{ ((userTodayReceive + userPreviousReceive) - (userCommission + userReturn))|number_format }}</span> </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-2"  style="margin-top:-10px">
+                        <div class="portlet-body">
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div><span style="color:green"> Grant Total</span> </div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div><span style="color: green">{{ userTodaySalesSubTotal|number_format(2) }}</span> </div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div><span style="color: green">{{ userTodayDiscountTotal|number_format(2) }}</span> </div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div><span style="color: green">{{ userTodaySalesTotal|number_format(2) }}</span> </div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div><span style="color: green">{{ userTodayReceiveTotal|number_format(2) }}</span> </div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div><span style="color: green">{{ userCommissionTotal|number_format(2) }}</span> </div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div><span style="color: green">{{ userReturnTotal|number_format(2) }}</span> </div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div><span style="color: green">{{ userPreviousReceiveTotal|number_format(2) }}</span> </div>
+                            </a>
+                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                <div><span style="color: green">{{ ((userTodayReceiveTotal + userPreviousReceive) - (userCommissionTotal + userReturnTotal))|number_format(2) }}</span> </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+

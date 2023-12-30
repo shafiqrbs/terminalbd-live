@@ -1,0 +1,115 @@
+{% extends ':frontend/template:ecommerce-base.html.twig' %}
+{% block body %}
+<section class="siteBgColor">
+    <div class="clearfix"></div>
+    {% if globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'flat-left'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="simple-breadcrumb-left">
+                            <li class=""><span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} হোম {% else %}Home{% endif %}</a></li>
+                            <li class="active">{{ menu.menu }}</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <h2 class="title">Login</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'flat-right'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2 class="title">Login</h2>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="simple-breadcrumb-right">
+                            <li class="active">{{ menu.menu }}</li>
+                            <li class=""><span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} হোম {% else %}Home{% endif %}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'center'  %}
+
+        <div class="pageheader">
+            <div class="container">
+                <div class="col-md-12 text-center">
+                    <h2 class="title">Login</h2>
+                    <p><span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} হোম {% else %}Home{% endif %}</a> &nbsp;&nbsp;<i class="fa fa-angle-right"></i> &nbsp;&nbsp;{{ menu.menu }}</p>
+                </div>
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'left'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="col-md-12 text-left">
+                    <h2 class="title">Login</h2>
+                    <p><span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} হোম {% else %}Home{% endif %}</a> &nbsp;&nbsp;<i class="fa fa-angle-right"></i> &nbsp;&nbsp; {{ menu.menu }}</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="clearfix"></div>
+    <section id="">
+        <div class="container">
+            <div class=" col-xs-6 col-md-6 col-md-offset-3 margin-top">
+                <form class="register" id="commentform" action="{{ path("fos_user_security_check") }}" method="post" novalidate="novalidate">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+                <div class="panel panel-default">
+                    <div class="panel-heading panel-info">
+                        <h4 class="text-left"><strong>LOGIN</strong></h4>
+                    </div>
+                    <div class="panel-body">
+                        {% if(error) %}
+                            <p class="error">{{ error }}</p>
+                        {% endif  %}
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                                <input type="text" id="_username" name="_username" required="required" class="form-control" placeholder="Enter your mobile no">
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                                <input type="password" id="_password" name="_password" required="required" class="form-control secured" placeholder="Enter your password">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer clearfix" >
+                        <button type="submit"  class="btn btn-sm btn-primary pull-right" role="button">Login</button>
+                    </div>
+                </div>
+                </form>
+
+            </div>
+        </div>
+    </section>
+ </section>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@FrontendBundle/Resources/public/template/desktop/css/product.css'
+    '@FrontendBundle/Resources/public/template/desktop/css/medicine.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@FrontendBundle/Resources/public/template/desktop/js/page.js'
+    '@FrontendBundle/Resources/public/template/desktop/js/headerfooter.js'
+    '@FrontendBundle/Resources/public/template/desktop/js/sidebar.js'
+    '@FrontendBundle/Resources/public/template/desktop/js/medicine.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+

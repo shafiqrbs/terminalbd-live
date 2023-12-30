@@ -1,0 +1,75 @@
+services:
+#    accounting.example:
+#        class: Appstore\Bundle\AccountingBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+    appstore.account.sales.event.listener:
+        class: Appstore\Bundle\AccountingBundle\EventListener\AccountSalesListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.account.purchase.event.listener:
+        class: Appstore\Bundle\AccountingBundle\EventListener\AccountPurchaseListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.account.vendor.event.listener:
+        class: Appstore\Bundle\AccountingBundle\EventListener\VendorListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.account.journal.event.listener:
+        class: Appstore\Bundle\AccountingBundle\EventListener\AccountJournalListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.account.balance.transfer.event.listener:
+        class: Appstore\Bundle\AccountingBundle\EventListener\AccountBalanceTransferListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.account.balance.adjustment.event.listener:
+        class: Appstore\Bundle\AccountingBundle\EventListener\AccountSalesAdjustmentListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.account.sales.return.event.listener:
+        class: Appstore\Bundle\AccountingBundle\EventListener\AccountSalesReturnListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.account.online.order.event.listener:
+        class: Appstore\Bundle\AccountingBundle\EventListener\AccountOnlineOrderListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.account.purchase.return.event.listener:
+        class: Appstore\Bundle\AccountingBundle\EventListener\AccountPurchaseReturnListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.account.expenditure.event.listener:
+        class: Appstore\Bundle\AccountingBundle\EventListener\ExpenditureListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.account.pettycash.event.listener:
+        class: Appstore\Bundle\AccountingBundle\EventListener\PettyCashListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.account.salary.event.listener:
+        class: Appstore\Bundle\AccountingBundle\EventListener\PaymentSalaryListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.account.salary.invoice.event.listener:
+        class: Appstore\Bundle\AccountingBundle\EventListener\PaymentSalaryInvoiceListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.account.head.event.listener:
+        class: Appstore\Bundle\AccountingBundle\EventListener\AccountHeadListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+

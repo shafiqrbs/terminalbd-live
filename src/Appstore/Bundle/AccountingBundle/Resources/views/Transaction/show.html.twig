@@ -1,0 +1,125 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    {{ entity.name }}&nbsp;|&nbsp;{{ entity.code }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_transaction') }}">Account of Transaction Details</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">{{ entity.name }}&nbsp;|&nbsp;{{ entity.code }}</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>{{ entity.name }}&nbsp;|&nbsp;{{ entity.code }}</div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig') %}
+                            <div class="cashPayment box">
+                                <form class="search-form" action="" method="" name="itemSearch">
+                                    <div class="span12 pull-right">
+                                        <select id="accountHead" name="accountHead" class="span3 select2">
+                                            <option value="Cash">--Select account head--</option>
+                                            {% for account in accountHead %}
+                                                <option value="{{ account.id }}">{{ account.name }}</option>
+                                            {% endfor %}
+
+                                        </select>
+                                        <input type="text" id="remark" name="remark"  class=" span6 m-wrap"   placeholder="Remark...">
+                                        <div class="input-append">
+                                            <input  class="" type="hidden" name="parent" id="parent" value="">
+                                            <div class="btn-group"><button id="payment-button" type="button" class="btn green" >Submit</button></div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="clearfix"></div>
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr>
+                                    <th class="numeric" colspan="2" style="text-align: right"><strong>Grand Total</strong></th>
+                                    <td class="numeric" ><strong>{{ overview.debit|number_format }}</strong></td>
+                                </tr>
+                                <tr class="head-grey">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >RefNo</th>
+                                    <th class="numeric" >Process Head</th>
+                                    <th class="numeric" >Amount</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for row in entities %}
+                                <tr>
+                                        <td class="numeric" >{{ row.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ row.accountRefNo }}</td>
+                                        <td class="numeric" >{{ row.processHead }}</td>
+                                        <td class="numeric" >
+                                            {% if entity.toIncrease == 'Debit' %}
+                                                   {{ row.debit|number_format }}
+                                            {% else %}
+                                                   {{ row.credit|number_format }}
+                                            {% endif %}
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/pettycash.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $(".editable").editable();
+    AccountingPettyCashPage();
+{% endblock %}
+
+
+

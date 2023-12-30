@@ -1,0 +1,113 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Sales Return
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Sales Return</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Sales Return Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('medicine_sales_item') }}"><i class="icon-plus-sign"></i> Add Sales Return</a>
+                                <a class="btn purple" href="{{ path('medicine_sales_customer_item') }}"><i class="icon-user"></i> Customer Return</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Customer</th>
+                                    <th class="numeric" >Invoice</th>
+                                    <th class="numeric span4" >Medicine Name </th>
+                                    <th class="numeric" >Quantity</th>
+                                    <th class="numeric" >Price</th>
+                                    <th class="numeric" >SubTotal</th>
+                                    <th class="numeric" >Return Qnt.</th>
+                                    <th class="numeric" >Return Price</th>
+                                    <th class="numeric" >SubTotal</th>
+                                    <th class="numeric" >Journal</th>
+                                    <th class="numeric" >Adjustment</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if entities is not empty %}
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.medicineSalesItem.medicineSales.customer.name }}</td>
+                                        <td class="numeric" >{{ entity.medicineSalesItem.medicineSales.invoice }}</td>
+                                        <td class="numeric" >{{ entity.medicineStock.name }}</td>
+                                        <td class="numeric" >{{ entity.medicineSalesItem.quantity }}</td>
+                                        <td class="numeric" >{{ entity.medicineSalesItem.salesPrice }}</td>
+                                        <td class="numeric" >{{ entity.medicineSalesItem.subTotal }}</td>
+                                         <td class="numeric" >{{ entity.quantity }}</td>
+                                        <td class="numeric" >{{ entity.salesPrice }}</td>
+                                        <td class="numeric" >{{ entity.subTotal }}</td>
+                                        <td class="numeric" >{{ entity.journal }}</td>
+                                        <td class="numeric" >{% if entity.isAdjustment == 1 %} Adjustment {% endif %}</td>
+                                        <td class="numeric" >
+                                            {% if entity.process != 'approved' %}
+                                                <a title="Are you sure went to delete ?" href="{{ path('medicine_sales_return_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                                <a href="javascript:" data-id="{{ entity.id }}" data-url="{{ path('medicine_sales_return_approve',{'id':entity.id}) }}" class="btn blue confirm mini"><i class="icon-ok"></i> Approve</a>
+                                            {% else %}
+                                                <a href="javascript:"  class="btn mini green "><i class="icon-ok"></i> Approved</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                {% endif %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}
+
+

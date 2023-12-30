@@ -1,0 +1,84 @@
+{% if products is not empty %}
+    {% if widget.tagShow == 'imageProduct' %}
+        <div id="" class="feature-carousel">
+            <div class="col-md-4">
+                <div id="" class="product-canvas feature-cat-image tagProductLeft" >
+                    <a class="{% if products|length > 3  %} img-card-large {% else %} img-card {% endif %}" href="{{ path(globalOption.subDomain ~ '_webservice_product_tag',{'id':promotion.id }) }}">
+                        <img  src="{{ image(promotion.webPath).resize(400,700, 'white') }}"/>
+                    </a>
+                    <div class="card-read-more text-center" data-match-height="item-category">
+                        <a class="" href="{{ path(globalOption.subDomain ~ '_webservice_product_tag',{'id':promotion.id }) }}"><strong>{{ promotion.name }}</strong></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 " id="tagProductRight">
+                <div class="" >
+                    {% for product in  products  %}
+                        <div class="col-xs-12 col-sm-4">
+                            <div class="product-canvas">
+                                <a data-url="{{ path(globalOption.subDomain ~ '_webservice_product_modal',{'item':product.id }) }}" href="javascript:"  class="btn btn-info preview product-eye"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                <a class="btn btn-warning product-buy" href="{{ path(globalOption.subDomain ~ '_webservice_product_details',{'item':product.slug }) }}"><span class="glyphicon glyphicon-shopping-cart"></span></a>
+                                <a class="img-card" href="{{ path(globalOption.subDomain ~ '_webservice_product_details',{'item':product.slug }) }}">
+                                    {% if product.medicine is not empty and product.webPath is empty %}
+                                        <img src="{{ image(product.medicine.webPath).resize(500,500, 'white') }}"/>                                      {% else %}
+                                        <img src="{{ image(product.webPath).resize(500,500, 'white') }}"/>
+                                    {% endif %}
+                                </a>
+                                <div class="card-content" data-match-height="item-tag">
+                                    <a href="{{ path(globalOption.subDomain ~ '_webservice_product_details',{'item':product.slug }) }}">{% if product.masterItem is not empty and  globalOption.ecommerceConfig.showMasterName == 1 %}{{ product.masterItem.name }}&nbsp;-&nbsp;{% endif %}{{ product.webName }}</a>
+                                </div>
+                                <div class="card-read-more text-center">
+                                    <strong class="currency">{{ globalOption.ecommerceConfig.currency }}</strong>&nbsp;{% if product.discount is not empty  %}<strike>{% endif %}{{ product.salesPrice|number_format() }}{% if product.discount is not empty  %}</strike>{% endif %}{% if product.discount is not empty  %} <strong>{{ product.discountPrice|number_format() }}</strong>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% elseif widget.tagShow == 'slider' %}
+        <div class="tag-slider" >
+            {% for product in  products  %}
+                <div class="col-xs-12">
+                    <div class="product-canvas">
+                        <a data-url="{{ path(globalOption.subDomain ~ '_webservice_product_modal',{'item':product.id }) }}" href="javascript:"  class="btn btn-info preview product-eye"><span class="glyphicon glyphicon-eye-open"></span></a>
+                        <a class="btn btn-warning product-buy" href="{{ path(globalOption.subDomain ~ '_webservice_product_details',{'item':product.slug }) }}"><span class="glyphicon glyphicon-shopping-cart"></span></a>
+                        <a class="img-card" href="{{ path(globalOption.subDomain ~ '_webservice_product_details',{'item':product.slug }) }}">
+                           {% if product.medicine is not empty and product.webPath is empty %}
+                                            <img src="{{ image(product.medicine.webPath).resize(500,500, 'white') }}"/>                                      {% else %}
+                                            <img src="{{ image(product.webPath).resize(500,500, 'white') }}"/>
+                                            {% endif %}
+                        </a>
+                        <div class="card-content" data-match-height="item-tag">
+                            <a href="{{ path(globalOption.subDomain ~ '_webservice_product_details',{'item':product.slug }) }}">{% if product.masterItem is not empty and  globalOption.ecommerceConfig.showMasterName == 1 %}{{ product.masterItem.name }}&nbsp;-&nbsp;{% endif %}{{ product.webName }}</a>
+                        </div>
+                        <div class="card-read-more text-center">
+                            <strong class="currency">{{ globalOption.ecommerceConfig.currency }}</strong>&nbsp;{% if product.discount is not empty  %}<strike>{% endif %}{{ product.salesPrice|number_format() }}{% if product.discount is not empty  %}</strike>{% endif %}{% if product.discount is not empty  %} <strong>{{ product.discountPrice|number_format() }}</strong>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        {% for product in  products  %}
+            <div class="col-md-3 col-xs-3">
+                <div class="product-canvas">
+                    <a data-url="{{ path(globalOption.subDomain ~ '_webservice_product_modal',{'item':product.id }) }}" href="javascript:"  class="btn btn-info preview product-eye"><span class="glyphicon glyphicon-eye-open"></span></a>
+                    <a class="btn btn-warning product-buy" href="{{ path(globalOption.subDomain ~ '_webservice_product_details',{'item':product.slug }) }}"><span class="glyphicon glyphicon-shopping-cart"></span></a>
+                    <a class="img-card" href="{{ path(globalOption.subDomain ~ '_webservice_product_details',{'item':product.slug }) }}">
+                        <img  src="{{ image(product.webPath).resize(500,500, 'white') }}"/>
+                    </a>
+                    <div class="card-content" data-match-height="item-tag">
+                        <a href="{{ path(globalOption.subDomain ~ '_webservice_product_details',{'item':product.slug }) }}">{% if product.masterItem is not empty and  globalOption.ecommerceConfig.showMasterName == 1 %}{{ product.masterItem.name }}&nbsp;-&nbsp;{% endif %}{{ product.webName }}</a>
+                    </div>
+                    <div class="card-read-more text-center">
+                        <strong class="currency">{{ globalOption.ecommerceConfig.currency }}</strong>&nbsp;{% if product.discount is not empty  %}<strike>{% endif %}{{ product.salesPrice|number_format() }}{% if product.discount is not empty  %}</strike>{% endif %}{% if product.discount is not empty  %} <strong>{{ product.discountPrice|number_format() }}</strong>{% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endif %}
+
+
+

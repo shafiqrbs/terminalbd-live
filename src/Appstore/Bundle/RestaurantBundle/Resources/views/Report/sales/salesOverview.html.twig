@@ -1,0 +1,182 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Sales Overview
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Sales Overview</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box blue tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Sales Overview</div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+
+                            <div class="row-fluid">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid">
+                                        <div class="span6">
+                                            {% if option.isBranch == 1 %}
+                                                <select name="branch" id="branch" class="span12 m-wrap">
+                                                    <option value=""> ---Select Branch --- </option>
+                                                    {% for bran in branches %}
+                                                        <option {% if searchForm.branch is defined and searchForm.branch == bran.id %} selected="selected" {% endif %} value="{{ bran.id }}">{{ bran.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            {% endif %}
+                                        </div>
+                                       <div class="span3">
+                                            <input type="text" id="startDate" name="startDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                        </div>
+                                        <div class="span3">
+                                            <div class="controls">
+                                                <div class="input-append span10">
+                                                    <input type="text" id="endDate" name="endDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="form-actions portlet box green">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Sales Cash Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Net Total</th>
+                                    <td class="numeric" >{{ cashOverview.totalAmount|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Payment</th>
+                                    <td class="numeric" >{{ cashOverview.receiveAmount|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Due</th>
+                                    <td class="numeric" >{{ (cashOverview.totalAmount - cashOverview.receiveAmount)|number_format }}</td>
+                                </tr>
+                            </table>
+                            <div class="form-actions portlet box yellow">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Purchase Profit/Loss</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Sales Price</th>
+                                    <td class="numeric" >{{ salesPrice.total|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Purchase Price</th>
+                                    <td class="numeric" >{{ purchasePrice.totalPurchase|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Profit/Loss</th>
+                                    <td class="numeric" >{{ (salesPrice.total - purchasePrice.totalPurchase)|number_format }}</td>
+                                </tr>
+                            </table>
+                            {#
+                            <div class="form-actions portlet box purple">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Transaction wise cash Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Transaction Method</th>
+                                    <th class="numeric" >Sub-total</th>
+                                    <th class="numeric" >Discount</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Due</th>
+                                </tr>
+                                {% for transaction in transactionCash %}
+                                    <tr>
+                                        <td class="numeric" >{{ transaction.transactionName|default }}</td>
+                                        <td class="numeric" >{{ transaction.subTotal|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.totalDiscount|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.total|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.totalPayment|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.totalDue|default|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                           <div class="form-actions portlet box yellow">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Sales Process</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Process</th>
+                                    <th class="numeric" >Sub-total</th>
+                                    <th class="numeric" >Discount</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Due</th>
+                                </tr>
+                                {% for process in salesProcess %}
+                                    <tr>
+                                        <td class="numeric" >{{ process.name|capitalize|default }}</td>
+                                        <td class="numeric" >{{ process.subTotal|default|number_format }}</td>
+                                        <td class="numeric" >{{ process.totalDiscount|default|number_format }}</td>
+                                         <td class="numeric" >{{ process.total|default|number_format }}</td>
+                                        <td class="numeric" >{{ process.totalPayment|default|number_format }}</td>
+                                        <td class="numeric" >{{ process.totalDue|default|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>#}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}
+
+
+
+
+

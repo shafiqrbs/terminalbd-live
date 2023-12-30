@@ -1,0 +1,23 @@
+{% for key,branch in pagination  %}
+    <div class="col-md-4 col-sm-6">
+        <div class="pricingTable btn-block black">
+            <div class="pricingTable-header">
+                <span>{{ branch.name }}</span>
+            </div>
+            <div class="pricingContent">
+                <ul>
+                    <li><i class="fa fa-phone"></i>&nbsp;{{ branch.mobile }}</li>
+                    <li><i class="fa fa-envelope"></i>&nbsp;{{ branch.email }}</li>
+                    <li><i class="fa fa-phone-square"></i>&nbsp;{{ branch.phone|raw }}</li>
+                    <li><i class="fa fa-user"></i>&nbsp;{{ branch.contactPerson }}</li>
+                    <li><i class="fa fa-bookmark"></i>&nbsp;{{ branch.designation }}</li>
+                </ul>
+            </div><!-- /  CONTENT BOX-->
+            <div class="pricingTable-sign-up"><!-- BUTTON BOX-->
+                <span class="price-value" ><i class="fa fa-home"></i>&nbsp;{{ branch.address }}</span>
+                <div class="clearfix"></div>
+                <a class="btn btn-sm  btn-info" target="_blank" href="http://maps.google.com/?q={{ branch.latitude }},{{ branch.longitude }}">Direction</a>
+            </div><!-- BUTTON BOX-->
+        </div>
+    </div>
+{% endfor %}

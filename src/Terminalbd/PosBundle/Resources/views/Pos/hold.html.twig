@@ -1,0 +1,150 @@
+<div class="portlet-body">
+    <table class="table-order">
+        <caption>Holds Statement</caption>
+        <thead>
+        <tr class="blue">
+            <th scope="col">S/N</th>
+            <th scope="col">Invoice</th>
+            <th scope="col">Date</th>
+            <th scope="col">Time</th>
+            <th scope="col">Item</th>
+            <th scope="col">Sub-Total</th>
+            <th scope="col">Discount</th>
+            <th scope="col">Net Total</th>
+            <th scope="col">Sales By</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for dailySales in entities %}
+            <tr id="remove-{{ dailySales.id }}">
+                <td data-label="S/N"><span data-trigger="hover" data-original-title="Barcode print" class="btn blue mini toggle badge-custom" id="{{ dailySales.id  }}" ><span>[+ Show]</span></span> </td>
+                <td data-label="Invoice">{{ dailySales.invoice }}</td>
+                <td data-label="Date">{{ dailySales.created|date('d-m-Y') }}</td>
+                <td data-label="Time">{{ dailySales.created|date('h:i A') }}</td>
+                <td data-label="Item">{{ dailySales.totalItem }}</td>
+                <td data-label="Sub-Total">{{ dailySales.subTotal|number_format  }}</td>
+                <td data-label="Discount">{{ dailySales.discount|number_format  }}</td>
+                <td data-label="Net Total">{{ dailySales.total|number_format  }}</td>
+                <td data-label="Sales By">{% if dailySales.salesBy %}{{ dailySales.salesBy }}{% endif %}</td>
+                <td data-label="Action">
+                    <span class="btn-group">
+                        <a href="javascript:" data-action="{{ path('pos_delete', { 'id': dailySales.id }) }}" data-id="{{ dailySales.id }}" class="btn red mini event" ><i class="icon-trash"></i></a>
+                        {% if dailySales.posItems is defined and  dailySales.posItems is not empty  %}
+                            <a href="javascript:" data-action="{{ path('pos_hold_reorder', { 'id': dailySales.id }) }}" data-id="{{ dailySales.id }}" class="btn purple mini event" ><i class="icon-refresh"></i></a>
+                        {% endif %}
+                    </span>
+                </td>
+            </tr>
+            <tr id="show-{{ dailySales.id }}" class="showing-overview">
+                <td colspan="10">
+                    {% if dailySales.posItems is defined and  dailySales.posItems is not empty  %}
+                        <table class="table table-bordered col-md-12">
+                            <thead>
+                            <tr class="green">
+                                <th scope="col">&nbsp;&nbsp;<i class="icon-reorder"></i></th>
+                                <th scope="col" class="numeric" >Item</th>
+                                <th scope="col" class="numeric" >Qnt</th>
+                                <th scope="col" class="numeric" >Price</th>
+                                <th scope="col" class="numeric" >Sub-total</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for salesItem in dailySales.posItems %}
+                                <tr>
+                                    <td class="numeric" >{{ loop.index }}</td>
+                                    <td class="numeric" >{{ salesItem.name }}</td>
+                                    <td class="numeric" >{{ salesItem.quantity }}</td>
+                                    <td class="numeric" >{{ salesItem.price|number_format() }}</td>
+                                    <td class="numeric" >{{ salesItem.subTotal|number_format() }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot><tr><th colspan="4"><span class="text-right" style="width: 100%; display: inline-block">Grand Total</span> </th><th>{{ dailySales.total }}</th></tr></tfoot>
+                        </table>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<style>
+    .mini {
+        line-height: 13px!important;
+    }
+    .table {
+        margin: 0 0 40px 0;
+        width: 100%;
+        box-shadow: none;
+        display: table;
+    }
+    table {
+        text-align: left;
+        line-height: 40px;
+        border-collapse: separate;
+        border-spacing: 0;
+        border: 2px solid #2980b9;
+        width: 500px;
+        margin: 50px auto;
+        border-radius: .25rem;
+    }
+
+    thead tr.blue:first-child {
+        background: #2980b9;
+        color: #fff;
+        border: none;
+    }
+
+    thead tr.green:first-child {
+        background: #27ae60;
+        color: #fff;
+        border: none;
+    }
+
+    th:first-child,
+    td:first-child {
+        padding: 0 15px 0 20px;
+    }
+
+    th {
+        font-weight: 500;
+    }
+
+    thead tr:last-child th {
+        border-bottom: 3px solid #ddd;
+    }
+
+    tbody tr:hover {
+        background-color: #f2f2f2;
+        cursor: default;
+    }
+
+    tbody tr:last-child td {
+        border: none;
+    }
+
+    tbody td {
+        border-bottom: 1px solid #ddd;
+    }
+
+    td:last-child {
+        text-align: right;
+        padding-right: 10px;
+    }
+
+    .button {
+        color: #aaa;
+        cursor: pointer;
+        vertical-align: middle;
+        margin-top: -4px;
+    }
+
+    .edit:hover {
+        color: #0a79df;
+    }
+
+    .delete:hover {
+        color: #dc2a2a;
+    }
+</style>

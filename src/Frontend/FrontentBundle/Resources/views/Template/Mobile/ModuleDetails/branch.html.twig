@@ -1,0 +1,28 @@
+<div class="bannerPane bannerPane-business-locaton"  {% if details.webPath() is defined and details.webPath() is not empty %} style="background-repeat:no-repeat!important; background-position:center center!important;background:url('{{ image(details.webPath()).resize() }}')" {% endif %} >
+    <div class="overlay"></div>
+    <div class="s-banner-content">
+        {% if globalOption.templateCustomize.mobileShowLogo == 1 %}
+            <a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}" id="mobile-logo">
+                {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+            </a>
+        {% endif %}
+        {{ moduleName }}
+    </div>
+</div>
+<div id="content" class="content-margin">
+    <article>
+        <div class="list">
+            {% if details.googleMap is not empty %}<p style="overflow:hidden">{{ details.googleMap|raw }}</p>{% endif %}
+            <ul class="ul-list">
+                <li><strong><span><i class="fa fa-building"></i></span>{{ details.name }}</strong></li>
+                <li><span><i class="fa fa-home"></i></span>{{ details.address|raw }}</li>
+                <li><span><i class="fa fa-user"></i></span>{{ details.contactPerson }}, <em>{{ details.designation }}</em></li>
+                <li><span><i class="fa fa-mobile-phone"></i></span><a href="tel:+ 088 {{ details.mobile|raw }}" class="contact-call">+ 088 {{ details.mobile|raw }}</a></li>
+                {% if(details.phone) %}<li><span><i class="fa fa-phone-square"></i></span>+ {{ details.phone|raw }}</li>{% endif %}
+                {% if(details.fax) %}<li><span><i class="fa fa-fax"></i></span>+ {{ details.fax|raw }}</li>{% endif %}
+                {% if(details.email) %}<li><span><i class="fa fa-envelope"></i></span>{{ details.email|raw }}</li>{% endif %}
+            </ul>
+        </div>
+    </article>
+</div>
+

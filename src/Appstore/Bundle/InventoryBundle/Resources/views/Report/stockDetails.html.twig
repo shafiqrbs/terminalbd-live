@@ -1,0 +1,141 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Stock Items
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Stock Items</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Item lists</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                {#<ul class="dropdown-menu pull-right">
+                                    <li><a href=""><i class="icon-print"></i>&nbsp; Print</a></li>
+                                    <li><a href=""><i class=" icon-download"></i>&nbsp;Pdf</a></li>
+                                    <li><a href=""><i class=" icon-download-alt"></i>&nbsp;Excel</a></li>
+                                </ul>#}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            <div class="portlet search-portlet box grey">
+                                <div class="row-fluid">
+                                    <form class="search-form" action="" method="get" name="itemSearch">
+                                        <div class="span11">
+                                            <div class="controls">
+                                                <input type="text" id="item" name="item"  class="span3 select2Product" value="{% if searchForm.item is defined %}{{ searchForm.item }}{% endif %}"  autocomplete="off" placeholder="Enter item name ">
+                                                <input type="text" id="color" name="color"  class="span3 select2Color" value="{% if searchForm.color is defined %}{{ searchForm.color }}{% endif %}"  autocomplete="off" placeholder="Enter color name ">
+                                                <input type="text" id="size" name="size"  class="span3 select2Size" value="{% if searchForm.size is defined %}{{ searchForm.size }}{% endif %}"  autocomplete="off" placeholder="Enter size name ">
+                                                <input type="text" id="vendor" name="vendor"  class="span3 select2Vendor" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}" autocomplete="off" placeholder="Enter vendor name ">
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            <div class="btn-group">
+                                                <button class="btn" type="submit" >
+                                                    <i class="icon-search"></i>&nbsp;Go</button>
+
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="numeric" ><i class="icon-reorder"></i></th>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Size</th>
+                                    <th class="numeric" >Color</th>
+                                    <th class="numeric" >Vendor</th>
+                                    <th class="numeric" >Brand</th>
+                                    <th class="numeric" >Purchase</th>
+                                    <th class="numeric" >Prch.return</th>
+                                    <th class="numeric" >Sales</th>
+                                    <th class="numeric" >Sls.return</th>
+                                    <th class="numeric" >Damage</th>
+                                    <th class="numeric" >Remaining Qnt</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td class="numeric" >{{ entity.masterItem.name }}</td>
+                                        <td class="numeric" >{% if entity.size is not empty  %}{{ entity.size.name }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.color is not empty  %}{{ entity.color.name }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.vendor is not empty %}{{ entity.vendor.name }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.brand is not empty %}{{ entity.brand .name}}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.purchaseQuantity }}</td>
+                                        <td class="numeric" >{{ entity.purchaseQuantityReturn }}</td>
+                                        <td class="numeric" >{{ entity.salesQuantity }}</td>
+                                        <td class="numeric" >{{ entity.salesQuantityReturn }}</td>
+                                        <td class="numeric" >{{ entity.damageQuantity }}</td>
+                                        <td class="numeric" >{{ (entity.purchaseQuantity + entity.salesQuantityReturn + entity.purchaseQuantityReplace ) - (entity.purchaseQuantityReturn + entity.salesQuantity + entity.damageQuantity )  }}</td>
+
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/item.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    InventoryItemListPage();
+{% endblock %}

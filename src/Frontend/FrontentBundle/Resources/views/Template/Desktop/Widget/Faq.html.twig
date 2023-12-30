@@ -1,0 +1,30 @@
+{% if entities is defined and entities is not empty  %}
+<div class="container">
+    <div class="text-center">
+        <h2>{% if pageModule.name is not empty %}{{ pageModule.name }}{% else %}Frequently Question & Answer {% endif %}</h2>
+        <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                {% for key,faq in entities  %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingTwo{{ key  }}">
+                            <h4 class="panel-title">
+                                <a class="{% if key != 0 %} collapsed {% endif %}" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo{{ key  }}" aria-expanded="{% if key == 0 %}true{% else %}false{% endif %}" aria-controls="collapseTwo{{ key  }}">
+                                    {{ faq.name }}
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo{{ key  }}" class="panel-collapse collapse {% if key == 0 %}  in {% endif %}" role="tabpanel" aria-labelledby="headingTwo{{ key  }}">
+                            <div class="panel-body">
+                                {{ faq.content|raw }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

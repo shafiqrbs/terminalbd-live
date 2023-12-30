@@ -1,0 +1,110 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN transactionmethod HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="transactionmethod-title">
+                    Form Components
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Transaction Method</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END transactionmethod HEADER-->
+        <!-- BEGIN transactionmethod CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Basic Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+
+                            <div class="row-fluid">
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Name<span class="required">*</span></label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.name) }}
+                                                {{ form_errors(form.name) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-center">
+                                    <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                    <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                                    {% if(entity.id > 0 ) %}
+                                        <a href="{{ path('transactionmethod_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                            <thead class="flip-content ">
+                            <tr class="head-grey">
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Slug</th>
+                                <th class="numeric" >Action</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for entity in pagination %}
+                                <tr>
+                                    <td class="numeric" ><a href="{{ path('transactionmethod_edit',{'id': entity.id })}}">{{ entity.name }}</a></td>
+                                    <td class="numeric" >{{ entity.slug }}</td>
+                                    <td class="numeric" >
+                                        {% if( entity.status == 1) %}
+                                            <a class="btn mini green-stripe btn-action" href="{{ path('transactionmethod_status', { 'id': entity.id}) }}"><span class="badge badge-success">x</span></a>
+                                        {% else %}
+                                            <a class="btn mini green-stripe btn-action" href="{{ path('transactionmethod_status', { 'id': entity.id}) }}"><span class="badge badge-important">a</span>    </a>
+                                        {% endif %}
+                                        <a class="btn mini green-stripe btn-action" href="{{ path('transactionmethod_edit', { 'id': entity.id }) }}">Edit</a>
+                                        <a class="btn mini blue-stripe btn-action" href="{{ path('transactionmethod_show', { 'id': entity.id }) }}">View</a>
+                                        <a class="btn mini red-stripe btn-action confirm" title="Are you sure went to delete ?" href="{{ path('transactionmethod_delete', { 'id': entity.id }) }}" >Delete</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

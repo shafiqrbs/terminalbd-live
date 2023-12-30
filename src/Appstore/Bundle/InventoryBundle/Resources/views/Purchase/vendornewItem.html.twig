@@ -1,0 +1,274 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Purchase
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('purchase') }}">Purchase</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Add/Edit purchase</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid" style="position: relative">
+
+            <div class="span12">
+                <div id="dataProces"></div>
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Purchase Information</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('purchase_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('purchase') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                    <li><a href="{{ path('item') }}"><i class="icon-th-list"></i>&nbsp;Item</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="{{ path('item_new') }}"><i class="icon-plus-sign"></i>&nbsp;Item create</a></li>
+                                    <li><a href="{{ path('inventory_product') }}"><i class="icon-plus-sign"></i>&nbsp;Master item</a></li>
+                                    <li><a href="{{ path('inventory_product_new') }}"><i class="icon-plus-sign  "></i>&nbsp;Master item create</a></li>
+                                    <li class="divider"></li>
+                                    {% if(entity.id > 0 ) %}
+                                        <li><a href="{{ path('purchase_edit',{'id':entity.id}) }}"><i class="icon-edit"></i>&nbsp;Edit</a></li>
+                                        <li><a href="{{ path('purchase_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;Show</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body" >
+
+                        <div class="portlet-body form" >
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <h4>Vendor:</h4>
+                                    <ul class="unstyled">
+                                        <li>{{ purchaseInfo.vendor.companyName }}</li>
+                                        <li>{{ purchaseInfo.vendor.name }}</li>
+                                        <li>{{ purchaseInfo.vendor.mobile }}</li>
+                                        <li>{{ purchaseInfo.vendor.address }}</li>
+                                        {% if purchaseInfo.vendor.country %}
+                                        <li>{{ purchaseInfo.vendor.country.name }}</li>
+                                        {% endif %}
+
+                                    </ul>
+                                </div>
+                                <div class="span4">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Memo/Invoice #:</strong>{{ purchaseInfo.memo }} {% if  purchaseInfo.invoice  %}/{{ purchaseInfo.invoice }}{% endif %}</li>
+                                        <li><strong>Item/Qnt:</strong> {{ purchaseInfo.totalItem }}/{{ purchaseInfo.totalQnt }}</li>
+                                        {#<li><strong>Created:</strong> {{ purchaseInfo.created }}</li>#}
+                                        <li><strong>Received:</strong> {{ purchaseInfo.receiveDate|date('d-m-Y') }}</li>
+                                        <li><strong>Created:</strong> {{ purchaseInfo.created|date('d-m-Y') }}</li>
+                                        <li><strong>Created By:</strong> {% if purchaseInfo.createdBy is defined and purchaseInfo.createdBy is not empty %}{{ purchaseInfo.createdBy.username }}{% endif %}</li>
+                                    </ul>
+                                </div>
+                                <div class="span4 invoice-payment">
+                                    <h4>Payment Details:</h4>
+                                    <ul class="unstyled">
+
+                                        <li><strong>Total BDT:</strong> {{ purchaseInfo.totalAmount|number_format() }}</li>
+                                        <li><strong>Payment BDT:</strong> {{ purchaseInfo.paymentAmount|number_format() }}</li>
+                                        <li><strong>Due BDT:</strong> {{ purchaseInfo.dueAmount|number_format() }}</li>
+                                        <li><strong>Commission BDT:</strong> {{ purchaseInfo.commissionAmount|number_format() }}</li>
+
+
+                                    </ul>
+                                </div>
+                                <div class="span3 image-preview"></div>
+                            </div>
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            {% set total = 0 %}
+                            {% for vendorItem in purchaseInfo.purchaseVendorItems %}
+
+                                {% set total = total + vendorItem.quantity %}
+
+                                <div class="form-actions portlet box blue">
+                                    <div class="portlet-title">
+                                        <div class="span3">
+                                            <div class="caption"><i class="icon-reorder"></i> {{ vendorItem.name }}</div>
+                                        </div>
+                                        <div class="span8">
+                                            <div class="span3">Purchase: {{ vendorItem.purchasePrice }}</div>
+                                            <div class="span3">Quantity: {{ vendorItem.quantity }}</div>
+                                            <div class="span3">Sales:{{ vendorItem.salesPrice }}</div>
+                                            <div class="span3">Web:{{ vendorItem.webPrice }}</div>
+                                        </div>
+                                        <div class="span1"><button type="button" data-ref-id="{{vendorItem.id }}"  class="btn green mini addmore" ><i class="icon-plus m-icon-white"></i></button></div>
+
+                                    </div>
+                                </div>
+                                <div class="clearfix">&nbsp;</div>
+                               <!--/span-->
+                                <div class="clone-block" id="clone-block-{{vendorItem.id }}">
+                                    <div class="row-fluid clone  box blue">
+                                        <div class="span5">
+                                           <select class="span12" name="item[]" style="height: 32px">
+                                               {% for item in items %}
+                                               <option value="{{ item.id }}">{{ item.masterItem.name }}-{{ item.color.name }}-{{ item.size.name }}-{{ item.vendor.vendorCode }}</option>
+                                               {% endfor %}
+                                           </select>
+                                        </div>
+                                        <div class="span6">
+                                            <div class="span4"><input type="hidden" id="" name="purchaseVendorItem[]" class="" value="{{ vendorItem.id }}"  >
+                                            <input type="text" id="" name="quantity[]" class="m-wrap span12 tooltips" required="required" value="" placeholder="No of quantity" , data-original-title ="No of quantity" , data-trigger = "hover" >
+                                            </div>
+                                            <div class="span4">
+                                            <input type="text" id="" name="salesPrice[]" class="m-wrap span12 tooltips"  placeholder="sales price" value="" , data-original-title ="Please add sales price" , data-trigger = "hover" >
+                                            </div>
+                                            <div class="span4">
+                                            <input type="text" id="" name="webPrice[]" class="m-wrap span12 tooltips"  placeholder="web price" value="" , data-original-title ="Please add web price" , data-trigger = "hover">
+                                            </div>
+                                        </div>
+                                        <div class="span1"><button type="button" class="btn red  remove hidden" ><i class="icon-trash m-icon-white"></i></button></div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="form-actions portlet box grey">
+                                <div class="span8" id="message"></div>
+                                <div class="pull-right">
+                                    <input type="hidden" id="totalQnt" value="{{ total }}">
+                                    <button type="reset" class="btn purple action-button"><i class="icon-refresh"></i> Reset</button>
+                                    <button type="submit" class="btn green action-button"><i class="icon-ok"></i>&nbsp;Submit</button>
+
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+
+    {#<script>#}
+
+    $('.addPurchase').submit( function( e ) {
+
+        var totalQnt =  $('#totalQnt').val();
+
+        var quantity = 0;
+            $("input[name='quantity[]']").each(function (index, element) {
+            quantity = quantity + parseFloat(($(element).val() != '') ?  parseFloat($(element).val()) : 0);
+        });
+
+        var itemquantity = [];
+        $("input[name='quantity[]']").each(function() {
+            var value = $(this).val();
+            if (value) {
+            itemquantity.push(value);
+            }
+        });
+
+
+       if(quantity != totalQnt ){
+            $('#message').text('Not equal total quantity & item base total quantity');
+            $('.quantity').focus();
+            return false;
+        }else if(itemquantity.length === 0 ){
+            $('#message').text('Item quantity field values are blank');
+            $('.quantity').focus();
+            return false;
+        }else{
+            $('.addPurchase').submit();
+        }
+    {#
+
+        $.ajax({
+            url:'{{ path('inventory_purchaseitem_create',{'purchase':purchase}) }}',
+            type: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+                $('#dataProces').show().addClass('ajax-loading').fadeIn(3000);
+            },
+            success: function(response) {
+                $('#dataProces').fadeOut(3000);
+                if(response == 'success'){
+                    $('.action-button').attr("disabled", true);
+                    $('#message').html('Purchase item added successfully waiting for approve');
+                }else{
+                    $('#message').html('Purchase item quantity must be explicit your item');
+                }
+            },
+
+            })
+            e.preventDefault();
+    #}
+   });
+
+    $('#purchaseItem').on("click", ".delete", function() {
+            var url = $(this).attr("rel");
+            var id = $(this).attr("id");
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (response) {
+                    if ('success' == response) {
+                        $('#remove-' + id).hide();
+                    }
+                },
+            })
+        })
+
+
+        var count = 0;
+        $('.addmore').click(function(){
+
+            var $el = $(this);
+            $vendor_id = $el.data('ref-id');
+            var $cloneBlock = $('#clone-block-'+ $vendor_id);
+
+            var $clone = $cloneBlock.find('.clone:eq(0)').clone();
+            $clone.find('[id]').each(function(){this.id+='someotherpart'});
+            $clone.find(':text,textarea' ).val("");
+            $clone.attr('id', "added"+(++count));
+            $clone.find('.remove').removeClass('hidden');
+            $cloneBlock.append($clone);
+            $('.numeric').numeric();
+        });
+
+        $('form.addPurchase').on('click', '.remove', function(){
+            $(this).closest('.clone').remove();
+        });
+
+
+
+{% endblock %}

@@ -1,0 +1,34 @@
+services:
+#    hospital.example:
+#        class: Appstore\Bundle\HospitalBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+    appstore.hospital.setting.event.listener:
+        class: Appstore\Bundle\HospitalBundle\EventListener\SettingListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.hospital.particular.event.listener:
+        class: Appstore\Bundle\HospitalBundle\EventListener\ParticularListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.hospital.invoice.event.listener:
+        class: Appstore\Bundle\HospitalBundle\EventListener\InvoiceListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.hospital.purchase.event.listener:
+        class: Appstore\Bundle\HospitalBundle\EventListener\PurchaseListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.hospital.stockout.event.listener:
+        class: Appstore\Bundle\HospitalBundle\EventListener\StockOutListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.hospital.doctor.invoice.event.listener:
+        class: Appstore\Bundle\HospitalBundle\EventListener\DoctorInvoiceListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }

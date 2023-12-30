@@ -1,0 +1,173 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Periodic Sales Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Periodic Sales Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Periodic Sales Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn yellow" href="{{ path('medicine_report_sales_summary') }}"><i class="icon-bar-chart"></i>&nbsp;Sales Overview</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="customer" name="customer"  class="span12 m-wrap select2Customer" value="{% if searchForm.customer is defined %}{{ searchForm.customer }}{% endif %}"  autocomplete="off" placeholder="Enter customer mobile no ">
+                                    </div>
+                                    <div class="span3">
+                                        <select name="transactionMethod" id="transactionMethod" class="span12 m-wrap">
+                                            <option value="">Transaction Method</option>
+                                            {% for method in transactionMethods %}
+                                                <option {% if searchForm.method is defined and searchForm.method == method.id %} selected="selected" {% endif %} value="{{ method.id }}" >{{ method.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <select name="bank" id="bank" class="span12 m-wrap">
+                                            <option value="">Bank Account</option>
+                                            {% for bank in banks %}
+                                                <option {% if searchForm.bank is defined and searchForm.bank == bank.id %} selected="selected" {% endif %} value="{{ bank.id }}" >{{ bank.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <select name="mobileBank" id="mobileBank" class="span12 m-wrap">
+                                            <option value="">Mobile Account</option>
+                                            {% for mobile in mobiles %}
+                                                <option {% if searchForm.mobileBank is defined and searchForm.mobileBank == mobile.id %} selected="selected" {% endif %} value="{{ mobile.id }}" >{{ mobile.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="toUser" name="toUser"  class="span12 m-wrap select2User" value="{% if searchForm.toUser is defined %}{{ searchForm.toUser }}{% endif %}"  autocomplete="off" placeholder="Enter sales user">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="due" name="due"  class="span12 m-wrap" value="{% if searchForm.due is defined %}{{ searchForm.due }}{% endif %}"  autocomplete="off" placeholder="Due amount">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined and  searchForm.startDate is not empty %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="endDate" name="endDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined and  searchForm.endDate is not empty %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content">
+                                <tr class="head-red">
+                                    <th class="numeric" ><strong>Total Quantity</strong></th>
+                                    <th class="numeric" ><strong>Sales Amount</strong></th>
+                                    <th class="numeric" ><strong>Vat Amount</strong></th>
+                                    <th class="numeric" ><strong>Purchase Amount</strong></th>
+                                    <th class="numeric" ><strong>Profit/Loss</strong></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                               {# <tr>
+                                    <td class="numeric" ><strong>{{ purchaseSalesItem.quantity }}</strong></td>
+                                    <td class="numeric" ><strong>{{ cashOverview.total|number_format }}</strong></td>
+                                    <td class="numeric" ><strong>{{ cashOverview.totalVat|number_format }}</strong></td>
+                                    <td class="numeric" ><strong>{{ purchaseSalesItem.purchasePrice|number_format }}</strong></td>
+                                    <td class="numeric" ><strong>{{ (cashOverview.total - (cashOverview.totalVat + purchaseSalesItem.purchasePrice))|number_format }}</strong></td>
+                                </tr>#}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric" >Created</th>
+                                <th class="numeric" >Invoice</th>
+                                <th class="numeric" >Customer</th>
+                                <th class="numeric" >Mobile</th>
+                                <th class="numeric" >Method</th>
+                                <th class="numeric" >Sub-Total</th>
+                                <th class="numeric" >Discount</th>
+                                <th class="numeric" >Net Total</th>
+                                <th class="numeric" >Payment</th>
+                                <th class="numeric" >Due</th>
+                                <th class="numeric" >Purchase</th>
+                                <th class="numeric" >Profit/Loss</th>
+                                <th class="numeric" >%</th>
+                            </tr>
+                            </thead>
+                            <tbody id="sales">
+                            {% for entity in entities %}
+                                <tr id="salesRemove-{{ entity.id }}">
+                                    <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                    <td class="numeric" >{{ entity.invoice }}</td>
+                                    <td class="numeric" >{% if entity.name != "Default" %}{{ entity.name }}{% endif %}</td>
+                                    <td class="numeric" >{% if entity.name != "Default" %}{{ entity.mobile }}{% endif %}</td>
+                                    <td class="numeric" >{{ entity.transactionMethod }}</td>
+                                    <td class="numeric" >{{ entity.subTotal|number_format  }}</td>
+                                    <td class="numeric" >{{ entity.discount|number_format  }}</td>
+                                    <th class="numeric" >{{ entity.total|number_format  }}</th>
+                                    <th class="numeric" >{{ entity.payment|number_format }}</th>
+                                    <td class="numeric" >{{ entity.due|number_format }}</td>
+                                    <td class="numeric" >{% if purchasePrice[entity.id] is defined and purchasePrice[entity.id] is not empty %}{{ purchasePrice[entity.id]|number_format }}{% endif %}</td>
+                                    <th class="numeric" >{% if purchasePrice[entity.id] is defined and purchasePrice[entity.id] is not empty %}{{ (entity.total - purchasePrice[entity.id])|number_format }}{% endif %}</th>
+                                    <td class="numeric" >{% if purchasePrice[entity.id] is defined and purchasePrice[entity.id] is not empty %}{{ (((entity.total|default(0) - purchasePrice[entity.id]|default(0))*100)/entity.total|default(0))|number_format }}%{% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="pagination pull-center"  >
+                            {{ knp_pagination_render(entities) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}

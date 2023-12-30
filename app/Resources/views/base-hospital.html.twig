@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon"  href="{{ asset('assets/img/favicon/favicon.ico') }}">
+    <link href="{{ asset('assets/plugins/font-awesome/css/font-awesome-4.7.0.min.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('assets/plugins/select2/select2_metro.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('assets/print/css/style.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('assets/print/css/menu.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('assets/plugins/datepicker/the-datepicker.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('assets/print/css/print.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('assets/print/css/css-loader.css') }}" type="text/css" rel="stylesheet"/>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+</head>
+<title>{{ app.user.globalOption.name }} | MIS Reports</title>
+<body class="body">
+<!-- START: RUBY DEMO HEADER -->
+{% include "report/menu.html.twig"  %}
+<!-- END: RUBY DEMO HEADER -->
+<div id="pdf-area">
+    {#<div class="print-header-content" style="width: 1024px!important;" ><img height="100" src="{{ asset('assets/img/layout/header.png') }}"></div>#}
+    {% block body %}{% endblock %}
+    {#<div class="print-footer-content">
+    <div class="row">
+        <div class="col-md-12">
+            <img width="100%" height="100" src="{{ asset('assets/img/layout/footer.png') }}">
+        </div>
+    </div>
+    </div>#}
+</div>
+{% javascripts
+'assets/plugins/jquery-1.10.2.min.js'
+'assets/plugins/jquery-migrate-1.2.1.min.js'
+'assets/plugins/jquery-ui/jquery-ui-1.10.2.custom.min.js'
+'assets/plugins/jquery-ui/jquery.ui.droppable.js'
+'assets/plugins/jquery-ui/jquery.ui.autocomplete.js'
+'assets/plugins/jquery-ui/jquery.ui.menu.min.js'
+'assets/plugins/jquery-ui/jquery.ui.position.min.js'
+'assets/plugins/jquery-ui/jquery.ui.widget.min.js'
+'assets/plugins/datepicker/the-datepicker.js'
+'assets/plugins/select2/select2.min.js'
+'assets/plugins/jquery-ui/jquery.ui.autocomplete.js'
+'assets/js/process.js'
+'assets/scripts/app.js'
+'assets/print/js/kinzi.print.min.js'
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% block javascriptBlock %}
+{% endblock %}
+<script>
+    $('.print').click(function () {
+        $('#print-area').kinziPrint({
+            importCSS: true,
+           // header: $('.print-header-content').html(),
+           // footer: $('.print-footer-content').html()
+        });
+    });
+    function goBack() {
+        window.history.back();
+    }
+    jQuery(document).ready(function () {
+        {% block documentready %}
+        $('.select2').select2();
+        $(document).on('click', '.ajax-btn', function() {
+            $.ajax({
+                url         : $('form#searchForm').attr( 'action' ),
+                type        : $('form#searchForm').attr( 'method' ),
+                data        : new FormData($('form#searchForm')[0]),
+                processData : false,
+                contentType : false,
+                beforeSend: function(){
+                    $('.loader-double').fadeIn(1000).addClass('is-active');
+                },
+                complete: function(){
+                    $('.loader-double').fadeIn(1000).removeClass('is-active');
+                },
+                success: function(response){
+                    $('#data-load').html(response);
+                }
+            });
+        });
+
+        $(document).on("change", ".accountHead", function(event) {
+            account = $(this).val();
+            $.get( Routing.generate('account_sub_account_select',{ id:account}))
+                .done(function( data ) {
+                    $('.subAccountHead').html(data);
+                });
+        });
+        {% endblock %}
+    });
+</script>
+</body>
+</html>

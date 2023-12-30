@@ -1,0 +1,22 @@
+{% if entity.medicinePrepurchaseItems is not empty %}
+    {% for item in entity.medicinePrepurchaseItems %}
+        <tr id="remove-{{ item.id }}">
+            <td class="span3">{{ loop.index }}. <strong>{{ item.medicineStock.name }}</strong></td>
+            <td class="span3">{% if item.medicineStock.rackNo is not empty %}{{ item.medicineStock.rackNo.name }}{% endif %}</td>
+            <td class="span1">
+                <input type="text" class="td-inline-input salesPrice" data-id="{{ item.id }}" autocomplete = "off"  id="salesPrice-{{ item.id }}" name="salesPrice" value="{{ item.salesPrice }}" >
+            </td>
+            <td class="span1">
+                {% if ( app.user.granted("ROLE_MEDICINE_MANAGER") or app.user.granted("ROLE_DOMAIN"))  %}
+                    <a  class="editableText" data-name="pack" href="#"  data-url="{{ path('medicine_stock_inline') }}" data-type="text" data-pk="{{ item.medicineStock.id }}" data-original-title="Change pack qnt">{{ item.medicineStock.pack }}</a>
+                {% endif %}
+            </td>
+            <td class="span1">
+                <input type="text" class="td-inline-input quantity" data-id="{{ item.id }}" autocomplete = "off" min="1" max="{{ item.quantity }}"  id="quantity-{{ item.id }}" name="quantity[]" value="{{ item.quantity }}" placeholder="{{ item.quantity }}">
+            </td>
+            <td class="span1">{% if item.medicineStock.unit is not empty %}<span>{{ item.medicineStock.unit.name }}</span>{% endif %}</td>
+            <td class="" id="subTotal-{{ item.id }}">{{ (item.salesPrice * item.quantity)|number_format }}</td>
+            <td class=""><a id="{{ item.id }}" data-url="{{ path('medicine_prepurchase_particular_delete',{'invoice': entity.id ,'id': item.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a></td>
+        </tr>
+    {% endfor %}
+{% endif %}

@@ -1,0 +1,450 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+    <!-- BEGIN category HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="category-title">
+                Invoice no #  <strong>{{ invoice.invoice }}</strong>
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li>
+                    <a href="{{ path('hms_doctor_commission_invoice') }}">Doctor Commission</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li><a href="#">Manage Doctor Commission</a></li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END category HEADER-->
+    <!-- BEGIN category CONTENT-->
+    <div class="row-fluid">
+    <div class="span12">
+
+    <div class="portlet box green tabbable">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Particulars & Payment Information</div>
+            <div class="actions">
+                <div class="btn-group">
+                    <a class="btn red" href="{{ path('hms_doctor_commission_invoice') }}"><i class="icon-th-list"></i>&nbsp;Commission Invoice</a>
+                    <a class="btn yellow" href="{{ path('hms_doctor_invoice') }}"><i class="icon-th-list"></i>&nbsp;Payment</a>
+                </div>
+            </div>
+        </div>
+    <div class="portlet-body">
+        <div class="portlet-body form">
+            <div class="row-fluid">
+                <div class="span3">
+                    <h4>About:</h4>
+                    <ul class="unstyled">
+                        {% if invoice.customer is not empty %}<li><strong>Patient #:</strong>&nbsp;{{ invoice.customer.name }}</li>{% endif %}
+                        {% if invoice.customer is not empty %}<li><strong>Mobile #:</strong>&nbsp;{{ invoice.customer.mobile }}</li>{% endif %}
+                        {% if invoice.customer is not empty and invoice.customer.location is not empty   %}<li><strong>Location #:</strong>&nbsp;{{ invoice.customer.location.name }}, {{ invoice.customer.location.parent.name }}</li>{% endif %}
+                        <li><strong>Created:</strong>&nbsp;{{ invoice.created|date('d-m-Y') }}</li>
+                    </ul>
+                </div>
+
+                <div class="span3 invoice-payment">
+                    <h4>Payment Details:</h4>
+                    <ul class="unstyled">
+                        <li><strong>Total BDT:</strong>&nbsp;{{ invoice.total|number_format() }}</li>
+                        <li><strong>Payment BDT:</strong>&nbsp;{{ invoice.payment|number_format() }}</li>
+                        {% if invoice.discount %}<li><strong>Discount BDT:</strong>&nbsp;{{ invoice.discount|number_format() }}</li>{% endif %}
+                        {% if invoice.due %}<li><strong>Due BDT:</strong>&nbsp;{{ invoice.due|number_format() }}</li>{% endif %}
+                        <li><strong>Payment status</strong>&nbsp;{{  invoice.paymentStatus|capitalize }}</li>
+                    </ul>
+
+                </div>
+                <div class="span3">
+                    <h4>Payment Method:</h4>
+                    <ul class="unstyled">
+                        <li><strong>Payment Method:</strong>&nbsp;{{ invoice.paymentMethod }}</li>
+                        {% if invoice.accountMobileBank is not empty %}<li><strong>Received Mobile:</strong>&nbsp;{{ invoice.accountMobileBank.name }}</li>{% endif %}
+                        {% if invoice.paymentMobile is not empty %}<li><strong>Mobile/Transaction:</strong>&nbsp;{{ invoice.paymentMobile }}/{{ invoice.transactionId }}</li>{% endif %}
+                        {% if invoice.accountBank is not empty %}<li><strong>Received Bank:</strong>&nbsp;{{ invoice.accountBank.name }}</li>{% endif %}
+                        {% if invoice.paymentCard is not empty %}<li><strong>Payment Card/No:</strong>&nbsp;{{ invoice.paymentCard.name }}/{{ invoice.cardNo }}</li>{% endif %}
+                        {% if invoice.bank is not empty %}<li><strong>Bank:</strong>&nbsp;{{ invoice.bank.name  }}</li>{% endif %}
+                        <li><strong>Received By:</strong>&nbsp;{% if invoice.createdBy is defined and invoice.createdBy is not empty %}{{ invoice.createdBy }}{% endif %}</li>
+                    </ul>
+                </div>
+                <div class="span3">
+                    <h4>Assign/Referred By:</h4>
+                        <ul class="unstyled">
+                            {% if invoice.assignDoctor is not empty %}
+                            <li><strong>Assign Doctor</strong>&nbsp;</li>
+                            <li>Name:&nbsp;{{ invoice.assignDoctor.name }}</li>
+                            <li>Mobile:&nbsp;{{ invoice.assignDoctor.mobile }}</li>
+                            {% endif %}
+                            <li><strong>Referred Doctor/Agent</strong>&nbsp;</li>
+                            {% if invoice.referredDoctor is not empty %}
+                            <li>Name:&nbsp;{{ invoice.referredDoctor.name }}</li>
+                            <li>Mobile:&nbsp;{{ invoice.referredDoctor.mobile }}</li>
+                            {% endif %}
+                        </ul>
+
+                </div>
+            </div>
+            <div class="row-fluid" >
+                <div class="span12" id="particular-table">
+                {% if invoice.invoiceParticulars is defined and  invoice.invoiceParticulars is not empty  %}
+                    <table class="table table-bordered table-striped table-condensed table-fixed">
+                        <thead class="flip-content ">
+                        <tr class="head-black">
+                            <th class="span8">Investigation</th>
+                            <th class="span1">Qnt</th>
+                            <th class="span1">Commission</th>
+                            <th class="span2">Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for key, serviceDetails in invoiceDetails %}
+                            {% if key != 'Pathology' %}
+                                <tr><td colspan="4" class="span9 service-group"><strong>{{ key }}</strong></td></tr>
+                            {% endif %}
+                            {% set colSpan = serviceDetails.hasQuantity? 1 : 2 %}
+                            {% for item in serviceDetails.items %}
+                                <tr>
+                                    <td class="span8" colspan="{{ colSpan }}">{{ item.particular.particularCode }} - {{ item.particular.name }}</td>
+                                    {% if serviceDetails.hasQuantity %}
+                                        <td class="span1">{{ item.quantity }}</td>
+                                    {% endif %}
+                                    <td class="span1">{{ item.commission|number_format }}</td>
+                                    <td class="span1">{{ item.subTotal|number_format }}</td>
+                                </tr>
+                            {% endfor %}
+                            <tr><td colspan="3" class="span11"><strong class="pull-right">Sub-Total</strong></td><td class="span1"><strong>{{ serviceDetails.total|number_format }} </strong></td></tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="4" class="span12" style="border: 1px double #000"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="span9"><span class="pull-right"><strong>Total Amount TK.</strong> =</span></td>
+                            <td class="span1"><strong class="subTotal">{{ invoice.subTotal|number_format }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="span9"><span class="pull-right"><strong>Vat/Tax TK.</strong> =</span></td>
+                            <td class="span1"><strong class="vat">{{ invoice.vat|number_format }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="span9"><span class="pull-right"><strong>Discount TK.</strong> =</span></td>
+                            <td class="span1"><strong class="discountAmount">{{ invoice.discount|number_format }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="span9"><span class="pull-right"><strong>Grand Total TK.</strong> =</span></td>
+                            <td class="span1"><strong class="paymentAmount">{{ invoice.total|number_format }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="span9"><span class="pull-right"><strong>Received TK.</strong> =</span></td>
+                            <td class="span1"><strong class="paymentAmount">{{ invoice.payment|number_format }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="span9"><span class="pull-right"><strong>Due TK.</strong> =</span></td>
+                            <td class="span1"><strong class="paymentAmount">{{ invoice.due|number_format }}</strong></td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                {% endif %}
+                </div>
+
+            </div>
+            <div class="form-actions portlet box purple">
+                <div class="pull-left span6"><span class="btn" style="margin-top:1px; font-weight:bold">Invoice Commission: BDT. {{ invoice.estimateCommission|number_format }}</span></div>
+                <div class="pull-right span6">
+                    <span id="show" data-trigger="hover" data-original-title="All payment history" class=" btn purple receivePayment tooltips pull-right"><i class="icon-money"></i>&nbsp;Payment History</span>
+                </div>
+            </div>
+            {% include('flash-message.html.twig')  %}
+            <div class="row-fluid" id="showPayment" style="display: none">
+                <div class="span12">
+                    <table class="table table-bordered table-striped table-condensed table-fixed">
+                        <thead>
+                        <tr class="head-blue">
+                            <th class="numeric">&nbsp;&nbsp;<i class="icon-list"></i></th>
+                            <th class="numeric">Created</th>
+                            <th class="numeric">Payment Method</th>
+                            <th class="numeric">Discount</th>
+                            <th class="numeric">Vat/Tax</th>
+                            <th class="numeric">Amount</th>
+                            <th class="numeric">Created By</th>
+                        </tr>
+                        </thead>
+                        <tbody id="invoiceTransaction">
+                        {% for transaction in invoice.invoiceTransactions %}
+                            <tr>
+                                <td  class="numeric">{{ loop.index }}</td>
+                                <td  class="numeric">{{ transaction.updated|date('d-m-Y') }}</td>
+                                <td class="numeric">{% if transaction.transactionMethod is not empty %}{{ transaction.transactionMethod.name }}{% endif %}</td>
+                                <td class="numeric">{{ transaction.discount }}</td>
+                                <td class="numeric">{{ transaction.vat }}</td>
+                                <td class="numeric">{{ transaction.payment }}</td>
+                                <td class="numeric">{{ transaction.createdBy }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td class="numeric" colspan="3"><span class="pull-right"><strong>Total TK.</strong> =</span></td>
+                            <td class="numeric"><strong class="discountAmount">{{ invoice.discount|number_format }}</strong></td>
+                            <td class="numeric"><strong class="vat">{{ invoice.vat|number_format }}</strong></td>
+                            <td class="numeric"><strong class="paymentAmount">{{ invoice.payment|number_format }}</strong></td>
+                            <td class="numeric"></td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div class="clearfix">&nbsp;</div>
+            <div class="form-actions portlet box green">
+                <div class="pull-right span12">
+                   <span class="btn green"><i class="icon-plus"></i>&nbsp;Add Doctor/Referred/Agent Payment</span>
+                </div>
+            </div>
+            <div class="clearfix">&nbsp;</div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <table class="table table-bordered table-striped table-condensed table-fixed">
+                        <thead>
+                        <tr class="head-blue">
+                            <th class="numeric">&nbsp;&nbsp;<i class="icon-list"></i></th>
+                            <th class="numeric">Created</th>
+                            <th class="numeric">Doctor/Referred</th>
+                            <th class="numeric">Mobile</th>
+                            <th class="numeric">Payment For</th>
+                            <th class="numeric">Method</th>
+                            <th class="numeric">Created By</th>
+                            <th class="numeric">Amount</th>
+                            <th class="numeric">Upload</th>
+                            <th class="numeric">Paid</th>
+                        </tr>
+                        </thead>
+                        <tbody id="invoiceTransaction">
+                        {% set totalPayment = 0 %}
+                        {% for transaction in invoice.doctorInvoices %}
+                            {%  set totalPayment = totalPayment + transaction.payment  %}
+                            <tr>
+                                <td  class="numeric">{{ loop.index }}</td>
+                                <td  class="numeric">{{ transaction.updated|date('d-m-Y') }}</td>
+                                <td class="numeric">{{ transaction.assignDoctor.name }}</td>
+                                <td class="numeric">{{ transaction.assignDoctor.mobile }}</td>
+                                <td class="numeric">{{ transaction.hmsCommission.name }}</td>
+                                <td class="numeric">{{ transaction.transactionMethod.name }}</td>
+                                <td class="numeric">{{ transaction.createdBy }}</td>
+                                <td class="numeric">{{ transaction.payment }}</td>
+                                <td class="numeric">{% if transaction.webPath is not empty %}<a target="_blank" href="/{{ transaction.webPath }}">Download</a>{% endif %}</td>
+                                <td class="numeric">
+                                    {% if transaction.process != 'Paid' %}
+                                     <a class="btn blue mini addPay" data-url="{{ path('hms_doctor_invoice_pay',{'id':transaction.id}) }}"><i class="icon-money"></i>&nbsp;Approve</a>
+                                     <a data-url="{{ path('hms_doctor_invoice_delete', { 'id': transaction.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a>
+                                    {% else %}
+                                        <a class="btn green mini"><i class="icon-ok"></i></a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td class="numeric" colspan="7"><span class="pull-right"><strong>Total TK.</strong> =</span></td>
+                            <td class="numeric"><strong>{{ totalPayment|number_format }}</strong></td>
+                            <td class="numeric"><strong>{{ invoice.commission|number_format }}</strong></td>
+                            <td></td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div class="clearfix">&nbsp;</div>
+            {{ form_start(form) }}
+            {{ form_row(form._token) }}
+            <div class="row-fluid">
+                <div class="span8">
+                    <div class="row-fluid">
+                        <div class="span8">
+                            <div class="control-group">
+                                <label>Commission For Doctor/Referred/Agent </label>
+                                <div class="controls">
+                                    {{ form_widget(form.assignDoctor) }}
+                                    {{ form_errors(form.assignDoctor) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <div class="control-group">
+                                <label>Commission For</label>
+                                <div class="controls">
+                                    {{ form_widget(form.hmsCommission) }}
+                                    {{ form_errors(form.hmsCommission) }}
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="control-group">
+                                <label>Comment</label>
+                                <div class="controls">
+                                    {{ form_widget(form.comment) }}
+                                    {{ form_errors(form.comment) }}
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                    </div>
+                    <div class="row-fluid">
+                    <div class="span4">
+                        <div class="control-group">
+                            <label class="control-label" for="firstName">Attach file</label>
+                            <div class="controls">
+                                <div class="fileupload fileupload-new" data-provides="fileupload">
+                                    <div class="input-append">
+                                        <div class="uneditable-input span4">
+                                            <i class="icon-file fileupload-exists"></i>
+                                            <span class="fileupload-preview"></span>
+                                        </div>
+                                        <span class="btn btn-file">
+													<span class="fileupload-new">Select file</span>
+													<span class="fileupload-exists">Change</span>
+                                                        {{ form_widget(form.file) }}
+                                            {{ form_errors(form.file) }}
+													</span>
+                                        <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="span4 ">
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName">Payment Amount</label>
+                                <div class="controls">
+                                    {{ form_widget(form.payment) }}
+                                    {{ form_errors(form.payment) }}
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="span6">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName">Method</label>
+                                <div class="controls">
+                                    {{ form_widget(form.transactionMethod) }}
+                                    {{ form_errors(form.transactionMethod) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--/span-->
+                    </div>
+                    <div class="clearfix"></div>
+                    <div id="cartMethod" class="bankHide">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        {{ form_widget(form.accountBank) }}
+                                        {{ form_errors(form.accountBank) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                    </div>
+                    <div id="bkashMethod" class="mobileBankHide">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        {{ form_widget(form.accountMobileBank) }}
+                                        {{ form_errors(form.accountMobileBank) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        {{ form_widget(form.paymentMobile) }}
+                                        {{ form_errors(form.paymentMobile) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        {{ form_widget(form.transactionId) }}
+                                        {{ form_errors(form.transactionId) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+            <div class="clearfix">&nbsp;</div>
+            <div class="form-actions portlet box grey">
+                <div class="pull-left span8">
+
+                </div>
+                <div class="pull-right span4">
+                    <div class="pull-right">
+                        <input type="hidden" name="invoiceId" id="invoiceId" value="{{ invoice.id }}">
+                        <input type="hidden" name="netTotal" class="" id="netTotal" value="{{ invoice.total }}">
+                        <input type="hidden" name="due" class="" id="due" value="{{ invoice.due }}">
+                        <a href="javascript:" data-url="{{ path('hms_doctor_invoice_confirm',{'id':invoice.id}) }}"  class="btn red confirm" ><i class="icon-remove"></i> Close</a>
+                        <button type="button" class="btn blue receiveBtn" id=""><i class="icon-save"></i> Payment</button>
+                    </div>
+                 </div>
+            </div>
+            {{ form_end(form) }}
+            <!-- END FORM-->
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block cssBlock %}
+{% stylesheets filter='cssrewrite'
+    '@HospitalBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/doctorInvoice.js'
+   %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

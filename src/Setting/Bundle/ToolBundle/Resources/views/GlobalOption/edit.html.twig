@@ -1,0 +1,657 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Setting {{ entity.name }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">{{ entity.name }}</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>{{ entity.name }}&nbsp;( <em>{{ entity.syndicate.name }}</em> )</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    App Store
+                                    <i class="icon-angle-down"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+
+                                    <li class="divider"></li>
+                                    {% if entity.siteSetting.appModules is not empty %}
+                                        {% for appmodule in entity.siteSetting.appModules %}
+                                        <li><a href="/{{ appmodule.slug }}/config/manage">{{ appmodule.name }}</a></li>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <li class="divider"></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    Modules
+                                    <i class="icon-angle-down"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+
+                                    <li class="divider"></li>
+                                    {% if entity.siteSetting.modules is not empty %}
+                                        {% for module in entity.siteSetting.modules %}
+                                            <li><a href="/website/{{ module.slug }}">{{ module.name }}</a></li>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <li class="divider"></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    Feature
+                                    <i class="icon-angle-down"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li class="divider"></li>
+                                {#    <li><a href="#call-me-back">Call me back</a></li>
+                                    <li><a href="#">Leave message</a></li>#}
+                                    <li><a href="#call-us">Call us</a></li>
+                                    <li><a href="{{ path('contactpage_modify') }}">Find us</a></li>
+                                    <li class="divider"></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('templatecustomize_edit',{ 'id': entity.id }) }}" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    Design
+                                    <i class="icon-angle-down"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li class="divider"></li>
+                                    <li><a href="{{ path('homepage_modify') }}">Description</a></li>
+                                    <li><a href="{{ path('templatecustomize_edit',{ 'id': entity.id }) }}">Customize template</a></li>
+                                    <li><a href="{{ path('templatecustomize_edit',{ 'id': entity.id }) }}#logo">Logo</a></li>
+                                    <li><a href="{{ path('templatecustomize_edit',{ 'id': entity.id }) }}/#footer">Footer</a></li>
+                                    <li class="divider"></li>
+
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body form">
+
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        {{ form_start(edit_form) }}
+                        {{ form_row(edit_form._token) }}
+                        <div class="row-fluid">
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Name</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-font"></i>
+                                            {{ form_widget(edit_form.name) }}
+                                            {{ form_errors(edit_form.name) }}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Location</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(edit_form.location) }}
+                                            {{ form_errors(edit_form.location) }}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Organization Name(Mobile)</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-font"></i>
+                                            {{ form_widget(edit_form.mobileName) }}
+                                            {{ form_errors(edit_form.mobileName) }}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Organization Name</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(edit_form.organizationName) }}
+                                            {{ form_errors(edit_form.organizationName) }}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
+
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Default email</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-envelope"></i>
+                                            {{ form_widget(edit_form.email) }}
+                                            {{ form_errors(edit_form.email) }}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Status</label>
+                                    <div class="controls">
+                                        {{ form_widget(edit_form.status) }}
+                                        {{ form_errors(edit_form.status) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <div class="form-actions portlet box grey">
+                            <div class="portlet-title">
+                                <a hidden="hidden" name="call-us"></a>
+                                <div class="caption"><i class="icon-reorder"></i>Call us</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" >Account Mobile</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-phone"></i>
+                                                    {{ form_widget(edit_form.mobile) }}
+                                                    {{ form_errors(edit_form.mobile) }}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" >Hotline</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-phone"></i>
+                                                    {{ form_widget(edit_form.hotline) }}
+                                                    {{ form_errors(edit_form.hotline) }}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" >Primary Business no</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    {{ form_widget(edit_form.primaryNumber) }}
+                                                    {{ form_errors(edit_form.primaryNumber) }}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="span6 ">
+                                <div class="row-fluid">
+                                    <div class="control-group">
+                                        <label class="control-label" >Feature image</label>
+                                        <div class="controls">
+                                            <div data-provides="fileupload" class="fileupload fileupload-new">
+                                                <div  class="fileupload-new thumbnail">
+                                                    {% if(entity.webPath) %}
+                                                        <img class="fileupload-preview fileupload-exists" alt="" src="{{ image(entity.webPath).resize(250,150) }}">
+                                                    {% else %}
+                                                        <img alt="" src="https://via.placeholder.com/150">
+                                                    {% endif %}
+                                                </div>
+                                                <div  class="fileupload-preview fileupload-exists thumbnail"></div>
+                                                <div>
+                                                <span class="btn btn-file">
+                                                    <span class="fileupload-new blue btn">Select image</span>
+                                                    <span class="fileupload-exists">Change</span>
+                                                    {{ form_widget(form.file) }}
+                                                    {{ form_errors(form.file) }}
+                                                </span>
+                                                    <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label" >Address</label>
+                                    <div class="controls">
+                                        {{ form_widget(edit_form.address) }}
+                                        {{ form_errors(edit_form.address) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions portlet box grey">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Domain setting</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Domain</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-font"></i>
+                                            {{ form_widget(edit_form.domain) }}
+                                            {{ form_errors(edit_form.domain) }}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Sub-domain</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-font"></i>
+                                            {{ form_widget(edit_form.subDomain) }}
+                                            {{ form_errors(edit_form.subDomain) }}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span12 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Web mail URL</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-envelope"></i>
+                                            {{ form_widget(edit_form.webMail) }}
+                                            {{ form_errors(edit_form.webMail) }}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--/row-->
+                        <div class="form-actions portlet box grey">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Thememing</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Theme</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(edit_form.siteSetting.theme) }}
+                                            {{ form_errors(edit_form.siteSetting.theme) }}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
+                        <!--/row-->
+                        <div class="form-actions portlet box grey">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Customize & Tools</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span4 ">
+                                <div class="control-group">
+                                    {{ form_widget(edit_form.customizeDesign) }}
+                                    {{ form_errors(edit_form.customizeDesign) }}
+                                    Template Customize
+                                </div>
+                                <div class="control-group">
+                                    {{ form_widget(edit_form.promotion) }}
+                                    {{ form_errors(edit_form.promotion) }}
+                                    Promotion
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="span8">
+
+                                <div class="control-group">
+                                    <label class="control-label" >Instagram Page</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class=" icon-instagram"></i>
+                                            {{ form_widget(edit_form.instagramPageUrl) }}
+                                            {{ form_errors(edit_form.instagramPageUrl) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span4 ">
+                                <div class="control-group">
+                                    {{ form_widget(edit_form.facebookApps) }}
+                                    {{ form_errors(edit_form.facebookApps) }}
+                                    FaceBook apps
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="span8 ">
+                                <div class="control-group">
+                                    <label class="control-label" >FaceBook URL</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-facebook"></i>
+                                            {{ form_widget(edit_form.facebookPageUrl) }}
+                                            {{ form_errors(edit_form.facebookPageUrl) }}
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span4 ">
+                                <div class="control-group">
+                                    {{ form_widget(edit_form.facebookAds) }}
+                                    {{ form_errors(edit_form.facebookAds) }}
+                                    Facebook Ads
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="span8 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Twitter URL</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-twitter"></i>
+                                            {{ form_widget(edit_form.twitterUrl) }}
+                                            {{ form_errors(edit_form.twitterUrl) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+
+                        </div>
+                        <!--/row-->
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="control-group">
+                                    {{ form_widget(edit_form.googleAds) }}
+                                    {{ form_errors(edit_form.googleAds) }}
+                                    Google Ads
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="span8">
+                                <div class="control-group">
+                                    <label class="control-label" > Google URL</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class=" icon-google-plus"></i>
+                                            {{ form_widget(edit_form.googlePlus) }}
+                                            {{ form_errors(edit_form.googlePlus) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
+                        <div class="form-actions portlet box grey">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i><a name="call-me-back">SMS & Email Integration</a></div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" ></label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(edit_form.smsIntegration) }}
+                                            {{ form_errors(edit_form.smsIntegration) }}
+                                            SMS Integration
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" ></label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(edit_form.emailIntegration) }}
+                                            {{ form_errors(edit_form.emailIntegration) }}
+                                            Email Integration
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
+                        <!--/row-->
+                        <div class="form-actions portlet box grey">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Opening Time</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Weekly off day</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(edit_form.contactPage.weeklyOffDay) }}
+                                            {{ form_errors(edit_form.contactPage.weeklyOffDay) }}
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Open time</label>
+                                    <div class="controls">
+
+                                        <div class="input-append bootstrap-timepicker-component  span5">
+                                            {{ form_widget(edit_form.contactPage.startHour) }}
+                                            {{ form_errors(edit_form.contactPage.startHour) }}
+                                            <span class="add-on"><i class="icon-time"></i></span>
+                                        </div>
+                                        {#<span class="span1 span-line-height">to</span>#}
+
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" >Close time</label>
+                                    <div class="controls">
+                                        {#<span class="span1 span-line-height">to</span>#}
+                                        <div class="input-append bootstrap-timepicker-component  span5">
+                                            {{ form_widget(edit_form.contactPage.endHour) }}
+                                            {{ form_errors(edit_form.contactPage.endHour) }}
+                                            <span class="add-on"><i class="icon-time"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
+                        <!--/row-->
+                        <div class="form-actions portlet box grey">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Module Setup</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <!--/span-->
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" >App Modules</label>
+                                    <div class="controls">
+                                        {{ form_widget(edit_form.siteSetting.appModules) }}
+                                        {{ form_errors(edit_form.siteSetting.appModules) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--/span-->
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Modules</label>
+                                    <div class="controls">
+
+                                        {{ form_widget(edit_form.siteSetting.modules) }}
+                                        {{ form_errors(edit_form.siteSetting.modules) }}
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!--/row-->
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-center">
+                                <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                            </div>
+                        </div>
+                        {{ form_end(edit_form) }}
+                        <!-- END FORM-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .check-list{
+            margin-top: 12px;
+        }
+        .check-list .checker{
+            float: left;
+        }
+        .check-list label{
+            float: left;
+            width: 90%;
+        }
+    </style>
+{% endblock %}
+{% block documentready %}
+
+    {{ parent() }}
+
+    $('#subSyandicate').tree({
+    onCheck: { node: 'expand' },
+    onUncheck: { node: 'collapse' }
+    }).on('change', 'input[type=checkbox]', function(){
+    App.updateUniform();
+    });
+{% endblock %}
+
+

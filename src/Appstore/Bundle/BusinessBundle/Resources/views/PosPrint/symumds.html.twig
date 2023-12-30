@@ -1,0 +1,158 @@
+<html>
+<head>
+    <title>{{ entity.invoice }}</title>
+    <style>
+        table.posPrint{
+            width: 100%!important;
+            font-family: sans-serif, Arial, Verdana, "Trebuchet MS";
+            collapse: 0;
+            border-collapse: collapse;
+            border: 1px solid #f4f5f7;
+            font-size: 18px;
+        }
+        table.posPrint tr{
+            width: 100% !important;
+        }
+        table.posPrint tr td , table.posPrint tr th{
+            text-align: center;
+        }
+        table.posPrint tr.row-border td , table.posPrint tr.row-border th{
+            text-align: center;
+            border: 1px solid#f4f5f7;
+        }
+        table.posPrint tr:first-child td , table.posPrint tr:first-child th{
+            font-weight: bold;
+        }
+        table.posPrint tr td.left , table.posPrint tr th.left{
+            text-align: left;
+            padding-left: 4px;
+        }
+        table.posPrint tr td.right  , table.posPrint tr th.right{
+            text-align: right;
+            padding-right: 4px;
+        }
+        table.posPrint tr td.border-top{
+            border-top: 2px #dcdfe5 solid;
+        }
+        table label{
+            width: 72px;
+            display: inline-block;
+            text-decoration: none;
+            font-size: 11px!important;
+        }
+        [class*="span"]{
+            flex: 0 0 auto;
+        }
+        .row {
+            --bs-gutter-x: 1.5rem;
+            --bs-gutter-y: 0;
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: calc(var(--bs-gutter-y) * -1);
+        }
+        .span9{
+            width: 74.35897435897436%!important;
+        }
+        .span8{
+            width: 65.81196581196582%!important;
+        }
+        .span6{
+            width: 48.717948717948715%!important;
+        }
+        .span5{
+            width: 41.666667%!important;
+        }
+        .span4{
+            width: 31.623931623931625%!important;
+        }
+        .span3{
+            width: 23.076923076923077%!important;
+        }
+
+        .span2{
+            width: 14.52991452991453%!important;
+        }
+        .span1{
+            width: 5.982905982905983%!important;
+        }
+        .center{
+            text-align: center;
+        }
+        .left{
+            text-align: left;
+        }
+        .right{
+            text-align: right;
+        }
+    </style>
+    {% if printMode == 'print' %}
+        <script type="text/javascript">
+            setTimeout(function () {
+                window.open('', '_self', '');
+                window.close();
+            }, 2000);
+        </script>
+    {% endif %}
+</head>
+<body style="width: 100%; margin: 0 auto;">
+<table class="posPrint">
+    {% if  entity.businessConfig.webPath is defined and entity.businessConfig.webPath('logo') is not empty and entity.businessConfig.invoicePrintLogo == 1 %}
+        <tr>
+            <td colspan="4" class="span12 center logo"><img style="max-width: 380px; max-height: 180px" src="/{{ entity.businessConfig.webPath() }}"></td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td colspan="4" class="span12 center header"><strong>{{ entity.businessConfig.globalOption.name }}</strong></td>
+    </tr>
+    <tr>
+        <td colspan="4" class="span12 center address">{{ entity.businessConfig.address|raw }}</td>
+    </tr>
+    <tr><td colspan="4"><br/></td></tr>
+    <tr>
+        <td colspan="4" class="label"><div class="row"><span class="span5 right"><strong>Receipt No: </strong></span><span class="span1 center">:</span><span class="span5 left"><strong> {{ entity.invoice }}</strong></span></div></td>
+    </tr>
+    <tr><td colspan="4"><br/></td></tr>
+    <tr>
+        <td colspan="4" class="label"><div class="row"><span class="span4 right">Customer Name</span><span class="span1 center">:</span><span class="span6 left"><strong>{{ entity.customer.name }}</strong></span></div></td>
+    </tr>
+    <tr>
+        <td colspan="4" class="label"><div class="row"><span class="span4 right">Mobile</span><span class="span1 center">:</span><span class="span6 left"><strong>{{ entity.customer.mobile }}</strong></span></div></td>
+    </tr>
+    <tr>
+        <td colspan="4" class="label"><div class="row"><span class="span4 right">Address</span><span class="span1 center">:</span><span class="span6 left">{{ entity.customer.address }}</span></div></td>
+    </tr>
+    <tr>
+        <td colspan="4" class="label"><div class="row"><span class="span4 right">Sales By</span><span class="span1 center">:</span><span class="span6 left">{{ entity.salesBy.profile.name }}</span></div></td>
+    </tr>
+    <tr>
+        <td colspan="4" class="label"><div class="row"><span class="span4 right">Date & Time</span><span class="span1 center">:</span><span class="span6 left">{{ entity.created|date('d-m-Y h:i A') }}</span></div></td>
+    </tr>
+    <tr><td colspan="4"><br/></td></tr>
+    <tr>
+        <th class="span6 left">Description</th>
+        <th class="span2 center">QTY</th>
+    </tr>
+    {% if entity.businessInvoiceParticulars is not empty %}
+        {% for item in entity.businessInvoiceParticulars %}
+            <tr class="row-border">
+                <td class="span6 left">{{ loop.index }}. <strong>{{ item.particular }}</strong><br/>{{ item.description }}</td>
+                <td class="span2 center"><strong>{{ item.quantity }}</strong></td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+    <tr>
+        <td colspan="4" class="span12 border-top"></td>
+    </tr>
+    <tr>
+        <td colspan="4" class="span12 center footer">
+            <strong>{{ entity.comment|raw }}</strong>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4" class="span12 center footer">
+            <span>Development by www.poskeeper.com</span>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

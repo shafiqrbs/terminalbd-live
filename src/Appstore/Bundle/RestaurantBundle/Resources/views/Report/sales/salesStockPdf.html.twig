@@ -1,0 +1,92 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    h4 {
+        font-size: 18px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+<table class="table">
+    <thead>
+    <tr><th class="pull-center" colspan="8"><h3>{{ option.name }}</h3></th></tr>
+    <tr><th class="pull-center" colspan="8"><h4>PRODUCT WISE SALES,PURCHASE & PROFIT STATEMENT SHEET</h4></th></tr>
+    <tr><td class="pull-right" colspan="8">Created: {{ "now"|date('d-m-Y') }}</td></tr>
+    <tr class="head-blue">
+        <th class="numeric" ><i class="icon-reorder"></i> SKU</th>
+        <th class="numeric" >Name</th>
+        <th class="numeric" >Quantity</th>
+        <th class="numeric" >Sales Price</th>
+        <th class="numeric" >Purchase Price</th>
+        <th class="numeric" >Profit/Loss</th>
+    </tr>
+    </thead>
+    <tbody>
+    {%  set totalSales = 0 %}
+    {% for entity in entities %}
+        <tr>
+            <td class="numeric" >{{ loop.index }}</td>
+            <td class="numeric" >{{ entity.name }}</td>
+            <td class="numeric" >{{ entity.quantity }}</td>
+            <td class="numeric" >{{ entity.salesPrice|number_format }}</td>
+            <td class="numeric" >{{ entity.purchasePrice|number_format }}</td>
+            <td class="numeric" >{{ (entity.salesPrice -  entity.purchasePrice)|number_format }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot><tr><th COLSPAN="2">Grand Total</th>
+        <th>{{ purchaseSalesItem.quantity }}</th>
+        <th>{{ cashOverview.total|number_format }}</th>
+        <th>{{ purchaseSalesItem.totalPurchase|number_format }}</th>
+        <th>{{ (cashOverview.total - (cashOverview.totalVat + purchaseSalesItem.totalPurchase))|number_format }}</th></tr></tfoot>
+</table>
+

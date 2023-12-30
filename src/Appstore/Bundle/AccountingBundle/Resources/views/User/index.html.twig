@@ -1,0 +1,99 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Account User list
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_user') }}">Account User list</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account User list</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('account_user_new') }}"><i class="icon-th-list"></i>&nbsp;New User</a>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric">Name</th>
+                                    <th class="numeric">Mobile</th>
+                                    <th class="numeric">Group</th>
+                                    <th class="numeric">Location</th>
+                                    <th class="numeric">Mode</th>
+                                    <th class="numeric">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ entity.name }}</td>
+                                        <td class="numeric"><a href="tel:+88 {{ entity.mobile }}"> {{ entity.mobile }}</a></td>
+                                        <td>{{ entity.userGroup|capitalize }}</td>
+                                        <td class="numeric">{% if entity.locationName is not empty %}{{ entity.locationName }}{% endif %}</td>
+                                        <td>{{ entity.userMode|capitalize }}</td>
+                                        <td class="numeric">
+                                            <div class="btn-group">
+                                            {% if (app.user.granted("ROLE_DOMAIN")) or (app.user.granted("ROLE_CRM_MANAGER"))  %}
+                                                <a class="btn mini green" href="{{ path('account_user_edit', { 'id': entity.id }) }}"><i class="icon-pencil"></i></a>
+                                                <a class="btn mini delete red" href="javascript:" data-url="{{ path('account_user_delete', { 'id': entity.id }) }}" >&nbsp;<i class="icon-trash"></i> </a>
+                                                <a class="btn mini yellow" href="{{ path('account_user_user_mode', { 'id': entity.id }) }}" >Change Mode </a>
+                                             {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <link href="{{ asset('assets/css/pages/timeline.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@DomainUserBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}

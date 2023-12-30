@@ -1,0 +1,123 @@
+{% extends ':frontend/template/mobile:ecommerce-base.html.twig' %}
+{% block body %}
+    <div class="content">
+        <div class="container container-right-margin" style="margin-right:15px!important;">
+        <!-- content -->
+            <h3>SMS Me</h3>
+            <div class="one-responsive">
+                <div class="contact-form no-bottom">
+                    <div class="formSuccessMessageWrap loading" id="formSuccessMessageWrap">
+                        <div class="big-notification blue-notification">
+                            <a href="#" class="close-big-notification">x</a>
+                            <p>Your message has been sent successfully!. Please allow up to 48 hours for a reply! Thank you!</p>
+                        </div>
+                    </div>
+
+                    <form action="" method="post" class="contactForm" id="contactForm">
+                        <fieldset>
+                            <div class="formFieldWrap">
+                                    <label class="field-title" for="">Name: <span>(required)</span></label>
+                                    <input type="text" name="name" value="" class="contactField requiredField requiredEmailField" id="name"/>
+                            </div>
+                            <div class="formFieldWrap">
+                                    <label class="field-title" for="">Mobile: <span>(required)</span></label>
+                                    <input type="text" name="mobile" value="" class=" mobile contactField requiredField requiredEmailField" id="mobile"/>
+                            </div>
+                            <div class="formTextareaWrap" style="position: relative;">
+                                <label class="field-title contactMessageTextarea" for="contactMessageTextarea">Message: <span>(required)</span></label>
+                                <textarea name="content" class="contactTextarea requiredField" id="" style="height:60px"></textarea>
+                                <span style="font-size: 12px; position: absolute; bottom:0;right:10px">Total word count: <strong id="limit">0</strong></span>
+                            </div>
+                            <input type="hidden" name="globalOption" id="globalOption" value="{{ entity.id }}">
+                            <div class="formSubmitButtonErrorsWrap">
+                                <input type="submit" class="buttonWrap button button-green contactSubmitButton" id="contactSubmitButton" value="SUBMIT" data-formId="contactForm"/>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<style>
+    .loading{
+        height: 50px;
+        z-index: 0.8;
+    }
+</style>
+{% endblock %}
+
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/style.css'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+
+{% block documentready %}
+
+    {{ parent() }}
+
+    $('textarea').keypress(function(e) {
+
+        var tval = $('textarea').val(),
+        tlength = tval.length,
+        set = 150,
+        remain = parseInt(set - tlength);
+        $('#limit').text(remain);
+        if (remain <= 0 && e.which !== 0 && e.charCode !== 0) {
+        $('textarea').val((tval).substring(0, tlength - 1))
+        }
+    })
+
+    $('#contactForm').validate({
+
+        rules: {
+            name: {
+                required: true
+            },
+            mobile: {
+                required: true
+            },
+            content: {
+                required: true
+            },
+        },
+        messages:{
+            name:{
+                required: "Please enter your full name"
+            },
+            mobile:{
+                required: "Please enter your cell phone number"
+            },
+            content:{
+                required: "Please enter your msg"
+            }
+        },
+        submitHandler: function(form) {
+
+            $.ajax({
+                url:'{{ path('mobile_sms_receive',{'subdomain': entity.subDomain }) }}',
+                type: "POST",
+                beforeSend: function() {
+                    $('.loading').show();
+                },
+                data: $('form#contactForm').serialize(),
+                success: function(response) {
+                    if(response == 'success'){
+                        $('.loading').fadeOut(3000);
+                        $('#formSuccessMessageWrap').show();
+                        $('.blue-notification').fadeOut(5000);
+                        $('fieldset').closest('form').find("input[type=text], textarea").val("");
+                    }
+                }
+            });
+        }
+
+    });
+
+
+{% endblock %}
+
+

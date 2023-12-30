@@ -1,0 +1,757 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="row-fluid">
+        <div class="portlet box green">
+            <div class="portlet-title">
+                <div class="caption"><i class="icon-reorder"></i> Invoice  Information</div>
+                <div class="actions">
+                    <div class="btn-group">
+                        <a class="btn" href="{{ path('restaurant_invoice') }}"><i class="icon-th-list"></i> Sales</a>
+                        <a class="btn red" href="{{ path('restaurant_invoice_new') }}"><i class="icon-plus-sign"></i> Add Invoice</a>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+
+                <div class="row-fluid">
+                    <div class="contentWrapper">
+                        <div class="tabsWrapper">
+                            <ul class="tabs table-tab">
+                                {% for table in tables  %}
+                                    <li {% if loop.index == 1 %} class="active" {% endif %} data-id="{{ table.name }}">{{ table.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <span class="next">&gt;&gt;</span>
+                        <span class="previous">&lt;&lt;</span>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span8">
+                        <div class="row-fluid">
+                        <div class="tabbable tabbable-custom" style="float: left; width: 80%">
+                            <!-- Only required for left/right tabs -->
+
+                            <div class="tab-content">
+                                <div class="tab-pane tab-height active" id="all-product">
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="form-control">
+                                                <input type="text" id="search" name="search" class="span12 m-wrap m-wrap-bg" value="" autocomplete="off" placeholder="Search product">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid all-product-box" >
+                                        <div class="span12">
+                                            <ul class="unstyled">
+                                                {% if categories is not empty %}
+                                                    {% for category in categories %}
+                                                        {% for product in category.particulars %}
+                                                            {% if product.status == 1 %}
+                                                                <li class="product-content addProduct" data-action="{{ path('restaurant_temporary_product_add',{'product':product.id}) }}">
+                                                                    <div data-match-height="tab-content" class="bs-calltoaction bs-calltoaction-primary">
+                                                                        <div class="row">
+                                                                            <div class="col-md-9 cta-contents">
+                                                                                <h1 class="cta-title">{{ product.particularCode }}-{{ product.name }}</h1>
+                                                                            </div>
+                                                                            <div class="col-md-3 cta-button">
+                                                                                <a href="#" class="btn btn-lg btn-block btn-primary">{{ product.price }}</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                {% endif %}
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">&nbsp;</div>
+                                </div>
+                                {% for category in categories %}
+                                    <div class="tab-pane tab-height" id="{{ category.slug }}">
+                                        <div class="row-fluid all-product-box">
+                                            <div class="span12">
+                                                <ul class="unstyled">
+                                                    {% if category.particulars is not empty %}
+                                                        {% for product in category.particulars %}
+                                                            {% if product.status == 1 %}
+                                                                <li class="product-content addProduct" data-action="{{ path('restaurant_temporary_product_add',{'product':product.id}) }}">
+                                                                    <div data-match-height="tab-content" class="bs-calltoaction bs-calltoaction-primary">
+                                                                        <div class="row">
+                                                                            <div class="col-md-9 cta-contents">
+                                                                                <h1 class="cta-title">{{ product.particularCode }}-{{ product.name }}</h1>
+                                                                            </div>
+                                                                            <div class="col-md-3 cta-button">
+                                                                                <a href="#" class="btn btn-lg btn-block btn-primary">{{ product.price }}</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix">&nbsp;</div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <ul  class="nav nav-tabs tabs-left" id="category-nav" style="width: 20%; float:left; background-color:#444d58">
+                            <li class="active span12"><a href="#all-product" data-toggle="tab" class="saveButton" aria-expanded="false">All Products</a></li>
+                            {% for category in categories %}
+                                <li><a href="#{{ category.slug }}" data-toggle="tab" class="saveButton" aria-expanded="false">{{ category.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                        </div>
+                    </div>
+                    <div class="span4">
+                        <div class="row-fluid">
+                        <div class="portlet box yellow">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>TRANSACTION INFORMATION</div>
+                            </div>
+                            <div class="portlet-body" id="transaction-box">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" >
+
+                                                <span><strong>Process</strong></span>
+                                                <span class="pull-right sales-right">
+                                {{ form_widget(form.process) }}
+                            </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" >
+                                                <span class="" ><strong>Invoice Mode</strong></span>
+                                                <span class="pull-right sales-right">{{ form_widget(form.invoiceMode) }}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" >
+                                                <span class="" ><strong>Order By</strong></span>
+                                                <span class="pull-right sales-right">{{ form_widget(form.salesBy) }}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                                <div id="accordion" class="accordion-container">
+                                    <h4 class="accordion-title js-accordion-title">Select Additional Table</h4>
+                                    <div class="accordion-content">
+                                        <p>
+                                        {% for table in tables  %}
+                                            <label style="line-height:20px!important;" for="{{ table.id }}"> <input style="margin-top: 0!important;" class="checkbox" id="{{ table.id }}" type="checkbox" value="{{ table.name }}" name="tableNos[]" > {{ table.name }}</label>
+                                        {% endfor %}
+                                        </p>
+                                    </div><!--/.accordion-content-->
+
+                                    <h4 class="accordion-title js-accordion-title">Select Serve By</h4>
+                                    <div class="accordion-content">
+                                        {% for serving in servings  %}
+                                            <label style="line-height:20px!important;" for="{{ serving.id }}"> <input style="margin-top: 0!important;" class="checkbox" id="{{ serving.id }}" type="checkbox" value="{{ serving.id }}" name="servingIds[]" > {{ serving.profile.name }}</label>
+                                        {% endfor %}
+                                    </div><!--/.accordion-content-->
+                                </div><!--/#accordion-->
+                                <div class="clearfix"></div>
+                                <table class="table table-bordered">
+
+                                    <thead class="flip-content ">
+                                    <tr class="head-blue">
+                                        <th class="numeric span8">Product</th>
+                                        <th class="numeric">Price</th>
+                                        <th class="numeric span2">Qnt</th>
+                                        <th class="numeric">Total</th>
+                                        <th class="numeric"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="invoiceParticulars">
+                                    {% if user.restaurantTemps is not empty  %}
+                                        {% for item in user.restaurantTemps %}
+                                            <tr id="remove-{{ item.id }}">
+                                                <td class="numeric">
+                                                    <input type="checkbox" id="" name="">
+                                                    {{ loop.index }}. {{ item.particular.name }}</td>
+                                                <td class="numeric">{{ item.salesPrice }}</td>
+                                                <td class="">
+                                                    <div class="input-append" style="margin-bottom: 0!important;">
+                                                    <span class="input-group-btn">
+  <a href="javascript:" data-action="{{ path('restaurant_temporary_product_update',{'product':item.particular.id}) }}" class="btn yellow btn-number mini" data-type="minus" data-id="{{ item.id }}"  data-text="{{ item.id }}" data-title="{{ item.salesPrice }}"  data-field="quantity">
+                                                            <span class="fa fa-minus"></span>
+                                                   </a>
+                                                                     <input type="text" class="form-control inline-m-wrap updateProduct btn-qnt-particular" data-id="{{ item.id }}"  id="quantity-{{ item.id }}" name="quantity-{{ item.id }}" data-title="{{ item.salesPrice }}" value="{{ item.quantity }}" data-action="{{ path('restaurant_temporary_product_update',{'product':item.particular.id}) }}" min="1" max="100">
+                                                      <a href="javascript:" data-action="{{ path('restaurant_temporary_product_update',{'product':item.particular.id}) }}" class="btn green btn-number mini"  data-type="plus" data-id="{{ item.id }}" data-title="{{ item.salesPrice }}"  data-text="{{ item.id }}" data-field="quantity">
+                                                          <span class="fa fa-plus"></span>
+                                                  </a>
+                                                        </span>
+
+                                                    </div>
+
+                                                </td>
+                                                <td class="numeric"><strong id="subTotal-{{ item.id }}">{{ item.subTotal }}</strong></td>
+                                                <td class="numeric">
+                                                    <a id="{{ item.id }}" data-id="{{ item.id }}" data-url="{{ path('restaurant_temporary_particular_delete',{'id':item.id}) }}" href="javascript:" class="btn red mini particularDelete"><i class="icon-trash"></i></a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th colspan="3">Total</th>
+                                        <th id="subTotal">{{ temporarySubTotal|number_format(2) }}</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr><td colspan="5">
+                                            <div class="row-fluid">
+                                                <button type="button" class="btn span12 purple big receiveBtn" {% if temporarySubTotal is empty %} disabled="disabled" {% endif %} id="posKitchen" style="width:100%!important;" ><i class="icon-print"></i> KITCHEN PRINT</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                                <br/>
+                                {{ form_start(form) }}
+                                {{ form_row(form._token) }}
+                                <div class="payment-info">
+                                    <div class="clearfix"></div>
+                                    {% if config.isCustomer == 1 %}
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <input type="text" style="margin-left:0!important;" id="mobile" name="mobile"  class="span10 m-wrap select2Customer" value=""  autocomplete="off" placeholder="Customer mobile no">
+                                                <button type="button" class="pull-right btn btn-large blue addCustomer"><i class="icon-user"></i></button>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid customer" id="">
+                                            <div class="span12 input-append-border">
+                                                <div class="row-fluid">
+                                                    <div class="input-icon left input-height">
+                                                        <i class="icon-user"></i>
+                                                        <input type="text" id="customerName" name="customerName" class="m-wrap span12 customer-input" autocomplete="off" placeholder="Customer name" value="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid customer">
+                                            <div class="span12 input-append-border">
+                                                <div class="row-fluid">
+                                                    <div class="input-icon left input-height">
+                                                        <i class="icon-phone"></i>
+                                                        <input type="text" id="customerMobile" name="customerMobile" class="m-wrap span12 mobile customer-input" autocomplete="off" placeholder="Customer mobile no" value="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid customer">
+                                            <div class="span12 input-append-border">
+                                                <div class="row-fluid">
+                                                    <textarea id="customerAddress" name="customerAddress" class="m-wrap span12 customer-input" rows="2" placeholder="Enter customer address"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="clearfix"></div>
+
+                                    <div class="clearfix"></div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >
+                                                    <span><strong>Discount Type</strong></span>
+                                                    <span class="pull-right sales-right">
+                                {{ form_widget(form.discountType) }}
+                            </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="clearfix"></div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >
+                                                    <span><strong>Discount TK.</strong></span>
+                                                    <span class="pull-right sales-right">{{ form_widget(form.discountCalculation) }}</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label"  >
+                                                    <span><strong>Discount Coupon</strong></span>
+                                                    <span class="pull-right sales-right">{{ form_widget(form.discountCoupon) }}</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label"  >
+                                                    <span><strong>VAT TK.</strong></span>
+                                                    <span class="pull-right sales-right initialVat">{{ initialVat }}</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >
+                                                    <span><strong>Due TK.</strong></span>
+                                                    <span class="pull-right sales-right due" style="text-align: right; width: 110px"  id="dueable" >{{ initialTotal }}</span></label>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >
+                                                    <span><strong>Method</strong></span>
+                                                    <span class="pull-right sales-right">
+                                                         {{ form_widget(form.transactionMethod) }}</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                    <div id="cartMethod" class="bankHide">
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <div class="controls">
+                                                        {{ form_widget(form.cardNo) }}
+                                                        {{ form_errors(form.cardNo) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <div class="controls">
+                                                        {{ form_widget(form.paymentCard) }}
+                                                        {{ form_errors(form.paymentCard) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <div class="controls">
+                                                        {{ form_widget(form.accountBank) }}
+                                                        {{ form_errors(form.accountBank) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                    </div>
+                                    <div id="bkashMethod" class="mobileBankHide">
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <div class="controls">
+                                                        {{ form_widget(form.accountMobileBank) }}
+                                                        {{ form_errors(form.accountMobileBank) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <div class="controls">
+                                                        {{ form_widget(form.paymentMobile) }}
+                                                        {{ form_errors(form.paymentMobile) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <div class="controls">
+                                                        {{ form_widget(form.transactionId) }}
+                                                        {{ form_errors(form.transactionId) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label pull-center" style="height: 50px; line-height: 50px!important;background:#444d58">
+                                                    {{ form_widget(form.payment) }}
+                                                    {{ form_errors(form.payment) }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="pull-center">
+                                        {{ form_widget(form.discount) }}
+                                        <input type="hidden" class="initialGrandTotal" name="initialDue" id="initialDue" value="{{ initialTotal }}" >
+                                        <input type="hidden" name="initialDiscount" id="initialDiscount" value="">
+                                        <input type="hidden" name="buttonType" id="buttonType" value="">
+                                        <button type="button" class="btn blue big  receiveBtn" {% if temporarySubTotal is empty %} disabled="disabled" {% endif %} id="saveButton"><i class="icon-save"></i> SAVE</button>
+                                        {% if config.posPrint == 1 %}
+                                            <button type="button" class="btn yellow big receiveBtn" {% if temporarySubTotal is empty %} disabled="disabled" {% endif %} id="posButton"><i class="icon-print"></i> POS PRINT</button>
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    .contentWrapper {
+                        width: 100%;
+                        margin: 0 auto;
+                        position: relative;
+                    }
+                    .tabsWrapper {
+                        width: 100%;
+                        height: 60px;
+                        overflow: hidden;
+                        position: relative;
+                        margin-left: 30px;
+                    }
+                    .table-tab{
+                        margin-right: 36px!important;
+                    }
+                    .tabs {
+                        margin: 0;
+                        padding: 0;
+                        position: absolute;
+                        top: 0;
+                        bottom: -25px;
+                        left: 60px;
+                        right: 0;
+                        white-space: nowrap;
+                        overflow: auto;
+                    }
+                    .tabs li {
+                        display: inline-block;
+                        background-color: #26a69a;
+                        padding: 15px 15px;
+                        cursor: pointer;
+                        font-size: 18px;
+                        font-weight: 600;
+                        color: #ffffff;
+                        min-width: 80px;
+                        text-align: center;
+                    }
+                    .table-tab li.active {
+                        background-color: #00584F;
+                    }
+                    .next, .previous {
+                        position: absolute;
+                        padding: 15px 30px;
+                        top: 0;
+                        background-color: #c49f47;
+                        font-size: 30px;
+                        color: #ffffff;
+                    }
+                    .next {
+                        right: 0px;
+                    }
+                    .previous {
+                        left: 0px;
+                    }
+                    .group-label{
+                        font-weight: bold;
+                        border-bottom: 1px solid #337ab7
+                    }
+                    .bar-tabs>li{
+                        float: left;
+                        list-style: none;
+                    }
+                    .bar-tabs>li>a {
+                        margin-right: 2px;
+                        line-height: 1.42857143;
+                        border: 1px solid transparent;
+                        border-radius: 4px 4px 0 0;
+                        position: relative;
+                        display: block;
+                        padding: 10px 15px;
+                        width: 150px
+                    }
+
+                    .bar-tabs>.active>a, .bar-tabs>.active>a:hover, .bar-tabs>.active>a:focus {
+                        color: #337ab7 !important;
+                        cursor: default;
+                        background-color: #fff;
+                        border: 1px solid #ddd;
+                        border-bottom-color: transparent;
+                    }
+
+                    .nav-tabs>li{
+                        width: 100%;
+                    }
+                    .nav-tabs>li>a {
+                        line-height: 32px;
+                        font-size: 20px;
+                        font-weight: 600;
+                        border-bottom: 1px #ddddff solid;
+                        color: #ffffff!important;
+                    }
+
+                    .nav-tabs>.active>a, .nav-tabs>.active>a:hover, .nav-tabs>.active>a:focus {
+                        color: #337ab7 !important;
+                        cursor: default;
+                        background-color: #fff;
+                        border: 1px solid #ddd;
+                        border-bottom-color: transparent;
+                        font-size: 24px;
+                    }
+
+                    .select2-container .select2-choice {
+                        height: 35px!important;
+                        z-index: 99999!important;
+                    }
+
+                    .sales-right {
+                        width: 250px;
+                    }
+
+                    input[type="text"].inline-m-wrap{
+
+                        width: 50px;
+                        font-size: 12px;
+                        border: 1px solid #c49f47;
+                        margin-bottom: 0;
+                        text-align: center;
+                        font-weight: bold;
+
+                    }
+
+                    input[class*="span"].m-wrap-bg{
+                        height: 50px!important;
+                        background: #ffffff;
+                        font-size: 30px;
+                    }
+
+                    input.m-wrap , select.m-wrap , textarea.m-wrap{
+                        border: 2px solid #1e7b85!important;
+                    }
+                    table.table {
+                        clear: both;
+                        margin-bottom: 0 !important;
+                        max-width: none !important;
+                        font-size: 11px;
+                    }
+
+                    .table th, .table td{
+                        padding: 0;
+                        margin: 0;
+                        padding-left: 5px;
+                    }
+
+                    select.m-wrap{
+                        height: 30px!important;
+                    }
+
+                    .product-content{
+                        width: 33%;
+                        margin-bottom: 13px;
+                        text-align: center;
+                        float: left;
+                        font-size: 12px!important;
+                        cursor: pointer;
+                    }
+                    .payment-info{
+                        border: transparent;
+                    }
+                    .form-horizontal .payment-info .control-group {
+                        margin-bottom: 0!important;
+                        border-bottom:transparent;
+                    }
+
+                    .sales-right input[class*="span"].payment, .sales-right input[class*="span"].discount, .sales-right input[class*="span"].discountCoupon{
+                        border: 1px solid #1e7b85!important;
+                        font-size: 15px;
+                    }
+
+                    .sales-right input[class*="span"].payment{
+                        border: 2px solid #ff2515 !important;
+                        font-size: 20px;
+                        height: 42px!important;
+                    }
+
+                    .bankHide , .mobileBankHide , .customer{
+                        display: none;
+                    }
+                    .all-product-box{
+                        overflow-y: scroll;
+
+                    }
+                    .label-custom {
+                        width: 150px;
+                    }
+                    .accordion-container {
+                        position: relative;
+                        width: 100%;
+                        border: 1px solid #0079c1;
+                        border-top: none;
+                        outline: 0;
+                        cursor: pointer
+                    }
+
+                    .accordion-container .accordion-title {
+                        display: block;
+                        position: relative;
+                        margin: 0;
+                        padding: 0.625em 0.625em 0.625em 2em;
+                        font-size: 1.25em;
+                        font-weight: normal;
+                        color: #fff;
+                        background: #000;
+                        cursor: pointer;
+                    }
+
+                    .accordion-container .accordion-title:hover,
+                    .accordion-container .accordion-title:active,
+                    .accordion-container .content-entry.open .accordion-title {
+                        background-color: #00aaa7;
+                        color: white;
+                    }
+
+                    .accordion-container .accordion-title:hover i:before,
+                    .accordion-container .accordion-title:hover i:active,
+                    .accordion-container .content-entry.open i {
+                        color: white;
+                    }
+                    .accordion-container .accordion-title {
+                        background: #00584F;
+                        cursor: pointer;
+                        border-top: 1px solid #fff;
+                        padding: 0.625em 0.625em 0.625em 8px;
+                    }
+                    .accordion-title{
+                        position: relative;
+                    }
+
+                    .accordion-title:after {
+                        content: "";
+                        position: absolute;
+                        right: 25px;
+                        top: 38%;
+                        transition: all 0.2s ease-in-out;
+                        display: block;
+                        width: 8px;
+                        height: 8px;
+                        border-top: solid 2px #fff;
+                        border-right: solid 2px #fff;
+                        -webkit-transform: rotate(135deg);
+                        transform: rotate(135deg);
+                    }
+
+                    .accordion-title.open:after {
+                        -webkit-transform: rotate(-45deg);
+                        transform: rotate(-45deg);
+                        top: 45%;
+                    }
+
+                    .accordion-content {
+                        display: none;
+                        padding:15px;
+                    }
+
+                    /* CSS for CodePen */
+                    .accordion-container {
+                        margin-bottom:7px;
+                    }
+                    #restaurant_invoice_payment{
+                        width: 50%;
+                        height: 46px !important;
+                        font-size: 25px;
+                        font-weight: bold;
+                        text-align: center;
+                    }
+                    .receiveBtn{
+                        width: 49%!important;
+                    }
+
+
+                </style>
+            </div>
+        </div>
+    </div>
+    <div id="cabinInvalid" style="display: none">This token already booked for another customer.</div>
+
+    <script>
+
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "http://localhost.xiidea.net:9432/assets/easy-print-server.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, "script", "xiidea-epp-sdk"));
+
+    </script>
+{% endblock %}
+
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@RestaurantBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@RestaurantBundle/Resources/public/js/approveProcess.js'
+    '@RestaurantBundle/Resources/public/js/posprint.js'
+    '@RestaurantBundle/Resources/public/js/tablepos.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    var height = $('#category-nav').height();
+    $('.all-product-box').height(height);
+    $('.js-accordion-title').on('click', function () {
+    $(this).next().slideToggle(200);
+    $(this).toggleClass('open', 200);
+    });
+{% endblock %}

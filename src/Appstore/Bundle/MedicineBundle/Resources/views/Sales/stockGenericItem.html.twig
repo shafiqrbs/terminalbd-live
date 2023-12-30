@@ -1,0 +1,48 @@
+{% if stock.medicineBrand is not empty %}
+<tr><th colspan="9">Generic Name: {{ stock.medicineBrand.medicineGeneric.name }}</th></tr>
+{% endif %}
+{% if genericItems is not empty %}
+    {% for item in genericItems %}
+        <tr {% if item.averagePurchasePrice >= item.salesPrice or item.averagePurchasePrice == 0 %} class="warning" {% endif %}>
+            <td class="span3">{{ loop.index }}. <a href="{{ path('medicine_purchase_item',{'name':item.name}) }}" target="_blank">{{ item.name }}</a></td>
+            <td class="span2">{{ item.brandName }}</td>
+            <td class="span1">{% if item.rackNo is not empty %}{{ item.rackNo.name }}{% endif %}</td>
+            <td class="span1">
+                {% if item.averagePurchasePrice >= item.salesPrice or item.averagePurchasePrice == 0 %}
+                    <a  class="editableText" data-name="AveragePurchasePrice" href="#"  data-url="{{ path('medicine_stock_inline') }}" data-type="text" data-pk="{{ item.id }}" data-original-title="Change purchase avg price">{{ item.averagePurchasePrice }}</a>
+                {% else %}
+                    <a href="{{ path('medicine_purchase_item',{'name':item.name}) }}" target="_blank">{{ item.averagePurchasePrice|number_format(2) }}</a></td>
+                {% endif %}
+            </td>
+            <td class="span1">
+                <input type="hidden" name="salesItem[]" value="{{ item.id }}" >
+                {% if item.itemPercent is defined and item.itemPercent > 0 %}
+                    {{ item.salesPrice|number_format(2) }}
+                    <input type="hidden" name="salesPrice-{{ item.id }}" id="salesPrice-{{ item.id }}" value="{{ item.salesPrice }}" >
+                {% else %}
+                    <input type="number" class=" numeric td-inline-input" data-id="{{ item.id }}" autocomplete = "off"  id="salesPrice-{{ item.id }}" name="salesPrice-{{ item.id }}" value="{{ item.salesPrice|number_format(2) }}" >
+                {% endif %}
+            </td>
+            <td class="span1">
+                <input type="number" class=" numeric td-inline-input" data-id="{{ item.id }}" autocomplete = "off" min="1" max="{{ item.remainingQuantity }}"  id="quantity-{{ item.id }}" name="quantity[]" value="" placeholder="{{ item.remainingQuantity }}">
+            </td>
+            <td class="span1">
+                <select class="td-inline-input" data-id="{{ item.id }}" id="itemPercent-{{ item.id }}" name="itemPercent-{{ item.id }}">
+                    <option value="0">Disc(%)</option>
+                    {% for per in discountPercentLists %}
+                        <option {% if item.itemPercent is defined and item.itemPercent == per %} selected="selected" {% endif %} value="{{ per }}">{{ per }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <th class="" id="subTotal-{{ item.id }}"></th>
+            <td class="">
+                <div class="btn-group">
+                    <a data-id="{{ item.id }}" title="" data-action="{{ path('medicine_sales_temporary_generic_item',{'id':item.id}) }}" href="javascript:" class="btn green mini genericStockItem" ><i class="fa fa-shopping-cart"></i> Add</a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+{% else %}
+    <tr><th colspan="8">No Generic Stock Records Found</th></tr>
+{% endif %}
+

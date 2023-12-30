@@ -1,0 +1,205 @@
+<html>
+<head>
+    <title>{{ entity.invoice }}</title>
+    <style>
+        body{
+            color:#000000;
+            font-family: Roboto-Medium,Roboto,arial,sans-serif;
+            letter-spacing: .2px;
+            line-height: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width:100%;
+            font-size:13px;
+            margin: 0;
+            padding: 0;
+        }
+        table td.header strong,table td.header strong{
+            font-size: 35px;
+        }
+        table td,table th{
+            padding: 0!important;
+            padding-bottom: 5px!important;
+            font-size:14px;
+        }
+        [class*="span"]{
+            flex: 0 0 auto;
+        }
+        .row {
+            --bs-gutter-x: 1.5rem;
+            --bs-gutter-y: 0;
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: calc(var(--bs-gutter-y) * -1);
+        }
+
+        table td{
+            padding-bottom: 5px!important;
+        }
+        .center{
+            text-align: center;
+        }
+        .left{
+            text-align: left;
+        }
+        .right{
+            text-align: right;
+        }
+        table td.span12,table th.span12{
+            width: 100%;
+            flex:0 0 auto;
+            display:wrap;
+        }
+        .span9{
+            width: 74.35897435897436%!important;
+        }
+        .span8{
+            width: 65.81196581196582%!important;
+        }
+        .span7{
+            width: 57.26495726495726%!important;
+        }
+        .span6{
+            width: 48.717948717948715%!important;
+        }
+        .span6{
+            width: 40.17094017094017%!important;
+        }
+
+        .span4{
+            width: 31.623931623931625%!important;
+        }
+        .span3{
+            width: 23.076923076923077%!important;
+        }
+
+        .span2{
+            width: 14.52991452991453%!important;
+        }
+        .span1{
+            width: 5.982905982905983%!important;
+        }
+        .address{
+            font-size:16px;
+        }
+        .invoice{
+            font-size:22px;
+        }
+        .footer{
+            font-size:16px;
+        }
+        .border-top{
+            border-top: 2px solid #000
+        }
+        .logo{
+            max-width: 220px;
+        }
+        {% if entity.medicineConfig.printCss is not empty %}
+        {{ entity.medicineConfig.printCss|raw }}
+        {% endif %}
+    </style>
+    {% if  entity.medicineConfig.printOff != 1 %}
+        <script type="text/javascript">
+            window.print();
+            setTimeout(function () {
+                window.open('', '_self', '');
+                window.close();
+            }, 2000);
+        </script>
+    {% endif %}
+</head>
+<body>
+<div style="width:380px; margin: 0 auto" id="print-body">
+    <table class="">
+        {% if  entity.medicineConfig.globalOption.templateCustomize.webPath is defined and entity.medicineConfig.globalOption.templateCustomize.webPath('logo') is not empty and entity.medicineConfig.invoicePrintLogo == 1 %}
+        <tr>
+            <td colspan="4" class="span12 center logo"><img style="max-width: 380px; max-height: 180px" src="/{{ entity.medicineConfig.globalOption.templateCustomize.webPath('logo') }}"></td>
+        </tr>
+        {% endif %}
+        {% if entity.medicineConfig.isPrintHeader == 1 %}
+        <tr>
+            <td colspan="4" class="span12 center header"><strong>{{ entity.medicineConfig.globalOption.name }}</strong></td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td colspan="4" class="span12 center address">{{ entity.medicineConfig.address|raw }}</td>
+        </tr>
+        <tr><td colspan="4"><br/></td></tr>
+        <tr>
+            <td colspan="4" class="span12 center"><strong class="invoice">Sales Return Invoice: {{ entity.invoice }}</strong></td>
+        </tr>
+        <tr>
+            <td colspan="4" class="label"><div class="row"><span class="span7">Date :{{ entity.created|date('d-m-y h:i A') }}</span></div></td>
+        </tr>
+        <tr>
+            <td colspan="4" class="label"><div class="row"><span class="span12">Sales By :{% if entity.salesBy.profile is defined and entity.salesBy.profile is not empty %}{{ entity.salesBy.profile.name }}{% endif %}</span></div></td>
+        </tr>
+        {% if entity.customer.name != "Default"%}
+            <tr>
+                <td colspan="4" class="label"><div class="row"><span class="span7">Customer :{{ entity.customer.name }}</span><span class="span5 right">Mobile :{{ entity.customer.mobile }}</span></div></td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td colspan="4" class="span12 border-top"></td>
+        </tr>
+        <tr>
+            <th class="span6 left">Item Name</th>
+            <th class="span2 center">Unit</th>
+            <th class="span2 center">QTY</th>
+            <th class="span2 right">Amount</th>
+        </tr>
+        <tr>
+            <td colspan="4" class="span12 border-top"></td>
+        </tr>
+        {% if entity.medicineSalesReturns is not empty %}
+        {% set subTotal = 0 %}
+        {% set total = 0 %}
+        {% for item in entity.medicineSalesReturns %}
+            {% set subTotal = item.quantity * item.salesPrice %}
+            {% set total = total + (item.quantity * item.salesPrice) %}
+            <tr>
+                <td class="span8 left">{{ loop.index }}. {{ item.medicineStock.name }}</td>
+                <td class="span2 center">{{ item.salesPrice|number_format(2) }}</td>
+                <td class="span2 center">{{ item.quantity }}</td>
+                <td class="span2 left">{{ subTotal|number_format(2) }}</td>
+            </tr>
+        {% endfor %}
+            <tr>
+                <td colspan="4" class="span12 border-top"></td>
+            </tr>
+            <tr>
+                <td class="span8" colspan="2" ><strong>Sub-total</strong></td>
+                <td class="span2 center">TK.</td>
+                <td class="span2 right"><strong id="">{{ entity.subTotal|number_format }}</strong></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="span12 border-top"></td>
+            </tr>
+            <tr>
+                <td class="span8" colspan="2"><strong>Payment</strong></td>
+                <td class="span2 center">TK.</td>
+                <td class="span2 right"><strong id="">{{ entity.payment|number_format }}</strong></td>
+            </tr>
+            <tr>
+                <td class="span8" colspan="2"><strong>Adjustment</strong></td>
+                <td class="span2 center">TK.</td>
+                <td class="span2 right"><strong id="">{{ entity.adjustment|number_format }}</strong></td>
+            </tr>
+            <tr>
+                <td class="span8" colspan="2"><strong>Current Due.</strong></td>
+                <td class="span2 center"><strong>TK.</strong></td>
+                <td class="span2 right"><strong id="">{{ (balance) |number_format }}</strong></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="span12 center footer">
+                    <span>Development by www.poskeeper.com</span>
+                </td>
+            </tr>
+        {% endif %}
+    </table>
+</div>
+
+</body>
+</html>
+             

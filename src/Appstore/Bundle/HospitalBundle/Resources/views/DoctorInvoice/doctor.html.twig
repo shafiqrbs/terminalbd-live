@@ -1,0 +1,172 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Commission Payment Invoice
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('hms_doctor_commission_invoice') }}">Invoice</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Commission Payment Invoice</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('hms_doctor_commission_invoice') }}"><i class="icon-th-list"></i>&nbsp;Commission</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid">
+                                                <div class="span4">
+                                                    <select name="assignDoctor" id="assignDoctor" class="m-wrap span12">
+                                                        <option value="" >--Doctor/Patient Referred--</option>
+                                                        {% for assign in assignDoctors %}
+                                                            <option {% if searchForm.assignDoctor is defined and searchForm.assignDoctor == assign.id %} selected="selected" {% endif %} value="{{ assign.id }}" >{{ assign.particularCode }}-{{ assign.name }}({{ assign.mobile }})/{{ assign.serviceName }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="span2">
+                                                    <select name="commission" id="commission" class="m-wrap span12">
+                                                        <option value="" >--Payment For--</option>
+                                                        {% for commission in commissions %}
+                                                            <option {% if searchForm.commission is defined and searchForm.commission == commission.id %} selected="selected" {% endif %} value="{{ commission.id }}" >{{ commission.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="span2">
+                                                    <select name="process" id="process" class="m-wrap span12">
+                                                        <option value="" >--Process--</option>
+                                                        <option value="Paid" {% if searchForm.process is defined and searchForm.process == 'Paid' %} selected="selected" {% endif %} >Paid</option>
+                                                        <option value="In-progress"  {% if searchForm.process is defined and searchForm.process == 'In-progress' %} selected="selected" {% endif %} >In-progress</option>
+                                                    </select>
+                                                </div>
+                                                <div class="span2">
+                                                    <select name="transactionMethod" id="transactionMethod" class="m-wrap span12">
+                                                        <option value="" >--Transaction--</option>
+                                                        {% for method in transactionMethods %}
+                                                            <option {% if searchForm.transactionMethod is defined and searchForm.transactionMethod == method.id %} selected="selected" {% endif %} value="{{ method.id }}" >{{ method.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="span2">
+                                                    <div class="controls">
+                                                        <div class="input-append span11">
+                                                            <input type="text" id="hmsInvoice" name="hmsInvoice"  class="m-wrap span10 search-input  " value="{% if searchForm.hmsInvoice is defined %}{{ searchForm.hmsInvoice }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.hmsInvoice is defined %}{{ searchForm.hmsInvoice }}{% else %}Patient invoice no{% endif %} ">
+                                                            <div class="btn-group">
+                                                                <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                </form>
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+                                    <thead class="flip-content">
+                                        <tr class="head-red">
+                                            <th class="numeric" ><strong>Commission Tk.</strong></th>
+                                            <th class="numeric" ><strong>{{ overview.commission|number_format }}</strong></th>
+                                            <th class="numeric" ><strong>Paid Tk.</strong></th>
+                                            <th class="numeric" ><strong>{{ overview.payment|number_format }}</strong></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content">
+                                <thead>
+                                <tr class="head-blue">
+                                    <th class="numeric">&nbsp;&nbsp;<i class="icon-list"></i></th>
+                                    <th class="numeric">Created</th>
+                                    <th class="numeric">Invoice</th>
+                                    <th class="numeric">Doctor/Referred</th>
+                                    <th class="numeric">Payment For</th>
+                                    <th class="numeric">Payment Method</th>
+                                    <th class="numeric">Created By</th>
+                                    <th class="numeric">Mode</th>
+                                    <th class="numeric">RefInvoice</th>
+                                    <th class="numeric">Invoice Amount</th>
+                                    <th class="numeric">Amount</th>
+                                    <th class="numeric">Paid</th>
+                                </tr>
+                                </thead>
+                                <tbody id="invoiceTransaction">
+                                {% for transaction in entities %}
+                                    <tr>
+                                        <td  class="numeric">{{ loop.index }}</td>
+                                        <td  class="numeric">{{ transaction.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric">{{ transaction.hmsDoctorInvoice }}</td>
+                                        <td class="numeric">{{ transaction.assignDoctor.name }}</td>
+                                        <td class="numeric">{{ transaction.hmsCommission.name }}</td>
+                                        <td class="numeric">{{ transaction.transactionMethod.name }}</td>
+                                        <td class="numeric">{{ transaction.createdBy }}</td>
+                                        <td class="numeric">{{ transaction.hmsInvoice.invoiceMode|capitalize }}</td>
+                                        <td class="numeric">{{ transaction.hmsInvoice.invoice }}</td>
+                                        <td class="numeric">{{ transaction.hmsInvoice.total }}</td>
+                                        <td class="numeric">{{ transaction.payment }}</td>
+                                        <td class="numeric">
+                                            <div class="btn-group">
+                                            {% if transaction.process != 'Paid' %}
+                                                <a class="btn purple mini addPay" data-url="{{ path('hms_doctor_invoice_pay',{'id':transaction.id}) }}"><i class="icon-money"></i>&nbsp;Pay</a>
+                                                <a data-url="{{ path('hms_doctor_invoice_delete', { 'id': transaction.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a>
+                                            {% else %}
+                                                <a class="btn green mini"><i class="icon-ok"></i></a>
+                                                <a target="_blank" href="{{ path('hms_doctor_invoice_print', { 'id': transaction.id }) }}" class="btn yellow mini" ><i class="icon-print"></i></a>
+                                            {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/doctorInvoice.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+

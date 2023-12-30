@@ -1,0 +1,142 @@
+    {% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Capital & Profit/Loss Accounting
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="javascript:">Capital & Profit/Loss Accounting</a>
+                    </li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Module Base Accounting</div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Amount</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr><th colspan="2">JOURNAL</th></tr>
+                            {% set journalBalance = 0 %}
+                            {% for entity in entities %}
+                                {% if entity.type == 'Debit' %}
+                                    {% set journalBalance = journalBalance + entity.amount %}
+                                {% else %}
+                                    {% set journalBalance = journalBalance - entity.amount %}
+                                {% endif %}
+                                <tr>
+                                    <td class="numeric" >
+                                        {% if entity.type == 'Debit' %}
+                                            {{ entity.creditName }}
+                                        {% else %}
+                                            {{ entity.debitName }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="numeric" >
+                                        {% if entity.type == 'Debit' %}
+                                            {{ entity.amount|number_format }}
+                                        {% else %}
+                                            ({{ entity.amount|number_format }})
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr><td><strong class="pull-right">Sub-Total</strong></td><td><strong>{{ journalBalance|number_format }}</strong></td></tr>
+                            <tr><th colspan="2">PURCHASE</th></tr>
+                            {% set purchaseBalance = 0 %}
+                            {% for purchase in purchases %}
+                                {% if purchase.credit > 0 %}
+                                    {% set purchaseBalance = purchaseBalance + purchase.credit %}
+                                    <tr>
+                                        <td class="numeric" > {{ purchase.name }}</td>
+                                        <td class="numeric" > ({{ purchase.credit|number_format }})</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            <tr><td><strong class="pull-right">Sub-Total</strong></td><td><strong>{{ purchaseBalance|number_format }}</strong></td></tr>
+                            <tr><th colspan="2">SALES</th></tr>
+                            {% set salesBalance = 0 %}
+                            {% for sales in sales %}
+                                {% set salesBalance = salesBalance + sales.debit %}
+                                    <tr>
+                                        <td class="numeric" >{{ sales.name }}</td>
+                                        <td class="numeric" >{% if sales.debit > 0 %}{{ sales.debit|number_format }}{% else %}{{ sales.credit|number_format }}{% endif %}</td>
+                                    </tr>
+
+                            {% endfor %}
+                            <tr><td><strong class="pull-right">Sub-Total</strong></td><td><strong>{{ salesBalance|number_format }}</strong></td></tr>
+                            <tr><th colspan="2">Expense</th></tr>
+                            {% set expenditureBalance = 0 %}
+                            {% for expenditure in expenditures %}
+                                {% if expenditure.debit > 0 %}
+                                    {% set expenditureBalance = expenditureBalance + expenditure.debit %}
+                                    <tr>
+                                        <td class="numeric" > {{ expenditure.name }}</td>
+                                        <td class="numeric" > ({{ expenditure.debit|number_format }})</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            <tr><td><strong class="pull-right">Sub-Total</strong></td><td><strong>{{ expenditureBalance|number_format }}</strong></td></tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+ <style>
+     .leftMargin {
+         margin-left: 0!important;
+     }
+ </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    AccountingApproveProcess();
+{% endblock %}
+
+

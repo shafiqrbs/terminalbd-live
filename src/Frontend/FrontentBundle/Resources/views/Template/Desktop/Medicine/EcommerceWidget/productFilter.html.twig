@@ -1,0 +1,107 @@
+
+<form id="productFilter" method="get" action="{{ path(globalOption.subDomain ~ '_webservice_product_filter') }}" >
+<div class="panel panel-default panel-filter">
+        {% if globalOption.ecommerceConfig.sidebarCategory == 1 %}
+            <div class="panel-heading">
+                <h5 class="panel-title">CATEGORY</h5>
+            </div>
+            <div class="panel-body scrollbar">
+                <div class="treeview">
+                    {{ categorySidebar|raw }}
+                </div>
+            </div>
+        {% endif %}
+        {% if globalOption.ecommerceConfig.sidebarBrand == 1 %}
+            <div class="panel-heading">
+                <h5 class="panel-title">ALL BRANDS</h5>
+            </div>
+            <div class="panel-body scrollbar">
+                <div class="row">
+                    {{ brandTree|raw }}
+                </div>
+            </div>
+        {% endif %}
+        {% if globalOption.ecommerceConfig.sidebarPrice == 1 %}
+            <div class="panel-heading">
+                <h5 class="panel-title">PRICE RANGE</h5>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                <div class="col-md-5"><input id="priceStart" name="priceStart" type="text" class="col-md-12 form-control" value="{{ searchForm['priceStart'] is defined ? searchForm['priceStart'] :'' }}" /></div>
+                <div class="col-md-2" style="line-height:25px; font-weight: bold">To</div>
+                <div class="col-md-5"><input id="priceEnd" name="priceEnd" type="text" class="col-md-12 form-control" value="{{ searchForm['priceEnd'] is defined ? searchForm['priceEnd'] :'' }}" /></div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if globalOption.ecommerceConfig.sidebarSize == 1 %}
+            <div class="panel-heading">
+                <h5 class="panel-title">SIZE/WEIGHT/DIMENSION</h5>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    {{ sizeTree|raw }}
+                </div>
+            </div>
+        {% endif %}
+        {% if globalOption.ecommerceConfig.sidebarColor == 1 %}
+            <div class="panel-heading">
+                <h5 class="panel-title">COLOR</h5>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    {{ colorTree|raw }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="clearfix"></div>
+        {% if globalOption.ecommerceConfig.sidebarDiscount == 1 %}
+            <div class="panel-heading">
+                <h5 class="panel-title">DISCOUNT</h5>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    {{ discountTree|raw }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="clearfix"></div>
+        {% if globalOption.ecommerceConfig.sidebarPromotion == 1 %}
+            <div class="panel-heading">
+                <h5 class="panel-title">PROMOTION</h5>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    {{ promotionTree|raw }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="clearfix"></div>
+        {% if globalOption.ecommerceConfig.sidebarTag == 1 %}
+            <div class="panel-heading">
+                <h5 class="panel-title">Popular Tags</h5>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                   {{  tagTree|raw }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="clearfix"></div>
+        <div class="panel-heading">
+            <div class="sidebar-footer col-md-12" >
+                <div class="row div-vertical-center">
+                    <button type="submit"  class="btn btn-info" id="filter"><span class="glyphicon glyphicon-filter"></span> FILTER</button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    <div class="clearfix"></div>
+</div>
+</form>
+<style>
+    #priceStart , #priceEnd{
+        height:25px!important;
+        border-radius:0;
+    }
+</style>

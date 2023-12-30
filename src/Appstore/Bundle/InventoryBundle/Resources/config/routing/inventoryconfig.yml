@@ -1,0 +1,51 @@
+inventoryconfig_dashboard:
+    path:     /
+    defaults: { _controller: "InventoryBundle:InventoryConfig:index" }
+
+inventoryconfig_show:
+    path:     /{id}/show
+    defaults: { _controller: "InventoryBundle:InventoryConfig:show" }
+
+inventoryconfig_new:
+    path:     /new
+    defaults: { _controller: "InventoryBundle:InventoryConfig:new" }
+
+inventoryconfig_create:
+    path:     /create
+    defaults: { _controller: "InventoryBundle:InventoryConfig:create" }
+    methods:  POST
+
+inventoryconfig_edit:
+    path:     /manage
+    defaults: { _controller: "InventoryBundle:InventoryConfig:edit" }
+
+inventoryconfig_data_import_form:
+    path:     /{id}/data-import-form
+    defaults: { _controller: "InventoryBundle:InventoryConfig:excelDataImportForm" }
+    methods:  GET
+
+
+inventoryconfig_update:
+    path:     /{id}/update
+    defaults: { _controller: "InventoryBundle:InventoryConfig:update" }
+    methods:  [POST, PUT]
+
+
+inventory_branches_search:
+    path:     /search
+    defaults: { _controller: "DomainUserBundle:Branches:autoSearch" }
+    options:
+            expose: true
+
+inventory_branches_name:
+    path:      /{branch}/branch-name
+    defaults: { _controller: "DomainUserBundle:Branches:searchBranchName" }
+    options:
+            expose: true
+
+inventory_location_search:
+    path:     /location-auto-search
+    defaults: { _controller: "SettingLocationBundle:Location:autoSearch" }
+    options:
+           expose: true
+

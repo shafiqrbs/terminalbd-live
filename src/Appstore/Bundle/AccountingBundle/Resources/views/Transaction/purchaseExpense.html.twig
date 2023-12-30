@@ -1,0 +1,150 @@
+    {% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Account of Purchase & Expense
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="javascript:">Account of Purchase & Expense</a>
+                    </li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account of Purchase & Expense</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% set startDate = searchForm.date is defined ? searchForm.date :"now"|date("d-m-Y") %}
+                                <a target="_blank" href="{{ path('account_transaction_purchase_expense',{'pdf':'pdf','date':startDate}) }}" class="btn purple"><i class="icon icon-print"></i> Download</a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body">
+                            {% include('flash-message.html.twig') %}
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span9">
+
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span11">
+                                                <input type="text" id="date" name="date"  class="span11 m-wrap dateCalendar" value="{% if searchForm.date is defined and searchForm.date is not empty %}{{ searchForm.date }}{% else %}{{ "now"|date("d-m-Y") }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.date is defined %}{{ searchForm.date }}{% else %} Date{% endif %}  ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="portlet-body flip-scroll">
+
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Process</th>
+                                    <th class="numeric" >Description</th>
+                                    <th class="numeric" colspan="3" >
+                                        <div class="row-fluid" style="border-bottom: 2px solid #ffffff; text-align: center; font-weight: bold"><span class="span12">Payment</span></div>
+                                        <div class="row-fluid">
+                                            <span class="span4">Cash</span><span class="span4">Bank</span><span class="span4">Mobile</span></div>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% set cash = 0 %}
+                                {% set bank = 0 %}
+                                {% set mobile = 0 %}
+
+                                {% for entity in entities %}
+
+                                    <tr id="remove-{{ entity.id }}">
+                                        <td class="numeric" >{{ entity.processHead }}</td>
+                                        <td class="numeric" >
+                                            {% if entity.processHead == 'Expenditure' %}
+                                                {% if entity.expenditure.toUser is defined and entity.expenditure.toUser is not empty %} {{ entity.expenditure.toUser.profile.name }}{% endif %}
+                                                : {% if entity.expenditure.expenseCategory is defined and entity.expenditure.expenseCategory is not empty %} {{ entity.expenditure.expenseCategory.name }}{% endif %}
+
+                                            {% elseif entity.processHead == 'Sales' %}
+                                                Account Sales : {{ entity.accountRefNo }}
+                                                {% if entity.accountSales.remark is not empty  %}
+                                                    <br/> {{ entity.accountSales.remark }}
+                                                {% endif %}
+                                            {% elseif entity.processHead == 'Purchase' %}
+                                                {{  entity.accountPurchase.companyName }} : {{ entity.accountPurchase.processType|capitalize }}
+                                            {% elseif entity.processHead == 'Journal' and  entity.credit > 0 %}
+                                                Journal: {% if  entity.accountJournal is defined and entity.accountJournal.accountHeadDebit is not empty %} {{ entity.accountJournal.accountHeadDebit.name }}{% endif %}: {{ entity.accountRefNo }}
+                                                {% if entity.accountJournal.remark is not empty  %}
+                                                    <br/> {{ entity.accountJournal.remark }}
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                       <td class="numeric" >{% if entity.credit > 0 and entity.transactionMethod.slug == 'cash'  %}{{ entity.credit|number_format }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.credit > 0 and entity.transactionMethod.slug == 'bank'  %}{{ entity.credit|number_format }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.credit > 0 and entity.transactionMethod.slug == 'mobile'  %}{{ entity.credit|number_format }}{% endif %}</td>
+                                    </tr>
+                                    {% if entity.credit > 0 and entity.transactionMethod.slug == 'cash'  %}
+                                        {% set cash = cash + entity.credit %}
+                                    {% elseif entity.credit > 0 and entity.transactionMethod.slug == 'bankk'  %}
+                                        {% set bank = bank + entity.credit %}
+                                    {% elseif entity.credit > 0 and entity.transactionMethod.slug == 'mobile'  %}
+                                        {% set mobile = mobile + entity.credit %}
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                <tre><th>Grand Total</th><th></th><th>{{ cash|number_format }}</th><th>{{ bank|number_format }}</th><th>{{ mobile|number_format }}</th></tre>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+ <style>
+     .leftMargin {
+         margin-left: 0!important;
+     }
+ </style>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    AccountingApproveProcess();
+{% endblock %}
+
+

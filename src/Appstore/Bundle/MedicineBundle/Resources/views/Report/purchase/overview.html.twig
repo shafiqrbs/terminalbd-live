@@ -1,0 +1,167 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Medicine Purchase Overview
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Medicine Purchase Overview</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box blue tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Medicine Purchase Overview</div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+
+                            <div class="row-fluid">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid">
+                                        <div class="span6">
+                                            <input type="text" id="startDate" name="startDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                        </div>
+                                        <div class="span6">
+                                            <div class="controls">
+                                                <div class="input-append span10">
+                                                    <input type="text" id="endDate" name="endDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="form-actions portlet box green">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Medicine Purchase Cash Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Total Amount</th>
+                                    <td class="numeric" >{{ purchaseCashOverview.total|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Payment</th>
+                                    <td class="numeric" >{{ purchaseCashOverview.totalPayment|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    {% set due = (purchaseCashOverview.total - purchaseCashOverview.totalPayment) %}
+                                    <th class="numeric" >{% if due > 0 %}Payable {% else %}Receivable{% endif %}</th>
+                                    <th class="numeric" >{{ due|number_format }}</th>
+                                </tr>
+                            </table>
+                            <div class="form-actions portlet box purple">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Transaction wise cash Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Transaction Method</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Payable/Receivable</th>
+                                </tr>
+                                {% for transaction in transactionCash %}
+                                    <tr>
+                                        {% set due = (transaction.total - transaction.totalPayment) %}
+                                        <td class="numeric" >{{ transaction.transactionName|default }}</td>
+                                        <td class="numeric" >{{ transaction.total|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.totalPayment|default|number_format }}</td>
+                                        <td class="numeric" >{{ due|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                           <div class="form-actions portlet box yellow">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Purchase Mode</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Purchase Mode</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Payable/Receivable</th>
+                                </tr>
+                                {% for process in purchaseMode %}
+                                    <tr>
+                                        <td class="numeric" >{{ process.name|capitalize|default }}</td>
+                                        <td class="numeric" >{{ process.total|default|number_format }}</td>
+                                        <td class="numeric" >{{ process.totalPayment|default|number_format }}</td>
+                                        <td class="numeric" >{{ process.totalDue|default|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            <div class="form-actions portlet box grey">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Purchase Stock Mode</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Stock Mode</th>
+                                    <th class="numeric" >Sales</th>
+                                    <th class="numeric" >Purchase</th>
+                                    <th class="numeric" >Profit/Loss</th>
+                                </tr>
+                                {% for process in stockMode %}
+                                    <tr>
+                                        <td class="numeric" >{{ process.name|capitalize|default }}</td>
+                                        <td class="numeric" >{{ process.salesPrice|default|number_format }}</td>
+                                        <td class="numeric" >{{ process.purchasePrice|default|number_format }}</td>
+                                        <th class="numeric" >{{ (process.salesPrice-process.purchasePrice)|default|number_format }}</th>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}
+
+
+
+
+

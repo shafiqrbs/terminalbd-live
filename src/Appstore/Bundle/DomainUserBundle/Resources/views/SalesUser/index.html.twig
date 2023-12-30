@@ -1,0 +1,92 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    {{ globalOption.name }} User base Sales Setup
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">User base Sales Setup</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i> User base Sales Setup</div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <form name="salesUser" id="salesUser" action="{{ path('inventory_sales_user_create') }}" method="post">
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="numeric" >Name </th>
+                                    <th class="numeric" >User</th>
+                                    <th class="numeric" >Designation</th>
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Monthly Sales</th>
+                                    <th class="numeric" >Yearly Sales</th>
+                                    <th class="numeric" >Discount Percent</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in employees %}
+                                        <tr>
+                                            <td class="numeric" >{{ user.profile.name }}</td>
+                                            <td class="numeric" >{{ user }}</td>
+                                            <td class="numeric" >{% if user.profile.designation is not empty %}{{ user.profile.designation.name }}{% endif %}</td>
+                                            <td class="numeric" >{{ user.profile.mobile }}</td>
+                                            <td class="numeric" >
+                                                <input type="hidden" name="user[]" value="{{ user.id }}" >
+                                                <input type="text" class="numeric td-inline-input price span12"  autocomplete = "off" min="1" name="monthlySales[]" value="{% if user.domainUser is defined and user.domainUser is not empty  %}{{ user.domainUser.monthlySales }}{% endif %}" placeholder="Enter monthly amount ">
+                                            </td>
+                                            <td class="numeric" >
+                                                <input type="text" class="numeric td-inline-input price span12"  autocomplete = "off" min="1" name="yearlySales[]" value="{% if user.domainUser is defined and user.domainUser is not empty  %}{{ user.domainUser.yearlySales }}{% endif %}" placeholder="Enter yearly amount ">
+                                            </td>
+                                            <td class="numeric" >
+                                                <input type="text" class="numeric td-inline-input price span12"  autocomplete = "off" min="1" name="discountPercent[]" value="{% if user.domainUser is defined and user.domainUser is not empty  %}{{ user.domainUser.discountPercent }}{% endif %}" placeholder="Enter discount percent">
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                                <div class="clearfix">&nbsp;</div>
+                                <div class="form-actions portlet box grey">
+                                    <div class="pull-right">
+                                        <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+
+

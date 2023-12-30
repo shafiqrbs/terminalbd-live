@@ -1,0 +1,33 @@
+<div class="container no-bottom">
+    <h1>News</h1>
+    <div class="decoration"></div>
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <ul id="demo3">
+                            {% for  row in entity.user.news %}
+                                <li><div class="one-responsive">
+                                    <div class="big-notification blue-notification">
+                                        <h4>{{ row.name }} <br/>Date: [{{ row.startDate|date('d-m-Y') }}-To-{{ row.endDate|date('d-m-Y') }}]</h4>
+                                        <p>{{ row.content }} --<a data-bpopup="{{ row.id }}" class="moduleContent"  href="javascript:"> Read more...</a></p>
+                                    </div>
+                                </div></li>
+                            {% endfor %}
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer"> </div>
+        </div>
+    </div>
+    <div class="decoration"></div>
+</div>
+<div id="element_to_pop_up">
+    <div class="module"></div>
+    <span class="bpopup-button b-close">
+        <span>X</span>
+    </span>
+</div>

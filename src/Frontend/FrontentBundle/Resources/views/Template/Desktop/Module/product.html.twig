@@ -1,0 +1,235 @@
+<div class="" style="margin-top: 15px">
+    <div class="col-xs-6 col-md-6">
+        <div class="page-title-bar">
+            <div class="col-md-12">
+                <div class="btn-group pull-left">
+                    <div class="page-title">Product </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6 col-md-6 text-right">
+        <div class="btn-group ">
+            <button type="button" class="btn btn-success btn-cookie" id="list-grid"
+                    data-url="{{ path(globalOption.subDomain ~ '_webservice_product_cookie_base_list') }}">
+                <i class="fa fa-th"></i></button>
+
+            <button type="button" class="btn btn-danger btn-cookie" id="list-line"
+                    data-url="{{ path(globalOption.subDomain ~ '_webservice_product_cookie_base_list') }}">
+                <i class="fa fa-th-list"></i></button>
+
+            <button type="button" class="btn btn-info btn-cookie" id="list-medium"
+                    data-url="{{ path(globalOption.subDomain ~ '_webservice_product_cookie_base_list') }}">
+                <i class="fa fa-th-large "></i></button>
+
+        </div>
+    </div>
+</div>
+
+    <div class="clearfix"><br/></div>
+    {% if app.request.cookies.has('productList') %}
+        {% set cookieVal = app.request.cookies.get('productList') %}
+    {% else %}
+        {% set cookieVal = 'list-grid' %}
+    {% endif %}
+    <div id="categories-list" class="list-group">
+        {% for key,entity in pagination  %}
+            {% if cookieVal == 'list-grid' %}
+                <div class="item  {% if globalOption.templateCustomize.showSidebar == 1 and globalOption.featureWidgets is empty  %} col-md-4 col-xs-4 col-lg-4 {% else %}  col-md-3 col-xs-3 col-lg-3 {% endif %}">
+                    <div class="thumbnail" data-match-height="grid-list" >
+                        <img class="group list-group-image" style="max-height: 250px; min-height: 250px"  src="{{ image(entity.webPath).forceResize(250,250) }}" alt="" />
+                        <div class="caption">
+                            <h4 class="group inner list-group-item-heading">{{ entity.name }}</h4>
+                            <p class="group inner list-group-item-text">{{ entity.content|striptags|raw|truncate(150) }}</p>
+                            <p class="group inner list-group-item-text"> {% if entity.moduleCategory is not empty %}
+                                    {% for cat in entity.moduleCategory  %}
+                                        <a class="" href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'module': entity.module.slug,'slug':cat.slug }) }}"> {{ cat.name }}</a>
+                                        {% if not loop.last %},{% endif %}
+                                    {% endfor %}
+                                {% endif %}</p>
+                            <p class="group inner list-group-item-text">
+                                {% if entity.price is not empty and entity.price > 0 %}
+                                    <strong>
+                                        {% if entity.pricePrefix is not empty %}{{ entity.pricePrefix.currency }}. {% endif %}<strong>{{ entity.price }}</strong>
+                                    </strong>
+                                {% endif %}
+                            </p>
+                            <div class="row grid-more">
+                                <div class="col-xs-12 col-md-12 text-right">
+                                    <a class="btn btn-success" href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': entity.module.slug,'slug':entity.slug }) }}">Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% elseif cookieVal == 'list-line' %}
+                <div class="item  list-group-item">
+                    <div class="col-xs-4 col-md-4 text-left" style="margin-left: -15px">
+                        <img class="group list-group-image" style="max-height: 250px; min-height: 250px; width: 350px"  src="{{ image(entity.webPath).forceResize(350,250) }}" alt="" />
+                    </div>
+                    <div class="col-xs-6 col-md-6 text-left">
+                        <div class="caption">
+                            <h4 class="group inner list-group-item-heading">{{ entity.name }}</h4>
+                            <p class="group inner list-group-item-text">{{ entity.content|raw }}</p>
+                            <p class="group inner list-group-item-text"> {% if entity.moduleCategory is not empty %}
+                                    {% for cat in entity.moduleCategory  %}
+                                        <a class="" href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'module': entity.module.slug,'slug':cat.slug }) }}"> {{ cat.name }}</a>
+                                        {% if not loop.last %},{% endif %}
+                                    {% endfor %}
+                                {% endif %}</p>
+
+                        </div>
+                    </div>
+                    <div class="col-xs-2 col-md-2 text-right" >
+                        <p class="caption"> {% if entity.price is not empty and entity.price > 0 %}
+                                {% if entity.pricePrefix is not empty %}{{ entity.pricePrefix.currency }}. {% endif %}<strong>{{ entity.price }}</strong>
+                            {% endif %}</p>
+                        <a style="margin-top:48%" class="btn btn-info" href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': entity.module.slug,'slug':entity.slug }) }}">Details</a>
+                    </div>
+                </div>
+            {% elseif cookieVal == 'list-medium' %}
+                <div class="item col-xs-6 col-md-6">
+                    <div class="medium-list" data-match-height="medium-list">
+                        <div class="col-xs-7 col-md-7">
+                            <div class="medium-card" >
+                                <h4 class="group inner list-group-item-heading">{{ entity.name }}</h4>
+                                <p class="group inner list-group-item-text">{{ entity.content|raw }}</p>
+                                <p class="group inner list-group-item-text"> {% if entity.moduleCategory is not empty %}
+                                        {% for cat in entity.moduleCategory  %}
+                                            <a class="" href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'module': entity.module.slug,'slug':cat.slug }) }}"> {{ cat.name }}</a>
+                                            {% if not loop.last %},{% endif %}
+                                        {% endfor %}
+                                    {% endif %}</p>
+                                {% if entity.price is not empty and entity.price > 0 %}
+                                    <p>Price: {% if entity.pricePrefix is not empty %}{{ entity.pricePrefix.currency }}. {% endif %}<strong>{{ entity.price }}</strong></p>
+                                {% endif %}
+                                <p class="grid-btn">
+                                    <a class="btn btn-success" href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': entity.module.slug,'slug':entity.slug }) }}">Details</a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-xs-5 col-md-5 text-right" style="margin: 0; padding: 0;">
+                            <img style="width: 200px; height: 200px"  src="{{ image(entity.webPath).forceResize(200,200) }}" alt="" />
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+<div class="clearfix"><br/></div>
+
+<div class="col-xs-12 col-md-12 pagination text-center"  >
+    {{ knp_pagination_render(pagination) }}
+</div>
+<div class="clearfix"><br/></div>
+
+<style>
+
+    .thumbnail
+    {
+        margin-bottom: 20px;
+        padding: 0;
+        width:auto;
+        -webkit-border-radius: .25rem;
+        -moz-border-radius: .25rem;
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+        border-radius: .25rem;
+        border: 1px solid rgba(0,0,0,.125);
+    }
+
+    .img-responsive, .thumbnail > img, .thumbnail a > img, .carousel-inner > .item > img, .carousel-inner > .item > a > img{
+        width:auto;
+    }
+
+    .item.list-group-item
+    {
+        float: none;
+        width: 97%;
+        background-color: #fff;
+        margin-bottom: 10px;
+        padding: 1px!important;
+        margin-left: 15px;
+        margin-right: 15px;
+        -webkit-border-radius: .25rem;
+        -moz-border-radius: .25rem;
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+        border-radius: .25rem;
+        border: 1px solid rgba(0,0,0,.125)!important;
+    }
+
+
+    .item.list-group-item:nth-of-type(odd):hover,.item.list-group-item:hover
+    {
+        background: #09beca;
+    }
+
+    .medium-list{
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+        border: 1px solid rgba(0,0,0,.125);
+        display: flex;
+        margin-bottom: 30px;
+        display: -ms-flexbox;
+        display: flex;
+        border-radius: .25rem;
+        position: relative;
+    }
+
+    .medium-list .medium-card {
+        flex: 1 1 auto;
+        padding: 1.25rem;
+        padding-left: 0;
+    }
+
+    .medium-list .grid-btn{
+        position: absolute; bottom:5px
+    }
+
+
+
+    .grid-more{
+        position: absolute;
+        bottom: 30px;
+        right: 25px;
+    }
+
+
+
+    .item.list-group-item .list-group-image
+    {
+        margin-right: 10px;
+    }
+    .item.list-group-item .thumbnail
+    {
+        margin-bottom: 0px;
+    }
+    .item.list-group-item .caption
+    {
+        padding: 9px 9px 0px 9px;
+    }
+    .item.list-group-item:nth-of-type(odd)
+    {
+        background: #eeeeee;
+    }
+
+    .item.list-group-item:before, .item.list-group-item:after
+    {
+        display: table;
+        content: " ";
+    }
+
+    .item.list-group-item img
+    {
+        float: left;
+    }
+    .item.list-group-item:after
+    {
+        clear: both;
+    }
+    .list-group-item-text
+    {
+        margin: 0 0 11px;
+    }
+
+</style>
+

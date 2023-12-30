@@ -1,0 +1,154 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Medicine Purchase
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('medicine_purchase') }}">Medicine Purchase</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Medicine Purchase</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn yellow" href="{{ path('medicine_purchase_emptyDelete') }}"><i class="icon-trash"></i> Empty Delete</a>
+                                <a class="btn red" href="{{ path('medicine_purchase_new') }}"><i class="icon-plus-sign"></i> Add Purchase</a>
+                                <a class="btn purple" href="{{ path('medicine_purchase_new',{'invoiceMode':'manual'}) }}"><i class="icon-plus-sign"></i> Manual Purchase</a>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid">
+                                        <div class="span3">
+                                            <input type="text" id="vendor" name="vendor"  class="span12 m-wrap select2VendorCompany" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Enter vendor name">
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="startDate" name="startDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="endDate"  name="endDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off"  placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                        </div>
+                                        <div class="span3">
+                                            <div class="controls">
+                                                <div class="input-append span10">
+                                                    <input type="text" id="grn"  name="grn"  class="span12 m-wrap" value="{% if searchForm.grn is defined %}{{ searchForm.grn }}{% endif %}"  autocomplete="off"  placeholder="Enter purchase grn no">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >GRN</th>
+                                    <th class="numeric" >Memo No</th>
+                                    <th class="numeric" >Device Id</th>
+                                    <th class="numeric" >Vendor Name</th>
+                                    <th class="numeric" >Total</th>
+                                    <th class="numeric" >Discount</th>
+                                    <th class="numeric" >Dis. Type</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Due</th>
+                                    <th class="numeric" >Mode</th>
+                                    <th class="numeric" >Reverse</th>
+                                    <th class="numeric" >Adjustment</th>
+                                    <th class="numeric" >Process</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% set process = ['Created','In-progress','Complete'] %}
+                                {% for entity in entities %}
+                                    <tr id="delete-{{ entity.id }}">
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y g:i:s a') }}</td>
+                                        <td class="numeric" >{{ entity.grn }}</td>
+                                        <td class="numeric" >{% if entity.memo is not empty %}{{ entity.memo }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.devicePurchaseId }}</td>
+                                        <td class="numeric" >{% if entity.medicineVendor is defined and entity.medicineVendor is not empty %}{{ entity.medicineVendor.companyName }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.netTotal|number_format }}</td>
+                                        <td class="numeric" >{{ entity.discount|number_format }}</td> <td class="numeric" ><span class="btn red mini">{{ entity.discountCalculation|number_format(2, '.', ',') }}{% if entity.discountType != 'flat' %}%{% endif %}</span></td>
+                                        <td class="numeric" >{{ entity.payment|number_format }}</td>
+                                        <td class="numeric" >{{ entity.due|number_format }}</td>
+                                        <td class="numeric" >{{ entity.invoiceMode|capitalize }}</td>
+                                        <td class="numeric" >
+                                            {% if entity.revised == 1 %}
+                                                <a target="_blank" href="{{ path('medicine_reverse_purchase_show', { 'id': entity.id }) }}" class="btn yellow mini" ><i class="icon-refresh"></i></a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric" >
+                                            {% if entity.medicinePurchaseReturn is not empty %}
+                                                <a target="_blank" href="{{ path('medicine_purchase_return_show', { 'id': entity.medicinePurchaseReturn.id }) }}" class="btn yellow mini" >Adjusted</a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric" >{{ entity.process|capitalize }}</td>
+                                        <td class="numeric" >
+                                            {% if entity.process in process %}
+                                                <a href="{{ path('medicine_purchase_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-pencil"></i></a>
+                                                <a id="{{ entity.id }}" data-id="{{ entity.id }}" data-url="{{ path('medicine_purchase_delete', { 'id': entity.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a>
+                                            {% endif %}
+                                            <a href="{{ path('medicine_purchase_show', { 'id': entity.id }) }}" class="btn purple mini" ><i class="icon-eye-open"></i></a>
+                                            {% if entity.process == "Approved" %}
+                                            <a href="{{ path('medicine_purchase_copy', { 'id': entity.id }) }}" class="btn yellow mini" >Copy</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+

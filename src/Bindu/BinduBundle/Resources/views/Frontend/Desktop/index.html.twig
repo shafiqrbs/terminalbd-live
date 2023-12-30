@@ -1,0 +1,208 @@
+{% extends ':bindu:base.html.twig' %}
+{% block body %}
+    <div id="tm-page-body">
+        <div class="tm-row" style="">
+            <div class="tm-gallery gallery-slide flexslider" style="height: 450px; position: relative">
+                <ul class="slides">
+                    {% if slides is not empty %}
+                    {% for slide in slides %}
+                    <li>
+                        <a href="{{ slide.routePath }}">
+                            <img alt="img"  src="{{ image(slide.webPath).forceResize(1280,450)}}">
+                        </a>
+                        <div class="flex-caption">
+                            <h3>{{ slide.name }}</h3>
+                            <p>{{ slide.content|raw }}</p>
+                        </div>
+                    </li>
+                    {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <div id="tm-template-default-box" class="tm-container">
+            <div class="page-content">
+                <div class="page-content-inner tm-content">
+                    <div class="tm-row" style="padding:20px 0 20px 0">
+                        {% render controller("BinduBundle:Widget:siteContent",{'sector':'portal','slug':'portal-home'}) %}
+                        <div class="tm-wrap">
+                            <div class="clear"></div>
+                            <div style="">
+                                {% if apps is not empty %}
+                                {% for app in apps %}
+                                    <div class="one-fourth tm-box" data-match-height="medium-list">
+                                        <div style="margin-bottom:30px">
+                                            <a href="{{ path('bindu_application',{'slug':app.slug}) }}"><img alt="img" style="margin-bottom:20px" src="{{ image(app.webPath).forceResize(320,220) }}"></a>
+                                            <h3 class="tm-title"><a href="{{ path('bindu_application',{'slug':app.slug}) }}">{{ app.name }}</a></h3>
+                                            <p>{{ app.shortContent|raw }}</p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% endif %}
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tm-row">
+                        <div class="tm-wrap">
+                            <div class="header-double-line-right">
+                                <h3 class="tm-title">Our Happy Clients</h3>
+                            </div>
+                        </div>
+                        {#<div class="tm-wrap">
+                            <div class="tm-gallery gallery-carousel">
+                                <ul class="slides">
+                                    {% if clients is not empty %}
+                                        {% for client in clients %}
+
+                                        <li>
+                                            <a target="_blank" href="{% if client.domain is not empty %}http://www.{{ client.domain }}{% else %}javascript:{% endif %}" data-title="{% if client.domain is not empty %}http://www.{{ client.domain }}{% endif %}">
+                                                <img alt="img" style="width: 160px; height: 140px; border: 1px solid #0000001a" src="{{ asset('uploads/domain/'~client.id ~'/customizeTemplate/'~client.logo) }}">
+                                            </a>
+                                        </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                            </div>
+
+                        </div>#}
+                    </div>
+                    <div id="tm-portfolio" class="tm-portfolio-classic">
+                        <div class="tm-content">
+                            {% if clients is not empty %}
+                                {% for entity in clients %}
+                                    {% if(entity.logo is defined and entity.logo is not empty) %}
+                                        <article>
+                                            <div class="client-logo">
+                                                <div class="tm-mask">
+                                                    <div class="tm-mask-content">
+                                                        <h3><a href="{% if entity.domain is not empty %}http://www.{{ entity.domain }}{% else %}javascript:{% endif %}">{{ entity.name }}</a></h3>
+                                                        <span class="line"></span>
+                                                        <div class="incategory">
+                                                            <a href="{{ path('bindu_build_syndicate',{'syndicate':entity.syndicateSlug }) }}">{{ entity.syndicateName }}</a>
+                                                        </div>
+                                                        <a class="tm-btn" target="_blank" href="{% if entity.domain is not empty %}http://www.{{ entity.domain }}{% else %}javascript:{% endif %}" >Visit Website</a>
+                                                    </div>
+                                                </div>
+                                                <img class="img-ceneter" src="{{ asset('uploads/domain/'~entity.id ~'/customizeTemplate/'~entity.logo) }}">
+                                            </div>
+                                            <div class="org-title" ><strong>{{ entity.name }}</strong></div>
+                                            <ul class="social-networks">
+                                                <li>
+                                                    <a target="_blank" href="{% if entity.domain is not empty %}http://www.{{ entity.domain }}{% else %}javascript:{% endif %}" data-title="{% if entity.domain is not empty %}http://www.{{ entity.domain }}{% endif %}" >
+                                                        <i class="fa fa-home"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" data-title="+88{{ entity.mobile }}">
+                                                        <i class="fa fa-phone"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" data-title="+88{{ entity.mobile }}">
+                                                        <i class="fa fa-comment"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" data-title="{{ entity.email }}">
+                                                        <i class="fa fa-envelope"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="last" href="" data-title="{% if  entity.locationName is defined and entity.locationName is not null  %}{{ entity.locationName }},{{ entity.parentName }}{% endif %}">
+                                                        <i class="fa fa-map-pin"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </article>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="tm-row setanimate visible" style="padding:10px 0 80px; text-align:center">
+                        <div class="tm-wrap">
+                            <div class="header-line-center-bottom" style="margin-bottom:30px">
+                                <h1>
+                                    What others say about us
+                                </h1>
+                            </div>
+                            {% if testimonials is not empty %}
+                                {% for testimonial in testimonials %}
+                                    <div class="one-third tm-animate slide-from-left">
+                                        <img alt="img" style="margin:30px 0" src="{{ image(testimonial.webPath).scaleResize(160,160) }}">
+                                        <div class="tm-testimonial tm-style2">
+                                            <div class="testimonial-content">
+                                                <p>{{ testimonial.content|striptags|raw|truncate(250) }}</p>
+                                            </div>
+                                            <div class="info">
+                                                <div class="name">
+                                                    <h3>- {{ testimonial.name }} -</h3>
+                                                    <p>{{ testimonial.designation }} - <span>{{ testimonial.company }}</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--page-content-->
+        </div>
+    </div>
+    <style>
+        .one-fourth:nth-child(4) , .one-fourth:nth-child(8), .one-fourth:nth-child(12), .one-fourth:nth-child(13){
+            margin-right: 0;
+        }
+    </style>
+    <style>
+
+        #tm-portfolio .tm-content article {
+            margin: 0 10px;
+            width: 23%;
+            margin-bottom: 20px;
+            padding: 0;
+            background: #eeeeee;
+        }
+        #tm-portfolio.tm-portfolio-classic .tm-content article .tm-mask{
+            left: 0;
+            right: 0;
+        }
+        .client-logo{
+            height: 200px;
+            width: 250px
+        }
+        ul.social-networks {
+            /* fallback */
+            background-position: center center;
+            background-repeat: no-repeat;
+            padding-left: 18px!important;
+        }
+        .ul.social-networks li a::before{
+            width: 200px;
+        }
+    </style>
+{% endblock %}
+    {% block cssBlock %}
+        {% stylesheets filter='cssrewrite'
+        '@BinduBundle/Resources/public/css/style.css'
+        %}
+        <link rel="stylesheet" href="{{ asset_url }}"/>
+        {% endstylesheets %}
+    {% endblock  %}
+    {% block javascriptBlock %}
+        {{ parent() }}
+        {% javascripts
+        '@BinduBundle/Resources/public/js/common.js'
+        %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    {% endblock %}
+    {% block documentready %}
+        {{ parent() }}
+        indexFormValidation();
+    {% endblock %}

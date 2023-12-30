@@ -1,0 +1,108 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Customer : {{ entity.customer.name }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="{{ path('medicine_sales_customer_return_invoice') }}">Manage Medicine Return</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Medicine Return Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('medicine_sales_customer_return_invoice') }}"><i class="icon-th-list"></i> Sales Return</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th>S/N</th>
+                                    <th class="numeric" >Medicine Name </th>
+                                    <th class="numeric" >Invoice</th>
+                                    <th class="numeric" >Quantity</th>
+                                    <th class="numeric" >Purchase Price</th>
+                                    <th class="numeric" >SubTotal</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for item in entity.medicineSalesReturns %}
+                                    <tr>
+                                        <td class="numeric" >{{ loop.index }}</td>
+                                        <td class="numeric" >{{ item.medicineStock.name }}</td>
+                                        <td class="numeric" >{{ item.medicineSalesItem.medicineSales.invoice }}</td>
+                                        <td class="numeric" >{{ item.quantity }}</td>
+                                        <td class="numeric" >{{ item.salesPrice }}</td>
+                                        <td class="numeric" >{{ item.subTotal }}</td>
+                                        <td class="numeric" >
+                                            {% if entity.process == 'created' %}
+                                                <a  href="{{ path('medicine_sales_return_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                <tr><th colspan="5"><span class="pull-right">Total Amount</span></th>
+                                    <th>{{ entity.subTotal }}</th>
+                                    <th></th>
+                                </tr>
+                                <tr><th colspan="5"><span class="pull-right">Payment/Adjustment</span></th>
+                                    <th>{{ entity.payment }}</th>
+                                    <th>{{ entity.adjustment }}</th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-right">
+                                {% if entity.process != 'approved' %}
+                                    <a href="javascript:" data-id="{{ entity.id }}" data-url="{{ path('medicine_sales_return_invoice_approve',{'id':entity.id}) }}" class="btn blue approve"><i class="icon-ok"></i> Approve</a>
+                                {% else %}
+                                    <a href="javascript:"  class="btn red"><i class="icon-ok"></i> Approved</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/damage.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}

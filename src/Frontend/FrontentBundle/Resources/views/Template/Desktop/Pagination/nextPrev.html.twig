@@ -1,0 +1,13 @@
+{# default Sliding pagination control implementation #}
+<div class="" style="text-align: center">
+    {% if previous is defined %}
+        <a  class="btn btn-default" href="{{ path(route, query|merge({(pageParameterName): previous})) }}"><span class="glyphicon glyphicon glyphicon-chevron-left"></span>&nbsp;Prev</a>
+    {% else %}
+        <a class="btn btn-default" disabled href="javascript:"><span class="glyphicon glyphicon glyphicon-chevron-left"></span>&nbsp;Prev</a>
+    {% endif %}
+    {% if next is defined %}
+        <a class="btn btn-default" href="{{ path(route, query|merge({(pageParameterName): next})) }}">Next&nbsp;<span class="glyphicon glyphicon glyphicon-chevron-right"></span></a>
+    {% else %}
+        <a  class="btn btn-default" disabled href="javascript:"><span class="glyphicon glyphicon glyphicon-chevron-right"></span>&nbsp;Next</a>
+    {% endif %}
+</div>

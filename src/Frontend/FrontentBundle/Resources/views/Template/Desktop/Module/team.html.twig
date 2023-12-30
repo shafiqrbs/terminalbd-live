@@ -1,0 +1,35 @@
+<div class="row">
+    {% for key,entity in pagination  %}
+    <div class="{% if globalOption.templateCustomize.showSidebar == 1 and globalOption.featureWidgets is empty  %} col-md-4 {% else %}  col-md-3 {% endif %} grid">
+        <div class="our-team">
+            <div class="pic">
+                <img src="{{ image(entity.webPath).scaleResize(263,200) }}">
+                <div class="over-layer">
+                    <ul class="social-links">
+                        <li><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'team','slug':entity.slug }) }}"><i class="fa fa-link"></i></a></li>
+                        {% if entity.facebook is not empty  %}
+                            <li><a href="https://facebook.com/{{ entity.facebook }}"><i class="fa fa-facebook"></i></a></li>
+                        {% endif %}
+                        {% if entity.twitter is not empty  %}
+                            <li><a href="https://twitter.com/{{ entity.twitter }}"><i class="fa fa-twitter"></i></a></li>
+                        {% endif %}
+                        {% if entity.gmail is not empty  %}
+                            <li><a href="https://plus.google.com/{{ entity.gmail }}"><i class="fa fa-google-plus"></i></a></li>
+                        {% endif %}
+                        {% if entity.youtube is not empty  %}
+                            <li><a href="https://www.youtube.com/{{ entity.youtube }}"><i class="fa fa-youtube"></i></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div class="team-content">
+                <h4 class="team-title">{{ entity.name }}</h4>
+                <span class="post">{{ entity.designation }}</span>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+<div class="pagination pull-center"  >
+    {{ knp_pagination_render(pagination) }}
+</div>

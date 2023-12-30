@@ -1,0 +1,409 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Purchase
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('purchase') }}">Purchase</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Add/Edit purchase</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12" style="position:relative">
+
+                <div class="portlet box green tabbable">
+                    <div id="dataProces"></div>
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Purchase Information</div>
+                        <div class="span7 pull-center" id="error-msg"></div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('purchase_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('purchase') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                    {% if(entity.id > 0 ) %}
+                                        <li><a href="{{ path('purchase_edit',{'id':entity.id}) }}"><i class="icon-edit"></i>&nbsp;Edit</a></li>
+                                        <li><a href="{{ path('purchase_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;Show</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Vendor name<span class="required">*</span></label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                {{ form_widget(form.vendor) }}
+                                                {{ form_errors(form.vendor) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Purchase & Payment Amount<span class="required">*</span></label>
+                                        <div class="controls">
+                                            <div class="span6"> {{ form_widget(form.totalAmount) }}{{ form_errors(form.totalAmount) }}</div>
+                                            <div class="span6"> {{ form_widget(form.paymentAmount) }} {{ form_errors(form.paymentAmount) }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Memo<span class="required">*</span> & Invoice no</label>
+                                        <div class="controls">
+                                            <div class="span6">  {{ form_widget(form.memo) }}{{ form_errors(form.memo) }}</div>
+                                            <div class="span6"> {{ form_widget(form.invoice) }}{{ form_errors(form.invoice) }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Commission & Due Amount</label>
+                                        <div class="controls">
+                                            <div class="span6">{{ form_widget(form.commissionAmount) }}{{ form_errors(form.commissionAmount) }}</div>
+                                            <div class="span6">{{ form_widget(form.dueAmount) }}{{ form_errors(form.dueAmount) }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Receive Date</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                {{ form_widget(form.receiveDate) }}
+                                                {{ form_errors(form.receiveDate) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Total Item & Qnt<span class="required">*</span></label>
+                                        <div class="controls">
+                                            <div class="span6"> {{ form_widget(form.totalItem) }}{{ form_errors(form.totalItem) }}</div>
+                                            <div class="span6"> {{ form_widget(form.totalQnt) }}{{ form_errors(form.totalQnt) }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Attach file</label>
+                                        <div class="controls">
+                                            <div class="fileupload fileupload-new" data-provides="fileupload">
+                                                <div class="input-append">
+                                                    <div class="uneditable-input span8">
+                                                        <i class="icon-file fileupload-exists"></i>
+                                                        <span class="fileupload-preview"></span>
+                                                    </div>
+													<span class="btn btn-file">
+													<span class="fileupload-new">Select file</span>
+													<span class="fileupload-exists">Change</span>
+													    {{ form_widget(form.file) }}
+                                                        {{ form_errors(form.file) }}
+													</span>
+                                                    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+
+                               <div class="form-actions portlet box blue">
+                                   <div class="portlet-title">
+                                       <div class="caption"><i class="icon-reorder"></i>Add item</div>
+                                       <div class="tools">
+                                           <div class="span1"><button type="button" data-ref-id="1"  class="btn green mini addmore" ><i class="icon-plus m-icon-white"></i></button></div>
+                                       </div>
+                                   </div>
+                               </div>
+                               <div class="clearfix">&nbsp;</div>
+                               <!--/span-->
+                            <div class="clone-block" id="clone-block-1">
+                               <div class="row-fluid clone  box blue" >
+                                   <div class="span5">
+                                      <input type="text" id="vendorItemName" name="vendorItemName[]" class="m-wrap span12" placeholder="item">
+                                   </div>
+                                   <div class="span6">
+                                       <input type="text" id=""  name="quantity[]" required="required" class="m-wrap span3 numeric quantity" placeholder="Qnt">
+                                       <input type="text" id="" name="purchasePrice[]" required="required" class="m-wrap span3 numeric purchasePrice" placeholder="Purchase price">
+                                       <input type="text" id="" name="subTotalPurchase[]" required="required" class="m-wrap span3 numeric subTotalPurchase" placeholder="Purchase price">
+                                       <input type="text" id="" name="salesPrice[]" class="m-wrap span3 numeric salesPrice" placeholder="Sales price">
+                                       <input type="text" id="" name="webPrice[]" class="m-wrap span3 numeric" placeholder="Web price">
+                                   </div>
+                                   <div class="span1"><button type="button" class="btn red  remove hidden" ><i class="icon-trash m-icon-white"></i></button></div>
+                               </div>
+                            </div>
+                            <div class="form-actions portlet box grey">
+                                <div class="span8" id="message"></div>
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green" id="action-button"><i class="icon-ok"></i> Save</button>
+                                    <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                                    {% if(entity.id > 0 ) %}
+                                        <a href="{{ path('purchase_order_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .form .control-group .controls ul{
+            margin-left: 0;
+            margin-top: -10px;
+        }
+        #error-msg{
+            color: #f0262f;
+        }
+    </style>
+{% endblock %}
+{% block documentready %}
+  {#  <script>#}
+    {{ parent() }}
+
+    $('#appstore_bundle_inventorybundle_purchase_memo').attr("required", true);
+    $('#appstore_bundle_inventorybundle_purchase_dueAmount').attr("disabled", true);
+
+    $('#purchaseItem').on("click", ".delete", function() {
+
+        var url = $(this).attr("rel");
+        var id = $(this).attr("id");
+        $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (response) {
+        if ('success' == response) {
+        $('#remove-' + id).hide();
+        }
+        },
+        })
+    })
+
+    $('#appstore_bundle_inventorybundle_purchase_totalAmount , #appstore_bundle_inventorybundle_purchase_paymentAmount ,#appstore_bundle_inventorybundle_purchase_commissionAmount ').change(function(){
+
+        var totalAmount = ($('#appstore_bundle_inventorybundle_purchase_totalAmount').val());
+        total = (totalAmount != '') ?  parseInt(totalAmount) : 0 ;
+        var paymentAmount = $('#appstore_bundle_inventorybundle_purchase_paymentAmount').val();
+        payment = ( paymentAmount != '') ?  parseInt(paymentAmount) : 0 ;
+        var commissionPayment = ($('#appstore_bundle_inventorybundle_purchase_commissionAmount').val());
+        commission = (commissionPayment != '') ?  parseInt(commissionPayment) : 0 ;
+        var due = (total -  ( payment + commission));
+        $('#appstore_bundle_inventorybundle_purchase_dueAmount').val(due);
+
+    })
+
+    $('.clone-block').on("change", ".quantity , .purchasePrice ", function() {
+
+        var purchasePrice = $("input[name='purchasePrice[]']").val();
+            purchasePrice = (purchasePrice != '') ?  parseInt(purchasePrice) : 0 ;
+        var quantity = $("input[name='quantity[]']").val();
+            quantity = (quantity != '') ?  parseInt(quantity) : 0 ;
+        var subTotal = ( purchasePrice * quantity );
+        alert(subTotal);
+        $(this).closest('.subTotalPurchase').val(subTotal);
+    })
+
+    $('#action-button').click( function( e ) {
+
+        var name_regex = /^[a-zA-Z]+$/;
+        var number_regex = /^[0-9]+$/;
+
+        var vendor =  $('#appstore_bundle_inventorybundle_purchase_vendor').val();
+        var totalAmount =  $('#appstore_bundle_inventorybundle_purchase_totalAmount').val();
+        var paymentAmount =  $('#appstore_bundle_inventorybundle_purchase_paymentAmount').val();
+        var memo =  $('#appstore_bundle_inventorybundle_purchase_memo').val();
+        var totalItem =  $('#appstore_bundle_inventorybundle_purchase_totalItem').val();
+        var totalQnt =  $('#appstore_bundle_inventorybundle_purchase_totalQnt').val();
+
+        var itemName =  $('#vendorItemName').val();
+
+        var purchaseItemAmount = 0;
+        $("input[name='purchasePrice[]']").each(function (index, element) {
+            purchaseItemAmount = purchaseItemAmount + parseFloat(($(element).val() != '') ?  parseFloat($(element).val()) : 0);
+
+        });
+
+        var itemPurchase = [];
+        $("input[name='purchasePrice[]']").each(function() {
+        var value = $(this).val();
+        if (value) {
+        itemPurchase.push(value);
+        }
+        });
+
+        var quantity = 0;
+        $("input[name='quantity[]']").each(function (index, element) {
+              quantity = quantity + parseFloat(($(element).val() != '') ?  parseFloat($(element).val()) : 0);
+        });
+
+        var itemquantity = [];
+        $("input[name='quantity[]']").each(function() {
+        var value = $(this).val();
+        if (value) {
+        itemquantity.push(value);
+        }
+        });
+
+        var salesItemPrice = 0;
+        $("input[name='salesPrice[]']").each(function (index, element) {
+            salesItemPrice = salesItemPrice + parseFloat(($(element).val() != '') ?  parseFloat($(element).val()) : 0);
+        });
+        var itemSalesPrice = [];
+        $("input[name='salesPrice[]']").each(function() {
+        var value = $(this).val();
+        if (value) {
+            itemSalesPrice.push(value);
+        }
+        });
+
+        var vendorItem = ($('input[name="vendorItemName[]"]').length);
+
+        var vendorItemName = [];
+
+        $("input[name='vendorItemName[]']").each(function() {
+            var value = $(this).val();
+            if (value) {
+                vendorItemName.push(value);
+            }
+        });
+       if(vendor == ""){
+           $('#error-msg').text("Please add your vendor name"); //this segment displays the validation rule for selection
+           $("#appstore_bundle_inventorybundle_purchase_vendor").focus();
+           return false;
+        }else if(!totalAmount.match(number_regex) || totalAmount.length == 0){
+            $('#error-msg').text("Please add purchase total amount"); //this segment displays the validation rule for selection
+            $("#appstore_bundle_inventorybundle_purchase_totalAmount").focus();
+            return false;
+        }else if(!paymentAmount.match(number_regex) || paymentAmount.length == 0){
+            $('#error-msg').text("Please add payment amount"); //this segment displays the validation rule for selection
+            $("#appstore_bundle_inventorybundle_purchase_paymentAmount").focus();
+            return false;
+        }else if(memo ==""){
+            $('#error-msg').text("Please add purchase memo no"); //this segment displays the validation rule for selection
+            $("#appstore_bundle_inventorybundle_purchase_memo").focus();
+            return false;
+        }else if(!totalItem.match(number_regex)){
+            $('#error-msg').text("Please add purchase total item");
+            $("#appstore_bundle_inventorybundle_purchase_totalItem").focus();
+            return false;
+        }else if(!totalQnt.match(number_regex) || totalQnt.length == 0){
+            $('#error-msg').text("Please add purchase total quantity"); //this segment displays the validation rule for selection
+            $("#appstore_bundle_inventorybundle_purchase_totalQnt").focus();
+            return false;
+        }else if(totalItem != vendorItem ){
+            $('#error-msg').text('Not equal total item & purchase item');
+            $('input[name="vendorItemName[]"').focus();
+            return false;
+        }else if (totalItem != vendorItemName.length ) {
+            $('#error-msg').html("Item name field values are blank");
+            $('input[name="vendorItemName[]"').focus();
+            return false;
+        }else if(quantity != totalQnt ){
+            $('#error-msg').text('Not equal total quantity & item base total quantity');
+            $('.quantity').focus();
+            return false;
+        }else if(itemquantity.length === 0 ){
+            $('#error-msg').text('Item quantity field values are blank');
+            $('.quantity').focus();
+            return false;
+       }else if(totalAmount != purchaseItemAmount ){
+            $('#error-msg').text('Not equal total amount & item base purchase price '+ totalAmount+' & '+ purchaseItemAmount);
+            $(".purchasePrice").focus();
+            return false;
+        }else if(itemPurchase  === 0 ){
+            $('#error-msg').text('Item purchase price field values are blank');
+            $(".itemPurchase").focus();
+            return false;
+        }else if(totalAmount >= salesItemPrice ){
+            $('#error-msg').text('Not more then total amount & item base sales price '+ totalAmount+' & '+salesItemPrice);
+            $(".salesPrice").focus();
+            return false;
+        }else if(itemSalesPrice  === 0 ){
+            $('#error-msg').text('Item sales price field values are blank ');
+            $(".salesPrice").focus();
+            return false;
+        }else{
+            $('.purchase').submit();
+        }
+        e.preventDefault();
+
+    });
+
+    var count = 0;
+    $('.addmore').click(function(){
+        var $el = $(this);
+        $vendor_id = $el.data('ref-id');
+        var $cloneBlock = $('#clone-block-'+ $vendor_id);
+
+    var $clone = $cloneBlock.find('.clone:eq(0)').clone();
+        $clone.find('[id]').each(function(){this.id+='someotherpart'});
+        $clone.find(':text,textarea' ).val("");
+        $clone.attr('id', "added"+(++count));
+        $clone.find('.remove').removeClass('hidden');
+        $cloneBlock.append($clone);
+        $('.numeric').numeric();
+    });
+
+    $('form.purchase').on('click', '.remove', function(){
+        $(this).closest('.clone').remove();
+    });
+
+{% endblock %}

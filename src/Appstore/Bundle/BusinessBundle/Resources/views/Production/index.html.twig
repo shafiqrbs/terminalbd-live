@@ -1,0 +1,147 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Pre-production
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('business_stock') }}">Manage Pre-production</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Pre-production</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green ">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Pre-production</div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="row-fluid" >
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid" style="margin-bottom: 10px">
+
+                                    <div class="span4">
+
+                                    </div>
+                                    <div class="span4">
+                                        <input class="m-wrap span12 select2ParticularName" name="name" id="name" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Search particular name">
+                                    </div>
+                                    <div class="span4">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <select name="category" id="category" class="m-wrap span12">
+                                                    <option value="" >--Category--</option>
+                                                    {% for cat in categories %}
+                                                        <option value="{{ cat.id }}" {% if searchForm.category is defined and searchForm.category == cat.id %} selected="selected" {% endif %} >{{ cat.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </form>
+
+                        </div>
+                        <!-- BEGIN FORM-->
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >SKU</th>
+                                    <th class="numeric" >Name</th>
+                                    {% if 'wearhouse' in config.stockFormat %}
+                                        <th class="numeric" >Wearhouse</th>
+                                    {% endif %}
+                                    <th class="numeric" >Category</th>
+                                    <th class="numeric" >Receive Qnt</th>
+                                    <th class="numeric" >Unit</th>
+                                    <th class="numeric" >PP</th>
+                                    <th class="numeric" >SubTotal</th>
+                                    <th class="numeric" >Sales</th>
+                                    <th class="numeric" >SubTotal</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in pagination %}
+                                    <tr>
+                                        <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.businessParticular.particularCode }}</td>
+                                        <td class="numeric" >{{ entity.businessParticular.name }}</td>
+                                        {% if 'wearhouse' in config.stockFormat %}
+                                            <td class="numeric" >{% if entity.businessParticular.wearHouse is not empty %}{{ entity.businessParticular.wearHouse.name }}{% endif %}</td>
+                                        {% endif %}
+                                        <td class="numeric" >{% if entity.businessParticular.category is not empty %}{{ entity.businessParticular.category.name }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.quantity|number_format }}</td>
+                                        <td class="numeric">{% if  entity.businessParticular.unit is defined and  entity.businessParticular.unit is not empty %}{{ entity.businessParticular.unit.name|default('---') }}{% endif %}</td>
+                                        <td class="numeric">{{ entity.purchasePrice }}</td>
+                                        <td class="numeric" >{{ entity.purchaseSubTotal|number_format }}</td>
+                                        <td class="numeric"> {{ entity.salesPrice }}</td>
+                                        <td class="numeric" >{{ entity.salesSubTotal }}</td>
+                                        <td class="numeric" >
+                                            {% if entity.process == 'created' %}
+                                            <a href="javascript:" data-url="{{ path('business_pre_production_delete', { 'particular':entity.businessParticular.id,'id': entity.id }) }}" class="btn red mini confirm" ><i class="icon-trash"></i></a>
+                                            {% endif %}
+                                            {% if entity.process == 'created' and entity.quantity > 0 %}
+                                                <a href="javascript:" data-url="{{ path('business_production_approve', { 'id': entity.id }) }}" class="btn yellow mini confirm" ><i class="icon-ok"></i> Approve</a>
+                                            {% endif %}
+                                            {% if entity.process == 'approved' %}
+                                                <a href="javascript:"  class="btn blue mini" ><i class="icon-ok"></i> Approved</a>
+                                            {% endif %}
+                                            <a href="{{ path('business_pre_production_show', { 'id': entity.id }) }}"  class="btn purple mini" ><i class="icon-eye-open"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BusinessBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

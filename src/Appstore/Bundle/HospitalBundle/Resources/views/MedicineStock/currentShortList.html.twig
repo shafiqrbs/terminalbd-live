@@ -1,0 +1,169 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Medicine Short Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('medicine_stock') }}">Manage Stock Short List</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green ">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Stock Short List</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a  href="{{ path('medicine_prepurchase_create') }}" id="btn-create-barcode" class="btn yellow" >
+                                    Pre-Purchase
+                                    <i class="icon-barcode"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span4">
+                                        <input type="text" id="name" name="name"  class="span12 m-wrap select2StockMedicineName" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Enter medicine & others name ">
+                                    </div>
+                                    <div class="span4">
+                                        <input type="text" id="brandName"  name="brandName"  class="span12 m-wrap select2BrandName" value="{% if searchForm.brandName is defined %}{{ searchForm.brandName }}{% endif %}"  autocomplete="off"  placeholder="Product brand name">
+                                    </div>
+                                    <div class="span4">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="created"  name="created"  class="span6 m-wrap dateCalendar" value="{% if searchForm.created is defined %}{{ searchForm.created }}{% endif %}"  autocomplete="off"  placeholder="Created">
+                                                <input type="text" id="created"  name="created"  class="span6 m-wrap dateCalendar" value="{% if searchForm.created is defined %}{{ searchForm.created }}{% endif %}"  autocomplete="off"  placeholder="Created">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- BEGIN FORM-->
+                        <!-- END FORM-->
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" ><i class="icon icon-th-list"></i></th>
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Brand Name</th>
+                                    <th class="numeric" >Rack</th>
+                                    <th class="numeric" >Sales Tk.</th>
+                                    <th class="numeric" >Receive Qnt</th>
+                                    <th class="numeric" >Sales Qnt</th>
+                                    <th class="numeric" >Stock Qnt</th>
+                                    <th class="numeric" >Pack</th>
+                                    <th class="numeric" >Min. Qnt</th>
+                                    <th class="numeric" >Created By</th>
+                                    <th class="numeric" >Unit</th>
+                                    <th class="numeric" ></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in pagination %}
+                                    <tr {% if entity.medicineStock.minQuantity > 0 and entity.medicineStock.remainingQuantity <= entity.medicineStock.minQuantity %} class="min" {% endif %}>
+                                        <td><input type="checkbox" class="checkbox stockId" id=""  value="{{ entity.medicineStock.id }}"></td>
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                        {% if entity.medicineStock.mode == 'medicine' %}
+                                            <td class="numeric" ><a data-trigger="hover" class="tooltips" data-original-title="{% if entity.medicineStock.medicineBrand is not empty %}{{ entity.medicineStock.medicineBrand.medicineForm }}-{{ entity.medicineStock.medicineBrand.name }}-{{ entity.medicineStock.medicineBrand.strength }}-{{ entity.medicineStock.medicineBrand.medicineGeneric.name }}-{{ entity.medicineStock.medicineBrand.medicineCompany.name }}{% endif %}" href="{{ path('medicine_stock_edit',{'id': entity.medicineStock.id })}}">{{ entity.medicineStock.name }}</a></td>
+                                        {% else %}
+                                            <td class="numeric" ><a data-trigger="hover" class="tooltips" data-original-title="{% if entity.medicineStock.accessoriesBrand is not empty %}{{ entity.medicineStock.accessoriesBrand.name }}{% endif %}" href="{{ path('medicine_stock_edit',{'id': entity.medicineStock.id })}}">{{ entity.medicineStock.name }}</a></td>
+                                        {% endif %}
+                                        <td class="numeric" >{{ entity.medicineStock.brandName }}</td>
+                                        <td class="numeric" >{% if entity.medicineStock.rackNo is not empty %}{{ entity.medicineStock.rackNo.name }}{% endif %}</td>
+                                        <td class="numeric">{{ entity.medicineStock.salesPrice }}</td>
+                                        <td class="numeric" >{{ entity.medicineStock.purchaseQuantity|number_format }}</td>
+                                        <td class="numeric" >{{ entity.medicineStock.salesQuantity|number_format }}</td>
+                                        <td class="numeric" >{{ entity.medicineStock.remainingQuantity }}</td>
+                                        <td class="numeric">
+                                            {% if ( app.user.granted("ROLE_MEDICINE_MANAGER") or app.user.granted("ROLE_DOMAIN"))  %}
+                                                <a  class="editableText" data-name="pack" href="#"  data-url="{{ path('medicine_stock_inline') }}" data-type="text" data-pk="{{ entity.medicineStock.id }}" data-original-title="Change pack qnt">{{ entity.medicineStock.pack }}</a>
+                                            {% endif %}
+                                            {% if entity.medicineStock.pack > 1 and entity.medicineStock.remainingQuantity > entity.medicineStock.pack|default(1) %} => {{ (entity.medicineStock.remainingQuantity/entity.medicineStock.pack)|default(1)|number_format(2) }}{% endif %}
+                                        </td>
+                                        <td class="numeric">
+                                            {% if ( app.user.granted("ROLE_MEDICINE_MANAGER") or app.user.granted("ROLE_DOMAIN"))  %}
+                                                <a  class="editable" data-name="minQuantity" href="#"  data-url="{{ path('medicine_stock_inline') }}" data-type="text" data-pk="{{ entity.medicineStock.id }}" data-original-title="Change min Quantity">{{ entity.medicineStock.minQuantity }}</a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric" >{{ entity.medicineSales.createdBy }}</td>
+                                        <td class="numeric" >{{ entity.medicineStock.unit.name }}</td>
+                                        <td class="numeric" ><a href="javascript:" data-id="{{ entity.id }}" data-action="{{ path('medicine_stock_adjustment_close',{'id':entity.id}) }}" class="btn red mini tr-remove">Close</a> </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('bundles/medicine/js/editable.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('bundles/medicine/js/approveProcess.js') }}"></script>
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $('.editableText').editable({
+        type: 'text',
+        inputclass: 'span12 m-wrap',
+        placement: 'right',
+    });
+    EditableWithLoadInit();
+    var itemArr = $.cookie('stockIds') ? $.cookie('stockIds').split(',') : [];
+    $('body').on('change', 'input.stockId', function(el) {
+        console.log(itemArr);
+        var val = $(this).val();
+        if($(this).prop('checked')) {
+        itemArr.push(val);
+        }else{
+        var index = itemArr.indexOf(val);
+        if (index > -1) {
+        itemArr.splice(index, 1);
+        }
+        }
+        $.cookie('barcodes', itemArr, {path: '/'});
+    });
+
+{% endblock %}

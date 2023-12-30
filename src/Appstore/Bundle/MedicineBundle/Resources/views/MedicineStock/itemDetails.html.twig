@@ -1,0 +1,313 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Product Name
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('medicine_stock') }}">Stock</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>Product Name</li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>c
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="row-fluid">
+                    <form class="search-form" action="" method="get" name="itemSearch">
+                        <div class="row-fluid">
+                            <div class="span8">
+                                <input type="text" id="name" name="name"  class="span12 m-wrap select2StockMedicineName" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Enter medicine & others name ">
+                            </div>
+                            <div class="span4">
+                                <div class="controls">
+                                    <div class="input-append span10">
+                                        <select name="report" id="report" class="span12 m-wrap">
+                                            {% set reports = ['Purchase','Purchase-Return','Sales','Sales-Return','Damage'] %}
+                                            <option value="">Report for</option>
+                                            {% for report in reports %}
+                                                <option {% if searchForm.report is defined and searchForm.report == report %} selected="selected" {% endif %} value="{{ report }}" >{{ report }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="btn-group">
+                                            <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="portlet box green">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Product Details</div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% if entity is not empty %}
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <h4>About:</h4>
+                                <ul class="unstyled">
+                                    <li><strong>Medicine Name: {{ entity.name }}</strong></li>
+                                    {% if entity.rackNo is not empty %}<li><strong>Rack No #:</strong>&nbsp;{{ entity.rackNo.name }}</li>{% endif %}
+                                    <li><strong>Product Mode #:</strong>&nbsp;{{ entity.mode }}</li>
+                                    {% if entity.medicineBrand is not empty %}<li><strong>Generic Name #:</strong>&nbsp;{{ entity.medicineBrand.medicineGeneric.name }}</li>{% endif %}
+                                    {% if entity.medicineBrand is not empty %}<li><strong>Brand Name #:</strong>&nbsp;{{ entity.medicineBrand.medicineCompany.name }}</li>{% endif %}
+                                    {% if entity.accessoriesBrand is not empty %}<li><strong>Brand Name #:</strong>&nbsp;{{ entity.accessoriesBrand.name }}</li>{% endif %}
+                                </ul>
+                            </div>
+                            <div class="span4">
+                                <h4>Stock Details:</h4>
+                                <ul class="unstyled">
+                                    <li><strong>Purchase:</strong>&nbsp;{{ entity.purchaseQuantity }}</li>
+                                    <li><strong>Purchase Return:</strong>&nbsp;{{ entity.purchaseReturnQuantity }}</li>
+                                    <li><strong>Damage:</strong>&nbsp;{{ entity.damageQuantity }}</li>
+                                </ul>
+                            </div>
+                            <div class="span4">
+                                <h4>&nbsp;</h4>
+                                <ul class="unstyled">
+                                    <li><strong>Sales:</strong>&nbsp;{{ entity.salesQuantity }}</li>
+                                    <li><strong>Sales Return:</strong>&nbsp;{{ entity.salesReturnQuantity }}</li>
+                                    <li><strong>Remaining:</strong>&nbsp;{{ entity.remainingQuantity }}</li>
+                                </ul>
+                            </div>
+
+                        </div>
+                        {% endif %}
+                        {% if pagination is not empty and searchForm.report == 'Purchase' %}
+                        <div class="form-actions portlet box green">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Purchase History</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid box green">
+                            {% if pagination is defined and  pagination is not empty  %}
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                    <thead class="flip-content ">
+                                    <tr class="head-blue">
+                                        <th class="numeric" >Expiry Date</th>
+                                        <th class="numeric" >Barcode</th>
+                                        <th class="numeric" >Grn</th>
+                                        <th class="numeric" >Received</th>
+                                        <th class="numeric" >Created By</th>
+                                        <th class="numeric" >Vendor</th>
+                                        <th class="numeric" >PP</th>
+                                        <th class="numeric" >MRP</th>
+                                        <th class="numeric" >Quantity</th>
+                                        <th class="numeric" >Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in pagination %}
+                                        <tr {% if item.expirationEndDate is not empty and "now"|date('Y-m-d') >= item.expirationEndDate|date('Y-m-d') %} class="red-alert" {% endif %} >
+                                            <th class="numeric" >{% if item.expirationStartDate is not empty and item.expirationEndDate is not empty %}{{ item.expirationStartDate|date('d-m-y') }} To {{ item.expirationEndDate|date('d-m-y') }}{% endif %}</th>
+                                            <td class="numeric" >{{ item.barcode }}</td>
+                                            <td class="numeric" >{{ item.medicinePurchase.grn }}</td>
+                                            <td class="numeric" >{{ item.medicinePurchase.receiveDate|date('d-m-Y') }}</td>
+                                            <td class="numeric" >{{ item.medicinePurchase.createdBy }}</td>
+                                            <td class="numeric" >{% if item.medicinePurchase.medicineVendor is defined and item.medicinePurchase.medicineVendor is not empty %}{{ item.medicinePurchase.medicineVendor.companyName }}{% endif %}</td>
+                                            <td class="numeric" >{{ item.purchasePrice }}</td>
+                                            <td class="numeric" >{{ item.salesPrice }}</td>
+                                            <td class="numeric" >{{ item.quantity }}</td>
+                                            <td class="numeric" >{{ item.quantity * item.purchasePrice }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        {% endif %}
+                        {% if pagination is not empty and searchForm.report == 'Purchase-Return' %}
+                        <div class="form-actions portlet box yellow">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Purchase Return History</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid box green">
+                            {% if entity.medicinePurchaseReturnItems is defined and  entity.medicinePurchaseReturnItems is not empty  %}
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+                                    <thead class="flip-content ">
+                                    <tr class="head-blue">
+                                        <th class="numeric" >Created</th>
+                                        <th class="numeric" >Created By</th>
+                                        <th class="numeric" >Invoice</th>
+                                        <th class="numeric" >Price</th>
+                                        <th class="numeric" >Quantity</th>
+                                        <th class="numeric" >Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in pagination %}
+                                        <tr>
+                                            <td class="numeric" >{{ item.medicinePurchaseReturn.created|date('d-m-y') }}</td>
+                                            <td class="numeric" >{{ item.medicinePurchaseReturn.createdBy }}</td>
+                                            <td class="numeric" >{{ item.medicinePurchaseReturn.invoice }}</td>
+                                            <td class="numeric" >{{ item.purchasePrice }}</td>
+                                            <td class="numeric" >{{ item.quantity }}</td>
+                                            <td class="numeric" >{{ item.quantity * item.purchasePrice  }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        {% endif %}
+                        {% if pagination is not empty and searchForm.report == 'Sales' %}
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box green">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Sales History</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid box green">
+                            {% if entity.medicineSalesItems is defined and  entity.medicineSalesItems is not empty  %}
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+                                    <thead class="flip-content ">
+                                    <tr class="head-blue">
+                                        <th class="numeric" >Created</th>
+                                        <th class="numeric" >Created By</th>
+                                        <th class="numeric" >Invoice</th>
+                                        <th class="numeric" >Purchase Price</th>
+                                        <th class="numeric" >MRP</th>
+                                        <th class="numeric" >Quantity</th>
+                                        <th class="numeric" >Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in pagination %}
+                                        <tr>
+                                            <td class="numeric" >{{ item.medicineSales.created|date('d-m-Y') }}</td>
+                                            <td class="numeric" >{{ item.medicineSales.createdBy }}</td>
+                                            <td class="numeric" >{{ item.medicineSales.invoice }}</td>
+                                            <td class="numeric" >{{ item.purchasePrice }}</td>
+                                            <td class="numeric" >{{ item.salesPrice }}</td>
+                                            <td class="numeric" >{{ item.quantity }}</td>
+                                            <td class="numeric" >{{ item.quantity * item.salesPrice }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        {% endif %}
+                        {% if pagination is not empty and searchForm.report == 'Sales-Return' %}
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box yellow">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Sales Return History</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid box green">
+                            {% if entity.medicineSalesReturns is defined and  entity.medicinePurchaseItems is not empty  %}
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                    <thead class="flip-content ">
+                                    <tr class="head-blue">
+                                        <th class="numeric" >Created</th>
+                                        <th class="numeric" >Created By</th>
+                                        <th class="numeric" >Invoice</th>
+                                        <th class="numeric" >MRP</th>
+                                        <th class="numeric" >Quantity</th>
+                                        <th class="numeric" >Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in pagination %}
+                                        <tr>
+                                            <td class="numeric" >{{ item.created|date('d-m-Y') }}</td>
+                                            <td class="numeric" >{{ item.invoice.createdBy }}</td>
+                                            <td class="numeric" >{{ item.invoice }}</td>
+                                            <td class="numeric" >{{ item.quantity }}</td>
+                                            <td class="numeric" >{{ item.salesPrice }}</td>
+                                            <td class="numeric" >{{ item.quantity * item.salesPrice }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        {% endif %}
+                        {% if pagination is not empty and searchForm.report == 'Damage' %}
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box red">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Damage History</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid box yellow">
+                            {% if entity.medicineDamages is defined and  entity.medicineDamages is not empty  %}
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                    <thead class="flip-content ">
+                                    <tr class="head-blue">
+                                        <th class="numeric" >Created</th>
+                                        <th class="numeric" >Created By</th>
+                                        <th class="numeric" >Purchase Price</th>
+                                        <th class="numeric" >Quantity</th>
+                                        <th class="numeric" >Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in pagination %}
+                                        <tr>
+                                            <td class="numeric" >{{ item.created|date('d-m-Y') }}</td>
+                                            <td class="numeric" >{{ item.createdBy }}</td>
+                                            <td class="numeric" >{{ item.quantity }}</td>
+                                            <td class="numeric" >{{ item.purchasePrice }}</td>
+                                            <td class="numeric" >{{ item.quantity * item.purchasePrice }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        {% endif %}
+                        <div class="clearfix">&nbsp;</div>
+                        {% if pagination is not empty %}
+                        <div class="pagination pull-center" >
+                            {{ knp_pagination_render(pagination) }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}

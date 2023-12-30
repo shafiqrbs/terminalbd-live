@@ -1,0 +1,59 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>FooterSetting list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Copyright</th>
+                <th>Displayhomepage</th>
+                <th>Displaysubpage</th>
+                <th>Displayicon</th>
+                <th>Phonedisplayhomepage</th>
+                <th>Phonedisplaysubpage</th>
+                <th>Phonedisplayicon</th>
+                <th>Webdisplayhomepage</th>
+                <th>Webdisplaysubpage</th>
+                <th>Turnoff</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('footersetting_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.copyRight }}</td>
+                <td>{{ entity.displayHomePage }}</td>
+                <td>{{ entity.displaySubPage }}</td>
+                <td>{{ entity.displayIcon }}</td>
+                <td>{{ entity.phoneDisplayHomePage }}</td>
+                <td>{{ entity.phoneDisplaySubPage }}</td>
+                <td>{{ entity.phoneDisplayIcon }}</td>
+                <td>{{ entity.webDisplayHomePage }}</td>
+                <td>{{ entity.webDisplaySubPage }}</td>
+                <td>{{ entity.turnOff }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('footersetting_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('footersetting_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('footersetting_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+    {% endblock %}

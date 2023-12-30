@@ -1,0 +1,33 @@
+
+<table>
+    <tr>
+        <td>Branch Name</td>
+        <td>Receive Qnt</td>
+        <td>Sales Qnt</td>
+        <td>Ongoing Qnt</td>
+        <td>Current Stock</td>
+    </tr>
+    {% set receiveQnt = 0 %}
+    {% set returnQnt = 0 %}
+    {% for branch in branches %}
+        {%  set receiveQnt = receiveQnt + branchWiseReceiveItem[branch.id]|default(0)  %}
+        {%  set returnQnt = returnQnt + branchWiseDeliveryReturnItem|default(0) %}
+    <tr>
+        <td>{{ branch.name }}</td>
+        <td>{{ branchWiseReceiveItem[branch.id]|default(0) }}</td>
+        <td>{{ branchWiseSalesItem[branch.id]|default(0) }}</td>
+        <td>{{ branchWiseSalesReturnItem[branch.id]|default(0) }}</td>
+        <td>{{ branchWiseOngoingSalesItem[branch.id]|default(0) }}</td>
+        <td>{{ (branchWiseReceiveItem[branch.id]|default(0) + branchWiseSalesReturnItem[branch.id]|default(0)) - (branchWiseSalesItem[branch.id]|default(0) +  branchWiseOngoingSalesItem[branch.id]|default(0) + branchWiseDeliveryReturnItem[branch.id]|default(0) ) }}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td >Central Stock </td>
+        <td>{{ receiveQnt }}</td>
+        <td>Central Ongoing </td>
+        <td>{{ ongoingSalesItem }}</td>
+        <td>{{ (entity.quantity + returnQnt) - ( ongoingSalesItem - receiveQnt)  }}</td>
+    </tr>
+</table>
+
+

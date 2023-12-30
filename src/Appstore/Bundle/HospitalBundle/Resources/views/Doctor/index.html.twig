@@ -1,0 +1,130 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Doctor
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('hms_doctor') }}">Doctor</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Doctor</div>
+                        <div class="actions">
+                            <a class="btn red" href="{{ path('hms_doctor_new') }}"><i class="icon-plus-sign"></i> Add Doctor</a>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                           {# <div class="row-fluid">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid">
+                                        <div class="span4">
+                                            <div class="controls">
+                                                <select name="category" id="category" class="select2 span12">
+                                                    <option value="">---Select category---</option>
+                                                    {% for cat in categories %}
+                                                        <option value="{{ cat.id }}" {% if searchForm.category is defined and cat.id == searchForm.category %} selected="selected" {% endif %}>{{ cat.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="span4">
+                                            <div class="controls">
+                                                <select name="department" id="department" class="select2 span12">
+                                                    <option value="">---Select department---</option>
+                                                    {% for dep in departments %}
+                                                        <option value="{{ dep.id }}" {% if searchForm.department is defined and dep.id == searchForm.department %} selected="selected" {% endif %}>{{ dep.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="span4">
+                                            <div class="controls">
+                                                <div class="input-append span11">
+                                                    <input type="text" id="name" name="name"  class="span11 m-wrap" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Enter doctor name ">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>#}
+                            <table class="table table-bordered table-striped table-condensed flip-content" id="datatable">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Code</th>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Designation</th>
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Department</th>
+                                    <th class="numeric" >Fees</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td class="numeric" >{{ entity.particularCode }}</td>
+                                        <td class="numeric" ><a href="{{ path('hms_doctor_edit',{'id': entity.id })}}">{{ entity.name }}</a></td>
+                                        <td class="numeric" >{{ entity.designation }}</td>
+                                        <td class="numeric" >{{ entity.mobile }}</td>
+                                        <td class="numeric">{% if entity.department is not empty %}{{ entity.department.name|default('---') }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.price|number_format }}</td>
+                                        <td class="numeric" >
+                                            {% if( entity.status == 1) %}
+                                                <a class="btn mini blue btn-action" href="{{ path('hms_doctor_status', { 'id': entity.id}) }}"><i class="icon-ok"></i></a>
+                                            {% else %}
+                                                <a class="btn mini red btn-action" href="{{ path('hms_doctor_status', { 'id': entity.id}) }}">x</a>
+                                            {% endif %}
+                                            <a href="{{ path('hms_doctor_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+                                            <a href="{{ path('hms_doctor_show', { 'id': entity.id }) }}" class="btn purple mini" ><i class="icon-eye-open"></i></a>
+                                            <a title="Are you sure went to delete ?" href="{{ path('hms_doctor_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

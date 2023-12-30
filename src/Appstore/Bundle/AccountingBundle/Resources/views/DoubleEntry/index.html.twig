@@ -1,0 +1,169 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Account of Double Entry
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Account of Double Entry</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account Double Entry</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('account_double_entry_new') }}"><i class="icon-plus-sign"></i>&nbsp;Add New</a>
+                                <a class="btn blue" href="{{ path('account_double_entry_item') }}"><i class="icon-list"></i>&nbsp;Journal Item</a>
+                                {% if app.user.granted("ROLE_DOMAIN") %}
+                                <a class="btn purple" href="{{ path('account_double_entry_approve_reset') }}"><i class="icon-refresh"></i>&nbsp;Journal Reset</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body">
+                            {% include('flash-message.html.twig') %}
+                           {# <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span4">
+                                        <select class="search-input  span12 m-wrap" id="accountHead" name="accountHead">
+                                            <option value="">Choose Account Head</option>
+                                            {% for account in accountHead %}
+                                            {% if heads[account.id] is defined and heads[account.id] is not empty %}
+                                               <optgroup label="{{ account.name }}">
+                                                        {% for head in heads[account.id] %}
+                                                            <option {% if searchForm.accountHead is defined and searchForm.accountHead == head.id %} selected="selected" {% endif %} value="{{ head.id }}">{{ head.name }}</option>
+                                                     {% endfor %}
+                                                    </optgroup>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span2">
+                                        <select class="search-input span12 m-wrap" id="transactionMethod" name="transactionMethod">
+                                            <option value="">--Method--</option>
+                                            {% for method in transactionMethods %}
+                                                <option {% if searchForm.transactionMethod is defined and searchForm.transactionMethod == method.id %} selected="selected" {% endif %} value="{{ method.id }}">{{ method.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span2">
+                                        <select class="search-input span12 m-wrap" id="toUser" name="toUser">
+                                            <option value="">--Select System User--</option>
+                                            {% for employee in employees %}
+                                                <option {% if searchForm.toUser is defined and searchForm.toUser == employee.username %} selected="selected" {% endif %} value="{{ employee.username }}">{{ employee.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span2">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 m-wrap search-input  date-picker" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span2">
+                                        <div class="controls">
+                                            <div class="input-append span11">
+                                                <input type="text" id="endDate" name="endDate"  class="span8 m-wrap search-input  m-ctrl-medium date-picker" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %} ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>#}
+                        </div>
+                        <div class="portlet-body flip-scroll">
+
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                 <tr class="head-blue">
+                                     <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Created By</th>
+                                    <th class="numeric" >Ref No</th>
+                                    <th class="numeric" >Amount</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr id="remove-{{ entity.id }}">
+                                        <td><span class="badge badge-success toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{% if entity.createdBy is not empty %}{{ entity.createdBy.profile.name }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.accountRefNo }}</td>
+                                        <td class="numeric" >{{ entity.amount }}</td>
+                                        <td class="" >
+                                            {% if entity.process != 'approved'  %}
+                                                <a  class="btn blue mini"  href="{{ path('account_double_entry_edit',{'id':entity.id}) }}"><i class="icon-pencil"></i></a>
+                                            {% endif %}
+                                            {% if entity.process != 'approved' or app.user.granted("ROLE_DOMAIN") %}
+                                                <a href="javascript:" id="" data-id="{{ entity.id }}" class="btn red mini delete"  data-url="{{ path('account_double_entry_delete',{'id':entity.id}) }}"><i class="icon-trash"></i></a>
+                                            {% endif %}
+                                            {% if  entity.amount is not empty and entity.process != 'approved'  %}
+                                                <a href="javascript:" id="action-{{ entity.id }}" data-id="{{ entity.id }}" class="btn green mini approve "  data-url="{{ path('account_double_entry_approve',{'id':entity.id}) }}"><i class="icon-check"></i>&nbsp;Approve</a>
+                                            {% elseif entity.process == 'approved' %}
+                                                <a href="javascript:" id="" data-id="" class="btn blue mini "><i class="icon-check"></i>&nbsp;Approved</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% if entity.accountJournalItems is not empty %}
+                                        <tr id="show-{{ entity.id }}" class="showing-overview">
+                                            <td colspan="10">
+                                                <table class="table">
+                                                    <tr><th>AccountHead</th><th>SubAccount Head</th><th>Narration</th><th>Debit</th><th>Credit</th></tr>
+                                                    {% for item in entity.accountJournalItems  %}
+                                                    <tr><th>{{ item.accountHead.name }}</th><td>{% if item.accountSubHead is not empty  %}{{ item.accountSubHead.name }}{% endif %}</td><td>{{ item.narration|raw }}</td><th>{{ item.debit }}</th><th>{{ item.credit }}</th></tr>
+                                                    {% endfor %}
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    AccountingApproveProcess();
+{% endblock %}
+
+
+

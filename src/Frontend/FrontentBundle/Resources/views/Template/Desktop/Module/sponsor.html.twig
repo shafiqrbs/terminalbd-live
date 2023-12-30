@@ -1,0 +1,16 @@
+<div class="row">
+    {% for key,entity in pagination  %}
+        <div class="{% if globalOption.templateCustomize.showSidebar == 1 and globalOption.featureWidgets is empty %} col-md-3 {% else %}  col-md-2 {% endif %} grid">
+        <div class="client-sidebar">
+                <a class="thumbnail"><img src="{{ image(entity.webPath).resize(150,150) }}" alt=""></a>
+                <ul class="social-links">
+                    <li><a target="_blank" href="http://{{ entity.website }}" class="fa fa-link"></a></li>
+                </ul>
+            </div>
+            <a target="_blank" href="http://{{ entity.website }}" class="text-center"> <strong>{{ entity.name }}</strong></a>
+        </div>
+    {% endfor %}
+</div>
+<div class="pagination pull-center"  >
+    {{ knp_pagination_render(pagination) }}
+</div>

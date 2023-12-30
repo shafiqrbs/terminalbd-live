@@ -1,0 +1,82 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN applicationpricing HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="applicationpricing-title">
+                    Reset Operational Data
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('tools_domain') }}">Reset Operational Data</a>
+                    </li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END applicationpricing HEADER-->
+        <!-- BEGIN applicationpricing CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Reset Operational Data Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('tools_domain') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                 </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <th class="numeric" >Module Name</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="numeric" >Transaction</td>
+                                    <td class="numeric" >
+                                        <a href="{{ path('tools_option_reset_module',{'id':globalOption.id,'module':'accounting'}) }}" class="btn purple mini badge badge-warning toggle badge-custom" id="" ><i class="icon-refresh"></i>&nbsp;Reset Data</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="clearfix"><br/></div>
+                            <!--/span-->
+
+                             <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

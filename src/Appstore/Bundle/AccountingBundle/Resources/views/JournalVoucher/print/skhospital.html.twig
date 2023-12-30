@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>{{ entity.accountRefNo }}:{{ entity.updated|date('d-m-Y') }}<</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}">
+    {% stylesheets filter='cssrewrite'
+        'assets/css/print.css'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+</head>
+<body>
+<div class="page-container row-fluid">
+    <div class="page-content">
+        <style>
+                body{
+                    background-color:#fff!important;
+                }
+                .header .navbar-inner{
+                    display: none;
+                }
+                .page-sidebar{
+                    display: none;
+                }
+
+                .page-content{
+                    margin-left: 0 !important;
+                }
+                .table{
+                    border: none!important;
+                }
+                .table th, .table td{
+                    border-top: none;
+                }
+                .table th .span4, .table td .span4{
+                    width: 100%;
+                }
+                .table-bordered th, .table-bordered td{
+                    border-left:none;
+                }
+
+                .footer{
+                    display: none!important;
+                }
+
+                /* This parent can be any width and height */
+                .barcode-block {
+                    text-align: center;
+                    white-space: nowrap;
+                    width: 140px;
+                    float: left;
+                    height: 80px;
+                    border: 1px solid #ccc;
+                    border-right: none;
+                    border-top: none;
+                }
+
+                /* The ghost, nudged to maintain perfect centering */
+                .barcode-block:before {
+                    content: '';
+                    display: inline-block;
+                    height: 100%;
+                    vertical-align: middle;
+                    margin-right: -0.25em; /* Adjusts for spacing */
+                }
+
+                /* The element to be centered, can also be of any width and height */
+                .centered {
+                    display: inline-block;
+                    vertical-align: middle;
+                    width: 113px;
+                }
+                .centered p{
+                    padding: 0!important;
+                    margin: 0!important;
+                    display: block;
+                    height: 14px;
+                    font-size: 10px;
+                    line-height: 14px;
+                }
+
+                .centered .left{
+                    text-align: left;
+                    float: left;
+                    display: inline-block;
+                    height: 14px;
+                }
+                .centered .center{
+                    text-align: center;
+                    display: inline-block;
+                    height: 14px;
+                }
+                .centered .right{
+                    text-align: right;
+                    float: right;
+                    display: inline-block;
+                    height: 14px;
+                }
+
+                #print-container{
+                    width: 100%;
+                    margin: 0 auto;
+                    display: block;
+                    font-size: 14px;
+                    color: #0A0302;
+                }
+
+
+                .strong3{
+                    display: inline-block;
+                    width: 70px;
+                }
+                .table td{
+                    font-size:13px;
+                }
+                .barcode-left , .barcode-right{
+                    line-height: 42px;
+                    font-size:14px;
+                }
+                .bottom-border{
+                    border-bottom: dotted 1px #000101;
+                }
+                .label-box{
+                    font-size: 13px;
+                    border: 2px solid #000;
+                    padding: 1px;
+                    min-width: 80px;
+                    display: inline-block;
+                    text-align: center;
+                    text-decoration: none;
+                    padding-right: 5px;
+                    padding-left: 5px;
+                }
+                .grid-container {
+                    width: 100%;
+                    display: grid;
+                    grid-gap: 0;
+                    font-size: 14px;
+                }
+                .grid-container {
+                   grid-template-columns: repeat(2, calc(100%/2));
+                    text-align: center;
+                }
+                .grid-item-header {
+                    background-color: rgba(255, 255, 255, 0.8);
+                    margin-bottom:5px;
+                    align-items:center;
+                    position: relative;
+                    min-height: 60px;
+                }
+
+                .grid-container-signature {
+                    width: 100%;
+                    display: grid;
+                    grid-gap: 0;
+                    font-size: 14px;
+                }
+                .grid-container-signature {
+                    grid-template-columns: repeat(4, calc(100%/4));
+                    text-align: center;
+
+                }
+
+                .grid-item {
+                    background-color: rgba(255, 255, 255, 0.8);
+                    margin-bottom:5px;
+                    align-items:center;
+                    position: relative;
+                    min-height: 80px;
+                }
+                .grid-item-bottom img{
+                    height: 50px;
+                }
+
+                .frame {
+                    height: 80px;      /* Equals maximum image height */
+                    line-height: 80px;
+                    text-align: center;
+                }
+                .frame .img {
+                    background: #3A6F9A;
+                    vertical-align: middle;
+                    max-height: 25px;
+                    max-width: 160px;
+                }
+                .header-logo{
+                }
+                .address{
+                    line-height: 15px!important;
+                    position: absolute;
+                    bottom: 5px;
+                    right: 0;
+                    text-align: left;
+                }
+
+            </style>
+        <div id="print-container">
+                <span class="">
+                      {% if entity.globalOption.webPath('logo') is not empty %}<img class="img" style="max-width: 100%!important; max-height:80px" src="/{{ entity.globalOption.webPath('logo') }}">{% endif %}
+                </span>
+            <table class="table table-border" >
+                <tr class="print-header">
+                    <td>
+                        <div class="grid-container">
+                            <div class="grid-item-header grid-item-bottom">
+                                <span class="barcode-center" style="margin-top:20px; display: block; text-align: right; float: right; font-size:18px; font-weight: bold">{% if entity.voucherType is not empty %}{{ entity.voucherType.voucherName }}{% endif %}</span>
+                            </div>
+                            <div class="grid-item-header grid-item-bottom">
+                                <div style="display: block; text-align: right;float: right ">
+                                    <table>
+                                        <tr>
+                                            <td align="right">Voucher No. </td>
+                                            <td align="left">{{ entity.voucherNo }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Date</td>
+                                            <td align="left">{{ entity.updated|date('d-m-Y') }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <style>
+                        .inner-table{
+                            border-collapse: collapse;
+                            width:100%!important;
+                            margin-top:10px;
+                        }
+                        .inner-table th {
+                          border: 1px solid #999;
+                          padding: 0.5rem;
+                          background:#ddd;
+                        }
+                        .inner-table td, .inner-table th {
+                          border: 1px solid #999;
+                          padding: 0.3rem;
+                        }
+                    </style>
+                <tr>
+                    <td>
+                        <table class="inner-table">
+                            <tr>
+                                <th>Sl No</th>
+                                <th>Account Head</th>
+                                <th>Sub Head</th>
+                                <th>Narration</th>
+                                <th  align="right">Debit</th>
+                                <th  align="right">Credit</th>
+                            </tr>
+                            {% for item in entity.accountJournalItems  %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ item.accountHead.name }}</td>
+                                    <td>{% if item.accountSubHead is not empty  %}{{ item.accountSubHead.name }}{% endif %}</td>
+                                    <td>{{ item.narration|raw }}</td>
+                                    <td  align="right">{{ item.debit|number_format }}</td>
+                                    <td  align="right">{{ item.credit|number_format }}</td></tr>
+                            {% endfor %}
+                            <tr><th colspan="4" align="right">Total Amount (Tk) :</th>
+                                <th  align="right">{{ entity.amount|number_format }}</th>
+                                <th  align="right">{{ entity.amount|number_format }}</th></tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="grid-container-signature">
+                            <div class="grid-item grid-item-bottom">
+                                <ul class="unstyled" style="position: absolute; bottom: 0; width: 100%">
+                                    {% if entity.createdBy.profile and entity.createdBy.profile.webSignaturePath %}
+                                        <li style="text-align: center"><img alt="" src="{{ image(entity.createdBy.profile.webSignaturePath).resize(120,90) }}"></li>
+                                    {% endif %}
+                                    <li><strong>{{ entity.createdBy.profile.name }}</strong></li>
+                                    <li style="border-top:1px solid #000; text-align: center">Received By</li>
+                                </ul>
+                            </div>
+                            <div class="grid-item grid-item-bottom">
+                                <ul class="unstyled" style="position: absolute; bottom: 0; width: 100%">
+
+                                    <li style="text-align: center">Preapared By</li>
+                                </ul>
+                            </div>
+                            <div class="grid-item grid-item-bottom">
+                                <ul class="unstyled" style="position: absolute; bottom: 0; width: 100%">
+                                    <li style="text-align: center">Checked By</li>
+                                </ul>
+                            </div>
+                            <div class="grid-item grid-item-bottom">
+                                <ul class="unstyled" style="position: absolute; bottom: 0; width: 100%">
+                                    <li style="text-align: center">Authorized By</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+{#'http://bp.yahooapis.com/2.4.21/browserplus-min.js'#}
+<script type="text/javascript">
+           window.print();
+           setTimeout(function () {
+               window.open('', '_self', '');
+               window.close();
+           }, 2000);
+</script>
+</body>
+</html>

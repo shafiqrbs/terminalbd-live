@@ -1,0 +1,87 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Vendor
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Vendor</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Vendor Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('account_vendor_new') }}"><i class="icon-plus-sign"></i> New Vendor</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Company Name </th>
+                                    <th class="numeric" >Name </th>
+                                     <th class="numeric" >Mobile</th>
+                                     <th class="numeric" >Address</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td class="numeric" ><a href="{{ path('account_vendor_edit',{'id': entity.id })}}">{{ entity.companyName }}</a></td>
+                                        <td class="numeric" >{{ entity.name }}</td>
+                                        <td class="numeric" >{{ entity.mobile }}</td>
+                                        <td class="numeric" >{{ entity.address|raw }}</td>
+                                        <td class="numeric" >
+                                            {% if( entity.status == 1) %}
+                                                <a href="{{ path('account_vendor_status', { 'id': entity.id}) }}" class="btn yellow mini"><i class="icon-ok"></i></a>
+                                            {% else %}
+                                                <a  href="{{ path('account_vendor_status', { 'id': entity.id}) }}" class="btn yellow mini" >x</a>
+                                            {% endif %}
+                                            <a href="{{ path('account_vendor_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+                                            <a title="Are you sure went to delete ?" href="{{ path('account_vendor_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+

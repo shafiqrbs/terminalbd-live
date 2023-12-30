@@ -1,0 +1,113 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+
+    h1 , h2 , h3 , h4 , h5 , h6,p{
+        display: block;
+        padding: 0;
+        margin: 0;
+    }
+    h3 {
+        font-size: 24px;
+        line-height: 45px;
+        height: 45px;
+    }
+
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+    .table th{
+        line-height: 30px;
+        height: 30px;
+        font-weight: bold!important;
+    }
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 5px;
+    }
+    .table td ul,  .table td ul li{
+        padding-left: 0;
+        margin-left: 0;
+        list-style: none;
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+  <table class="table">
+      <thead>
+      <tr><td class="pull-center" colspan="20">{{ globalOption.hospitalConfig.address|raw }}</td></tr>
+      <tr><th class="pull-center" colspan="20"><h3>DAILY SALES STATEMENT SHEET: {{ searchForm['posted'] }}</h3></th></tr>
+      <tr>
+          <th>Created</th>
+          <th>Invoice</th>
+          <th>Name</th>
+          <th>Referred</th>
+          <th>Assign Doctor</th>
+          <th>Sub-Total</th>
+          <th>Discount</th>
+          <th>Total</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% set grandSubTotal = 0 %}
+      {% set grandTotal = 0 %}
+      {% set grandCommission = 0 %}
+      {% set grandDiscount = 0 %}
+      {% for entity in entities %}
+          {% set  grandSubTotal = grandSubTotal + entity.subTotal %}
+          {% set  grandTotal = grandTotal + entity.total %}
+          {% set  grandDiscount = grandDiscount + entity.discount %}
+          {% set  grandCommission = grandCommission + entity.commission %}
+          <tr>
+              <td>{{ entity.created|date('d-m-Y') }}</td>
+              <td>{{ entity.invoice }}</td>
+              <td>{% if entity.customer is defined and entity.customer is not empty %}{{ entity.customer.name }}<br/>{{ entity.customer.mobile }}{% endif %}</td>
+              <td>{% if entity.referredDoctor is not empty %}{{ entity.referredDoctor.name }}{% endif %}</td>
+              <td>{% if entity.assignDoctor is not empty %}{{ entity.assignDoctor.name }}{% endif %}</td>
+              <td>{{ entity.subTotal }}</td>
+              <td>{{ entity.discount }}</td>
+              <td>{{ entity.total }}</td>
+          </tr>
+      {% endfor %}
+      </tbody>
+      <tfoot>
+      <tr>
+          <th colspan="5"><span class="pull-right">Grand Total</span></th>
+          <td>{{ grandSubTotal }}</td>
+          <td>{{ grandDiscount }}</td>
+          <td>{{ grandTotal }}</td>
+      </tr>
+      </tfoot>
+  </table>

@@ -1,0 +1,362 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN item HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="item-title">
+                    {{ entity.name }} Details
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('item') }}">Food Product</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> {{ entity.name }} Details</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END item HEADER-->
+        <!-- BEGIN item CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Food Product Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('inventory_foodproduct') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                    {% if(entity.id > 0 ) %}
+                                        <li><a href="{{ path('inventory_foodproduct_edit',{'id':entity.id}) }}"><i class="icon-edit"></i>&nbsp;Edit</a></li>
+                                        <li><a href="{{ path('inventory_foodproduct_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;Show</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+
+
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Product Name</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-font"></i>
+                                            {{ form_widget(form.name) }}
+                                            {{ form_errors(form.name) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Product Category</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.category) }}
+                                        {{ form_errors(form.category) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="isWeb">Sub product</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(form.subProduct) }}
+                                            {{ form_errors(form.subProduct) }}
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                        <div class="row-fluid">
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="unit">Unit type</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.unit) }}
+                                        {{ form_errors(form.unit) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="salesPrice">Sales price</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-font"></i>
+                                            {{ form_widget(form.salesPrice) }}
+                                            {{ form_errors(form.salesPrice) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="webPrice">Web price</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.webPrice) }}
+                                        {{ form_errors(form.webPrice) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="isWeb">Is web</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(form.isWeb) }}
+                                            {{ form_errors(form.isWeb) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if entity.subProduct == 1 %}
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="span1 pull-right"><button type="button" data-ref-id="1"  class="btn black mini addmore" ><i class="icon-plus m-icon-white"></i></button></div>
+
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span12">
+
+                                {% if entity.goodsItems is not empty and entity.goodsItems is defined %}
+                                    {% for goodsItem in  entity.goodsItems %}
+                                    <div class="clone-block" id="clone-block-1">
+                                        <div class="row-fluid clone  box blue">
+                                            <div class="span11">
+                                                <div class="span4"><input type="hidden" id="" name="goodsItem[]" class="" value="{{ goodsItem.id }}"  >
+                                                    <select class="span12" name="size[]" >
+                                                        <option value="">Select size/dimension/weight/pic</option>
+                                                        {% for size in sizes %}
+                                                        <option value="{{ size.id }}" {% if goodsItem.size is not empty and  goodsItem.size.id == size.id  %} selected="selected" {% endif %}>{{ size.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="span5">
+                                                    <input type="text" id="name" name="name[]" class="m-wrap span12 tooltips"  placeholder="Add additional item" value="{{ goodsItem.name }}" , data-original-title ="Add sub product name" , data-trigger = "hover" >
+                                                </div>
+                                                <div class="span3">
+                                                    <input type="text" id="" name="salesPrice[]" class="m-wrap span6 tooltips"  placeholder="sales price" value="{{ goodsItem.salesPrice }}" , data-original-title ="Please add sales price" , data-trigger = "hover" >
+                                                    <input type="text" id="" name="webPrice[]" class="m-wrap span6 tooltips"  placeholder="web price" value="{{ goodsItem.webPrice }}" , data-original-title ="Please add web price" , data-trigger = "hover" >
+                                                </div>
+                                            </div>
+                                            <div class="span1"><button type="button" class="btn red  remove" ><i class="icon-trash m-icon-white"></i></button></div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% else %}
+                                    <div class="clone-block" id="clone-block-1">
+                                        <div class="row-fluid clone  box blue">
+                                            <div class="span11">
+                                                <div class="span4"><input type="hidden" id="" name="goodsItem[]" class="" value=""  >
+                                                    <select class="span12" name="size[]" >
+                                                        <option value="">Select size/dimension/weight/pic</option>
+                                                        {% for size in sizes %}
+                                                            <option value="{{ size.id }}">{{ size.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="span5">
+                                                    <input type="text" id="additionalItem" name="additionalItem[]" class="m-wrap span12 tooltips"  placeholder="Add additional item" value="" , data-original-title ="Add additional item" , data-trigger = "hover" >
+                                                </div>
+                                                <div class="span3">
+                                                    <input type="text" id="" name="salesPrice[]" class="m-wrap span6 tooltips"  placeholder="sales price" value="" , data-original-title ="Please add sales price" , data-trigger = "hover" >
+                                                    <input type="text" id="" name="webPrice[]" class="m-wrap span6 tooltips"  placeholder="web price" value="" , data-original-title ="Please add web price" , data-trigger = "hover" >
+                                                </div>
+
+                                            </div>
+                                            <div class="span1"><button type="button" class="btn red  remove hidden" ><i class="icon-trash m-icon-white"></i></button></div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12"> <hr/></div>
+                        </div>
+                        {% endif %}
+                        <!--/span-->
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" >Feature image</label>
+                                    <div class="controls">
+
+                                    </div>
+                                    <div class="controls">
+                                        <div data-provides="fileupload" class="fileupload fileupload-new">
+                                            <div  class="fileupload-new thumbnail">
+                                                {% if(entity.webPath) %}
+                                                    <img class="fileupload-preview fileupload-exists thumbnail" alt="" src="{{ image(entity.webPath).resize(100,100) }}">
+                                                {% else %}
+                                                    <img alt="" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
+                                                {% endif %}
+                                            </div>
+                                            <div  class="fileupload-preview fileupload-exists thumbnail"></div>
+                                            <div>
+													<span class="btn btn-file">
+                                                        <span class="fileupload-new">Select image</span>
+													    <span class="fileupload-exists">Change</span>
+                                                        {{ form_widget(form.file) }}
+                                                        {{ form_errors(form.file) }}
+                                                    </span>
+                                                <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span9">
+                                <div class="control-group">
+                                    <label class="control-label" >Description</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.content) }}
+                                        {{ form_errors(form.content) }}
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <!--/span-->
+                        {% if  entity.itemMetaAttributes is defined and  entity.itemMetaAttributes is not empty %}
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="form-actions portlet box blue">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Item Attributes</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            {%  for attribute in entity.itemMetaAttributes %}
+
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" >{{ attribute.itemAttribute.name }}</label>
+                                            <div class="controls">
+                                                <input type="hidden" name="attributeId[]" value="{{ attribute.itemAttribute.id }}">
+                                                <input type="text" id="" name="value[]"  class="m-wrap span12 tooltips" placeholder="{{ attribute.itemAttribute.placeholder }}" data-original-title="{{ attribute.itemAttribute.toolTip }}" data-trigger="hover" value="{{ attribute.value }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% elseif  entity.category is not empty and entity.category is not empty %}
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="form-actions portlet box blue">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Item Attributes</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            {%  for itemAttributes in entity.category.itemAttributes %}
+
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" >{{ itemAttributes.name }}</label>
+                                            <div class="controls">
+                                                <input type="hidden" name="attributeId[]" value="{{ itemAttributes.id }}">
+                                                <input type="text" id="" name="value[]"  class="m-wrap span12 tooltips" placeholder="{{ itemAttributes.placeholder }}" data-original-title="{{ itemAttributes.toolTip }}" data-trigger="hover" value="{{ itemAttributes.placeholder }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            {% if(entity.itemGalleries) %}
+                                {% for photo in entity.itemGalleries %}
+                                    <div class="span2">
+                                        <input type="checkbox" data-placement="left" class="checker popovers" data-trigger="hover" data-content="Are you remove image, Please click here." data-original-title="Remove image" name="imageId[]"  value="{{ photo.id }}">
+                                        <a href="/{{ photo.getWebPath(entity.inventoryConfig.globalOption.id,entity.id) }}" target="_blank"> <img src="{{ image(photo.getAbsolutePath(entity.inventoryConfig.globalOption.id,entity.id)).resize(100,100) }}" /></a>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/span-->
+                        {% if(entity.id > 0 ) %}
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div id="pluploadUploader">
+                                        <p>You browser doesn't have Flash, Silverlight, Gears, BrowserPlus or HTML5 support.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        {% endif %}
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-center">
+                                <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                <button type="reset" class="btn blue"><i class="icon-refresh"></i> Reset</button>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                        <!-- END FORM-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .popover{
+            width: 250px !important;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/item.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    InventoryItemEditPage({{ entity.id ? entity.id : 0 }});
+{% endblock %}

@@ -1,0 +1,42 @@
+{% if entities is defined and entities is not empty  %}
+<section id="team">
+    <div class="container">
+        <div class="text-center">
+            <h2>{% if pageModule.name is not empty %}{{ pageModule.name }}{% else %}Team Members {% endif %}</h2>
+            <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+        </div>
+        <div class="row">
+            {% for key,team in entities  %}
+            <div class="col-md-3">
+                <div class="our-team">
+                    <div class="pic">
+                        <img src="{{ image(team.webPath).scaleResize(263,200) }}">
+                        <div class="over-layer">
+                            <ul class="social-links">
+                                {% if team.facebook is not empty  %}
+                                <li><a href="https://facebook.com/{{ team.facebook }}"><i class="fa fa-facebook"></i></a></li>
+                                {% endif %}
+                                {% if team.twitter is not empty  %}
+                                <li><a href="https://twitter.com/{{ team.twitter }}"><i class="fa fa-twitter"></i></a></li>
+                                {% endif %}
+                                {% if team.gmail is not empty  %}
+                                <li><a href="https://plus.google.com/{{ team.gmail }}"><i class="fa fa-google-plus"></i></a></li>
+                                {% endif %}
+                                {% if team.youtube is not empty  %}
+                                <li><a href="https://www.youtube.com/{{ team.youtube }}"><i class="fa fa-youtube"></i></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="team-content">
+                        <h4 class="team-title">{{ team.name }}</h4>
+                        <span class="post">{{ team.designation }}</span>
+                    </div>
+                    <a href="#" class="read"><i class="fa fa-user"></i>&nbsp;CONTACT ME</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}

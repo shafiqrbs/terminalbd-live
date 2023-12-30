@@ -1,0 +1,245 @@
+hms_invoice_admission:
+    path:     /
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:index" }
+
+hms_invoice_admission_booking:
+    path:     /booking-cabin
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:bookingCabin" }
+
+hms_invoice_admission_show:
+    path:     /{id}/show
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:show" }
+
+hms_invoice_admission_new:
+    path:     /new
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:new" }
+
+hms_invoice_admission_cabin:
+    path:     /{id}/cabin-new
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:cabinAdmission" }
+
+hms_invoice_admission_old_patient:
+    path:     /old-patient
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:oldPatient" }
+    methods:  [POST, PUT]
+
+hms_invoice_admitted_create:
+    path:     /create
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:create" }
+    methods:  [POST, PUT]
+
+hms_invoice_admission_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:edit" }
+
+hms_invoice_admission_return:
+    path:     /{id}/admission-return
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:admissionReturn" }
+
+hms_invoice_admitted_patient:
+    path:     /{id}/patient-admission
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:admittedPatient" }
+
+hms_invoice_admission_finalbill:
+    path:     /{id}/patient-final-bill
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:finalBill" }
+
+hms_invoice_admitted_patient_edit:
+    path:     /{id}/patient-admission-edit
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:admittedPatientUpdate" }
+
+hms_invoice_admitted_update:
+    path:     /{id}/patient-admission-update
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:updatePatient" }
+    methods:  [POST, PUT]
+
+hms_invoice_admission_reverse:
+    path:     /{invoice}/reverse
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:admissionInvoiceReverse" }
+
+hms_invoice_admission_reverse_show:
+    path:     /{invoice}/reverse-show
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:admissionInvoiceReverseShow" }
+
+hms_invoice_admission_admission_card:
+    path:     /{id}/admission_card
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:admissionCard" }
+
+hms_invoice_admission_particular_search:
+    path:     /particular-search
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:particularSearch" }
+    methods:  GET
+    options:
+        expose: true
+
+hms_invoice_admission_update:
+    path:     /{id}/update
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:update" }
+    methods:  [POST, PUT]
+
+hms_invoice_admission_discount:
+    path:     /invoice-dicount-update
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:invoiceDiscountUpdate" }
+    methods:  POST
+    options:
+        expose: true
+
+hms_invoice_admission_print_invoice:
+    path:     /{id}/print
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:invoicePrint" }
+
+hms_invoice_admission_delete:
+    path:     /delete/admission-invoice
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:delete" }
+
+hms_invoice_admission_empty_delete:
+    path:     /delete/empty-invoice
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:deleteEmptyInvoice" }
+
+hms_invoice_admission_approved:
+    path:     /{id}/invoice-approved
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:approve" }
+    methods:  [POST,PUT]
+    options:
+            expose: true
+
+hms_invoice_admission_discharge:
+    path:     /{id}/patient-discharge
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:discharge" }
+    methods:  [POST]
+    options:
+            expose: true
+
+hms_invoice_admission_patient_release:
+    path:     /{invoice}/{process}/invoice-confirm
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:release" }
+
+hms_invoice_print_for:
+    path:     /{id}/invoice-patient-add
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:invoicePrintFor" }
+    methods:  [POST]
+    options:
+            expose: true
+
+hms_invoice_admission_patint_cabin:
+    path:      /admitted-patient-cabin-check
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:checkPatientCabinBooking" }
+    methods:  [POST]
+    options:
+            expose: true
+
+hms_invoice_admission_newpatint_cabin:
+    path:      /new-admitted-patient-cabin-check
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:newCheckPatientCabinBooking" }
+    methods:  [POST]
+    options:
+            expose: true
+
+hms_invoice_admission_admitted:
+    path:     /admitted-patient
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:admitted" }
+
+
+hms_invoice_admission_confirm:
+    path:     /{id}/manage-admitted-patient
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:confirm" }
+
+hms_invoice_admission_daily_invoice:
+    path:     /{invoice}/manage-admitted-patient-invoice
+    defaults: { _controller: "HospitalBundle:AdmissionPatientParticular:admittedInvoice" }
+
+hms_invoice_admission_daily_invoice_create:
+    path:     /{invoice}/{id}/manage-admitted-patient-invoice
+    defaults: { _controller: "HospitalBundle:AdmissionPatientParticular:dailyAdmittedInvoice" }
+
+
+hms_invoice_admission_daily_invoice_add:
+    path:     /{id}/admitted-patient-particular-add
+    defaults: { _controller: "HospitalBundle:AdmissionPatientParticular:addParticular" }
+    options:
+            expose: true
+
+hms_invoice_admission_daily_delete:
+    path:      /{invoice}/{id}/admitted-patient-daily-invoice-delete
+    defaults: { _controller: "HospitalBundle:AdmissionPatientParticular:invoiceTransactionDelete" }
+    options:
+            expose: true
+
+hms_invoice_admission_daily_approve:
+    path:      /{id}/admitted-patient-daily-invoice-particular-approve
+    defaults: { _controller: "HospitalBundle:AdmissionPatientParticular:invoiceTransactionApprove" }
+    options:
+            expose: true
+
+hms_invoice_admission_daily_particular_delete:
+    path:      /{transaction}/{id}/admitted-patient-daily-invoice-particular-delete
+    defaults: { _controller: "HospitalBundle:AdmissionPatientParticular:invoiceParticularDelete" }
+    options:
+            expose: true
+
+hms_invoice_admission_daily_invoice_transaction_submit:
+    path:     /{invoice}/{id}/admitted-patient-particular-submit
+    defaults: { _controller: "HospitalBundle:AdmissionPatientParticular:submitTransaction" }
+    methods:  [POST,PUT]
+    options:
+            expose: true
+
+
+hms_invoice_admission_transaction_print:
+    path:     /{invoice}/admitted-patient-transaction-invoice-print
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:paymentTransactionInvoicePrint" }
+
+hms_invoice_admission_transaction_receive_print:
+    path:     /{invoice}/{id}/admitted-patient-receive-invoice-print
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:paymentReceiveInvoicePrint" }
+
+hms_invoice_admission_particular_add:
+    path:     /{invoice}/particular-add
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:addParticular" }
+    methods:  POST
+    options:
+        expose: true
+
+hms_invoice_admission_particular_update:
+    path:     /{invoice}/{id}/particular-update
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:invoiceParticularUpdate" }
+    methods:  POST
+    options:
+        expose: true
+
+hms_invoice_admission_particular_delete:
+    path:     /{invoice}/{id}/particular-delete
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:invoiceParticularDelete" }
+
+hms_invoice_admission_transaction_delete:
+    path:     /{invoice}/{id}/transaction-delete
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:invoiceTransactionDelete" }
+
+hms_invoice_admission_transaction_approve:
+    path:     /{invoice}/{id}/transaction-approve
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:invoiceTransactionApprove" }
+
+hms_invoice_admission_transaction_print_single:
+    path:     /{invoice}/{id}/admitted-patient-transaction-invoice-single-print
+    defaults: { _controller: "HospitalBundle:AdmissionPatientParticular:singleTransactionInvoicePrint" }
+
+hms_invoice_admission_particular_print:
+    path:      /{invoice}/admitted-patient-transaction-invoice-particular
+    defaults: { _controller: "HospitalBundle:AdmissionPatientParticular:invoiceParticularPrint" }
+
+hms_invoice_admission_print:
+    path:      /{id}/admitted-invoice-print
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:admissionPrint" }
+
+hms_invoice_admission_cabin_search:
+    path:     /{id}/inline-cabin-search
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:cabinSelect" }
+    options:
+        expose: true
+
+hms_invoice_admission_cabin_inline_update:
+    path:     /inline-cabin-update
+    defaults: { _controller: "HospitalBundle:InvoiceAdmission:inlineCabinUpdate" }
+    methods:  POST
+    options:
+        expose: true

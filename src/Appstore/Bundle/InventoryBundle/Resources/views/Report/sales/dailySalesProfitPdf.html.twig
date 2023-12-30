@@ -1,0 +1,123 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    h4 {
+        font-size: 18px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+{%  set months = ['January','February','March','April','May','June','July','August','September','October','November','December'] %}
+<table class="table">
+    <thead>
+    <tr>
+        <th class="pull-center" colspan="7"><h3>{{ globalOption.name }}</h3></th>
+    </tr>
+    <tr>
+        <th class="pull-center" colspan="7"><h4>DAILY SALES & EXPENSE PROFIT/LOSS STATEMENT SHEET</h4></th>
+    </tr>
+    <tr>
+        {% set year = searchForm.year is defined ? searchForm.year :'' %}
+        {% set month = searchForm.month is defined ? searchForm.month :'' %}
+        <th colspan="7">
+            <span class="pull-right">Period:&nbsp;&nbsp;{{ month }},{{ year }}</span>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Sub-Total</th>
+        <th>Total</th>
+        <th>Purchase Price</th>
+        <th>Receive</th>
+        <th>Expense</th>
+        <th>Loss/Profit</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% set fullDate =  date(year~'-'~month~'-1')|date('Y-m-d') %}
+    {% set month =  date(year~'-'~month~'-1')|date('Y-m-') %}
+    {% set max =  fullDate|date("t") %}
+    {% set salesTotal       = 0 %}
+    {% set purchaseTotal    = 0 %}
+    {% set receiveTotal     = 0 %}
+    {% set expenseTotal     = 0 %}
+    {% set receiveTotal     = 0 %}
+    {% set profitTotal      = 0 %}
+    {% for i in 1..max %}
+        {% set profit = 0 %}
+        {% set blackO           = date(month~i)|date('d-m-Y') %}
+        {% set salesPrice       = monthlySales[blackO] is defined and monthlySales[blackO] is not empty ? monthlySales[blackO].total : 0  %}
+        {% set receive       = monthlySales[blackO] is defined and monthlySales[blackO] is not empty ? monthlySales[blackO].receive : 0  %}
+        {% set purchasePrice    = monthlySalesPurchase[blackO] is defined and monthlySalesPurchase[blackO] is not empty ? monthlySalesPurchase[blackO].purchasePrice : 0  %}
+        {% set expenditure      = expenses[blackO] is defined and expenses[blackO] is not empty ? expenses[blackO].payment : 0  %}
+        {% set profit           = (salesPrice - expenditure - purchasePrice)|default(0)|number_format  %}
+        {% set salesTotal       = (salesTotal + salesPrice)  %}
+        {% set purchaseTotal    = (purchaseTotal + purchasePrice)  %}
+        {% set expenseTotal     = (expenseTotal + expenditure)  %}
+        {% set receiveTotal     = (receiveTotal + receive)  %}
+        {% set profitTotal      = (profitTotal +  salesPrice - expenditure - purchasePrice) %}
+        <tr>
+            <td>{{ blackO }}</td>
+            <td>{{ monthlySales[blackO] is defined and monthlySales[blackO] is not empty ? monthlySales[blackO].subTotal|number_format : '' }}</td>
+            <td>{{ monthlySales[blackO] is defined and monthlySales[blackO] is not empty ? monthlySales[blackO].total|number_format : '' }}</td>
+            <td>{{ monthlySalesPurchase[blackO] is defined and monthlySalesPurchase[blackO] is not empty ? monthlySalesPurchase [blackO].purchasePrice|number_format : '' }}</td>
+            <td>{{ monthlySales[blackO] is defined and monthlySales[blackO] is not empty ? monthlySales[blackO].receive|number_format : '' }}</td>
+            <td>{{ expenses[blackO] is defined and expenses[blackO] is not empty ? expenses[blackO].payment|number_format : '' }}</td>
+            <td>{{ profit }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot><tr><th colspan="2">Grand Total</th><th>{{ salesTotal|number_format }}</th><th>{{ purchaseTotal|number_format }}</th><th>{{ receiveTotal|number_format }}</th><th>{{ expenseTotal|number_format }}</th><th>{{ profitTotal|number_format }}</th></tr></tfoot>
+</table>

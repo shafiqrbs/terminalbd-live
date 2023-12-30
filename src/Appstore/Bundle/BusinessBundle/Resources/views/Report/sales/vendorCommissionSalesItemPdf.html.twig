@@ -1,0 +1,125 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+    <style>
+        .table{
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            font-family:tahoma, geneva, sans-serif;
+        }
+        .table tr.head th, .table tr.head td{
+            font-size: 15px;
+            background: #333;
+            color: #fff;
+            height: 40px;
+        }
+
+        .table tr.sub-head th, .table tr.sub-head td{
+            font-size: 15px;
+            background: #666;
+            color: #fff;
+            height: 40px;
+        }
+
+        .table th, .table td{
+            border: 1px solid #e5e5e5;
+            text-align: left;
+            padding-left: 20px;
+            height: 30px;
+            line-height: 30px;
+
+        }
+        h2 {
+            font-size: 24px;
+            display: block;
+            padding: 0;
+            margin: 0;
+            line-height: 45px;
+            height: 45px;
+        }
+        h3 {
+            font-size: 20px;
+            display: block;
+            padding: 0;
+            margin: 0;
+            line-height: 45px;
+            height: 45px;
+        }
+        .pull-center{
+            background: #e5e5e5;
+            text-align: center!important;
+
+        }
+        .pull-left{
+            text-align: left!important;
+            display: block;
+            padding-right: 20px;
+        }
+        .pull-right{
+            text-align: right!important;
+            display: block;
+            padding-right: 20px;
+        }
+
+        .numeric{
+            width: 80%;
+        }
+
+    </style>
+</head>
+{% set startDate = searchForm.month is defined ? searchForm.month :"now"|date("d-m-Y") %}
+{% set endDate = searchForm.year is defined ? searchForm.year :"now"|date("d-m-Y") %}
+<body >
+<table class="table">
+    <thead>
+    <tr>
+        <td class="pull-center"><h2>{{ option.name }}</h2></td>
+    </tr>
+    <tr>
+        <th class="pull-center"><h3><strong>DATE RANGE SALES SUMMARY STATEMENT: {{ startDate }} To {{ endDate }}</strong></h3></th>
+    </tr>
+    </thead>
+</table>
+<table class="table">
+    <thead>
+    <tr>
+        <th style="width:30px">S/N</th>
+        <th>Name</th>
+        <th>Created</th>
+        <th>Invoice</th>
+        <th>Vendor</th>
+        <th>GRN</th>
+        <th>Customer</th>
+        <th>Quantity</th>
+        <th>Unit</th>
+        <th>Rate</th>
+        <th>SubTotal</th>
+    </tr>
+    </thead>
+    <tbody>
+    {%  set totalItem = 0 %}
+    {%  set totalSales = 0 %}
+    {% for entity in entities %}
+        {% set totalItem = totalItem + entity.quantity %}
+        {% set totalSales = totalSales + entity.salesPrice %}
+        <tr>
+            <td>{{ loop.index }}.</td>
+            <td>{{ entity.name }}</td>
+            <td>{{ entity.created|date('d-m-Y') }}</td>
+            <td>{{ entity.invoice }}</td>
+            <td>{% if entity.companyName is not empty %}{{ entity.companyName }}{% endif %}</td>
+            <td>{% if entity.grn is not empty %}{{ entity.grn }}{% endif %}</td>
+            <td>{{ entity.customerName }}</td>
+            <td>{{ entity.quantity }}</td>
+            <td>{{ entity.unit }}</td>
+            <td>{{ entity.price }}</td>
+            <td>{{ entity.salesPrice|number_format(2) }}</td>
+        </tr>
+    {% endfor %}
+    <tr><th colspan="7" class="text-right">Grand Total</th><th>{{ totalItem }}</th><td></td><td></td><th><strong>{{ totalSales|number_format(2) }}</strong></th></tr>
+    </tbody>
+</table>
+</body>
+</html>

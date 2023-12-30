@@ -1,0 +1,175 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Medicine Short Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('medicine_stock') }}">Manage Stock Short List</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green ">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Stock Short List</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a  href="{{ path('medicine_prepurchase_create') }}" id="btn-create-barcode" class="btn yellow" >
+                                    Pre-Purchase Generate
+                                    <i class="icon-barcode"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="name" name="name"  class="span12 m-wrap select2StockMedicineName" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Enter medicine & others name ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="brandName"  name="brandName"  class="span12 m-wrap select2BrandName" value="{% if searchForm.brandName is defined %}{{ searchForm.brandName }}{% endif %}"  autocomplete="off"  placeholder="Product brand name">
+                                    </div>
+                                    <div class="span2">
+                                        <select name="rackNo" id="rackNo" class="span12 m-wrap">
+                                            <option value="">Rack no</option>
+                                            {% for rack in racks %}
+                                                <option {% if searchForm.rack is defined and searchForm.rack == method.id %} selected="selected" {% endif %} value="{{ rack.id }}" >{{ rack.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span2">
+                                        <select name="mode" id="mode" class="span12 m-wrap">
+                                            <option  value="">Product Mode</option>
+                                            {% for mode in modeFor %}
+                                                <option {% if searchForm.mode is defined and searchForm.mode == mode.slug %} selected="selected" {% endif %} value="{{ mode.slug }}">{{ mode.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span2">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="sku"  name="sku"  class="span10 m-wrap" value="{% if searchForm.sku is defined %}{{ searchForm.sku }}{% endif %}"  autocomplete="off"  placeholder="Product sku">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- BEGIN FORM-->
+                        <!-- END FORM-->
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" ><i class="icon icon-th-list"></i></th>
+                                    <th class="numeric" >Code</th>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Brand Name</th>
+                                    <th class="numeric" >Rack</th>
+                                    <th class="numeric" >Sales Tk.</th>
+                                    <th class="numeric" >Receive Qnt</th>
+                                    <th class="numeric" >Sales Qnt</th>
+                                    <th class="numeric" >Stock Qnt</th>
+                                    <th class="numeric" >Pack</th>
+                                    <th class="numeric" >Min. Qnt</th>
+                                    <th class="numeric" >Unit</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in pagination %}
+                                    <tr {% if entity.minQuantity > 0 and entity.remainingQuantity <= entity.minQuantity %} class="min" {% endif %}>
+                                        <td><input type="checkbox" class="checkbox stockId" id=""  value="{{ entity.id }}"></td>
+                                        <td class="numeric" >{{ entity.sku }}</td>
+                                        {% if entity.mode == 'medicine' %}
+                                            <td class="numeric" ><a data-trigger="hover" class="tooltips" data-original-title="{% if entity.medicineBrand is not empty %}{{ entity.medicineBrand.medicineForm }}-{{ entity.medicineBrand.name }}-{{ entity.medicineBrand.strength }}-{{ entity.medicineBrand.medicineGeneric.name }}-{{ entity.medicineBrand.medicineCompany.name }}{% endif %}" href="{{ path('medicine_stock_edit',{'id': entity.id })}}">{{ entity.name }}</a></td>
+                                        {% else %}
+                                            <td class="numeric" ><a data-trigger="hover" class="tooltips" data-original-title="{% if entity.accessoriesBrand is not empty %}{{ entity.accessoriesBrand.name }}{% endif %}" href="{{ path('medicine_stock_edit',{'id': entity.id })}}">{{ entity.name }}</a></td>
+                                        {% endif %}
+                                        <td class="numeric" >{{ entity.brandName }}</td>
+                                        <td class="numeric" >{% if entity.rackNo is not empty %}{{ entity.rackNo.name }}{% endif %}</td>
+                                        <td class="numeric">{{ entity.salesPrice }}</td>
+                                        <td class="numeric" >{{ entity.purchaseQuantity|number_format }}</td>
+                                        <td class="numeric" >{{ entity.salesQuantity|number_format }}</td>
+                                        <td class="numeric" >{{ entity.remainingQuantity }}</td>
+                                        <td class="numeric" >{% if entity.pack > 1 %}{{ entity.pack }} => {{ entity.minQuantity/entity.pack }}{% endif %}</td>
+                                        <td class="numeric">
+                                            {% if ( app.user.granted("ROLE_MEDICINE_MANAGER") or app.user.granted("ROLE_DOMAIN"))  %}
+                                                <a  class="editable" data-name="minQuantity" href="#"  data-url="{{ path('medicine_stock_inline') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change min Quantity">{{ entity.minQuantity }}</a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric" >{{ entity.unit.name }}</td>
+                                    </tr>
+
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/editable.js'
+    '@MedicineBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    var itemArr = $.cookie('stockIds') ? $.cookie('stockIds').split(',') : [];
+    $('body').on('change', 'input.stockId', function(el) {
+        console.log(itemArr);
+        var val = $(this).val();
+        if($(this).prop('checked')) {
+        itemArr.push(val);
+        }else{
+        var index = itemArr.indexOf(val);
+        if (index > -1) {
+        itemArr.splice(index, 1);
+        }
+        }
+        $.cookie('barcodes', itemArr, {path: '/'});
+    });
+
+{% endblock %}

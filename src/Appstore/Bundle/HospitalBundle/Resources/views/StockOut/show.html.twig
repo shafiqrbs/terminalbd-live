@@ -1,0 +1,120 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Issue GRN # {{ entity.invoice }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('hms_stockout') }}">Issue</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Issue</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>c
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Issue Details</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('hms_stockout_new') }}"><i class="icon-plus-sign"></i> Item Issue</a>
+                                <a class="btn" href="{{ path('hms_stockout') }}"><i class="icon-th-list"></i> Issue</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+
+                                <div class="span4 invoice-payment">
+                                    <h4>Payment Details:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Total BDT:</strong>&nbsp;{{ entity.netTotal|number_format() }}</li>
+                                        <li><strong>Payment BDT:</strong>&nbsp;{{ entity.payment|number_format() }}</li>
+                                        {% if entity.discount %}<li><strong>Discount BDT:</strong>&nbsp;{{ entity.discount|number_format() }}</li>{% endif %}
+                                        {% if entity.due %}<li><strong>Due BDT:</strong>&nbsp;{{ entity.due|number_format() }}</li>{% endif %}
+                                    </ul>
+
+                                </div>
+
+
+                            </div>
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid box green">
+                                {% if entity.stockOutItems is defined and  entity.stockOutItems is not empty  %}
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                                        <thead class="flip-content ">
+                                        <tr class="head-green">
+                                            <td class="span1">&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                            <th class="span1">Code</th>
+                                            <th class="span4">Particular</th>
+                                            <th class="span1">Qnt</th>
+                                            <th class="span2">Price</th>
+                                            <th class="span1">Sub-Total</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for item in entity.stockOutItems %}
+                                            <tr id="remove-{{ item.id }}">
+                                                <td  class="span1">{{ loop.index }}</td>
+                                                <td  class="span1">{{ item.particular.particularCode }}</td>
+                                                <td class="span4">{{ item.particular.name }}</td>
+                                                <td class="span1">{{ item.quantity }}</td>
+                                                <td class="span2">{{ item.salesPrice }}</td>
+                                                <td class="span1">{{ item.salesSubTotal|number_format }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right" id="action-{{ entity.id }}">
+                                    {% if ( entity.process == 'Done') %}
+                                    <a  href="javascript:"  data-url="{{ path('hms_stockout_approved',{'id':entity.id}) }}" class="btn blue approve"><i class="icon-refresh"></i>&nbsp;Approve</a>
+                                    {% endif %}
+                                    <span  class="btn purple"><i class=" icon-ok"></i>&nbsp;{{ entity.process }}</span>
+                                </div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/stockout.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+

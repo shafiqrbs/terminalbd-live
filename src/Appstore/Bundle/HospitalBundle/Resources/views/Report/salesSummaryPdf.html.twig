@@ -1,0 +1,295 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    h1 , h2 , h3 , h4 , h5 , h6,p{
+        display: block;
+        padding: 0;
+        margin: 0;
+    }
+    h3 {
+        font-size: 24px;
+        line-height: 45px;
+        height: 45px;
+    }
+
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+<table class="table">
+    <thead>
+    <tr><td class="pull-center" colspan="20">{{ globalOption.hospitalConfig.address|raw }}</td></tr>
+    {% set date = searchForm.date is defined ? searchForm.date :"now"|date("d-m-Y") %}
+    <tr>
+        <th class="pull-center" colspan="2"><h3><strong>SALES OVERVIEW STATEMENT SHEET</strong></h3></th>
+    </tr>
+    <tr>
+        <th class="pull-left"  style="width: 50%">Print Date:{{ "now"|date("d-m-Y") }}</th>
+        <th class="pull-right" >Report For: {{ date|date('d-m-Y')  }}</th>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <table class="table">
+                <tbody>
+                <tr class="green"><th colspan="2">Sales Overview</th></tr>
+                <tr>
+                    <td class="numeric span11">Total Sales</td>
+                    <td class="numeric">{{ (salesTotalTransactionOverview.total)|number_format }}</td>
+                </tr>
+                <tr>
+                    <td class="numeric span11">Received</td>
+                    <td class="numeric">{{ (salesTotalTransactionOverview.receive)|number_format }}</td>
+                </tr>
+                <tr>
+                    <th class="numeric span11">Due Total</th>
+                    <th class="numeric">{{  (salesTotalTransactionOverview.total - salesTotalTransactionOverview.receive)|number_format }}</th>
+                </tr>
+                <tr class="green"><th colspan="3">Today Sales Overview</th></tr>
+                <tr>
+                    <td class="numeric span11">Total Sales</td>
+                    <td class="numeric">{{ salesTodayTransactionOverview.total|number_format }}</td>
+                </tr>
+                <tr>
+                    <td class="numeric span11">Receive</td>
+                    <td class="numeric">{{ salesTodayTransactionOverview.receive|number_format }}</td>
+                </tr>
+                <tr>
+                    <th class="numeric span11">Due</th>
+                    <th>{{ (salesTodayTransactionOverview.total - salesTodayTransactionOverview.receive)|number_format }}</th>
+                </tr>
+                <tr class="blue"><th colspan="3">Previous Overview</th></tr>
+                <tr>
+                    <td class="numeric span11">Previous Due</td>
+                    <td class="numeric">{{ (previousSalesTransactionOverview.total )|number_format }}</td>
+                </tr>
+                <tr>
+                    <td class="numeric span11">Receive</td>
+                    <td class="numeric">{{ previousSalesTransactionOverview.receive|number_format }}</td>
+                </tr>
+                <tr>
+                    <th class="numeric span11">Due</th>
+                    <th>{{( previousSalesTransactionOverview.total - previousSalesTransactionOverview.receive)|number_format }}</th>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <th class="pull-center" colspan="2"><h3><strong>User Base Sales & Collection</strong></h3></th>
+    </tr>
+    <table class="table table-bordered table-striped table-condensed flip-content ">
+        <tr>
+            <th>User Name</th>
+            <th>Total Sales Tk.</th>
+            <th>Sales Receive Tk.</th>
+            <th>Commission Tk.</th>
+            <th>Return Tk.</th>
+            <th>Due Receive Tk.</th>
+            <th>Grand Total Tk..</th>
+        </tr>
+        {% set userTodaySales = 0 %}
+        {% set userTodayReceive = 0 %}
+        {% set userPreviousReceive = 0 %}
+        {% set userCommission = 0 %}
+        {% set userReturn = 0 %}
+
+        {% set userTodaySalesTotal = 0 %}
+        {% set userTodayReceiveTotal = 0 %}
+        {% set userPreviousReceiveTotal = 0 %}
+        {% set userCommissionTotal = 0 %}
+        {% set userReturnTotal = 0 %}
+
+        {% for user in salesTodayUsers %}
+
+            {% set userTodaySales = salesTodayUserTransactionOverview[user.userId] is defined ? salesTodayUserTransactionOverview[user.userId].total : 0 %}
+            {% set userTodaySalesTotal = userTodaySalesTotal + userTodaySales %}
+            {% set userTodayReceive = salesTodayUserTransactionOverview[user.userId] is defined ? salesTodayUserTransactionOverview[user.userId].receive : 0 %}
+            {% set userTodayReceiveTotal = userTodayReceiveTotal + userTodayReceive %}
+            {% set userPreviousReceive = previousSalesTodayUserTransactionOverview[user.userId] is defined ? previousSalesTodayUserTransactionOverview[user.userId].total : 0 %}
+            {% set userPreviousReceiveTotal = userPreviousReceiveTotal + userPreviousReceive %}
+            {% set userCommission = userSalesTodaySalesCommission[user.userId] is defined ? userSalesTodaySalesCommission[user.userId].total : 0 %}
+            {% set userCommissionTotal = userCommissionTotal + userCommission %}
+            {% set userReturn = userInvoiceReturn[user.userId] is defined ? userInvoiceReturn[user.userId].total : 0 %}
+            {% set userReturnTotal = userReturnTotal + userReturn %}
+
+            <tr>
+                <th>{{ user.createdBy }}</th>
+                <td>{{ userTodaySales|number_format }}</td>
+                <td>{{ userTodayReceive|number_format }}</td>
+                <td>{{ userCommission|number_format }}</td>
+                <td>{{ userReturn|number_format }}</td>
+                <td>{{ userPreviousReceive|number_format }}</td>
+                <td>{{ ((userTodayReceive + userPreviousReceive) - (userCommission + userReturn))|number_format }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th>Grand Total </th>
+            <th>{{ userTodaySalesTotal|number_format(2) }}</th>
+            <th>{{ userTodayReceiveTotal|number_format(2) }}</th>
+            <th>{{ userCommissionTotal|number_format(2) }}</th>
+            <th>{{ userReturnTotal|number_format(2) }}</th>
+            <th>{{ userPreviousReceiveTotal|number_format(2) }}</th>
+            <th>{{ ((userTodaySalesTotal + userTodayReceiveTotal) - (userCommissionTotal + userReturnTotal))|number_format }}</th>
+
+        </tr>
+    </table>
+    <tr>
+        <th class="pull-center" colspan="2"><h3><strong>Mode Base Sales</strong></h3></th>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <table class="table">
+                <thead class="flip-content ">
+                <tr class="head-blue">
+                    <th class="numeric">Title</th>
+                    <td class="numeric">Diagnostic</td>
+                    <td class="numeric">Admitted</td>
+                    <td class="numeric">Total</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th class="numeric" >Sub Total</th>
+                    <th class="numeric">{{ diagnosticOverview.subTotal|number_format }}</th>
+                    <th class="numeric">{{ admissionOverview.subTotal|number_format }}</th>
+                    <th class="numeric">{{ (diagnosticOverview.subTotal+admissionOverview.subTotal)|number_format }}</th>
+                </tr>
+                <tr>
+                    <th class="numeric" >Vat</th>
+                    <th class="numeric">{{ diagnosticOverview.vat|number_format }}</th>
+                    <th class="numeric">{{ admissionOverview.vat|number_format }}</th>
+                    <th class="numeric">{{ (diagnosticOverview.vat+admissionOverview.vat)|number_format }}</th>
+                </tr>
+                <tr>
+                    <th class="numeric" >Discount</th>
+                    <th class="numeric">{{ diagnosticOverview.discount|number_format }}</th>
+                    <th class="numeric">{{ admissionOverview.discount|number_format }}</th>
+                    <th class="numeric">{{ (diagnosticOverview.discount+admissionOverview.discount)|number_format }}</th>
+                </tr>
+                <tr>
+                    <th class="numeric" >Net Total</th>
+                    <th class="numeric">{{ diagnosticOverview.netTotal|number_format }}</th>
+                    <th class="numeric">{{ admissionOverview.netTotal|number_format }}</th>
+                    <th class="numeric">{{ (diagnosticOverview.netTotal+admissionOverview.netTotal)|number_format }}</th>
+                </tr>
+                <tr>
+                    <th class="numeric" >Received</th>
+                    <th class="numeric">{{ diagnosticOverview.netPayment|number_format }}</th>
+                    <th class="numeric">{{ admissionOverview.netPayment|number_format }}</th>
+                    <th class="numeric">{{ (diagnosticOverview.netPayment+admissionOverview.netPayment)|number_format }}</th>
+                </tr>
+                <tr>
+                    <th class="numeric" >Due</th>
+                    <th class="numeric">{{ diagnosticOverview.netDue|number_format }}</th>
+                    <th class="numeric">{{ admissionOverview.netDue|number_format }}</th>
+                    <th class="numeric">{{ (diagnosticOverview.netDue + admissionOverview.netDue)|number_format }}</th>
+                </tr>
+                </tbody>
+
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <th class="pull-center" colspan="2"><h3><strong>Service Base Sales</strong></h3></th>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <table class="table">
+                <tbody>
+                {% if serviceOverview is defined and serviceOverview is not empty %}
+                    {% for service in serviceOverview %}
+                        <tr>
+                            <th class="numeric span11">{{ loop.index }}. {{ service.serviceName }}</th>
+                            <th class="numeric">{{ service.subTotal|number_format }}</th>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <th class="pull-center" colspan="2"><h3><strong>Transaction Method Base Sales</strong></h3></th>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <table class="table">
+                <tbody>
+                {% if transactionOverview is defined and transactionOverview is not empty %}
+                    {% for transaction in transactionOverview %}
+                        <tr>
+                            <th class="numeric span11">{{ loop.index }}. {{ transaction.transName }}</th>
+                            <th class="numeric">{{ transaction.paymentTotal|number_format }}</th>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <th class="pull-center" colspan="2"><h3><strong>Commission for Referred</strong></h3></th>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <table class="table">
+                <tbody>
+                {% if transactionOverview is defined and transactionOverview is not empty %}
+                    {% set totalCommission = 0 %}
+                    {% for commission in commissionOverview %}
+                        {% set totalCommission = totalCommission + commission.paymentTotal %}
+                        <tr>
+                            <th class="numeric span11">{{ loop.index }}. {{ commission.referredName }}</th>
+                            <th class="numeric">{{ commission.paymentTotal|number_format }}</th>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+                <tfoot><tr><th><span class="pull-right">Total Commission</span></th><th>{{ totalCommission|number_format }}</th></tr></tfoot>
+            </table>
+        </td>
+    </tr>
+</table>

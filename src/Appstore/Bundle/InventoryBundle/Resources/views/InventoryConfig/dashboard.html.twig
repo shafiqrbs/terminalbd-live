@@ -1,0 +1,171 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+
+        <!-- END PAGE HEADER-->
+        <div id="dashboard">
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption"><i class="fa fa-shopping-bag"></i> Sales & Purchase</div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row-fluid pull-center" >
+                        {% set sales = globalOption.inventoryConfig.deliveryProcess %}
+                        {% if 'pos' ==  sales  %}
+                            <div class="span3 responsive" data-tablet="span6" data-desktop="span3">
+                                <div class="dashboard-stat blue">
+                                    <a class="visual" href="{{ path('inventory_sales_new') }}">
+                                        <i class="fa fa-shopping-basket"></i>
+                                    </a>
+                                    <a class="more" href="{{ path('inventory_sales_new') }}">
+                                        POS <i class="m-icon-swapright m-icon-white"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if 'general-sales' ==  sales  %}
+                            <div class="span3 responsive" data-tablet="span6" data-desktop="span3">
+                                <div class="dashboard-stat purple">
+                                    <a class="visual" href="{{ path('inventory_salesonline_new') }}">
+                                        <i class="fa fa-shopping-basket"></i>
+                                    </a>
+                                    <a class="more" href="{{ path('inventory_salesonline_new') }}">
+                                        Add Sales <i class="m-icon-swapright m-icon-white"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if 'manual-sales' ==  sales  %}
+                            <div class="span3 responsive" data-tablet="span6" data-desktop="span3">
+                                <div class="dashboard-stat green">
+                                    <a class="visual" href="{{ path('inventory_salesmanual_new') }}">
+                                        <i class="fa fa-shopping-cart"></i>
+                                    </a>
+                                    <a class="more" href="{{ path('inventory_salesmanual_new') }}">
+                                        Sales Invoice <i class="m-icon-swapright m-icon-white"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if is_granted('ROLE_DOMAIN_INVENTORY_MANAGER') %}
+                        <div class="span3 responsive" data-tablet="span6" data-desktop="span3">
+                            <div class="dashboard-stat yellow">
+                                <a class="visual" href="{{ path('inventory_report_sales_overview') }}">
+                                    <i class="fa fa-bar-chart"></i>
+                                </a>
+                                <a class="more" href="{{ path('inventory_report_sales_overview') }}">
+                                    Sales Reports <i class="m-icon-swapright m-icon-white"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if is_granted('ROLE_DOMAIN_INVENTORY_MANAGER') or is_granted('ROLE_DOMAIN_INVENTORY_PURCHASE') %}
+                        <div class="span3 responsive" data-tablet="span6" data-desktop="span3">
+                            <div class="dashboard-stat green">
+                                <a class="visual" href="{{ path('inventory_purchasesimple') }}">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </a>
+                                <a class="more" href="{{ path('inventory_purchasesimple') }}">
+                                    Purchase <i class="m-icon-swapright m-icon-white"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if is_granted('ROLE_DOMAIN_INVENTORY_MANAGER') %}
+
+                        <div class="span3 responsive" data-tablet="span6" data-desktop="span3">
+                            <div class="dashboard-stat yellow">
+                                <a class="visual" href="{{ path('inventory_report_purchase') }}">
+                                    <i class="fa fa-bar-chart"></i>
+                                </a>
+                                <a class="more" href="{{ path('inventory_report_purchase') }}">
+                                    Purchase Reports <i class="m-icon-swapright m-icon-white"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+            {% if is_granted('ROLE_DOMAIN_INVENTORY_MANAGER') %}
+            <div class="portlet box purple">
+                <div class="portlet-title">
+                    <div class="caption"><i class="fa fa-database"></i>Inventory</div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row-fluid pull-center" >
+                        <div class="span3 responsive" data-tablet="span6" data-desktop="span3">
+                            <div class="dashboard-stat green">
+                                <a class="visual" href="{{ path('inventory_item') }}">
+                                    <i class="icon-archive"></i>
+                                </a>
+                                <a class="more" href="{{ path('inventory_item') }}">
+                                    Inventory <i class="m-icon-swapright m-icon-white"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="span3 responsive" data-tablet="span6" data-desktop="span3">
+                            <div class="dashboard-stat purple">
+                                <a class="visual" href="{{ path('inventory_stockitem') }}">
+                                    <i class="fa fa-database"></i>
+                                </a>
+                                <a class="more" href="{{ path('inventory_stockitem') }}">
+                                    Stock <i class="m-icon-swapright m-icon-white"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="span3 responsive" data-tablet="span6" data-desktop="span3">
+                            <div class="dashboard-stat blue">
+                                <a class="visual" href="{{ path('inventoryconfig_edit') }}">
+                                    <i class="fa fa-cog"></i>
+                                </a>
+                                <a class="more" href="{{ path('inventoryconfig_edit') }}">
+                                    Configure <i class="m-icon-swapright m-icon-white"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="span3 responsive" data-tablet="span6" data-desktop="span3">
+                            <div class="dashboard-stat yellow">
+                                <a class="visual" href="{{ path('inventory_report_overview') }}">
+                                    <i class="fa fa-bar-chart"></i>
+                                </a>
+                                <a class="more" href="{{ path('inventory_report_overview') }}">
+                                    Reports <i class="m-icon-swapright m-icon-white"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <style>
+        .dashboard-stat .visual{
+            width: auto;
+            float: none;
+            padding:0;
+            padding-top: 15px;
+            padding-bottom: 15px;
+
+        }
+        .dashboard-stat .visual:hover{
+            text-decoration: none;
+        }
+        .dashboard-stat .more {
+            clear: both;
+            display: block;
+            padding: 5px 10px 5px 10px;
+            text-transform: uppercase;
+            font-size: 16px;
+            color: #fff;
+            opacity:1;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+

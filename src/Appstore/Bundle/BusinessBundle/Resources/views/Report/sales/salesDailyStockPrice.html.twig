@@ -1,0 +1,132 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Daily Stock Sales Price Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Daily Stock Sales Price Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Daily Stock Sales Price Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn yellow" href="{{ path('business_report_sales_summary') }}"><i class="icon-bar-chart"></i>&nbsp;Sales Overview</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span6"></div>
+                                    <div class="span3">
+                                        {% set months = {'01':'January','02':'February','03':'March','04':'April','05':'May','06':'June','07':'July','08':'August','09':'September','10':'October','11':'November','12':'December'} %}
+                                        <select class="span12 m-wrap" name="month" id='month'>
+                                            {% for key,month in months %}
+                                                <option value='{{ key }}' {% if (searchForm.month is defined and searchForm.month == key) or (searchForm.month is defined and searchForm.month is empty and key == currentMonth) %} selected="selected" {% endif %} >{{ month }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                {%  set months = {1:'January',2:'February',3:'March',4:'April',5:'May',6:'June',7:'July',8:'August',9:'September',10:'October',11:'November',12:'December'} %}
+                                                {%  set years = ['2018','2019','2020','2021','2022','2023','2024','2025'] %}
+                                                <select class="span12 m-wrap" name="year" id="year">
+                                                    <option>--- Select Year---</option>
+                                                    {% for year in years %}
+                                                        <option {% if searchForm.year is defined and searchForm.year == year %}selected="selected"{% endif %} value="{{ year }}">{{ year }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {% set start_date = "now"|date('01-m-Y') %}
+                                {% set end_date = "now"|date('t-m-Y') %}
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+                                    <thead class="">
+                                    <tr class="head-red">
+                                        <th>Item Name</th>
+                                        {% for key,x in range(start_date|date('U'), end_date|date('U'), 86400 ) %}
+                                            <th>{{ x|date('d') }}</th>
+                                        {% endfor %}
+                                        <th>Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="sales">
+                            {% set grandTotal = 0 %}
+                            {% for stock in stocks %}
+                                <tr>
+                                    <td>{{ stock.name }}</td>
+                                    {% for key,x in range(start_date|date('U'), end_date|date('U'), 86400 ) %}
+                                        <td>
+                                            {% set id =  loop.index~'-'~stock.id %}
+                                            {% if entities[id] is defined and entities[id] is not empty %}{{ entities[id]|default(0)|number_format }} {% else %}-{% endif %}
+                                        </td>
+                                    {% endfor %}
+                                    <td>
+                                        <strong class="pull-right">
+                                        {% if totalItemSales[stock.id] is defined and totalItemSales[stock.id] is not empty %}
+                                            {% set grandTotal = grandTotal + totalItemSales[stock.id]  %}
+                                            {{ totalItemSales[stock.id]|default(0)|number_format }}{% endif %}
+                                        </strong>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <th>Total</th>
+                            {% for key,x in range(start_date|date('U'), end_date|date('U'), 86400 ) %}
+                            <th>{{ dailyTotalSalesArr[loop.index]|default(0)|number_format }}</th>
+                            {% endfor %}
+                                <th>{{ grandTotal|number_format }}</th>
+                            </tr>
+                            </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}

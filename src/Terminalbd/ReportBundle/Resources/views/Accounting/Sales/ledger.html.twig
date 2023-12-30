@@ -1,0 +1,236 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 print-bar">
+            <form action="" method="get">
+                <div class="row">
+                    <div class="col-md-5 margin-top">
+                        <label>Customer</label>
+                        <select class="search-input col-md-12 m-wrap select2" name="customerId" id="customerId">
+                            {% if customers is not empty %}
+                                {% for customer in customers %}
+                                    <option {% if searchForm.customer is defined and searchForm.customer is not empty and customer.customerId == searchForm.customer %} selected="selected" {% endif %} value="{{ customer.customerId }}">{{ customer.customerMobile }} - {{ customer.customerName }} Balance: ({{ customer.customerBalance|number_format() }}) </option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>Start Date</label>
+                        <input type="date" class="m-wrap" id="startDate" name="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>End Date</label>
+                        <input type="date" class="m-wrap" id="endDate" name="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-1 margin-top">
+                        <label>&nbsp;</label>
+                        <button class='btn btn-download btn-margin-left' name="submit" value="search" ><i class='fa fa-search'></i> Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="print-area">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size: 16px">{{ option.name }}</strong></p>
+                <p>Name of Report: Customer Ledger</p>
+                {% if customer is not empty %}
+                <p><strong>{{ customer.name }}</strong>,{{ customer.mobile }}</p>
+                <p>{{ customer.address }}</p>
+                {% endif %}
+            </div>
+            <div class="col-md-4 text-right">
+                Printed: {{ "now"|date('d-m-Y') }}
+                <p><strong>Start Date:&nbsp;</strong><strong>{% if data['startDate'] is defined and data['startDate'] is not empty %}{{ data['startDate']|date('d-m-Y') }}{% endif %}</strong>
+                    <strong>End Date:&nbsp;<strong>{% if data['endDate'] is defined and data['endDate'] is not empty %}{{ data['endDate']|date('d-m-Y') }}{% endif %}</strong></strong>
+                </p>
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table  class="table table-bordered table-striped table-condensed flip-content " style="width: 100%">
+                    <thead class="flip-content ">
+                    <tr class="head-blue">
+                        <th class="numeric" >S/N</th>
+                        <th class="numeric" >Created</th>
+                        <th class="numeric" >Invoice</th>
+                        <th class="numeric" >Description</th>
+                        <th class="numeric" >Method</th>
+                        <th class="numeric" >Mode</th>
+                        <th class="numeric" >Total</th>
+                        <th class="numeric" >Received</th>
+                        <th class="numeric" >Due</th>
+                        <th class="numeric" >Created</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                        <tr id="remove-{{ entity.id }}">
+                            <td class="numeric" >{{ loop.index }}</td>
+                            <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                            <td class="numeric" >
+                                {{ entity.sourceInvoice }}
+                            </td>
+                            <td class="numeric" >
+                                {% if entity.businessInvoice is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'business' %}
+                                    <table class="table">
+                                        {% if entity.businessInvoice.businessConfig.businessModel == "distribution" %}
+                                            <thead class="">
+                                            <tr class="head-blue">
+                                                <th class="col-md-6">Name</th>
+                                                <th class="col-md-1">QTY</th>
+                                                <th class="col-md-1">Free</th>
+                                                <th class="col-md-1">Unit</th>
+                                                <th class="col-md-1 text-right">Rate</th>
+                                                <th class="col-md-2 text-right">Amount</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for item in entity.businessInvoice.businessInvoiceParticulars  %}
+                                                <tr>
+                                                    <td class="col-md-6">{{ item.particular }}</td>
+                                                    <td class="col-md-1">{{ item.quantity }}</td>
+                                                    <td class="col-md-1">{{ item.bonusQnt }}</td>
+                                                    <td class="col-md-1">{{ item.unit }}</td>
+                                                    <td class="col-md-1 text-right">{{ item.price }}</td>
+                                                    <td class="col-md-2 text-right">{{ item.subTotal|number_format }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            <tr>
+                                                <td class="col-md-10 text-right"><strong>SubTotal</strong></td>
+                                                <td class="text-right col-md-2"><strong>{{ entity.businessInvoice.subTotal }}</strong></td>
+                                            </tr>
+                                            <tr><td colspan="2">{{ entity.businessInvoice.comment|raw }}</td></tr>
+                                            </tbody>
+                                        {% elseif entity.businessInvoice.businessConfig.businessModel == "sign" %}
+                                            <thead class="">
+                                            <tr class="head-blue">
+                                                <th class="col-md-5">Name</th>
+                                                <th class="col-md-1">Size</th>
+                                                <th class="col-md-1">QTY</th>
+                                                <th class="col-md-1">Free</th>
+                                                <th class="col-md-1">Unit</th>
+                                                <th class="col-md-1 text-right">Rate</th>
+                                                <th class="col-md-2 text-right">Amount</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for item in entity.businessInvoice.businessInvoiceParticulars  %}
+                                                <tr>
+                                                    <td class="col-md-5">{{ item.particular }}</td>
+                                                    <td class="col-md-1"> {% if item.height is not empty and item.width is not empty %}
+                                                            {{ item.height }} x {{ item.width }} = {{ item.subQuantity }}
+                                                        {% endif %}</td>
+                                                    <td class="col-md-1">{{ item.quantity }}</td>
+                                                    <td class="col-md-1">{{ item.bonusQnt }}</td>
+                                                    <td class="col-md-1">{{ item.unit }}</td>
+                                                    <td class="col-md-1 text-right">{{ item.price }}</td>
+                                                    <td class="col-md-2 text-right">{{ item.subTotal|number_format }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            <tr>
+                                                <td class="col-md-10 text-right"><strong>SubTotal</strong></td>
+                                                <td class="text-right col-md-2"><strong>{{ entity.businessInvoice.subTotal }}</strong></td>
+                                            </tr>
+                                            <tr><td colspan="2">{{ entity.businessInvoice.comment|raw }}</td></tr>
+                                            </tbody>
+                                        {% else %}
+                                            <thead class="">
+                                            <tr class="head-blue">
+                                                <th class="col-md-7">Name</th>
+                                                <th class="col-md-1">QTY</th>
+                                                <th class="col-md-1">Unit</th>
+                                                <th class="col-md-1 text-right">Rate</th>
+                                                <th class="col-md-2 text-right">Amount</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for item in entity.businessInvoice.businessInvoiceParticulars  %}
+                                                <tr>
+                                                    <td class="col-md-7">{{ item.particular }}</td>
+                                                    <td class="col-md-1">{{ item.quantity }}</td>
+                                                    <td class="col-md-1">{{ item.unit }}</td>
+                                                    <td class="col-md-1 text-right">{{ item.price }}</td>
+                                                    <td class="col-md-2 text-right">{{ item.subTotal|number_format }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            <tr>
+                                                <td class="col-md-10 text-right"><strong>SubTotal</strong></td>
+                                                <td class="text-right col-md-2"><strong>{{ entity.businessInvoice.subTotal }}</strong></td>
+                                            </tr>
+                                            {% if  entity.businessInvoice.discount %}
+                                            <tr>
+                                                <td class="col-md-10 text-right"><strong>Discount</strong></td>
+                                                <td class="text-right col-md-2"><strong>{{ entity.businessInvoice.discount }}</strong></td>
+                                            </tr>
+                                            {% endif %}
+                                            <tr><td colspan="2">{{ entity.businessInvoice.comment|raw }}</td></tr>
+                                            </tbody>
+                                        {% endif %}
+                                    </table>
+                                {% elseif entity.sales is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'inventory' %}
+                                    {% for item in entity.sales.salesItems  %}
+                                        <p>{{ loop.index }}. {{ item.item.name }}</p>
+                                    {% endfor %}
+                                {% elseif entity.hmsInvoices is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'hms' %}
+                                    {% for item in entity.hmsInvoices.invoiceParticulars  %}
+                                        <p>{{ loop.index }}. {{ item.particular.name }}</p>
+                                    {% endfor %}
+                                {% elseif entity.dmsInvoices is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'dms' %}
+                                    {% for item in entity.dmsInvoices.invoiceParticulars  %}
+                                        <p>{{ loop.index }}. {{ item.particular.name }}</p>
+                                    {% endfor %}
+                                {% elseif entity.restaurantInvoice is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'restaurant' %}
+                                    {% for item in entity.restaurantInvoice.invoiceParticulars  %}
+                                        <p>{{ loop.index }}. {{ item.particular.name }}</p>
+                                    {% endfor %}
+                                {% elseif entity.medicineSales is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'miss' %}
+                                    {% for item in entity.medicineSales.medicineSalesItems  %}
+                                        <p>{{ loop.index }}. {{ item.medicineStock.name }} - ({{ item.quantity }})</p>
+                                    {% endfor %}
+                                {% elseif entity.hotelInvoice is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'hotel' %}
+                                    {% for item in entity.hotelInvoice.hotelInvoiceParticulars  %}
+                                        <p>{{ loop.index }}. {{ item.hotelParticular.name }}</p>
+                                    {% endfor %}
+                                {% else %}
+                                   <strong> {{ entity.remark|raw }}</strong>
+                                {% endif %}
+                            </td>
+                            <td class="numeric" >
+                                {% if entity.transactionMethod is defined and entity.transactionMethod is not empty %}{{ entity.transactionMethod.name }}{% endif %}
+                            </td>
+                            <td class="numeric" >{{ entity.processHead }}</td>
+                            <td class="numeric" >{{ entity.totalAmount|number_format }}</td>
+                            <td class="numeric" >
+                                {% if entity.process == 'approved'  %}
+                                    {{ entity.amount|number_format }}
+                                {% else %}
+                                    <a data-mode="inline" class="editable" data-name="amount" href="#"  data-url="{{ path('account_sales_inline') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change your amount">{{ entity.amount }}</a>
+                                {% endif %}
+                            </td>
+                            <td class="numeric" >{{ entity.balance|number_format }}</td>
+                            <td class="numeric" >{{ entity.createdBy }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    {% if searchForm['customerId'] is defined and searchForm['customerId'] is not empty  %}
+                        <tfoot>
+                        <tr>
+                            <td class="numeric" colspan="6" ></td>
+                            <td class="numeric" ><strong>{{ overview.totalAmount|number_format }}</strong></td>
+                            <td class="numeric" ><strong>{{ overview.receiveAmount|number_format }}</strong></td>
+                            <td class="numeric" ><strong>{{ (overview.totalAmount - overview.receiveAmount)|number_format }}</strong></td>
+                            <td></td>
+                        </tr>
+                        </tfoot>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

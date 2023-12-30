@@ -1,0 +1,18 @@
+<nav id="menu">
+    <ul class="tm-menu">
+        <li>
+            <a href="{{ path('bindu_homepage') }}">Home</a>
+        </li>
+        <li><a href="{{ path('bindu_about') }}">About Us</a></li>
+        <li><a href="{{ path('bindu_find') }}">Our Client</a></li>
+        <li class="parent">
+            <a href="#">Application</a>
+            <ul class="sub-menu">
+                {% for application in applications  %}
+                    <li><a href="{{ path('bindu_application',{'slug':application.slug}) }}">{{ application.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+        <li><a href="{{ path('bindu_contact') }}">Contact us</a></li>
+    </ul>
+</nav>

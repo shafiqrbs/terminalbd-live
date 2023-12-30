@@ -1,0 +1,190 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN inventory_delivery HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="inventory_delivery-title">
+                    Manage Delivery Invoice:{{ entity.branch.name }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_delivery') }}">Manage Delivery</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Delivery Invoice new/edit</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END inventory_delivery HEADER-->
+        <!-- BEGIN inventory_delivery CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Delivery Invoice Information</div>
+                        <div class="actions">
+                             <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('inventory_delivery_new',{'shop':entity.branch.id }) }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('inventory_delivery') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <h4>Invoice Info:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Invoice:</strong>&nbsp;{{ entity.invoice }}</li>
+                                        <li><strong>Total Item:</strong>&nbsp;{{ entity.totalItem }}</li>
+                                        <li><strong>Total Quantity:</strong>&nbsp;{{ entity.totalQuantity }}</li>
+                                        <li><strong>Total Amount:</strong>&nbsp;{{ entity.totalAmount }}</li>
+                                        <li><strong>Process By:</strong>&nbsp;{% if entity.createdBy is defined and entity.createdBy is not empty %}{{ entity.createdBy }}{% endif %}</li>
+                                    </ul>
+                                </div>
+                                <div class="span4">&nbsp;</div>
+                                <div class="span4">
+                                    <h4>Delivered Process:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Delivered:</strong>&nbsp;{{ entity.updated|date('d-m-Y') }}</li>
+                                        <li><strong>Shop Name:</strong>&nbsp;{{ entity.branch.name }}</li>
+                                        <li><strong>Address:</strong>&nbsp;{{ entity.branch.address }}</li>
+                                        <li><strong>Location:</strong>&nbsp;{{ entity.branch.location.name }},{{ entity.branch.location.parent.name }}</li>
+                                        <li><strong>Received By:</strong>&nbsp;{% if entity.approvedBy is defined and entity.approvedBy is not empty %}{{ entity.approvedBy }}{% endif %}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- BEGIN FORM-->
+                            <div class="portlet-body">
+                                <div class="portlet-body flip-scroll">
+
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                        <thead class="flip-content ">
+                                        <tr class="head-blue">
+                                            <th class="numeric" >S/N</th>
+                                            <th class="numeric">Barcode</th>
+                                            <th class="numeric">Name</th>
+                                            <th  class="numeric">Quantity</th>
+                                            <th>Purchase</th>
+                                            <th>Sub-total</th>
+                                            <th>Sales Price</th>
+                                            <th>Sub-Total</th>
+                                            <th><i class="icon-trash"></i></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="deliveryItem">
+                                        {%  set totalPurchase = 0 %}
+                                        {% for item in entity.deliveryItems %}
+                                            {%  set totalPurchase = totalPurchase + (item.purchaseItem.purchasePrice * item.quantity) %}
+
+                                            <tr>
+                                                <td class="numeric" >{{ loop.index }}</td>
+                                                <td class="numeric">{{ item.purchaseItem.barcode }}</td>
+                                                <td class="numeric">{{ item.item.name }}</td>
+                                                <td  class="numeric">{{ item.quantity }}</td>
+                                                <td>{{ item.purchaseItem.purchasePrice }}</td>
+                                                <td>{{ item.purchaseItem.purchasePrice * item.quantity  }}</td>
+                                                <td>{{ item.salesPrice }}</td>
+                                                <td>{{ item.subTotal }}</td>
+                                                <td>
+                                                    {% if entity.approvedBy is empty  %}
+                                                    <a id="" title="Are you sure went to delete ?" rel="{{ path('inventory_delivery_item_delete',{'delivery':entity.id,'id':item.id}) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a>
+                                                    {% endif %}
+                                                </td>
+
+                                            </tr>
+                                        {% endfor %}
+                                        <tr>
+                                            <td colspan="3"><span class="pull-right"><strong>Total Quantity</strong></span></td>
+                                            <td><span class="pull-left" id="totalQuantity">{{ entity.totalQuantity }}</span></td>
+                                            <td><span class="pull-right"><span class="pull-right"><strong id="totalAmount">Total Purchase</strong></span></span></td>
+                                            <td><span class="pull-left"><strong>{{ totalPurchase|number_format }}</strong></span></td>
+                                            <td><span class="pull-right"><span class="pull-right"><strong id="totalAmount">Total Sales</strong></span></span></td>
+                                            <td><span class="pull-left"><strong>{{ entity.totalAmount|number_format }}</strong></span></td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="clearfix"><br/></div>
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    {% if entity.approvedBy is not empty  %}
+                                    <a  href="{{ path('inventory_delivery_print',{'id':entity.id}) }}" class="btn purple"><i class="icon-download"></i> Download PDF</a>
+                                    <a  href="javasript:" class="btn green" ><i class="icon-check"></i></a>
+                                    {% else  %}
+                                        <a title="Are you sure went to delete ?" href="{{ path('inventory_delivery_delete', { 'id': entity.id }) }}" class="btn red" ><i class="icon-trash"></i> Delete</a>
+                                        {% if entity.approvedBy is not empty and is_granted('ROLE_DOMAIN_INVENTORY_BRANCH_MANAGER') and entity.totalQuantity > 0 %}
+                                        <a href="javascript:" id="action-{{ entity.id }}" data-id="{{ entity.id }}" class="btn blue approve "  data-url="{{ path('inventory_delivery_approve',{'id':entity.id}) }}"><i class=" icon-check-empty"></i>&nbsp;Approve</a>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                               <!-- END FORM-->
+                        </div>
+                        <br/>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/delivery.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $(document).on("click", ".approve", function() {
+
+        var id = $(this).attr("data-id");
+        var url = $(this).attr("data-url");
+        $('#action-'+id).hide();
+        $('#delete-'+id).hide();
+        $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (response) {
+        location.reload();
+        },
+        })
+    })
+
+{% endblock %}

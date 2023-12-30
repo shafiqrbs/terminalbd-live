@@ -1,0 +1,179 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Product Name
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('business_stock') }}">Stock</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>Product History Information</li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>c
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="row-fluid">
+                    <form class="search-form" action="" method="get" name="itemSearch">
+                        <div class="row-fluid">
+                            <div class="span5">
+                                <select class="span12 m-wrap select2" name="particular" id='particular'>
+                                    <option>-- Select Item Name ---</option>
+                                    {% for particular in particulars %}
+                                        <option value='{{ particular.id }}' {% if (searchForm.particular is defined and searchForm.particular == particular.id) %} selected="selected" {% endif %} >{{ particular.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="span2">
+                                <select class="span12 m-wrap" name="process" id='process'>
+                                    {% set processes = {'pruchase':'Purchase','sales-return':'Purchase Return','sales':'Sales','sales-return':'Sales Return','damage':'Damage'} %}
+                                    <option value="">-- Select Process ---</option>
+                                    {% for process,key in processes %}
+                                        <option {% if (searchForm.process is defined and searchForm.process == process) %} selected="selected" {% endif %} value="{{ process }}">{{ key }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="span2">
+                                <input type="text" id="startDate" name="startDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                            </div>
+                            <div class="span3">
+                                <div class="controls">
+                                    <div class="input-append span10">
+                                        <input type="text" id="endDate" name="endDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                        <div class="btn-group">
+                                            <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="portlet box green">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Product Ledger Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% set particular = searchForm.particular is defined ? searchForm.particular :'' %}
+                                {% set process = searchForm.process is defined ? searchForm.process :'' %}
+                                {% set startDate = searchForm.startDate is defined ? searchForm.startDate :"now"|date("Y-m-d") %}
+                                {% set endDate = searchForm.endDate is defined ? searchForm.endDate :"now"|date("Y-m-d") %}
+                                <a class="btn purple" target="_blank" href="{{ path('business_report_stock_ledger',{'pdf':'pdf','particular':particular,'process':process,'startDate':startDate,'endDate':endDate}) }}" >
+                                    <i class=" icon-download"></i>&nbsp;Download PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% if entity is not empty %}
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Name: {{ entity.name }}</strong></li>
+                                        {% if entity.unit is not empty %}<li><strong>Unit #:</strong>&nbsp;{{ entity.unit.name }}</li>{% endif %}
+                                        <li><strong>Product Mode #:</strong> {% if entity.businessParticularType is not empty %}&nbsp;{{ entity.businessParticularType.name }}{% endif %}</li>
+                                        {% if entity.category is not empty %}<li><strong>Product Category #:</strong>&nbsp;{{ entity.category.name }}</li>{% endif %}
+
+                                    </ul>
+                                </div>
+                                <div class="span4">
+                                    <h4>Stock Details:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Purchase:</strong>&nbsp;{{ entity.purchaseQuantity }}</li>
+                                        <li><strong>Purchase Return:</strong>&nbsp;{{ entity.purchaseReturnQuantity }}</li>
+                                        <li><strong>Damage:</strong>&nbsp;{{ entity.damageQuantity }}</li>
+                                    </ul>
+                                </div>
+                                <div class="span4">
+                                    <h4>&nbsp;</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Sales:</strong>&nbsp;{{ entity.salesQuantity }}</li>
+                                        <li><strong>Sales Return:</strong>&nbsp;{{ entity.salesReturnQuantity }}</li>
+                                        <li><strong>Remaining:</strong>&nbsp;{{ entity.remainingQuantity }}</li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        {% endif %}
+                        <div class="form-actions portlet box green">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>{{ process|capitalize }} History</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid box green">
+                            {% if pagination is defined and  pagination is not empty  %}
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+                                    <thead class="flip-content ">
+                                        <tr class="head-blue">
+                                            <th class="numeric" >Invoice ID</th>
+                                            <th class="numeric" >Date</th>
+                                            <th class="numeric" >Created By</th>
+                                            <th class="numeric" >Customer/Vendor</th>
+                                            <th class="numeric" >Opening QTY</th>
+                                            <th class="numeric" >QTY</th>
+                                            <th class="numeric" >Closing QTY</th>
+                                            <th class="numeric" >Process</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% set totalQnt = 0 %}
+                                    {% set total = 0 %}
+                                    {% for item in pagination %}
+                                        <tr>
+                                            <td class="numeric" >
+                                                {% if item.process == 'purchase' %}
+                                                    {{ item.grn }}
+                                                {% elseif item.process == "sales" %}
+                                                    {{ item.salesInvoice }}
+                                                {% endif %}
+                                            </td>
+                                            <td class="numeric" >{{ item.created|date('d-m-Y') }}</td>
+                                            <td class="numeric" >{{ item.createdBy }}</td>
+                                            <td class="numeric" >{{ item.customer }}</td>
+                                            <td class="numeric" >{{ item.openingQuantity }}</td>
+                                            <td class="numeric" >{% if item.quantity > 0 %}{{ item.quantity }}{% else %}({{ item.quantity|abs }}){% endif %}</td>
+                                            <td class="numeric" >{{ item.closingQuantity }}</td>
+                                            <td class="numeric" >{{ item.process }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+        '@BusinessBundle/Resources/public/js/approveProcess.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

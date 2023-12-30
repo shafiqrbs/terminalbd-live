@@ -1,0 +1,115 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    View Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('ecommercemenu') }}">E-commerce menu</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>E-commerce menu</div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="tabbable portlet-tabs">
+                            <form method="post" name="featureCategory" id="featureCategory" action="{{ path('category_feature') }}" >
+                                <div class="portlet-body flip-scroll">
+                                    {% include('flash-message.html.twig')  %}
+                                    <div id="nestable_list_3" class="dd">
+                                        <ol class="dd-list singleSortable ui-sortable">
+                                            {% for entity in entities %}
+                                                <li style="display:list-item" class="dd-item dd3-item " id="menuItem_{{ entity.id }}">
+                                                    <div class="menuDiv">
+                                                            <span >
+                                                                <div data-id="{{ entity.id }}" class="itemTitle dd-handle dd3-handle"></div>
+                                                                <span class="dd3-content">{{ entity.name }}
+                                                                    <div style="float: right; margin-top: -3px">
+                                                                        <span class="btn mini purple-stripe btn-action">
+                                                                            <a href="{{ path('ecommercemenu_status',{'id': entity.id }) }}">Status</a>
+
+                                                                        </span>
+                                                                        <span class="btn mini green-stripe btn-action">
+                                                                            <a href="{{ path('ecommercemenu_edit',{'id': entity.id }) }}">Edit</a>
+
+                                                                        </span>
+                                                                        <span class="btn mini red-stripe btn-action">
+                                                                            <a href="{{ path('ecommercemenu_delete',{'id': entity.id }) }}">Delete</a>
+
+                                                                        </span>
+
+                                                                    </div>
+                                                                </span>
+                                                            </span>
+                                                    </div>
+                                                </li>
+                                            {% endfor %}
+                                        </ol>
+                                    </div>
+                                    <div class="form-actions portlet box grey">
+                                        <div class="pull-center">
+                                            <button class="btn green" id="serialize" type="button"><i class="icon-ok"></i> Update</button>
+                                            <button class="btn purple" type="submit"><i class="icon-refresh"></i> Reset</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .menuDiv div.checker{
+            float: right;
+        }
+    </style>
+{% endblock %}
+{% block documentready %}
+
+    {{ parent() }}
+    NestSortable.init();
+    $('#serialize').click(function(){
+
+    serialized = $('ol.singleSortable').nestedSortable('serialize');
+    $.ajax({
+    url: '{{ path('ecommercemenu_sorted') }}',
+    type: "POST",
+    data: serialized
+    }).done(function(data){
+    });
+    })
+
+{% endblock %}
+

@@ -1,0 +1,103 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Bed/Cabin
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('hms_cabin') }}">Bed/Cabin/Ward</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Bed/Cabin/Ward</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn yellow" href="{{ path('hms_invoice_admission') }}"><i class="icon-th"></i> Admission</a>
+                                {% if ((app.user.granted("ROLE_DOMAIN_HOSPITAL_OPERATOR") and 'admission' in option.hospitalConfig.invoiceProcess)) or  ('admission' in option.hospitalConfig.invoiceProcess and app.user.granted("ROLE_DOMAIN")) %}
+                                    <a  href="{{ path('hms_invoice_admission_new') }}" class="btn red"><i class="fa fa-ambulance"></i> New Admission</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content" id="dataTable">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Code</th>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Price</th>
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Invoice</th>
+                                    <th class="numeric" >Patient Name</th>
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in pagination %}
+                                    <tr>
+                                       <td class="numeric" >{{ entity.particularCode }}</td>
+                                        <td class="numeric" >{{ entity.name }}</td>
+                                        <td class="numeric" >{{ entity.price|number_format }}</td>
+                                        <td class="numeric" >{% if cabins[entity.id] is defined and cabins[entity.id] is not empty  %}{{ cabins[entity.id].created|date('d-m-Y') }}{% endif %}</td>
+                                        <td class="numeric" >{% if cabins[entity.id] is defined and cabins[entity.id] is not empty  %}{{ cabins[entity.id].invoice }}{% endif %}</td>
+                                        <td class="numeric" >{% if cabins[entity.id] is defined and cabins[entity.id] is not empty  %}{{ cabins[entity.id].customer }}{% endif %}</td>
+                                        <td class="numeric" >{% if cabins[entity.id] is defined and cabins[entity.id] is not empty  %}{{ cabins[entity.id].mobile }}{% endif %}</td>
+                                        <th class="numeric" >{% if cabins[entity.id] is defined and cabins[entity.id] is not empty  %} <a href="javascript:" class="btn red mini">Booked</a> {% else %}<a href="{{ path('hms_invoice_admission_cabin',{'id':entity.id}) }}" class="btn blue mini">Free</a>{% endif %}</th>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+    $('#dataTable').DataTable( {
+        scrollY:        '80vh',
+        scrollCollapse: true,
+        paging:         false,
+        bInfo : false,
+        orderable: true,
+        bSort: true,
+        aoColumnDefs: [
+        {
+        bSortable: false,
+        aTargets: [ -1 ]
+        }
+        ]
+    });
+{% endblock %}

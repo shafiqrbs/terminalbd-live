@@ -1,0 +1,297 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- END PAGE HEADER-->
+        <div class="portlet-body">
+            <div class="row-fluid" >
+                <div class="span3">
+                    <div class="btn-group" style="width:88%!important">
+                        {% if ((app.user.granted("ROLE_DOMAIN_RESTAURANT")) or  app.user.granted("ROLE_DOMAIN") ) %}
+                           {%  if config.salesMode == "table" %}
+                                <a href="{{ path('restaurant_tableinvoice') }}"  style="width: 100%" class="btn yellow big"><i class="fa fa-shopping-cart"></i> POS</a>
+                           {% else %}
+                               <a href="javascript:"  style="width: 100%" class="btn yellow big addInvoice"><i class="fa fa-shopping-cart"></i> POS</a>
+                           {% endif %}
+                           {% endif %}
+                    </div>
+                </div>
+                <div class="span5">
+                    <div class="btn-group" style="width: 100%!important;">
+                        {% if ((app.user.granted("ROLE_DOMAIN_RESTAURANT")) or  app.user.granted("ROLE_DOMAIN") ) %}
+                            <a class="btn red big" style="width:44%" href="{{ path('restaurant_invoice') }}"> <i class="fa fa-notes"></i> INVOICE  </a>
+                        {% endif %}
+                        {% if ((app.user.granted("ROLE_DOMAIN_RESTAURANT")) or  app.user.granted("ROLE_DOMAIN") ) %}
+                            <a href="{{ path('restaurant_purchase') }}" style="width:43%" class="btn green big"><i class="fa fa-truck"></i> PURCHASE</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="span4">
+                    <div class="btn-group" style="width: 92%!important;">
+                            <a href="{{ path('account_expenditure') }}" style="width:100%" class="btn red big"><i class="fa fa-money"></i> EXPENSE</a>
+                      </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"><br/></div>
+        <div class="row-fluid">
+            <div class="span3">
+                <div class="row-fluid">
+                    <div class="row-fluid">
+                        <div class="portlet box red">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Today Overview</div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="portlet-body">
+                                <style>
+                                    .icon-btn-mini {
+                                        width: 100%;
+                                        height: 40px!important;
+                                        padding: 7px 0 0 0!important;
+                                    }
+                                </style>
+                                <div class="row-fluid">
+                                    <div class="span8" style="margin-top:-10px">
+                                        <div class="portlet-body">
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div> Total Sales Tk.</div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div> Discount Tk. </div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div> Vat Tk. </div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div> Grand Total Tk. </div>
+                                            </a>
+                                             <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div> Receive Tk. </div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div> Due Tk.</div>
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                    <div class="span4" style="margin-top:-10px">
+                                        <div class="portlet-body">
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div><span style="color: red"> {{ salesOverview.subTotal|number_format }}</span> </div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div><span style="color: red"> {{ salesOverview.discount|number_format }}</span> </div>
+                                            </a>
+                                             <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                 <div><span style="color: red"> {{ salesOverview.vat|number_format }}</span> </div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div><span style="color: red">{{ salesOverview.total|number_format }}</span> </div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div><span style="color: red">{{ salesOverview.receive|number_format }}</span> </div>
+                                            </a>
+                                            <a href="javascript:" class="icon-btn icon-btn-mini">
+                                                <div><span style="color: red">{{ salesOverview.due|number_format }}</span> </div>
+                                            </a>
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span5">
+                <div class="row-fluid">
+                    <div class="span6 responsive" data-tablet="span6" data-desktop="span3">
+                        <div class="dashboard-stat2 ">
+                            <div class="display">
+                                <div class="number">
+                                    <h3 class="font-green-sharp">
+                                        <span data-counter="counterup" data-value="">{{ ((transactionCashOverview.openingBalance + transactionCashOverview.debit)- transactionCashOverview.credit)|number_format  }}</span>
+                                        <small class="font-green-sharp">BDT</small>
+                                    </h3>
+                                    <small>BALANCE</small>
+                                </div>
+                                <div class="icon">
+                                    <i class="icon-bar-chart"></i>
+                                </div>
+                            </div>
+                            <div class="progress-info">
+                                <div class="progress">
+                            <span style="width: 75%;" class="progress-bar progress-bar-success green-sharp">
+                                <span class="sr-only">75% progress</span>
+                            </span>
+                                </div>
+                                <div class="status">
+                                    <div class="status-number">
+                                        <a href="{{ path('account_transaction_cash_overview') }}" class="btn green mini">More <i class="icon-circle-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span6 responsive" data-tablet="span6" data-desktop="span3">
+                        <div class="dashboard-stat2 ">
+                            <div class="display">
+                                <div class="number">
+                                    <h3 class="font-red-haze">
+                                        <span data-counter="counterup" data-value="{{ expenditureOverview|number_format }}">{{ expenditureOverview|number_format }}</span>
+                                        <small class="font-red-sharp">BDT</small>
+                                    </h3>
+                                    <small>Expense</small>
+                                </div>
+                                <div class="icon">
+                                    <i class="icon-money"></i>
+                                </div>
+                            </div>
+                            <div class="progress-info">
+                                <div class="progress">
+                            <span style="width: 75%;" class="progress-bar progress-bar-success red-haze">
+                                <span class="sr-only">75% change</span>
+                            </span>
+                                </div>
+                                <div class="status">
+                                    <div class="status-number">
+                                        <a href="{{ path('account_expenditure') }}" class="btn red mini">More <i class="icon-circle-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row-fluid">
+                    <div class="span6 responsive" data-tablet="span6" data-desktop="span3">
+                        <div class="dashboard-stat2 ">
+                            <div class="display">
+                                <div class="number">
+                                    <h3 class="font-purple-soft">
+                                        <span data-counter="counterup" data-value="{{ salesOverview.total|number_format }}">{{ salesOverview.total }}</span>
+                                        <small class="font-purple-soft">BDT</small>
+                                    </h3>
+                                    <small>SALES</small>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-money"></i>
+                                </div>
+                            </div>
+                            <div class="progress-info">
+                                <div class="progress">
+                            <span style="width: 75%;" class="progress-bar progress-bar-success purple-soft">
+                                <span class="sr-only">75% change</span>
+                            </span>
+                                </div>
+                                <div class="status">
+                                    <div class="status-number">
+                                        <a href="{{ path('restaurant_invoice') }}" class="btn purple mini">More <i class="icon-circle-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span6 responsive" data-tablet="span6" data-desktop="span3">
+                        <div class="dashboard-stat2 ">
+                            <div class="display">
+                                <div class="number">
+                                    <h3 class="font-blue-sharp">
+                                        <span data-counter="counterup" data-value="{{ purchaseCashOverview['purchaseAmount'] }}">{{ purchaseCashOverview['purchaseAmount'] }}</span>
+                                        <small class="font-blu-sharp">BDT</small>
+                                    </h3>
+                                    <small>Purchase</small>
+                                </div>
+                                <div class="icon">
+                                    <i class="icon-shopping-cart"></i>
+                                </div>
+                            </div>
+                            <div class="progress-info">
+                                <div class="progress">
+                                    <span style="width: 75%;" class="progress-bar progress-bar-success blue-sharp">
+                                        <span class="sr-only">75% grow</span>
+                                    </span>
+                                </div>
+                                <div class="status">
+                                    <div class="status-number">
+                                        <a href="{{ path('restaurant_purchase') }}" class="btn blue mini">More <i class="icon-circle-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span4">
+                <div class="span6" style="margin-top:-10px">
+                    <div class="portlet-body">
+
+                        <a href="{{ path('restaurant_purchase_new') }}" class="icon-btn">
+                            <i class="fa fa-money"></i>
+                            <div> New Purchase </div>
+                        </a>
+                        <a href="{{ path('restaurant_stock') }}" class="icon-btn">
+                            <i class="fa fa-money"></i>
+                            <div> Stock </div>
+                        </a>
+                        <a href="{{ path('restaurant_product') }}" class="icon-btn">
+                            <i class="fa fa-user"></i>
+                            <div> Product </div>
+                        </a>
+
+                    </div>
+
+                </div>
+                <div class="span6" style="margin-top:-10px">
+                    <div class="portlet-body">
+                        <a href="{{ path('restaurant_report_sales_summary') }}" class="icon-btn">
+                            <i class="icon-bar-chart"></i>
+                            <div> Sales Summary </div>
+                        </a>
+                         <a href="{{ path('restaurant_report_sales_details') }}" class="icon-btn">
+                            <i class="icon-bar-chart"></i>
+                            <div> Sales Details </div>
+                        </a>
+                        <a href="{{ path('restaurant_report_purchase_summary') }}" class="icon-btn">
+                            <i class="icon-tags"></i>
+                            <div> Purchase Summary </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if config.posPrint == 1 %}
+        <script>
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "http://localhost.xiidea.net:9432/assets/easy-print-server.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, "script", "xiidea-epp-sdk"));
+        </script>
+    {% endif %}
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@MedicineBundle/Resources/public/css/dashboard.css'
+    '@RestaurantBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@RestaurantBundle/Resources/public/js/temporary.js'
+    '@RestaurantBundle/Resources/public/js/datetimepicker_css.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

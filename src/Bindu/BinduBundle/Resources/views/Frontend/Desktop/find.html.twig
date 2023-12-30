@@ -1,0 +1,121 @@
+{% extends ':bindu:base.html.twig' %}
+{% block body %}
+    <div id="tm-page-body">
+        <div id="tm-page-title">
+            <div class="tm-wrap tm-table">
+                <div class="tm-title-captions">
+                    <h2 class="tm-entry-title">Our Respectable Clients</h2>
+                </div>
+                <ul class="tm-breadcrumbs">
+                    <li>
+                        <a href="{{ path('bindu_homepage') }}">Home</a>
+                    </li>
+                    <li>
+                        Our Respectable Clients
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="" class="tm-container tm-wrap">
+            <div class="page-content">
+
+                <div class="page-content-inner">
+                    <div class="tm-row" >
+                        <div class="header-double-line-right">
+                            <h3 class="tm-title">OUR RESPECTABLE CLIENTS</h3>
+                        </div>
+                        <div id="tm-portfolio" class="tm-portfolio-classic">
+
+                            <div class="tm-content">
+                                {% if entities is not empty %}
+                                    {% for entity in entities %}
+                                        <article>
+                                            <div class="client-logo">
+                                                <div class="tm-mask">
+                                                    <div class="tm-mask-content">
+                                                        <h3><a href="{% if entity.domain is not empty %}http://www.{{ entity.domain }}{% else %}javascript:{% endif %}">{{ entity.name }}</a></h3>
+                                                        <span class="line"></span>
+                                                        <div class="incategory">
+                                                            <a href="{{ path('bindu_build_syndicate',{'syndicate':entity.syndicateSlug }) }}">{{ entity.syndicateName }}</a>
+                                                        </div>
+                                                        <a class="tm-btn" target="_blank" href="{% if entity.domain is not empty %}http://www.{{ entity.domain }}{% else %}javascript:{% endif %}" >Visit Website</a>
+                                                    </div>
+                                                </div>
+                                                <img class="img-ceneter" src="{{ asset('uploads/domain/'~entity.id ~'/customizeTemplate/'~entity.logo) }}">
+                                            </div>
+                                            <div class="org-title" ><strong>{{ entity.name }}</strong></div>
+                                            <ul class="social-networks">
+                                                <li>
+                                                    <a target="_blank" href="{% if entity.domain is not empty %}http://www.{{ entity.domain }}{% else %}javascript:{% endif %}" data-title="{% if entity.domain is not empty %}http://www.{{ entity.domain }}{% endif %}" >
+                                                        <i class="fa fa-home"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" data-title="+88{{ entity.mobile }}">
+                                                        <i class="fa fa-phone"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" data-title="+88{{ entity.mobile }}">
+                                                        <i class="fa fa-comment"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" data-title="{{ entity.email }}">
+                                                        <i class="fa fa-envelope"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="last" href="" data-title="{% if  entity.locationName is defined and entity.locationName is not null  %}{{ entity.locationName }},{{ entity.parentName }}{% endif %}">
+                                                        <i class="fa fa-map-pin"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </article>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div class="clear"></div>
+                            <div class="pagination text-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <!--page-content-->
+        </div>
+        <!--tm-container-->
+    </div>
+<style>
+
+    #tm-portfolio .tm-content article {
+    margin: 0 10px;
+    width: 23%;
+    margin-bottom: 20px;
+    padding: 0;
+    background: #eeeeee;
+}
+#tm-portfolio.tm-portfolio-classic .tm-content article .tm-mask{
+    left: 0;
+    right: 0;
+}
+.client-logo{
+    height: 200px;
+    width: 250px
+}
+ul.social-networks {
+  /* fallback */
+  background-position: center center;
+  background-repeat: no-repeat;
+  padding-left: 18px!important;
+}
+.ul.social-networks li a::before{
+    width: 200px;
+}
+
+</style>
+{% endblock %}

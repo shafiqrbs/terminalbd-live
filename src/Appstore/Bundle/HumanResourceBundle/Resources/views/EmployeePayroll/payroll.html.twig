@@ -1,0 +1,417 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                 Employee Information
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green ">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Payroll Basic & Bank <Information></Information></div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('employee_payroll') }}"><i class="icon-list"></i>&nbsp;Employee</a>
+                                <a class="btn red" href="{{ path('employee_payroll_new') }}"><i class="icon-plus-sign"></i>&nbsp; New Employee</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+
+                        <!-- BEGIN FORM-->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+                            <div class="span6">
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Salary Type<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.salaryType) }}
+                                                {{ form_errors(form.salaryType) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Effected Month<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.effectedMonth) }}
+                                                {{ form_errors(form.effectedMonth) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Basic Salary<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.basicAmount) }}
+                                                {{ form_errors(form.basicAmount) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span4">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="" >Bonus Applicable</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.bonusApplicable) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="" >Bonus Percentage</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.bonusPercentage) }}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="" >Payment Method<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.paymentMethod) }}
+                                                {{ form_errors(form.paymentMethod) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="" >Tax Number</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.taxNumber) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Bank Name</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.bank) }}
+                                                {{ form_errors(form.bank) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Bank A/C No</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.accountNo) }}
+                                                {{ form_errors(form.accountNo) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Bank A/C Name</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.bankAccountName) }}
+                                                {{ form_errors(form.bankAccountName) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Bank Branch Name</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.branch) }}
+                                                {{ form_errors(form.branch) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Mobile Banking</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.mobileBanking) }}
+                                                {{ form_errors(form.mobileBanking) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Mobile Account</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.mobileAccount) }}
+                                                {{ form_errors(form.mobileAccount) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" >
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="" >Remark</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.remark) }}
+                                                {{ form_errors(form.remark) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                            {% if entity is defined and entity.approvedBy is defined and entity.approvedBy is not empty %}
+                                <div class="clearfix">&nbsp;</div>
+                                <div class="form-actions portlet box blue">
+                                    <div class="portlet-title">
+                                        <div class="span6">
+                                            <div class="caption"><i class="icon-reorder"></i> Allowance Items
+                                                <span class="actions">
+                                                <a href="javascript:" class="btn red pull-right mini addmore"><i class="icon-plus"></i> Add Item</a>                 </span>
+                                            </div>
+                                        </div>
+                                        <div class="span6">
+                                            <div class="caption"><i class="icon-reorder"></i> Deduction Items
+                                                <span class="actions">
+                                                <a href="javascript:" class="btn red pull-right mini addDeduction"><i class="icon-plus"></i> Add Item</a>                 </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix">&nbsp;</div>
+                                <div class="row-fluid" >
+                                    {% set types = ['Percentage','Fixed'] %}
+                                    <div class="span6">
+                                        <div class="row-fluid clone-block" id="clone-block">
+                                            <div class="clone">
+                                                <div class="span5">
+                                                    <div class="control-group">
+                                                        <input type="hidden" name="metaId[]" value="" >
+                                                        <select id="particular" name="particular[]" class="m-wrap span12">                                                            {% for particular in particulars %}
+                                                           {% if particular.mode == 'allowance' %}
+                                                           <option value="{{ particular.id }}">{{ particular.name }}</option>
+                                                           {% endif %}
+                                                         {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="span3">
+                                                    <div class="control-group">
+                                                        <input type="text" class="m-wrap span12" name="unit[]" id="unit" >
+                                                    </div>
+                                                </div>
+                                                <div class="span3">
+                                                    <div class="control-group">
+                                                        <div class="btn-group">
+                                                            <select class="m-wrap span12" name="type[]" id="type">
+                                                                {% for type in types %}
+                                                                    <option value="{{ type }}">{{ type }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            <a href="javascript:"  class="btn red  remove hidden">
+                                                                <i class="icon-trash"></i></a></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% if  entity.employeePayrollParticulars is defined
+                                        and entity.employeePayrollParticulars is not empty %}
+                                            {% for meta in entity.employeePayrollParticulars %}
+                                                {% if meta.mode == 'allowance'  %}
+                                                    <div class="row-fluid trash" id="remove-{{ meta.id }}"  >
+                                                        <div class="span5">
+                                                            <div class="control-group">
+                                                                <input type="hidden" name="particularId[]" value="{{ meta.id }}" >
+                                                                <select id="particular" name="particular[]" class="m-wrap span12">                                                            {% for particular in particulars %}
+                                                                        {% if particular.mode == 'allowance' %}
+                                                                            <option {% if  particular.id == meta.particular.id %} selected="selected" {% endif %} value="{{ particular.id }}">{{ particular.name }}</option>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="span3">
+                                                            <div class="control-group">
+                                                                <input type="text" class="m-wrap span12" name="unit[]" id="unit" value="{{ meta.unit }}" >
+                                                            </div>
+                                                        </div>
+                                                        <div class="span3">
+                                                            <div class="control-group">
+                                                                <div class="control-group">
+                                                                    <div class="btn-group">
+                                                                        <select class="m-wrap span12" name="type[]" id="type">
+                                                                            {% for type in types %}
+                                                                                <option {% if type == meta.type %} selected="selected" {% endif %} value="{{ type }}">{{ type }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                        <a href="javascript:" data-url="{{ path('employee_payroll_particular_delete',{'id':meta.id}) }}" data-id="{{ meta.id }}"  class="btn red  remove">
+                                                                            <i class="icon-trash"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="span6">
+                                        <div class="row-fluid clone-block-deduction" id="clone-block-deduction">
+                                            <div class="cloneDeduction">
+                                                <div class="span5">
+                                                    <div class="control-group">
+                                                        <input type="hidden" name="metaId[]" value="" >
+                                                        <select id="particular" name="particular[]" class="m-wrap span12">
+                                                            {% for particular in particulars %}
+                                                                {% if particular.mode == 'deduction' %}
+                                                                    <option value="{{ particular.id }}">{{ particular.name }}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="span3">
+                                                    <div class="control-group">
+                                                        <input type="text" class="m-wrap span12" name="unit[]" id="unit" >
+                                                    </div>
+                                                </div>
+                                                <div class="span3">
+                                                    <div class="control-group">
+                                                        <div class="btn-group">
+                                                            <select class="m-wrap span12" name="type[]" id="type">
+                                                                {% for type in types %}
+                                                                    <option value="{{ type }}">{{ type }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            <a href="javascript:"  class="btn red  remove hidden"><i class="icon-trash"></i></a></div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        {% if  entity.employeePayrollParticulars is defined
+                                        and entity.employeePayrollParticulars is not empty %}
+                                            {% for meta in entity.employeePayrollParticulars %}
+                                                {% if meta.mode == 'deduction'  %}
+                                                    <div class="row-fluid trash" id="remove-{{ meta.id }}"  >
+                                                    <div class="span5">
+                                                        <div class="control-group">
+                                                            <input type="hidden" name="particularId[]" value="{{ meta.id }}" >
+                                                            <select id="particular" name="particular[]" class="m-wrap span12">                                                            {% for particular in particulars %}
+                                                                    {% if particular.mode == 'deduction' %}
+                                                                        <option {% if particular.id == meta.particular.id %} selected="selected" {% endif %} value="{{ particular.id }}">{{ particular.name }}</option>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="span3">
+                                                        <div class="control-group">
+                                                            <input type="text" class="m-wrap span12" name="unit[]" id="unit" value="{{ meta.unit }}" >
+                                                        </div>
+                                                    </div>
+                                                    <div class="span3">
+                                                        <div class="control-group">
+                                                            <div class="control-group">
+                                                                <div class="btn-group">
+                                                                    <select class="m-wrap span12" name="type[]" id="type">
+                                                                        {% for type in types %}
+                                                                            <option {% if type == meta.type %} selected="selected" {% endif %} value="{{ type }}">{{ type }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                    <a href="javascript:" data-url="{{ path('employee_payroll_particular_delete',{'id':meta.id}) }}" data-id="{{ meta.id }}"  class="btn red  remove">
+                                                                        <i class="icon-trash"></i></a></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        <div class="clearfix"><br/></div>
+                        <div class="form-actions portlet box green">
+                            <div class="pull-right">
+                                <button type="button" class="btn red confirmSubmit"><i class="icon-save"></i> Save</button>
+                                <button type="reset" class="btn yellow"><i class="icon-refresh"></i> Reset</button>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+    <style>
+        .ui-datepicker-calendar {
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HumanResourceBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $("select.multi-select2").multiSelect();
+{% endblock %}

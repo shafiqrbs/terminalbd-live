@@ -1,0 +1,86 @@
+{% set commentID = globalOption.id~'-'~menu.module.slug~'-'~page.id %}
+{% if page.photoGallery is not empty %}
+    <div class="carousel-container">
+        <div id="carousel" class="carousel slide carousel-fade">
+            <div class="carousel-inner">
+                {% if globalOption.templateCustomize.mobileShowLogo == 1 %}
+                    <a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}" id="mobile-logo">
+                        {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+                    </a>
+                {% endif %}
+                {% if page.webPath is not empty %}
+                    <div class="carousel-cover item active" data-slide-no="0" style="background-image: url('{{ image(page.webPath) }}')!important;"></div>
+                {% endif %}
+                {% for slide in page.photoGallery.galleryImages %}
+                    <div  class="carousel-cover item {% if loop.index-1 == 0 and page.webPath is empty %} active  {% endif %}" style="background-image: url('{{ image(slide.getAbsolutePath(page.globalOption.id,page.photoGallery.id)) }}')!important;"  {% if loop.index-1 == 0 and page.webPath is empty %} data-slide-no="{{ loop.index-1 }}"  {% endif %} ></div>
+                {% endfor %}
+            </div>
+            <!-- Navigation -->
+            <a class="carousel-post-control left" href="#carousel" data-slide="prev">‹</a>
+            <a class="carousel-post-control right" href="#carousel" data-slide="next">›</a>
+        </div>
+    </div>
+<hr>
+{% else %}
+<div class="header-grid"  {% if page.webPath is not empty %} style="background-image:url('{{ image(page.webPath) }}')!important;" {% endif %} >
+    <a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}" id="mobile-logo">
+        {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+    </a>
+</div>
+<hr>
+{% endif %}
+<div class="container">
+<div class="row">
+    <div class="col-md-12"><h4>{{ page.name }}</h4></div>
+</div>
+<div class="clearfix"></div>
+<div class="row" >
+   <div class="col-md-12">
+       <ul class="mbm_social">
+           <li><a class="social-facebook" target="_blank" href="https://www.facebook.com/share.php?u={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}&picture={{ app.request.getSchemeAndHttpHost() }}/{{ page.webPath }}&title={{ page.name }}&description={{ page.content|striptags|truncate(250)|raw }}">
+                   <i class="fa fa-facebook"></i>
+                   <div class="tooltip"><span>facebook</span></div>
+               </a>
+           </li>
+           <li><a class="social-linkedin" target="_blank" href="//www.linkedin.com/shareArticle?mini=true&url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                   <i class="fa  fa-linkedin"></i>
+                   <div class="tooltip"><span>LinkedIn</span></div>
+               </a>
+           </li>
+           <li><a class="social-google-plus" target="_blank" href="//plus.google.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                   <i class="fa fa-google-plus"></i>
+                   <div class="tooltip"><span>Google</span></div>
+               </a>
+           </li>
+           <li><a class="social-twitter" target="_blank" href="//twitter.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                   <i class="fa fa-twitter"></i>
+                   <div class="tooltip"><span>Twitter</span></div>
+               </a>
+           </li>
+           <li><a class="social-instagram" target="_blank" href="//instagram.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                   <i class="fa  fa-instagram"></i>
+                   <div class="tooltip"><span>Instagram</span></div>
+               </a>
+           </li>
+       </ul>
+       <hr>
+       <div id="catlist">
+           <dl>
+               <dd><i class="fa fa-user"></i>&nbsp;{{ page.authorName }} <i class="fa fa-calendar"></i> {{ page.updated|date('d F, Y') }} <span><i class="fa fa-tags"></i>
+                       {% for cat in page.moduleCategory %}
+                           <a href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'module':'news' ,'slug':cat.slug }) }}">{{ cat.name }}</a>{% if not loop.last %},{% endif %}
+                       {% endfor %}
+            </span>
+               </dd>
+           </dl>
+       </div>
+   </div>
+
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="text-content">{{ page.content|raw }}</div>
+    </div>
+</div>
+<div class="clearfix"></div>
+</div>

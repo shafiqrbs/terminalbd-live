@@ -1,0 +1,197 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Vendor Purchase & Sales
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> Vendor Purchase & Sales </a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i> Vendor Purchase & Sales </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                    <select name="vendor" id="vendor" class="m-wrap span12 select2">
+                                        <option value="">--Select Vendor--</option>
+                                        {% for vendor in vendors %}
+                                            <option {% if searchForm.vendor is defined and searchForm.vendor ==  vendor.companyName %} selected="selected" {% endif %} value="{{ vendor.companyName }}">{{ vendor.companyName }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="endDate" name="endDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        {% if searchForm.vendor is defined and searchForm.vendor is not empty %}
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-left">
+                                    <span  class="btn purple"><i class=" icon-th-list"></i>&nbsp;Payment & Receive Process</span>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span2">
+                                        <select class="span12 m-wrap" id="mode" name="mode">
+                                            <option value="">Select Mode</option>
+                                            <option value="payment">Payment</option>
+                                            <option value="receive">Receive</option>
+                                        </select>
+                                    </div>
+                                    <div class="span7">
+                                        <input type="text" id="remark" name="remark"  class="span12 m-wrap" value=""  autocomplete="off" placeholder="Enter remark">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="amount" name="amount" required="required"  class="span8 m-wrap" value=""   autocomplete="off" placeholder="Enter amount">
+                                                <div class="btn-group">
+                                                    <button data-url="{{ path('medicine_report_vendor_payment_receive',{'vendor':searchForm.vendor}) }}" class="btn red" type="button" id="vendorPaymentBtn"><i class="icon-save"></i> Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        {% endif %}
+                        <table class="table table-bordered" >
+                            <thead>
+                            <tr class="head-green">
+                                <td class="numeric" >PURCHASE LEDGER</td>
+                                <td class="numeric" >SALES LEDGER</td>
+                            </tr>
+                            </thead>
+                            <tr>
+                                <td width="50%">
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                                        <thead class="flip-content ">
+                                        <tr class="head-blue">
+                                            <th class="numeric" >Created</th>
+                                            <th class="numeric" >Acc. Invoice</th>
+                                            <th class="numeric" >Type</th>
+                                            <th class="numeric" >Total</th>
+                                            <th class="numeric" >Payment</th>
+                                            <th class="numeric" >Payable</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% if vendorLedger is not empty %}
+                                            {% for ledger in vendorLedger %}
+                                                <tr>
+                                                    <td class="numeric" >{{ ledger.updated|date('d-m-Y') }}</td>
+                                                    <td class="numeric" >{{ ledger.accountRefNo }}</td>
+                                                    <td class="numeric" >
+                                                        {% if ledger.medicinePurchase is not empty %}
+                                                            {% for item in ledger.medicinePurchase.medicinePurchaseItems  %}
+                                                                <p>{{ loop.index }}. {{ item.medicineStock.name }}</p>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="numeric" >{{ ledger.purchaseAmount|number_format }}</td>
+                                                    <td class="numeric" >{{ ledger.payment|number_format }}</td>
+                                                    <td class="numeric" >{{ ledger.balance|number_format }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td width="50%">
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                                        <thead class="flip-content ">
+                                        <tr class="head-yellow">
+                                            <th class="numeric" >Created</th>
+                                            <th class="numeric" >Acc. Invoice</th>
+                                            <th class="numeric" >Type</th>
+                                            <th class="numeric" >Total</th>
+                                            <th class="numeric" >Receive</th>
+                                            <th class="numeric" >Balance</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% if customerLedger is not empty %}
+                                            {% for ledger in customerLedger %}
+                                                <tr>
+                                                    <td class="numeric" >{{ ledger.updated|date('d-m-Y') }}</td>
+                                                    <td class="numeric" >{{ ledger.accountRefNo }}</td>
+                                                    <td class="numeric" > {% if ledger.medicineSales is not empty %}
+                                                            {% for item in ledger.medicineSales.medicineSalesItems  %}
+                                                                <p>{{ loop.index }}. {{ item.medicineStock.name }}</p>
+                                                            {% endfor %}
+                                                        {% endif %}</td>
+                                                    <td class="numeric" >{{ ledger.totalAmount|number_format }}</td>
+                                                    <td class="numeric" >{{ ledger.amount|number_format }}</td>
+                                                    <td class="numeric" >{{ ledger.balance|number_format }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                           <tfoot>
+                           <tr class="head-red">
+                               <td class="numeric" ><strong>Current Payable BDT.</strong><strong class="pull-right">{% if vendorLedger is not empty %}{{ vendorLedger[0].balance|number_format }}{% endif %}</strong></td>
+                               <td class="numeric" ><strong>Current Receivable BDT.</strong><strong class="pull-right">{% if customerLedger is not empty %}{{ customerLedger[0].balance|number_format }}{% endif %}</strong></td>
+                           </tr>
+                           </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}

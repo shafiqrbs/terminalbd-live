@@ -1,0 +1,132 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Condition Base Customer Sales Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Condition Base Customer Sales Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Condition Base Customer Sales Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% set condition = searchForm.condition is defined ? searchForm.condition :'' %}
+                                {% set startDate = searchForm.startDate is defined ? searchForm.startDate :"now"|date("d-m-Y") %}
+                                {% set endDate = searchForm.endDate is defined ? searchForm.endDate :"now"|date("d-m-Y") %}
+                                <a class="btn purple" target="_blank" href="{{ path('business_report_condition_customer',{'pdf':'pdf','condition':condition,'startDate':startDate,endDate:endDate}) }}" >
+                                    <i class=" icon-download"></i>&nbsp;Download PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <select name="condition" id="condition" class="span12 m-wrap">
+                                            <option value=""> ---Select Condition --- </option>
+                                            {% for executive in conditions %}
+                                                <option {% if searchForm.condition is defined and searchForm.condition == executive.id %} selected="selected" {% endif %} value="{{ executive.id }}">{{ executive.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="endDate" name="endDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric" >S/N</th>
+                                <th class="numeric" >Name of Customer</th>
+                                <th class="numeric" >Mobile</th>
+                                <th class="numeric" >No of Invoice</th>
+                                <th class="numeric" >Total</th>
+                                <th class="numeric" >Received</th>
+                                <th class="numeric" >Balance</th>
+                                <th class="numeric" ></th>
+                            </tr>
+                            </thead>
+                            <tbody id="sales">
+                            {% set totalInvoice=0 %}
+                            {% set subTotal=0 %}
+                            {% set totalReceived=0 %}
+                            {% for entity in entities %}
+                                {% set totalInvoice = totalInvoice + entity.invoice %}
+                                {% set subTotal = subTotal + entity.total %}
+                                {% set totalReceived = totalReceived + entity.received %}
+                                <tr>
+                                    <td class="numeric" >{{ loop.index }}.</td>
+                                    <td class="numeric" >{{ entity.name }}</td>
+                                    <td class="numeric" >{{ entity.mobile }}</td>
+                                    <td class="numeric" >{{ entity.invoice }}</td>
+                                    <td class="numeric" >{{ entity.total|number_format(2)  }}</td>
+                                    <td class="numeric" >{{ entity.received|number_format(2)  }}</td>
+                                    <td class="numeric" >{{ (entity.total - entity.received)|number_format(2)  }}</td>
+                                    <td class="numeric" ><a class="btn mini blue" href="{{ path('business_report_condition_details',{'customer':entity.customerId}) }}">Details</a> </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th colspan="3">Grand Total</th>
+                                <th>{{ totalInvoice|number_format(2) }}</th>
+                                <th>{{ subTotal|number_format(2) }}</th>
+                                <th>{{ totalReceived|number_format(2) }}</th>
+                                <th>{{ (subTotal - totalReceived)|number_format(2) }}</th>
+                                <td></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage  Vendor Base Medicine Stock Details
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('medicine_stock') }}">Manage  Vendor Base Medicine Stock Details</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green ">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage  Vendor Base Medicine Stock Details</div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="name" name="name"  class="span12 m-wrap select2StockMedicineName" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Enter medicine & others name ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="vendor"  name="vendor"  class="span12 m-wrap select2VendorCompany" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off"  placeholder="Product vendor name">
+                                    </div>
+                                    <div class="span3">
+                                        <select name="rackNo" id="rackNo" class="span12 m-wrap">
+                                            <option value="">Rack no</option>
+                                            {% for rack in racks %}
+                                                <option {% if searchForm.rack is defined and searchForm.rack == method.id %} selected="selected" {% endif %} value="{{ rack.id }}" >{{ rack.name }}</option>
+                                            {% endfor %}
+                                        </select>
+
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span11">
+                                                <select name="mode" id="mode" class="span11 m-wrap">
+                                                    <option  value="">Product Mode</option>
+                                                    {% for mode in modeFor %}
+                                                        <option {% if searchForm.mode is defined and searchForm.mode == mode.slug %} selected="selected" {% endif %} value="{{ mode.slug }}">{{ mode.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- BEGIN FORM-->
+                         <!-- END FORM-->
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Rack no</th>
+                                    <th class="numeric" >Brand</th>
+                                    <th class="numeric" >Mode</th>
+                                    <th class="numeric" >P Qnt.</th>
+                                    <th class="numeric" >P Return</th>
+                                    <th class="numeric" >S Qnt.</th>
+                                    <th class="numeric" >S Return</th>
+                                    <th class="numeric" >Damage</th>
+                                    <th class="numeric" >Remain Qnt.</th>
+                                    <th class="numeric" >Purchase Price</th>
+                                    <th class="numeric" >Sales Price</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in pagination %}
+                                   <tr>
+                                        <td class="numeric" >{{ entity.name }}</td>
+                                        <td class="numeric" >{{ entity.medicineRack }}</td>
+                                        <td class="numeric" >{{ entity.brandName }}</td>
+                                        <td class="numeric" >{{ entity.mode|capitalize }}</td>
+                                        <td class="numeric" >{{ entity.purchaseQuantity }}</td>
+                                       <td class="numeric" >{{ entity.purchaseReturnQuantity }}</td>
+                                       <td class="numeric" >{{ entity.salesQuantity }}</td>
+                                       <td class="numeric" >{{ entity.salesReturnQuantity }}</td>
+                                       <td class="numeric" >{{ entity.damageQuantity }}</td>
+                                        <td class="numeric" >{{ entity.remainingQuantity }}</td>
+                                        <td class="numeric" >{{ entity.remainingPurchasePrice|number_format }}</td>
+                                        <td class="numeric" >{{ entity.remainingSalesPrice|number_format }}</td>
+                                  </tr>
+
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}

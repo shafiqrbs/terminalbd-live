@@ -1,0 +1,68 @@
+<div class="row print-header">
+    <div class="col-md-4"></div>
+    <div class="col-md-4 text-center">
+        <p><strong style="font-size:18px">{{ option.name }}</strong></p>
+        <p><strong>Name of Report: Sales & Collection</strong></p>
+    </div>
+    <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}</div>
+</div>
+<div class="row">
+    <table class="table" id="downloadExcel">
+        <thead class="flip-content ">
+        <tr class="head-green">
+            <th class="numeric" >Created</th>
+            <th class="numeric" >Created By</th>
+            <th class="numeric" >Invoice No</th>
+            <th class="numeric" >Mode</th>
+            <th class="numeric" >Name</th>
+            <th class="numeric" >Discounted By</th>
+            <th class="numeric" >Receive No</th>
+            <th class="numeric" >Received By</th>
+            <th class="numeric" >Received</th>
+            <th class="numeric" >Sub-Total</th>
+            <th class="numeric" >Discount</th>
+            <th class="numeric" >Total</th>
+            <th class="numeric" >Payment</th>
+            <th class="numeric" >Balance</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set grandSubTotal = 0 %}
+        {% set grandTotal = 0 %}
+        {% set grandDiscount = 0 %}
+        {% set grandPayment = 0 %}
+        {% for entity in entities %}
+            {% set  grandSubTotal = grandSubTotal + entity.subTotal %}
+            {% set  grandTotal = grandTotal + entity.total %}
+            {% set  grandDiscount = grandDiscount + entity.discount %}
+            {% set  grandPayment = grandPayment + entity.payment %}
+            <tr>
+                <td class="numeric" >{{ entity.created|date('d-m-Y h:i A') }}</td>
+                <td class="numeric" >{{ entity.createdBy }}</td>
+                <td class="numeric" >{{ entity.invoice }}</td>
+                <td class="numeric" >{{ entity.invoiceMode|capitalize }}</td>
+                <td class="numeric" >{{ entity.customer }}</td>
+                <td class="numeric" >{{ entity.discountRequestedBy }}</td>
+                <td class="numeric" >{{ entity.transactionCode }}</td>
+                <td class="numeric" >{{ entity.receivedBy }}</td>
+                <td class="numeric" >{{ entity.received|date('d-m-Y h:i A') }}</td>
+                <td class="numeric" >{{ (entity.discount + entity.total)|number_format }}</td>
+                <td class="numeric" >{{ entity.discount|number_format }}</td>
+                <td class="numeric" >{{ entity.total|number_format }}</td>
+                <td class="numeric" >{{ entity.payment|number_format }}</td>
+                <td class="numeric" >{{ (entity.total - entity.payment)|number_format }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="9"><span class="pull-right">Grand Total</span></th>
+            <td>{{ (grandTotal + grandDiscount)|number_format(2) }}</td>
+            <td>{{ grandDiscount|number_format(2) }}</td>
+            <td>{{ grandTotal|number_format(2) }}</td>
+            <td>{{ grandPayment|number_format(2) }}</td>
+            <td>{{ (grandTotal-grandPayment)|number_format(2) }}</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>

@@ -1,0 +1,157 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Medicine & Others Sales Item Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> Medicine & Others Sales Item Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i> Medicine & Others Sales Item Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn yellow" href="{{ path('medicine_report_sales_summary') }}"><i class="icon-bar-chart"></i>&nbsp;Sales Overview</a>
+                                {% set name = searchForm.name is defined ? searchForm.name : '' %}
+                                {% set sku = searchForm.sku is defined ? searchForm.sku : '' %}
+                                {% set brandName = searchForm.brandName is defined ? searchForm.brandName : '' %}
+                                {% set startDate = searchForm.startDate is defined ? searchForm.startDate :"now"|date('d-m-y') %}
+                                {% set endDate = searchForm.endDate is defined ? searchForm.endDate :"now"|date('d-m-y') %}
+                                <a class="btn purple" target="_blank" href="{{ path('medicine_report_sales_stock',{'pdf':'pdf','startDate':startDate,'endDate':endDate,'name':name,'sku':sku,'brandName':brandName}) }}"><i class="icon-download"></i>&nbsp;Download PDF</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="name" name="name"  class="span12 m-wrap select2StockMedicineName" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Enter medicine & others name ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="sku"  name="sku"  class="span12 m-wrap" value="{% if searchForm.sku is defined %}{{ searchForm.sku }}{% endif %}"  autocomplete="off"  placeholder="Enter medicine/accessories sku">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined and  searchForm.startDate is not empty %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="endDate" name="endDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined and  searchForm.endDate is not empty %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if option.isBranch == 1 %}
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                       <select name="branch" id="branch" class="span12 m-wrap">
+                                           <option value=""> ---Select Branch --- </option>
+                                           {% for bran in branches %}
+                                           <option {% if searchForm.branch is defined and searchForm.branch == bran.id %} selected="selected" {% endif %} value="{{ bran.id }}">{{ bran.name }}</option>
+                                           {% endfor %}
+                                       </select>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                            </form>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content">
+                                <tr class="head-red">
+                                    <th class="numeric" ><strong>Total Item</strong></th>
+                                    <th class="numeric" ><strong>Total Quantity</strong></th>
+                                    <th class="numeric" ><strong>Sales Amount</strong></th>
+                                    <th class="numeric" ><strong>Purchase Amount</strong></th>
+                                    <th class="numeric" ><strong>Profit/Loss</strong></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="numeric" ><strong>{{ purchaseSalesItem.totalItem }}</strong></td>
+                                    <td class="numeric" ><strong>{{ purchaseSalesItem.quantity }}</strong></td>
+                                    <td class="numeric" ><strong>{{ cashOverview.total|number_format }}</strong></td>
+                                    <td class="numeric" ><strong>{{ purchaseSalesItem.totalPurchase|number_format }}</strong></td>
+                                    <td class="numeric" ><strong>{{ (cashOverview.total - (cashOverview.totalVat + purchaseSalesItem.totalPurchase))|number_format }}</strong></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            {%  set sort = app.request.query.get('sort') %}
+                            {%  set direction = app.request.query.get('direction') %}
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric" ><i class="icon-reorder"></i> SKU</th>
+                                <th class="numeric" >Name</th>
+                                <th {% if pagination.isSorted('mds.brandName') %} class="sorted" {% endif %} >{{ knp_pagination_sortable(pagination, 'Brand Name', 'mds.brandName') }}{% if( direction == 'desc' and sort == 'mds.brandName') %}<i class="icon-sort-by-alphabet-alt"></i> {% else %}<i class="icon-sort-by-alphabet"></i> {% endif %}</th>
+                                <th {% if pagination.isSorted('s.remainingQuantity') %} class="sorted" {% endif %} >{{ knp_pagination_sortable(pagination, 'Remaining Qnt', 's.remainingQuantity') }}{% if( direction == 'desc' and sort == 's.remainingQuantity') %}<i class="icon-sort-by-alphabet-alt"></i> {% else %}<i class="icon-sort-by-alphabet"></i> {% endif %}</th>
+                                <th class="numeric" >Quantity</th>
+                                <th class="numeric" >Sales Price</th>
+                                <th class="numeric" >Purchase Price</th>
+                                <th class="numeric" >Profit/Loss</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {%  set totalSales = 0 %}
+                            {% for entity in pagination %}
+                                <tr>
+                                    <td class="numeric" >{{ entity.sku }}</td>
+                                    <td class="numeric" >{{ entity.name }}</td>
+                                    <td class="numeric" >{{ entity.brandName }}</td>
+                                    <td class="numeric" >{{ entity.remainingQuantity }}</td>
+                                    <td class="numeric" >{{ entity.quantity }}</td>
+                                    <td class="numeric" >{{ entity.salesPrice|number_format }}</td>
+                                    <td class="numeric" >{{ entity.purchasePrice|number_format }}</td>
+                                    <td class="numeric" >{{ (entity.salesPrice -  entity.purchasePrice)|number_format }}</td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                        <div class="pagination pull-center"  >
+                            {{ knp_pagination_render(pagination) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

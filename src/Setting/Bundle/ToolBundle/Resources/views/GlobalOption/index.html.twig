@@ -1,0 +1,111 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    View Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('globaloption') }}">Settings</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="btn-group pull-right">
+                        <span class="btn-group">
+                        {%  set keyword = app.request.query.get('keyword') %}
+                        {%  set direction = app.request.query.get('direction') %}
+                        {%  set sort = app.request.query.get('sort') %}
+                        <form name="search" class="search" method="get" action="">
+                            <input type="text" name="keyword" id="search" class="search-input" value="{{ keyword }}"><button type="submit" class="btn black icn-only" ><i class="halflings-icon white search"></i></button>
+                        </form>
+                    </span>
+                </div>
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>List Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="tabbable portlet-tabs">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a  href="{{ path('globaloption') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="portlet-body flip-scroll">
+                                    {% include('flash-message.html.twig')  %}
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                        <thead class="flip-content ">
+                                        <tr class="head-grey">
+                                            <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                            <th  class="numeric" >User name </th>
+                                            <th  class="numeric" >Syndicate</th>
+                                            <th  class="numeric" >Domain</th>
+                                            <th  class="numeric" >Sub-domain</th>
+                                            <th  class="numeric" >Is mobile </th>
+                                            <th  class="numeric" >Action</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% for entity in pagination %}
+                                            <tr>
+                                                <td><span class="badge badge-warning toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+                                                <td class="numeric" ></td>
+                                                <td class="numeric" >{{ entity.syndicate.name|default('---') }}</td>
+                                                <td class="numeric" >{{ entity.domain|default('---') }}</td>
+                                                <td class="numeric" >{{ entity.subDomain }}</td>
+                                                <td class="numeric" >{% if(entity.isMobile ) %}Yes{% else %}No{% endif %}</td>
+                                                <td class="numeric" >
+                                                    <a class="btn mini green-stripe btn-action" href="{{ path('globaloption_edit', { 'id': entity.id }) }}">Edit</a>
+                                                    <a class="btn mini blue-stripe btn-action" href="{{ path('globaloption_show', { 'id': entity.id }) }}">View</a>
+                                                    <a class="btn mini red-stripe btn-action delete" href="{{ path('globaloption_delete', { 'id': entity.id }) }}" >Delete</a>
+                                                </td>
+                                            </tr>
+
+                                            <tr id="show-{{ entity.id }}" class="showing-overview">
+                                                <td colspan="6">
+                                                    <table class="inner-table">
+                                                        <tr><td>Content</td><td>{{ entity.subDomain|raw }}</td></tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                    <div class="pagination" >
+                                        {{ knp_pagination_render(pagination) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

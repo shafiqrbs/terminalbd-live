@@ -1,0 +1,104 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    h1 , h2 , h3 , h4 , h5 , h6,p{
+        display: block;
+        padding: 0;
+        margin: 0;
+    }
+    h3 {
+        font-size: 24px;
+        line-height: 45px;
+        height: 45px;
+    }
+
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+<table class="table">
+    <thead>
+    <tr><td class="pull-center" colspan="20">{{ globalOption.hospitalConfig.address|raw }}</td></tr>
+    {% set startDate = searchForm.startDate is defined ? searchForm.startDate :"now"|date("d-m-Y") %}
+    {% set endDate = searchForm.endDate is defined ? searchForm.endDate :"now"|date("d-m-Y") %}
+    {% set service = searchForm.service is defined ? searchForm.service :'' %}
+    <tr>
+        <th class="pull-center" colspan="9"><h3><strong>SERVICE WISE SALES STATEMENT SHEET:</strong></h3></th>
+    </tr>
+    <tr>
+        <th class="pull-center" colspan="9"><h3><strong>Service For: {% if entity is not empty %}{{ entity.Name }}{% endif %}</strong></h3></th>
+    </tr>
+    <tr>
+        <th class="pull-left"  colspan="9">Printed Date: {{ "now"|date("d-m-Y") }}, Report Date: {{ startDate|date('d-m-Y') }} To {{ endDate|date('d-m-Y') }} </th>
+    </tr>
+    {% if serviceGroup is defined and serviceGroup is not empty %}
+    <thead>
+    <tr>
+        <th>Particular</th>
+        <th>Quantity</th>
+        <th>Purchase Price</th>
+        <th>Sales Price</th>
+        <th>Profit</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% set sumSalesTotal = 0 %}
+    {% set sumPurchaseTotal = 0 %}
+    {% for service in serviceGroup %}
+        {% set sumPurchaseTotal = sumPurchaseTotal + service.purchaseAmount %}
+        {% set sumSalesTotal = sumSalesTotal + service.salesAmount %}
+        <tr>
+            <td class="numeric span10">{{ loop.index }}. {{ service.serviceName }}</td>
+            <td class="numeric span1">{{ service.totalQuantity }}</td>
+            <td class="numeric">{{ service.purchaseAmount|number_format }}</td>
+            <td class="numeric">{{ service.salesAmount|number_format }}</td>
+            <td class="numeric">{{ (service.salesAmount- service.purchaseAmount)|number_format }}</td>
+        </tr>
+    {% endfor %}
+    <tr><th class="span11" colspan="2"><span class=" pull-right">Total</span></th><th>{{ sumPurchaseTotal|number_format }}</th><th>{{ sumSalesTotal|number_format }}</th><th>{{ (sumSalesTotal - sumPurchaseTotal)|number_format }}</th></tr>
+    </tbody>
+    {% endif %}
+</table>

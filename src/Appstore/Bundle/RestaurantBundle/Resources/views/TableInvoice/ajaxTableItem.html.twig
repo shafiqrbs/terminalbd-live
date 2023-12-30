@@ -1,0 +1,21 @@
+{% if entity.invoiceItems is not empty  %}
+    {% for item in entity.invoiceItems %}
+        <tr id="remove-{{ item.id }}">
+            <td><input type="checkbox" class="checkbox"  id="isPrint-{{ item.id }}" name="isPrint[]" value="{{ item.id }}" {% if item.isPrint == 1 %} checked="checked" {% endif %}></td>
+            <td class="numeric product-title">{{ item.particular.name }}</td>
+            <td class="numeric">{{ item.salesPrice }}</td>
+            <td class="">
+                <div class="input-append" style="margin-bottom: 0!important;">
+                    <span class="input-group-btn">
+                    <a href="javascript:" data-action="{{ path('restaurant_tableinvoice_product_update',{'product':item.id}) }}" class="btn black btn-number-pos mini" data-type="minus" data-id="{{ item.id }}"  data-text="{{ item.id }}" data-title="{{ item.salesPrice }}"  data-field="quantity"> <span class="fa fa-minus"></span> </a>
+                     <input type="text" class="form-control inline-m-wrap updateProduct btn-qnt-particular" data-id="{{ item.id }}"  id="quantity-{{ item.id }}" name="quantity-{{ item.id }}" data-title="{{ item.salesPrice }}" value="{{ item.quantity }}" data-action="{{ path('restaurant_tableinvoice_product_update',{'product':item.particular.id}) }}" min="1" max="100">
+                     <a href="javascript:" data-action="{{ path('restaurant_tableinvoice_product_update',{'product':item.id}) }}" class="btn black btn-number-pos mini"  data-type="plus" data-id="{{ item.id }}" data-title="{{ item.salesPrice }}"  data-text="{{ item.id }}" data-field="quantity"> <span class="fa fa-plus"></span></a></span>
+                </div>
+            </td>
+            <td class="numeric product-title"><strong id="subTotal-{{ item.id }}">{{ item.subTotal|number_format(2) }}</strong></td>
+            <td class="numeric">
+                <a id="{{ item.id }}" data-id="{{ item.id }}" data-url="{{ path('restaurant_tableinvoice_particular_delete',{'invoice':entity.id,'id':item.id}) }}" href="javascript:" class="btn red mini particularDelete"><i class="icon-trash"></i></a>
+            </td>
+        </tr>
+    {% endfor %}
+{% endif %}

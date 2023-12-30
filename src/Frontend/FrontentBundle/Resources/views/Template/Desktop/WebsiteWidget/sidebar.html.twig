@@ -1,0 +1,663 @@
+<div class="clearfix"></div>
+{% if widget.page is not empty %}
+<div class="blog-sidebar page-carousel-{{ globalOption.templateCustomize.sliderPosition }}">
+        {% if  widget.pageFeatureName is not empty %}
+                <div class="page-title">{{ widget.pageFeatureName }}</div>
+        {% endif %}
+    {% if widget.pageShowType == 'grid' %}
+        <div class="row">
+            {% for entity in widget.page %}
+                <div class="col-md-12 wow fadeInDown grid" data-wow-delay="2s"  >
+                    <div class="pageFeature" data-match-height="pageFeature" >
+                        <div class="pageFeature-image" >
+                            <a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'service','slug':entity.slug }) }}">
+                                <img src="{{ image(entity.webPath).forceResize(80,80,'#000000') }}" alt="">
+                            </a>
+                        </div>
+                        <div class="pageFeature-content">
+                            <h3 class="title">{{ entity.name }}</h3>
+                            <p class="description">{{ entity.content|striptags|raw|truncate(180) }}</p>
+                            <a  href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'service','slug':entity.slug }) }}" class="read-more pull-center">Read more <i class="fa fa-angle-double-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% elseif widget.pageShowType == 'slider' %}
+        <div class="row">
+            <div id="feature-sidebar-slider" class="">
+                {% for entity in  widget.page  %}
+                    <div class="col-md-12 wow fadeInDown" data-wow-delay="2s" >
+                        <div class="pageFeature" data-match-height="pageFeature">
+                            <div class="pageFeature-image"  >
+                                <a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'service','slug':entity.slug }) }}">
+                                    <img src="{{ image(entity.webPath).forceResize(80,80,'#000000') }}" alt="">
+                                </a>
+                            </div>
+                            <div class="pageFeature-content">
+                                <h3 class="title">{{ entity.name }}</h3>
+                                <p class="description">{{ entity.content|striptags|raw|truncate(180) }}</p>
+                                <a  href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'service','slug':entity.slug }) }}" class="read-more pull-center">Read more <i class="fa fa-angle-double-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else  %}
+        <div class="col-md-12">
+            <ul class="list-line list-group">
+                {% for entity in  widget.page  %}
+                    <li><a href="{{ path(globalOption.subDomain ~ '_webservice_module',{'module':entity.slug }) }}">{{ entity.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif  %}
+    <div class="clearfix"></div>
+</div>
+{% endif %}
+<div class="clearfix"></div>
+{% if entities is defined and entities is not empty and widget.module.slug == 'blog' %}
+    <div class="blog-sidebar page-carousel-{{ globalOption.templateCustomize.sliderPosition }}">
+        {% if  widget.moduleFeatureName is not empty %}
+            <div class="page-title">{{ widget.moduleFeatureName }}</div>
+        {% endif %}
+        {% if widget.moduleShowType == 'grid' %}
+            <div class="col-md-12">
+                {% for entity in entities  %}
+                    <div class="post-grid">
+                        <ul class="post-info">
+                            <li><i class="fa fa-bookmark"></i> <a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'blog','slug':entity.slug }) }}">{{ entity.name }}</a></li>
+                            <li><i class="fa fa-calendar"></i> {{ entity.updated|date("d F, Y") }}</li>
+                            <li><i class="fa fa-user"></i> {{ entity.authorName }}</li>
+                            <li><i class="fa fa-tags"></i> &nbsp;{% if entity.moduleCategory is defined and entity.moduleCategory is not empty %}
+                                {% for  cat in entity.moduleCategory %}
+                                    <a href="{{  path(globalOption.subDomain ~ '_webservice_module_category',{'module': 'blog','slug':cat.slug }) }}">{{ cat.name }}</a>{% if not loop.last %},{% endif %}
+                                {% endfor %}
+                                {% endif %}</li>
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        {% elseif widget.moduleShowType == 'slider' %}
+            <div class="row">
+                <div id="blog-sidebar-slider" class="">
+                    {% for entity in entities  %}
+                        <div class="col-md-12">
+                            <div class="sidebar-blog">
+                                <div class="post-img">
+                                    <img src="{{ image(entity.webPath).resize(400,400) }}" alt="">
+                                    <div class="over-layer">
+                                        <ul class="post-link">
+                                            <li><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'blog','slug':entity.slug }) }}" class="fa fa-link"></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="post-review">
+                                    <h5 class="post-title"><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'blog','slug':entity.slug }) }}">{{ entity.name }}</a></h5>
+                                    <ul class="post-info">
+                                        <li><i class="fa fa-calendar"></i> {{ entity.updated|date("d F, Y") }}</li>
+                                        <li><i class="fa fa-user"></i> {{ entity.authorName }}</li>
+                                        <li><i class="fa fa-tags"></i></li>
+                                        <li>{% if entity.moduleCategory is defined and entity.moduleCategory is not empty %}
+                                                {% for  cat in entity.moduleCategory %}
+                                                    <a href="{{  path(globalOption.subDomain ~ '_webservice_module_category',{'module': 'news','slug':cat.slug }) }}">{{ cat.name }}</a>{% if not loop.last %},{% endif %}
+                                                {% endfor %}
+                                            {% endif %}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+             <div class="col-md-12">
+                <ul class="list-line list-group">
+                    {% for entity in entities %}
+                        <li><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'blog','slug':entity.slug }) }}">{{ entity.name }}</a></li>
+                    {% endfor %}
+                </ul>
+             </div>
+        {% endif %}
+        <div class="clearfix"></div>
+    </div>
+{% endif %}
+<div class="clearfix"></div>
+{% if entities is defined and entities is not empty and widget.module.slug == 'branch' %}
+    <div class="blog-sidebar page-carousel-{{ globalOption.templateCustomize.sliderPosition }}">
+
+        {% if  widget.moduleFeatureName is not empty %}
+            <div class="page-title">{{ widget.moduleFeatureName }}</div>
+        {% endif %}
+        {% if widget.moduleShowType == 'grid' %}
+            <div class="row">
+                <div class="col-md-12">
+                    {% for  entity in entities %}
+                        <div class="sidebar-branch">
+                            <span class="text-center branch-head" >{{ entity.name }}</span>
+                            <dl>
+                                <dd><i class="fa fa-home"></i>&nbsp;{{ entity.address|raw }}</dd>
+                                <dd><i class="fa fa-mobile"></i>&nbsp;+ 088 {{ entity.mobile|raw }}</dd>
+                                {% if(entity.email) %}<dd><i class="fa fa-envelope-o"></i>&nbsp;{{ entity.email|raw }}</dd>{% endif %}
+                                <dd class="text-center"><a class="btn btn-sm  btn-info" target="_blank" href="http://maps.google.com/?q={{ entity.latitude }},{{ entity.longitude }}">Direction</a></dd>
+                            </dl>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% elseif widget.moduleShowType == 'slider'  %}
+            <div class="row">
+               <div id="branch-sidebar-slider" class="">
+                   {% for  entity in entities %}
+                       <div class="col-md-12">
+                           <div class="sidebar-branch">
+                               <span class="text-center branch-head" >{{ entity.name }}</span>
+                               <dl>
+                                   <dd><i class="fa fa-home"></i>&nbsp;{{ entity.address|raw }}</dd>
+                                   <dd><i class="fa fa-mobile"></i>&nbsp;+ 088 {{ entity.mobile|raw }}</dd>
+                                   {% if(entity.email) %}<dd><i class="fa fa-envelope-o"></i>&nbsp;{{ entity.email|raw }}</dd>{% endif %}
+                                   <dd class="text-center"><a class="btn btn-sm  btn-info" target="_blank" href="http://maps.google.com/?q={{ entity.latitude }},{{ entity.longitude }}">Direction</a></dd>
+                               </dl>
+                           </div>
+                       </div>
+                   {% endfor %}
+               </div>
+            </div>
+        {% else %}
+            <div class="col-md-12">
+                <ul class="list-line list-group">
+                    {% for entity in entities %}
+                        <li><a target="_blank" href="http://maps.google.com/?q={{ entity.latitude }},{{ entity.longitude }}">{{ entity.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <div class="clearfix"></div>
+    </div>
+{% endif %}
+<div class="clearfix"></div>
+{% if entities is defined and entities is not empty  and widget.module.slug == 'client' %}
+    <div class="blog-sidebar blog-sidebar-override page-carousel-{{ globalOption.templateCustomize.sliderPosition }}" >
+        {% if  widget.moduleFeatureName is not empty %}
+            <div class="page-title">{{ widget.moduleFeatureName }}</div>
+        {% endif %}
+        <div class="row">
+            {% if  widget.moduleFeatureName is not empty or widget.moduleShowType == 'slider' %}
+                <div id="client-sidebar-slider" class="">
+                    {% for key,entity in entities  %}
+                        <div class="col-md-12 col-sm-12">
+                            <div class="client-sidebar">
+                                <a class="thumbnail"><img src="{{ image(entity.webPath).resize(171,180) }}" alt=""></a>
+                                <ul class="social-links">
+                                    <li><a target="_blank" href="http://{{ entity.website }}" class="fa fa-link"></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {% for key,entity in entities  %}
+                    <div class="col-md-6 col-sm-6">
+                        <div class="client-sidebar">
+                            <a class="thumbnail"><img src="{{ image(entity.webPath).resize(171,180) }}" alt=""></a>
+                            <ul class="social-links">
+                                <li><a target="_blank" href="http://{{ entity.website }}" class="fa fa-link"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="clearfix"></div>
+{% endif %}
+<div class="clearfix"></div>
+{% if entities is defined and entities is not empty  and widget.module.slug == 'event' %}
+    <div class="blog-sidebar blog-sidebar-override page-carousel-{{ globalOption.templateCustomize.sliderPosition }}" >
+        {% if  widget.moduleFeatureName is not empty %}
+            <div class="page-title">{{ widget.moduleFeatureName }}</div>
+        {% endif %}
+        {% if  widget.moduleShowType == 'slider' %}
+            <div class="row">
+                <div id="event-sidebar-slider" class="">
+                    {% for entity in entities  %}
+                        <div class="col-md-12">
+                            <div class="event-sidebar">
+                                <div class="post-img">
+                                    <img src="{{ image(entity.webPath).resize(300,300) }}" alt="" class="img-responsive">
+                                    <a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'event','slug':entity.slug }) }}" class="overlay"><i class="fa fa-plus-square-o"></i></a>
+                                </div>
+
+                                <div class="post-review">
+                                    <ul class="post-comment" style="width: 100%; text-align: left;">
+                                        <li><i class="fa fa-calendar"></i> {{ entity.created|date('d') }}&nbsp;<simple>{{ entity.created|date('M,Y') }}</simple></li>
+                                        <li><i class="fa fa-map-marker"></i> <simple>{{ entity.location.name }}</simple></li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                    <h5 class="post-title"><a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'event','slug':entity.slug }) }}">{{ entity.name }}</a></h5>
+                                    <p class="post-description">{{ entity.content|striptags|raw|truncate(120) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {%  elseif  widget.moduleShowType == 'grid' %}
+            <div class="row">
+                <div class="col-md-12">
+                    {% for entity in entities  %}
+                        <div class="event-sidebar">
+                            <div class="post-img">
+                                <img src="{{ image(entity.webPath).resize(300,300) }}" alt="" class="img-responsive">
+                                <a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'event','slug':entity.slug }) }}" class="overlay"><i class="fa fa-plus-square-o"></i></a>
+                            </div>
+
+                            <div class="post-review">
+                                <ul class="post-comment" style="width: 100%; text-align: left;">
+                                    <li><i class="fa fa-calendar"></i> {{ entity.created|date('d') }}&nbsp;<simple>{{ entity.created|date('M,Y') }}</simple></li>
+                                    <li><i class="fa fa-map-marker"></i> <simple>{{ entity.location.name }}</simple></li>
+                                </ul>
+                                <div class="clearfix"></div>
+                                <h5 class="post-title"><a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'event','slug':entity.slug }) }}">{{ entity.name }}</a></h5>
+                                <p class="post-description">{{ entity.content|striptags|raw|truncate(120) }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="col-md-12">
+                <ul class="list-line list-group">
+                    {% for entity in entities %}
+                        <li><a target="_blank" href="">{{ entity.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+{% endif %}
+<div class="clearfix"></div>
+{% if entities is defined and entities is not empty  and widget.module.slug == 'faq' %}
+    <div class="blog-sidebar">
+        {% if  widget.moduleFeatureName is not empty %}
+            <div class="page-title">{{ widget.moduleFeatureName }}</div>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel-group" id="sidebar-accordion" role="tablist" aria-multiselectable="true">
+                    {% for key,entity in entities  %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="heading{{ key  }}">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ key  }}" aria-expanded="{% if key == 0 %}true{% else %}false{% endif %}" aria-controls="collapse{{ key  }}">
+                                        {{ entity.name }}
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse{{ key  }}" class="panel-collapse collapse {% if key == 0 %}in{% endif %}" role="tabpanel" aria-labelledby="heading{{ key  }}">
+                                <div class="panel-body">
+                                    <p>  {{ entity.content|raw }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+<div class="clearfix"></div>
+{% if entities is defined and entities is not empty and widget.module.slug == 'news' %}
+    <div class="blog-sidebar page-carousel-{{ globalOption.templateCustomize.sliderPosition }}">
+        {% if  widget.moduleFeatureName is not empty %}
+            <div class="page-title">{{ widget.moduleFeatureName }}</div>
+        {% endif %}
+        {% if widget.moduleShowType == 'grid' %}
+            <div class="col-md-12">
+                {% for entity in entities  %}
+                    <div class="post-grid">
+                        <ul class="post-info">
+                            <li><i class="fa fa-bookmark"></i> <a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'news','slug':entity.slug }) }}">{{ entity.name }}</a></li>
+                            <li><i class="fa fa-calendar"></i> {{ entity.updated|date("d F, Y") }}</li>
+                            <li><i class="fa fa-user"></i> {{ entity.authorName }}</li>
+                            <li><i class="fa fa-tags"></i> {% if entity.moduleCategory is defined and entity.moduleCategory is not empty %}
+                                {% for  cat in entity.moduleCategory %}
+                                    <a href="{{  path(globalOption.subDomain ~ '_webservice_module_category',{'module': 'news','slug':cat.slug }) }}">{{ cat.name }}</a>{% if not loop.last %},{% endif %}
+                                {% endfor %}
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        {% elseif widget.moduleShowType == 'slider' %}
+            <div class="row">
+               <div id="news-sidebar-slider" class="">
+                        {% for entity in entities  %}
+                        <div class="col-md-12">
+                            <div class="sidebar-blog">
+                                <div class="post-img">
+                                    <img src="{{ image(entity.webPath).resize(400,400) }}" alt="">
+                                    <div class="over-layer">
+                                        <ul class="post-link">
+                                            <li><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'news','slug':entity.slug }) }}" class="fa fa-link"></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="post-review">
+                                    <h5 class="post-title"><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'news','slug':entity.slug }) }}">{{ entity.name }}</a></h5>
+                                    <ul class="post-info">
+                                        <li><i class="fa fa-calendar"></i> {{ entity.updated|date("d F, Y") }}</li>
+                                        <li><i class="fa fa-user"></i> {{ entity.authorName }}</li>
+                                        <li><i class="fa fa-tags"></i></li>
+                                        <li>{% if entity.moduleCategory is defined and entity.moduleCategory is not empty %}
+                                                {% for  cat in entity.moduleCategory %}
+                                                    <a href="{{  path(globalOption.subDomain ~ '_webservice_module_category',{'module': 'news','slug':cat.slug }) }}">{{ cat.name }}</a>{% if not loop.last %},{% endif %}
+                                                {% endfor %}
+                                            {% endif %}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+            </div>
+        {% else %}
+            <div class="col-md-12">
+                <ul class="list-line list-group">
+                    {% for entity in entities %}
+                        <li><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'news','slug':entity.slug }) }}">{{ entity.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <div class="clearfix"></div>
+    </div>
+{% endif %}
+<div class="clearfix"></div>
+{% if entities is defined and entities is not empty and widget.module.slug == 'noticeboard' %}
+    <div class="blog-sidebar blog-sidebar-override page-carousel-{{ globalOption.templateCustomize.sliderPosition }}">
+        {% if  widget.moduleFeatureName is not empty %}
+            <div class="page-title">{{ widget.moduleFeatureName }}</div>
+        {% endif %}
+    {% if widget.moduleShowType == 'slider' %}
+        <div class="row">
+            <div id="notice-sidebar-slider" class="">
+                {% for entity in entities  %}
+                    <div class="col-md-12">
+                        <div class="notice-list">
+                            <div class="post-review">
+                                <div class="post-date">
+                                    {{ entity.updated|date("d") }}
+                                    <small>{{ entity.updated|date("M") }}</small>
+                                </div>
+                                <h5 class="post-title"><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'noticeboard','slug':entity.slug }) }}">{{ entity.name }}</a></h5>
+                                <p class="post-description">{{ entity.content|striptags|raw|truncate(120) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    {% else %}
+        <div class="row">
+            {% for entity in entities  %}
+                <div class="col-md-12">
+                    <div class="notice-list">
+                        <div class="post-review">
+                            <div class="post-date">
+                                {{ entity.updated|date("d") }}
+                                <small>{{ entity.updated|date("M") }}</small>
+                            </div>
+                            <h5 class="post-title"><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'noticeboard','slug':entity.slug }) }}">{{ entity.name }}</a></h5>
+                            <p class="post-description">{{ entity.content|striptags|raw|truncate(120) }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    </div>
+{% endif %}
+{% if entities is defined and entities is not empty  and widget.module.slug == 'portfolio' %}
+    <div class="blog-sidebar blog-sidebar-override page-carousel-{{ globalOption.templateCustomize.sliderPosition }}">
+        {% if  widget.moduleFeatureName is not empty %}
+            <div class="page-title">{{ widget.moduleFeatureName }}</div>
+        {% endif %}
+        {% if widget.moduleShowType == 'slider' %}
+            <div class="row">
+                <div id="portfolio-sidebar-slider" class="">
+                    {% for key,portfolio in entities  %}
+                        <div class="col-md-12 col-sm-12">
+                            <div class="our-portfolio">
+                                <img src="{{ image(portfolio.webPath).scaleResize(380,266) }}" alt="">
+                                <div class="team-content">
+                                    <h3 class="team-prof">
+                                        <a href="http://{{ portfolio.website }}">{{ portfolio.name }}</a>
+                                        {% if portfolio.category is not empty %}<small>{{ portfolio.category.name }}</small>{% endif %}
+                                    </h3>
+                                </div>
+                                <p><a href="http://{{ portfolio.website }}">{{ portfolio.name }}</a></p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="row">
+                {% for key,portfolio in entities  %}
+                    <div class="col-md-6 col-sm-6">
+                        <div class="box-sidebar-portfolio">
+                            <a class="thumbnail"><img src="{{ image(portfolio.webPath).resize(171,180) }}" alt=""></a>
+                            <ul class="social-links">
+                                <li><a target="_blank" href="http://{{ portfolio.website }}" class="fa fa-link"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endif %}
+
+{% if entities is defined and entities is not empty  and widget.module.slug == 'service' %}
+    <div class="blog-sidebar blog-sidebar-override page-carousel-{{ globalOption.templateCustomize.sliderPosition }}">
+        {% if  widget.moduleFeatureName is not empty %}
+            <div class="page-title">{{ widget.moduleFeatureName }}</div>
+        {% endif %}
+        {% if widget.moduleShowType == 'slider' %}
+            <div class="row">
+                <div id="service-sidebar-slider" class="">
+                    {% for entity in entities  %}
+                        <div class="col-md-12">
+                            <div class="sidebar-serviceBox">
+                                <div class="service-icon">
+                                    <i class="fa {% if entity.icon is defined and entity.icon is not empty  %}{{ entity.icon.className }} {% endif %}"></i>
+                                </div>
+                                <div class="service-Content">
+                                    <h3 class="title">{{ entity.name }}</h3>
+                                    <p class="description">{{ entity.content|striptags|raw|truncate(180) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            {% for entity in entities  %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="sidebar-serviceBox">
+                            <div class="service-icon">
+                                <i class="fa {% if entity.icon is defined and entity.icon is not empty  %}{{ entity.icon.className }} {% endif %}"></i>
+                            </div>
+                            <div class="service-Content">
+                                <h3 class="title">{{ entity.name }}</h3>
+                                <p class="description">{{ entity.content|striptags|raw|truncate(180) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endif %}
+{% if entities is defined and entities is not empty  and widget.module.slug == 'sponsor' %}
+    <div class="blog-sidebar blog-sidebar-override page-carousel-{{ globalOption.templateCustomize.sliderPosition }}">
+        {% if  widget.moduleFeatureName is not empty %}
+            <div class="page-title">{{ widget.moduleFeatureName }}</div>
+        {% endif %}
+        {% if widget.moduleShowType == 'slider' %}
+            <div class="row">
+                <div id="sponsor-sidebar-slider" class="">
+                    {% for entity in entities  %}
+                        <div class="col-md-12">
+                            <div class="box-sidebar-portfolio">
+                                <a class="thumbnail"><img src="{{ image(entity.webPath).resize(171,180) }}" alt=""></a>
+                                <ul class="social-links">
+                                    <li><a target="_blank" href="http://{{ entity.website }}" class="fa fa-link"></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="row">
+                {% for entity in entities  %}
+                    <div class="col-md-6 col-sm-6">
+                        <div class="box-sidebar-portfolio">
+                            <a class="thumbnail"><img src="{{ image(entity.webPath).resize(171,180) }}" alt=""></a>
+                            <ul class="social-links">
+                                <li><a target="_blank" href="http://{{ entity.website }}" class="fa fa-link"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endif %}
+{% if entities is defined and entities is not empty and widget.module.slug == 'team' %}
+    <div class="blog-sidebar blog-sidebar-override page-carousel-{{ globalOption.templateCustomize.sliderPosition }}">
+        {% if  widget.moduleFeatureName is not empty %}
+            <div class="page-title">{{ widget.moduleFeatureName }}</div>
+        {% endif %}
+        <div class="row">
+            {% if widget.moduleShowType == 'slider' %}
+                <div id="team-sidebar-slider" class="">
+                    {% for key,team in entities  %}
+                        <div class="col-md-12">
+                            <div class="our-team">
+                                <div class="pic">
+                                    <img src="{{ image(team.webPath).scaleResize(263,200) }}">
+                                    <div class="over-layer">
+                                        <ul class="social-links">
+                                            <li><a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'team','slug':team.slug }) }}"><i class="fa fa-link"></i></a></li>
+                                            {% if team.facebook is not empty  %}
+                                                <li><a href="https://facebook.com/{{ team.facebook }}"><i class="fa fa-facebook"></i></a></li>
+                                            {% endif %}
+                                            {% if team.twitter is not empty  %}
+                                                <li><a href="https://twitter.com/{{ team.twitter }}"><i class="fa fa-twitter"></i></a></li>
+                                            {% endif %}
+                                            {% if team.gmail is not empty  %}
+                                                <li><a href="https://plus.google.com/{{ team.gmail }}"><i class="fa fa-google-plus"></i></a></li>
+                                            {% endif %}
+                                            {% if team.youtube is not empty  %}
+                                                <li><a href="https://www.youtube.com/{{ team.youtube }}"><i class="fa fa-youtube"></i></a></li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="team-content">
+                                    <h4 class="team-title">{{ team.name }}</h4>
+                                    <span class="post">{{ team.designation }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {% for key,team in entities  %}
+                    <div class="col-md-12">
+                        <div class="our-team">
+                            <div class="pic">
+                                <img src="{{ image(team.webPath).scaleResize(263,200) }}">
+                                <div class="over-layer">
+                                    <ul class="social-links">
+                                        <li><a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'team','slug':team.slug }) }}"><i class="fa fa-link"></i></a></li>
+                                        {% if team.facebook is not empty  %}
+                                            <li><a href="https://facebook.com/{{ team.facebook }}"><i class="fa fa-facebook"></i></a></li>
+                                        {% endif %}
+                                        {% if team.twitter is not empty  %}
+                                            <li><a href="https://twitter.com/{{ team.twitter }}"><i class="fa fa-twitter"></i></a></li>
+                                        {% endif %}
+                                        {% if team.gmail is not empty  %}
+                                            <li><a href="https://plus.google.com/{{ team.gmail }}"><i class="fa fa-google-plus"></i></a></li>
+                                        {% endif %}
+                                        {% if team.youtube is not empty  %}
+                                            <li><a href="https://www.youtube.com/{{ team.youtube }}"><i class="fa fa-youtube"></i></a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="team-content">
+                                <h4 class="team-title">{{ team.name }}</h4>
+                                <span class="post">{{ team.designation }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+{% if entities is defined and entities is not empty  and widget.module.slug == 'testimonial' %}
+    <div class="blog-sidebar blog-sidebar-override page-carousel-{{ globalOption.templateCustomize.sliderPosition }}">
+        {% if  widget.moduleFeatureName is not empty %}
+            <div class="page-title">{{ widget.moduleFeatureName }}</div>
+        {% endif %}
+        <div class="row">
+            {% if widget.moduleShowType == 'slider' %}
+                <div id="testimonial-sidebar-slider" class="owl-carousel">
+                    {% for testimonial in entities  %}
+                        <div class="col-md-12">
+                            <div class="box-sidebar-testimonial">
+                                <div class="content">
+                                    <div class="testimonial-pic">
+                                        <img src="{{ image(testimonial.webPath).resize(80,80) }}" alt="">
+                                    </div>
+                                    <div class="testimonial-prof">
+                                        <h3 class="testimonial-title">{{ testimonial.name }}</h3>
+                                        <span class="testimonial-post">{{ testimonial.designation }}&nbsp;,&nbsp;<em>{{ testimonial.organization }}</em></span>
+                                        <p class="description">{{ testimonial.content|raw }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {% for testimonial in entities  %}
+                    <div class="col-md-12">
+                        <div class="box-sidebar-testimonial">
+                            <div class="content">
+                                <div class="testimonial-pic">
+                                    <img src="{{ image(testimonial.webPath).resize(80,80) }}" alt="">
+                                </div>
+                                <div class="testimonial-prof">
+                                    <h3 class="testimonial-title">{{ testimonial.name }}</h3>
+                                    <span class="testimonial-post">{{ testimonial.designation }}&nbsp;,&nbsp;<em>{{ testimonial.organization }}</em></span>
+                                    <p class="description">{{ testimonial.content|raw }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endif %}

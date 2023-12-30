@@ -1,0 +1,114 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Production Item : {{ entity.businessParticular.code }} - {{ entity.businessParticular.name }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('business_stock') }}">Manage Stock</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="{{ path('business_production') }}">Manage Production</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green ">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Production</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('business_production') }}"><i class="icon-th-list"></i> Production</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+
+                        <!-- BEGIN FORM-->
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed table-fixed">
+                                <thead class="head-blue">
+                                <tr>
+                                    <th class="span1">&nbsp;&nbsp;<i class="icon-list"></i></th>
+                                    <th class="span1">Code</th>
+                                    <th class="span4">Name</th>
+                                    <th class="span1">Qnt</th>
+                                    <th class="span1">Unit</th>
+                                    <th class="span1">Purchase</th>
+                                    <th class="span1">Purchase SubTotal</th>
+                                    <th class="span1">Sales</th>
+                                    <th class="span1">Sales SubTotal</th>
+                                </tr>
+                                </thead>
+                                <tbody id="invoiceParticulars">
+                                {% set productionPurchaseCost = 0 %}
+                                {% set productionSalesCost = 0 %}
+                                {% if entity.businessProductionExpense is not empty %}
+                                    {% for item in entity.businessProductionExpense %}
+                                        {% set productionPurchaseCost = productionPurchaseCost + (item.purchasePrice * item.quantity) %}
+                                        {% set productionSalesCost = productionSalesCost + (item.salesPrice * item.quantity) %}
+                                        <tr id="remove-{{ item.id }}">
+                                            <td  class="span1">{{ loop.index }}</td>
+                                            <td  class="span1">{{ item.productionElement.particularCode }}</td>
+                                            <td class="span4">{{ item.productionElement.name }}</td>
+                                            <td class="span1">{{ item.quantity }}</td>
+                                            <td class="span1">{% if item.productionElement.unit is not empty %}{{ item.productionElement.unit.name }}{% endif %}</td>
+                                            <td class="span1">{{ item.purchasePrice }}</td>
+                                            <td class="span1">{{ (item.purchasePrice * item.quantity)|number_format }}</td>
+                                            <td class="span1">{{ item.salesPrice }}</td>
+                                            <td class="span1">{{ (item.salesPrice * item.quantity)|number_format }}</td>
+                                         </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td colspan="9" class="span12" style="border: 1px double #000"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6" class="span9"><span class="pull-right"><strong>Total TK.</strong> =</span></td>
+                                    <td class="span1"><strong id="subTotal">{{ productionPurchaseCost|number_format }}</strong></td>
+                                    <td></td>
+                                    <td class="span1"><strong id="subTotal">{{ productionSalesCost|number_format }}</strong></td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BusinessBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

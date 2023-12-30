@@ -1,0 +1,174 @@
+<header>
+    <style>
+        .sub-menu ul li{
+
+        }
+        .sub-menu ul li a{
+            font-size: 12px;
+            text-transform: capitalize;
+            font-weight: normal;
+            padding: 0;
+
+        }
+        header #tm-header-nav nav.tm-nav ul.tm-menu > li > ul.sub-menu li{
+            padding: 10px!important;
+            padding-left: 0!important;
+            padding-bottom: 0!important;
+            padding-right: 0!important;
+            width: 100%!important;
+
+        }
+        header #tm-header-nav nav.tm-nav ul.tm-menu > li > ul.sub-menu li a {
+            font-size: 12px;
+            text-transform: capitalize;
+            font-weight: normal;
+            padding: 0;
+        }
+
+    </style>
+
+    <div id="tm-header-top">
+        <div class="tm-wrap tm-table">
+            <ul class="header-top-menu">
+                <li><a href="{{ path('homepage') }}" ><i class="fa fa-unlock"></i>&nbsp;Login</a></li>
+                <li>|</li>
+                <li><a href="{{ path('fos_user_registration_register') }}"><i class="fa fa-user"></i>&nbsp;Signup</a></li>
+            </ul>
+        </div>
+        <div class="tm-wrap tm-table">
+            <div class="tm-logo">
+                <a href="/" class="tm-logo-simple">
+                    <img style="height: 60px" alt="Logo" src="../../assets/frontend/img/bdeducations.png">
+                </a>
+                <a href="/" class="tm-logo-retina">
+                    <img alt="Logo" width="142" height="60" src="../../assets/frontend/img/bdeducations.png">
+                </a>
+            </div>
+
+        </div>
+        <!--tm-wrap-->
+    </div>
+    <!--tm-header-top-->
+    <div id="tm-header-nav" class="tm-menu-style1 tm-sticky-menu">
+        <div class="tm-wrap tm-table">
+
+            <nav class="tm-nav">
+                <ul class="tm-menu tm-menu-simple">
+                    <li class="parent current-menu-item"><a href="/">Home</a>
+                        <ul class="sub-menu">
+{#
+                            {% for menupage in siteContent  %}
+                            {% if menupage.isPage == 1  %}
+                            <li>
+                                <a href="/page/{{ menupage.slug }}">{{ menupage.name }}</a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}#}
+
+                        </ul>
+                    </li>
+                    <li class="parent">
+                        <a href="/institute">Institutes</a>
+                        <ul class="sub-menu">
+                            <li class="parent">
+                                <a href="{{ path('frontend_institute',{'level':'collage'}) }}">Collage</a>
+                                <ul class="sub-menu">
+                                    <li><a href="/institute/a-level">A-Level</a></li>
+                                    <li><a href="/institute/secondary-collage">Higher Secondary </a></li>
+                                    <li><a href="/institute/post-secondary">Post secondary</a></li>
+                                </ul>
+                            </li>
+                            <li class="parent">
+                                <a href="/institute/school">School</a>
+                                <ul class="sub-menu">
+                                    <li><a href="/institute/junior-level">Junior Level</a></li>
+                                    <li><a href="/institute/o-level-english-medium">O-level (English Medium)</a></li>
+                                    <li><a href="/institute/primary-level">Primary Level</a></li>
+                                    <li><a href="/institute/secondary-level">Secondary Level</a></li>
+                                </ul>
+                            </li>
+                            <li class="parent">
+                                <a href="/institute/technical-vocational">Technical - Vocational</a>
+                                <ul class="sub-menu">
+                                    <li><a href="/institute/diploma-institute">Diploma Institute</a></li>
+                                    <li><a href="/institute/technical-institute">Technical Institute</a></li>
+                                </ul>
+                            </li>
+                            <li class="parent">
+                                <a href="/institute/university">University</a>
+                                <ul class="sub-menu">
+                                    <li><a href="/institute/private-university">Private University</a></li>
+                                    <li><a href="/institute/public-university">Public University</a></li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </li>
+
+                   {# <li class="parent">
+                        <a href="{{ path('frontend_institute') }}">Institutes</a>
+                        <ul class="sub-menu">
+
+                            {% for institute in institutes %}
+                            <li class="parent">
+                                <a href="{{ path('frontend_institute_listing',{slug:institute.slug}) }}">{{ institute.name }}</a>
+                                {% if (institute.children is defined ) %}
+                                <ul class="sub-menu">
+                                    {% for child in institute.children %}
+                                        <li><a href="{{ path('frontend_institute_listing',{slug:child.slug}) }}">{{ child.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+
+                        </ul>
+                    </li>#}
+                    <li class="parent"><a href="{{ path('frontend_admission')}}">Admission</a>
+                        <ul class="sub-menu">
+                            <li><a href="{{ path('frontend_admission',{'level':'postgraduate-degree'})}}">Postgraduate Degree</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a href="{{ path('frontend_scholarship') }}">Scholarship</a></li>
+                    <li><a href="{{ path('frontend_studyabroad') }}">Forigen Study </a></li>
+                    <li><a href="{{ path('frontend_tutor') }}">Tutor</a></li>
+                    <li><a href="{{ path('frontend_vendor') }}">Book & Stationary</a></li>
+                </ul>
+              {#  {{ knp_menu_render('SettingAppearanceBundle:Builder:megaMenu', {'template':'SettingAppearanceBundle:Menu:mega-menu.html.twig','currentClass': 'active'}) }}#}
+            </nav>
+            <!--tm-nav-->
+            <div class="tm-social-icons">
+                <a href="#" class="tm-icon-facebook">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a href="#" class="tm-icon-twitter">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a href="javascript:" id="search" class="tm-icon-dribbble">
+                    <i class="fa fa-search"></i>
+                </a>
+            </div>
+            <!--tm-social-icons-->
+        </div>
+    </div>
+    <!--tm-header-nav-->
+    <div id="tm-page-title" style="padding: 5px; background: #000; display: block!important">
+        <div class="tm-wrap tm-table">
+            <div class="tm-search" style="float: right">
+                <form>
+                    <input type="text" autocomplete="off" placeholder="Search..." name="s" class="tm-input">
+                    <select class="select2">
+                        <option>Select a institute level</option>
+                        <option>Test 1</option>
+                        <option>Test 1</option>
+                        <option>Test 1</option>
+                        <option>Test 1</option>
+                    </select>
+                    <button role="button" type="submit"  class="tm-button">Go</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</header>

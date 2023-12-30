@@ -1,0 +1,229 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Doctor Visit Invoice # {{ entity.invoice }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('hms_prescription') }}">Doctor Visit Invoice </a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Patient</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>c
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Doctor Visit Invoice Details</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn blue" href="{{ path('hms_prescription') }}"><i class="icon-th-list"></i> Doctor Visit</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body">
+                            {% if entity.customer is defined and entity.customer is not empty and entity.customer.id is not empty %}
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <h4>About:</h4>
+                                        <ul class="unstyled">
+                                            {% if entity.customer is not empty %}<li><strong>Patient #:</strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                                            {% if entity.customer is not empty %}<li><strong>Mobile #:</strong>&nbsp;{{ entity.customer.mobile }}</li>{% endif %}
+                                            {% if entity.customer is not empty %}<li><strong>Address #:</strong>&nbsp;{{ entity.customer.address }}</li>{% endif %}
+                                            {% if entity.customer is not empty and entity.customer.location is not empty   %}<li><strong>Location #:</strong>&nbsp;{{ entity.customer.location.name }}, {{ entity.customer.location.parent.name }}</li>{% endif %}
+                                            <li><strong>Guardian:</strong>&nbsp;{{ entity.customer.alternativeContactPerson }},{{ entity.customer.alternativeContactMobile }}</li>
+                                            <li><strong>Patient Relation:</strong>&nbsp;{{ entity.customer.alternativeRelation }}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="span3">
+                                        <h4>Personal:</h4>
+                                        <ul class="unstyled">
+                                            {% if entity.customer is not empty %}<li><strong>Patient ID #:</strong>&nbsp;{{ entity.customer.customerId }}</li>{% endif %}
+                                            <li><strong>Age:</strong>&nbsp;{{ entity.customer.age }} {{ entity.customer.ageType }}</li>
+                                            <li><strong>Date of Birth:</strong>&nbsp;{% if entity.customer.dob %}{{ entity.customer.dob|date('d-m-Y') }}{% endif %}</li>
+                                            <li><strong>Marital:</strong>&nbsp;{{ entity.customer.maritalStatus }}</li>
+                                            <li><strong>Blood Group:</strong>&nbsp;{{ entity.customer.bloodGroup }}</li>
+                                            <li><strong>Referred By:</strong>&nbsp;{% if entity.referredDoctor is not empty %}{{ entity.referredDoctor.name }}{% endif %}</li>
+                                            <li><strong>Marketing By:</strong>&nbsp;{% if entity.marketingExecutive is not empty %}{{ entity.marketingExecutive.marketingExecutive.username }}{% endif %}</li>
+
+                                        </ul>
+                                    </div>
+
+                                    <div class="span3">
+                                        <h4>Admission:</h4>
+                                        <ul class="unstyled">
+                                            <li><strong>Patient Status:</strong>&nbsp;{{ entity.process|capitalize }}</li>
+                                            <li><strong>Admission Date:</strong>&nbsp;{{ entity.created|date('d-m-Y') }}</li>
+                                            <li><strong>Release Date:</strong>&nbsp;{% if entity.releaseDate is not empty %}{{ entity.releaseDate|date('d-m-Y') }}{% endif %}</li>
+                                            <li><strong>Cabin/Bed:</strong> {% if entity.cabin is not empty %}{{ entity.cabin.name }}{% endif %}</li>
+                                            <li><strong>Department:</strong>&nbsp;{% if entity.department is not empty %}{{ entity.department.name }}{% endif %}</li>
+                                            <li><strong>Assign Doctor:</strong>&nbsp;{% if entity.assignDoctor is not empty %}{{ entity.assignDoctor.name }}{% endif %}</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="span3 invoice-payment">
+                                        <h4>Payment Details:</h4>
+                                        <ul class="unstyled">
+                                            <li><strong>Total BDT:</strong>&nbsp;{{ entity.total|number_format() }}</li>
+                                            <li><strong>Payment BDT:</strong>&nbsp;{{ entity.payment|number_format() }}</li>
+                                            {% if entity.discount %}<li><strong>Discount BDT:</strong>&nbsp;{{ entity.discount|number_format() }}</li>{% endif %}
+                                            {% if entity.due %}<li><strong>Due BDT:</strong>&nbsp;{{ entity.due|number_format() }}</li>{% endif %}
+                                            <li><strong>Payment status</strong>&nbsp;{{  entity.paymentStatus|capitalize }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <strong>Disease: </strong>{{ entity.disease }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid box green">
+                                {% if entity.invoiceParticulars is defined and  entity.invoiceParticulars is not empty  %}
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                                        <thead class="flip-content ">
+                                        <tr class="head-green">
+                                            <td class="span1">&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                            <th class="span1">Si/No</th>
+                                            <th class="span1">Code</th>
+                                            <th class="span4">Particular</th>
+                                            <th class="span2">Service</th>
+                                            <th class="span1">Qnt</th>
+                                            <th class="span1">Amount</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for item in entity.invoiceParticulars %}
+                                            <tr id="remove-{{ item.id }}">
+                                                <td class="span1"><span class="badge badge-warning toggle badge-custom" id="{{ item.id  }}" ><span>[+]</span></span></td>
+                                                <td  class="span1">{{ loop.index }}</td>
+                                                <td  class="span1">{{ item.particular.particularCode }}</td>
+                                                <td class="span4">{{ item.particular.name }}</td>
+                                                <td class="span2">{{ item.particular.service.name }}</td>
+                                                <td class="span1">{{ item.quantity }}</td>
+                                                <td class="span1">{{ item.subTotal|number_format }}</td>
+                                            </tr>
+                                            {% if item.particular.service.id == 1 %}
+                                                <tr id="show-{{ item.id }}" class="showing-overview">
+                                                    <td colspan="7">
+                                                        <table class="table table-bordered table-striped">
+                                                            <tr class="">
+                                                                <th class="span3" >Instruction</th>
+                                                                <td class="span9" >{{ item.particular.instruction }}</td>
+                                                            </tr>
+                                                            <tr class="">
+                                                                <th class="span3" >Pathological Comment</th>
+                                                                <td class="span9" >{{ item.comment }}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <td colspan="8" class="span12" style="border: 1px double #000"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="span9"><span class="pull-right"><strong>Total Amount TK.</strong> =</span></td>
+                                            <td class="span2"><strong id="subTotal">{{ entity.subTotal|number_format }}</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="span9"><span class="pull-right"><strong>Vat/Tax TK.</strong> =</span></td>
+                                            <td class="span2"><strong id="vat">{{ entity.vat|number_format }}</strong></td>
+
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="span9"><span class="pull-right"><strong>Discount TK.</strong> =</span></td>
+                                            <td class="span2"><strong id="vat">{{ entity.discount|number_format }}</strong></td>
+
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="span9"><span class="pull-right"><strong>Net Total TK.</strong> =</span></td>
+                                            <td class="span2"><strong id="vat">{{ entity.total|number_format }}</strong></td>
+
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="span9"><span class="pull-right"><strong>Received TK.</strong> =</span></td>
+                                            <td class="span2"><strong id="vat">{{ entity.payment|number_format }}</strong></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td colspan="6" class="span9"><span class="pull-right"><strong>Due TK.</strong> =</span></td>
+                                            <td class="span2"><strong id="vat">{{ entity.due|number_format }}</strong></td>
+
+                                        </tr>
+
+                                        </tfoot>
+                                    </table>
+                                {% endif %}
+                            </div>
+                            <div class="form-actions portlet box grey">
+                                 <div class="pull-right" id="action-{{ entity.id }}">
+                                     <div class="btn-group">
+                                        <a target="_blank"  href="{{ path('hms_prescription_print',{'id':entity.id}) }}" class="btn purple"><i class="icon-print"></i>&nbsp;Print</a>
+                                        {% if entity.hospitalConfig.appointmentPrescription == 1 and entity.process == "Done" %}
+                                         <a target="_blank"  href="{{ path('hms_prescription_doctor_print',{'id':entity.id}) }}"  class="btn green tooltips" data-trigger = "hover" data-original-title = "Print"><i class="icon-print"></i> Prescription</a>
+                                        {% endif %}
+                                        <span  class="btn blue"><i class=" icon-retweet"></i>&nbsp;{{ entity.process }}</span>
+                                        <span  class="btn yellow"><i class="icon-money"></i>&nbsp;{{ entity.paymentStatus }}</span>
+                                        {% if (app.user.granted("ROLE_DOMAIN")) or (app.user.granted("ROLE_DOMAIN_HOSPITAL_ADMIN") and entity.updated|date("d-m-Y") == "now"|date("d-m-Y")) %}
+                                         <a  href="{{ path('hms_prescription_reverse',{'id':entity.id}) }}"  data-trigger="hover" data-original-title="Doctor Visit Invoice Reverse" class="btn black tooltips" ><i class="icon-refresh"></i>&nbsp;Reverse</a>
+                                        {% endif %}
+                                     </div>
+                                </div>x
+                           </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@HospitalBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/invoice.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

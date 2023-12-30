@@ -1,0 +1,191 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        {% if config.isPrintHeader == 1 %}
+        <div class="row-fluid row-print">
+            <table class="table">
+                <tr>
+                    <td style="width: 66%">
+                        <div class="span4  pull-left invoice-logo-space">
+                            {% if config.webPath is not empty %}
+                            <img style="width:220px" src="{{ image(config.webPath).resize(220,220, 'white') }}">
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td style="width: 33%">
+                        <div class="span4 pull-right">
+                            {{ config.address|raw }}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        {% endif %}
+        <!-- END purchase_order HEADER-->
+
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box">
+
+                    <div class="portlet-title">
+                        <div class="caption"><strong>Invoice Details</strong></div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+                                <table class="table">
+                                    <tr>
+                                        <td style="width:33%">
+                                            <div class="span4">
+                                                <h4>Bill To:</h4>
+                                                <ul class="unstyled">
+                                                    {% if entity.customer %}
+                                                        {% if  entity.customer.name is not empty  %}
+                                                            <li><h3>{{ entity.customer.name }}</h3></li>
+                                                        {% endif %}
+                                                        {% if  entity.customer.mobile is not empty %}
+                                                            <li><strong><i class="icon-phone"></i>&nbsp;</strong>&nbsp;{{ entity.customer.mobile }}</li>
+                                                        {% endif %}
+                                                        {% if  entity.customer.address is not empty  %}
+                                                            <li><strong><i class=" icon-map-marker"></i>&nbsp;</strong>&nbsp;{{ entity.customer.address|raw }}</li>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td style="width:33%"></td>
+                                        <td style="width:33%">
+                                            <div class="span4 invoice-payment">
+                                                <h4>Payment Details:</h4>
+                                                <ul class="unstyled">
+                                                    <li><strong><i class="icon-file"></i>&nbsp;</strong>{{ entity.invoice }}</li>
+                                                    <li><strong><i class="icon-calendar"></i>&nbsp;</strong>{{ entity.created|date('d-m-Y') }}</li>
+                                               {#     {% if entity.transactionMethod is not empty %}<li><strong><i class="icon-money"></i>&nbsp;</strong>{{ entity.transactionMethod.name }}</li>{% endif %}
+                                                    {% if entity.paymentMobile is not empty %}<li><strong><i class="icon-money"></i></strong>&nbsp;{{ entity.paymentMobile }}/{{ entity.transactionId }}</li>{% endif %}
+                                                    {% if entity.cardNo is not empty %}<li><strong><i class="icon-money"></i>&nbsp;</strong>&nbsp;{{ entity.bank.name  }}/{{ entity.cardNo }}</li>{% endif %}
+                                              #}      <li></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                            <div class="clearfix"><br/></div>
+                            <div class="row-fluid box green">
+                                {% if entity.businessInvoiceParticulars is defined and  entity.businessInvoiceParticulars is not empty  %}
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                                        <thead class="flip-content ">
+                                        <tr class="table-header" style="">
+                                            <th class="numeric" style="width: 40px; text-align:center" ><strong>S/N</strong></th>
+                                            <th class="numeric" ><strong>Particular</strong></th>
+                                            {% if config.invoiceType == 'banner-print' %}
+                                            <th class="numeric" >Size</th>
+                                            <th class="numeric" >S.ft</th>
+                                            {% endif %}
+                                            <th class="numeric" >Qnt</th>
+                                            <th class="numeric" >Unit</th>
+                                            <th class="numeric" >Rate</th>
+                                            <th class="span2" ><strong>Amount</strong></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for index,item in entity.businessInvoiceParticulars %}
+                                            <tr>
+                                                <td>{{ loop.index }}.</td>
+                                                <td class="numeric" >{{ item.particular }}</td>
+                                                {% if config.invoiceType == 'banner-print' %}
+                                                <td class="numeric" >
+                                                    {% if item.subQuantity is not empty %}
+                                                        {{ item.height }}x{{ item.width }}
+                                                    {% endif %}
+                                                </td>
+                                                    <td>={{ item.subQuantity }}</td>
+                                                {% endif %}
+                                                <td class="span1" >{{ item.quantity|number_format() }}</td>
+                                                <td class="span1" >{% if item.unit is not empty %}{{ item.unit }}{% endif %}</td>
+                                                <td class="span1" >{{ item.price|number_format() }}</td>
+                                                <td class="span1" >{{ item.subTotal|number_format() }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr><td colspan="8" style="border-bottom:1px solid #000!important">&nbsp;</td></tr>
+                                            <tr><td colspan="7"><span class="pull-right" >SUB TOTAL</span></td><td><strong>{{ entity.subTotal|number_format() }}</strong></td></tr>
+                                            <tr><td colspan="7"><span class="pull-right" >DISCOUNT</span></td><td><strong>{{ entity.discount|number_format() }}</strong></td></tr>
+                                            <tr><td colspan="7">In words: {{ entity.paymentInWord }} <strong class="pull-right" >TOTAL</strong></td><td><strong>{{ entity.total|number_format() }}</strong></td></tr>
+                                            <tr><td colspan="8" style="border-bottom:5px solid #000!important">&nbsp;</td></tr>
+                                            <tr><td colspan="7"><strong class="pull-right" >PAID</strong></td><td><strong>{{ entity.received|number_format() }}</strong></td></tr>
+                                            {% if  entity.due is not empty %}
+                                                <tr><td colspan="7"><span class="pull-right" >DUE</span></td><td><strong>{{ entity.due|number_format() }}</strong></td></tr>
+                                            {% endif %}
+                                        </tfoot>
+                                    </table>
+                                {% endif %}
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            {% if config.isPrintFooter == 1 %}
+                                <div class="row-fluid">
+                                    <table class="table">
+                                        <tr>
+                                            <td style="width:33%">
+                                                <div class="span4">
+                                                    <div style="height:50px"></div>
+                                                    <h5><strong>Checked By</strong></h5>
+                                                </div>
+                                            </td>
+                                            <td style="width:33%">
+                                                <div class="span4 text-center">
+                                                    <div style="height:50px"></div>
+                                                    <h5><strong>Approved By</strong></h5>
+                                                </div>
+                                            </td>
+                                            <td style="width:33%">
+                                                <div class="span4 text-right">
+                                                    <div style="height:50px"></div>
+                                                    <h5><strong>Received By</strong></h5>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="clearfix">&nbsp;</div>
+                                <div class="row-fluid pull-center" ><p><strong>Disclaimer</strong>: “This is computer generated invoice no signature required.”</p></div>
+                            {% endif %}
+                            <div class="clearfix">&nbsp;</div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+ <style>
+     .table-header{
+         background: #99979c!important;
+         height: 40px!important;
+     }
+     .table-header th{
+         line-height: 35px;
+         color:#fff;
+         font-size:15px!important;
+     }
+ </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@SettingToolBundle/Resources/public/css/print.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{#    window.print();#}
+{% endblock %}

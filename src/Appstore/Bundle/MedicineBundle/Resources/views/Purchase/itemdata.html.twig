@@ -1,0 +1,56 @@
+{% set totalPrice = 0 %}
+{% if entity.medicinePurchaseItems is not empty %}
+    {% for item in entity.medicinePurchaseItems %}
+        {% set totalPrice = totalPrice + (item.medicineStock.averagePurchasePrice * item.quantity)  %}
+
+        <tr id="remove-{{ item.id }}" class="{% if item.medicineStock.averagePurchasePrice > item.salesPrice %}warning{% endif %}" >
+            <td>{{ loop.index }}</td>
+            <td><a data-type="text" class="editableText" data-url="{{ path('medicine_stock_inline') }}" data-type="text" data-pk="{{ item.medicineStock.id }}" data-name="itemName" data-trigger="hover" class="tooltips" data-original-title="" href="javascript:">{{ item.medicineStock.name }}</a></td>
+            <td class="">{% if item.medicineStock.rackNo is not empty %}{{ item.medicineStock.rackNo.name }}{% endif %}</td>
+            <td class="span1">
+                <a href="javascript:" id="batchno-{{ item.id }}" class="editable" data-type="text" data-name="batchno" data-pk="{{ item.id }}" data-url="{{ path('medicine_purchaseitem_inline_update') }}" data-title="Enter batch no" >{% if item.batchno is not empty %}{{ item.batchno }}{% endif %}</a>
+            </td>
+            <td class="span2">
+                <a href="javascript:" id="expirationDate-{{ item.id }}" class="expirationDate" data-type="date" data-name="expirationDate" data-pk="{{ item.id }}" data-url="{{ path('medicine_purchaseitem_inline_update') }}" data-title="Enter Expiration Date" >{% if item.expirationEndDate is not empty %}{{ item.expirationEndDate|date('d-m-Y') }}{% endif %}</a>
+            </td>
+            <td class="span1"><a href="{{ path('medicine_purchase_item',{'name':item.medicineStock.name}) }}" target="_blank">{{ item.medicineStock.averagePurchasePrice|number_format(2) }}</a></td>
+            <td class="span1">{{ item.medicineStock.purchasePrice }}</td>
+            <td class="span1">{{ item.tp }}</td>
+            <td class="span1" ><input type="text" class="td-inline-input salesPrice" data-id="{{ item.id }}" autocomplete = "off"  id="salesPrice-{{ item.id }}" name="salesPrice" value="{{ item.salesPrice }}" ></td>
+            <td class="span2">
+                <div class="input-append">
+                    <input type="text" class="td-inline-input quantity" data-id="{{ item.id }}" autocomplete = "off" min="1" max="{{ item.quantity }}"  id="quantity-{{ item.id }}" name="quantity[]" value="{{ item.quantity }}" placeholder="{{ item.quantity }}"> {% if item.medicineStock.unit is not empty %}<span class="btn mini">{{ item.medicineStock.unit.name }}</span>{% endif %}
+                </div>
+            </td>
+            <td class="span1">
+                <input type="text" class="td-inline-input bonusQuantity" data-id="{{ item.id }}" autocomplete = "off"  id="bonusQuantity-{{ item.id }}" name="bonusQuantity[]" value="{{ item.bonusQuantity }}" placeholder="{{ item.bonusQuantity }}">
+            </td>
+            <td class="span1">
+                <a  class="editableText" data-name="pack" href="#"  data-url="{{ path('medicine_stock_inline') }}" data-type="text" data-pk="{{ item.medicineStock.id }}" data-original-title="Change pack qnt">{{ item.medicineStock.pack }}</a>
+                {% if item.medicineStock.pack > 1 and item.quantity > item.medicineStock.pack|default(1) %} => {{ (item.quantity/item.medicineStock.pack)|default(1)|number_format(2) }}{% endif %}
+            </td>
+            <td class="" id="subTotal-{{ item.id }}">{{ (item.actualPurchasePrice * item.quantity)|number_format }}</td>
+            <td class="span1">
+                <input type="hidden" id="purchaseQuantity-{{ item.id }}"  value="{{ item.quantity }}" >
+                <input type="hidden" id="salesQuantity-{{ item.id }}"  value="{{ item.salesQuantity }}" >
+                {{ item.salesQuantity }}</td>
+            <td class="">{% if item.salesQuantity == 0 %}<a id="{{ item.id }}"  data-url="{{ path('medicine_purchase_particular_delete',{'invoice': entity.id ,'id': item.id }) }}" href="javascript:" class="btn red mini deleteParticular" ><i class="icon-trash"></i></a>{% endif %}</td>
+        </tr>
+    {% endfor %}
+{% endif %}
+<tr>
+    <td colspan="15" class="span12" style="border: 1px double #000"></td>
+</tr>
+<tr>
+    <th colspan="7">AVG Purchase Price</th>
+    <td colspan="5" class="span10"><span class="pull-right"><strong>Total TK.</strong> =</span></td>
+    <td class="span1"><strong id="subTotal">{{ entity.subTotal|number_format }}</strong></td>
+    <td class="span1">{{ (entity.subTotal - ((entity.subTotal*12.5)/100))|number_format(2) }}</td>
+    <td class="span1">12.5%</td>
+</tr>
+<tr>
+    <td colspan="12" class="span10"><span class="pull-right"><strong>Discount</strong> =</span></td>
+    <td class="span1"><strong id="discount">{{ entity.discount|number_format }}</strong></td>
+    <td class="span1"></td>
+    <td class="span1"></td>
+</tr>

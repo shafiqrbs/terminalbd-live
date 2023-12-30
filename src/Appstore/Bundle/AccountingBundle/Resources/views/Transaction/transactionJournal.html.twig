@@ -1,0 +1,92 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Account of Journal Transaction
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_transaction') }}">Account of Journal Transaction</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Account of Journal Transaction</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account Journal Transaction</div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Account Head</th>
+                                    <th class="numeric" >Particular</th>
+                                    <th class="numeric" >Debit</th>
+                                    <th class="numeric" >Credit</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% set totalDebit = 0 %}
+                                {% set totalCredit = 0 %}
+                                {% for key, entity in entities %}
+                                    {% set totalDebit = totalDebit +  entity.debit %}
+                                    {% set totalCredit = totalCredit +  entity.credit %}
+                                    <tr><td>{{ entity.name }}</td><td>{{ entity.processHead }}</td><td> {{ entity.debit }}</td><td> {{ entity.credit }}</td></tr>
+
+                                {% endfor %}
+                              </tbody>
+                                <tfoot><tr><th colspan="2">Total</th><th>{{ totalDebit }}</th><th>{{ totalCredit }}</th></tr></tfoot>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/pettycash.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $(".editable").editable();
+    AccountingPettyCashPage();
+{% endblock %}
+
+
+

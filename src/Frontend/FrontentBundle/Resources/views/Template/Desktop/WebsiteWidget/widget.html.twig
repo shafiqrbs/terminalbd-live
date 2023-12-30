@@ -1,0 +1,14 @@
+{% if widgets is defined and widgets is not empty  %}
+    {% for widget in widgets %}
+        {% if ( widget is not empty and globalOption.templateCustomize.showSidebar == 1  and  widget.position == 'sidebar-top' ) or ( widget is not empty and globalOption.templateCustomize.showSidebar == 1 and widget.position == 'sidebar-bottom' )  %}
+            {% render controller("FrontendBundle:WebsiteWidget:sidebarBaseContentModule",{'globalOption':globalOption.id,'widget':widget.id}) %}
+        {% elseif widget.position == 'body-top'  or  widget.position == 'body-bottom' %}
+            {% render controller("FrontendBundle:WebsiteWidget:pageBaseContentModule",{'globalOption':globalOption.id,'widget':widget.id}) %}
+        {% else %}
+            {% render controller("FrontendBundle:WebsiteWidget:headerFooterBaseContentModule",{'globalOption':globalOption.id,'widget':widget.id}) %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+
+

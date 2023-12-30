@@ -1,0 +1,155 @@
+{% extends '::base-app.html.twig' %}
+{% block body %}
+
+    <div id="print-area"   style="margin-top: {{ config.printTopMargin }}px!important;margin-left: 30px; margin-right: 30px; position: relative">
+        <style>
+            #myDIV {
+                height:180px;
+                display: grid;
+                gap: 10px;
+                grid-template-columns: 45% 10% 45%;
+
+            }
+            #myDIV div.item {
+                background-color: rgba(255, 255, 255, 0.8);
+                text-align: center;
+                padding: 5px 0;
+                font-size: 14px;
+                line-height: 18px;
+            }
+            #myDIV div.item.left{
+                text-align: left;
+            }
+            #myDIV div.item.right{
+                text-align: right;
+            }
+            #myDIV div h1{
+                font-size: 20px;
+                padding: 0;
+                margin: 0;
+                padding-bottom: 15px;
+            }
+            .specialist {
+                border: 2px solid #000;
+                border-radius: 4px!important;
+                height: 65px;
+                font-size: 18px;
+                line-height: 30px;
+                font-weight: bold;
+            }
+        </style>
+        <div class="print-header-content" style="height:180px;margin-top:48px;position: relative">
+            <div id="myDIV">
+                <div class="item right">
+                    <table class="collapse table">
+                        <tbody>
+                        <tr>
+                            <td style="width:33.333333%; text-align: right ">Patient ID: </td>
+                            <td style="width:33.333333%">{{ entity.customer.customerid }}</td>
+                        </tr>
+                        <tr>
+                            <td>Mobile:</td>
+                            <td>{{ entity.customer.mobile }}</td>
+                        </tr>
+                        <tr>
+                            <td>Gender:</td>
+                            <td>{{ entity.customer.gender }}</td>
+                        </tr>
+                        <tr>
+                            <td>Age:</td>
+                            <td>{% if entity.customer is not empty %}{{ entity.customer.age }} {{ entity.customer.ageType }}{% endif %} </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="item"></div>
+                <div class="item right">
+                    <table class="collapse table">
+                        <tbody>
+                        <tr>
+                            <td style="width:33.333333%">Patient ID: </td>
+                            <td style="width:33.333333%">{{ entity.customer.customerid }}</td>
+                        </tr>
+                        <tr>
+                            <td>Mobile:</td>
+                            <td>{{ entity.customer.mobile }}</td>
+                        </tr>
+                        <tr>
+                            <td>Gender:</td>
+                            <td>{{ entity.customer.gender }}</td>
+                        </tr>
+                        <tr>
+                            <td>Age:</td>
+                            <td>{% if entity.customer is not empty %}{{ entity.customer.age }} {{ entity.customer.ageType }}{% endif %} </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" style="margin-left: 0!important;">
+                <table class="collapse table">
+                    <tbody>
+                    <tr>
+                        <td style="width:33.333333%">Patient ID: {{ entity.customer.customerid }}</td>
+                        <td>Mobile: {% if entity.customer is not empty %}{{ entity.customer.mobile }}{% endif %}</td>
+                        <td>Gender:{% if entity.customer is not empty %}{{ entity.customer.gender }}{% endif %}</td>
+                        <td>Age: {% if entity.customer is not empty %}{{ entity.customer.age }} {{ entity.customer.ageType }}{% endif %} </td>
+                        <td rowspan="2" class="text-center">{{ barcode|raw }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width:33.333333%">Name: {% if entity.customer is not empty %}{{ entity.customer.name }}{% endif %}</td>
+                        <td colspan="3">Address: {% if entity.customer is not empty %}{{ entity.customer.address }}{% endif %}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4" style="margin-top: 28px!important;">
+
+            </div>
+            <div class="col-md-8 print-right" style="padding-left: 30px; height:1080px; margin-left: -1px ;border-left:2px solid #0a7265">
+                <img src="{{ asset('assets/img/customer/rx.png') }}" style="margin-top: 30px;width:44px">
+                <br/>
+                <br/>
+
+            </div>
+        </div>
+        {% if entity is not empty and entity.followUpId is not empty %}
+            <p style="position: absolute; bottom: 10px; right:0">This is the follow-up prescription of:{{ entity.hmsInvoice.followUpId }}</p>
+        {% endif %}
+    </div>
+    <style>
+        .unstyled{
+            width: max-content;
+        }
+        .tab-pane{
+            padding-left: 8px;
+        }
+        h4{
+            padding: 0px;
+            margin: 0px;
+            font-size: 18px;
+            margin-top: 7px;
+            margin-bottom: 5px;
+        }
+
+
+
+    </style>
+{% endblock %}
+ {% block javascriptBlock %}
+     $('.print').click(function () {
+     $('#print-area').kinziPrint({
+     importCSS: true
+     });
+     });
+    {# $('#print-area').kinziPrint({
+        importCSS: true
+     });#}
+ {% endblock %}
+
+
+

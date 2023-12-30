@@ -1,0 +1,113 @@
+<div class="portlet-body">
+
+    <div class="portlet-body form">
+        <div class="row-fluid">
+
+            <div class="span6 invoice-payment">
+                <h4>Payment Details:</h4>
+                <ul class="unstyled">
+                    <li><strong>Sub-Total BDT:</strong>&nbsp;{{ entity.subTotal|number_format() }}</li>
+                    <li><strong>Total BDT:</strong>&nbsp;{{ entity.total|number_format() }}</li>
+                    <li><strong>Payment BDT:</strong>&nbsp;{{ entity.payment|number_format() }}</li>
+                    {% if entity.discount %}<li><strong>Discount BDT:</strong>&nbsp;{{ entity.discount|number_format() }}</li>{% endif %}
+                    {% if entity.due %}<li><strong>Due BDT:</strong>&nbsp;{{ entity.due|number_format() }}</li>{% endif %}
+                    <li><strong>Payment status</strong>&nbsp;{{  entity.paymentStatus|capitalize }}</li>
+                </ul>
+
+            </div>
+            <div class="span6">
+                <h4>Invoice Info:</h4>
+                <ul class="unstyled">
+                    <li><strong>Created:</strong>&nbsp;{{ entity.created|date('d-m-Y') }}</li>
+                    <li><strong>Delivery:</strong>&nbsp;{{ entity.deliveryDateTime }}</li>
+                    <li><strong>Payment Method:</strong>&nbsp;{{ entity.paymentMethod }}</li>
+                    <li><strong>Received By:</strong>&nbsp;{% if entity.createdBy is defined and entity.createdBy is not empty %}{{ entity.createdBy }}{% endif %}</li>
+                </ul>
+            </div>
+
+        </div>
+        {% include('flash-message.html.twig')  %}
+        <div class="row-fluid box green">
+            {% if entity.invoiceParticulars is defined and  entity.invoiceParticulars is not empty  %}
+                <table class="table table-bordered table-striped table-condensed flip-content ">
+                    <thead class="flip-content ">
+                    <tr class="head-green">
+                        <td class="span1">&nbsp;&nbsp;<i class="icon-list"></i></td>
+                        <th class="span1">Si/No</th>
+                        <th class="span1">Code</th>
+                        <th class="span4">Particular</th>
+                        <th class="span2">Service</th>
+                        <th class="span1">Qnt</th>
+                        <th class="span1">Amount</th>
+                        <th class="span1">Report</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in entity.invoiceParticulars %}
+                        <tr id="remove-{{ item.id }}">
+                            <td class="span1"><span class="badge badge-warning toggle badge-custom" id="{{ item.id  }}" ><span>[+]</span></span></td>
+                            <td  class="span1">{{ loop.index }}</td>
+                            <td  class="span1">{{ item.particular.particularCode }}</td>
+                            <td class="span4">{{ item.particular.name }}</td>
+                            <td class="span2">{{ item.particular.service.name }}</td>
+                            <td class="span1">{{ item.quantity }}</td>
+                            <td class="span1">{{ item.subTotal|number_format }}</td>
+                            <td>
+                                {% if item.particular.service.id == 1 and item.process =='Done'%}
+                                    <a target="_blank" href="{{ path('hms_invoice_particular_report_print', {'id': item.id}) }}"  class="btn blue mini"><i class="icon-print"></i> Report</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="8" class="span12" style="border: 1px double #000"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="span9"><span class="pull-right"><strong>Total Amount TK.</strong> =</span></td>
+                        <td colspan="2" class="span2"><strong id="subTotal">{{ entity.subTotal|number_format }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="span9"><span class="pull-right"><strong>Vat/Tax TK.</strong> =</span></td>
+                        <td colspan="2" class="span2"><strong id="vat">{{ entity.vat|number_format }}</strong></td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="span9"><span class="pull-right"><strong>Discount TK.</strong> =</span></td>
+                        <td colspan="2" class="span2"><strong id="vat">{{ entity.discount|number_format }}</strong></td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="span9"><span class="pull-right"><strong>Net Total TK.</strong> =</span></td>
+                        <td colspan="2" class="span2"><strong id="vat">{{ entity.total|number_format }}</strong></td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="span9"><span class="pull-right"><strong>Received TK.</strong> =</span></td>
+                        <td colspan="2" class="span2"><strong id="vat">{{ entity.payment|number_format }}</strong></td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="6" class="span9"><span class="pull-right"><strong>Due TK.</strong> =</span></td>
+                        <td colspan="2" class="span2"><strong id="vat">{{ entity.due|number_format }}</strong></td>
+
+                    </tr>
+
+                    </tfoot>
+                </table>
+            {% endif %}
+        </div>
+        <div class="clearfix">&nbsp;</div>
+        <div class="form-actions portlet box grey">
+            <div class="pull-right" id="action-{{ entity.id }}">
+                <span  class="btn blue"><i class=" icon-retweet"></i>&nbsp;{{ entity.process }}</span>
+                <span  class="btn yellow"><i class="icon-money"></i>&nbsp;{{ entity.paymentStatus }}</span>
+                {% if  app.user.granted("ROLE_DOMAIN") %}
+                    <a  href="{{ path('hms_invoice_reverse',{'invoice':entity.invoice}) }}"  data-trigger="hover" data-original-title="Admission Invoice Reverse" class="btn black tooltips" ><i class="icon-refresh"></i>&nbsp;Reverse</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

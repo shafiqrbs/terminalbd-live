@@ -1,0 +1,94 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div id="print-area">
+        <div class="row print-header">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong>{{ option.name }}</strong></p>
+                <p><strong>Name of Report: System Overview</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-bordered table-striped table-condensed flip-content ">
+                    <thead class="flip-content ">
+                    <tr class="head-blue">
+                        <th class="" colspan="2">Current Stock & Price </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th class="numeric" >Sales Price</th>
+                        <td class="numeric" >{{ priceOverview.salesPrice|number_format }}</td>
+                    </tr>
+                    <tr>
+                        <th class="numeric" >Purchase Price</th>
+                        <td class="numeric" >{{ priceOverview.purchasePrice|number_format}}</td>
+                    </tr>
+
+                    <tr>
+                        <th class="numeric" >Approximately Profit</th>
+                        <td class="numeric" >{{ (priceOverview.salesPrice - priceOverview.purchasePrice)|number_format }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <table class="table table-bordered table-striped table-condensed flip-content ">
+                    <thead class="flip-content ">
+                        <tr class="head-green">
+                            <th class="" colspan="2">Total Sales Profit/Loss</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <th class="numeric" >Total Sales</th>
+                        <td class="numeric" >{{ salesPurchasePrice.sales|number_format}}</td>
+                    </tr>
+                    <tr>
+                        <th class="numeric" >Total Purchase</th>
+                        <td class="numeric" >{{ salesPurchasePrice.purchase|number_format }}</td>
+                    </tr>
+                    <tr>
+                        <th class="numeric" >Profit</th>
+                        <td class="numeric" >{{ (salesPurchasePrice.sales - salesPurchasePrice.purchase)|number_format }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered table-striped table-condensed flip-content ">
+                    <thead class="flip-content ">
+                        <tr class="head-yellow">
+                            <th class="" colspan="4">Total Purchase & Sales Quantity</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <th class="numeric" >Purchase</th>
+                        <td class="numeric" >{{ stockOverview.purchase }}</td>
+                        <th class="numeric" >Sales</th>
+                        <td class="numeric" >{{ stockOverview.sales }}</td>
+                    </tr>
+                    <tr>
+                        <th class="numeric" >Sales Return</th>
+                        <td class="numeric" >{{ stockOverview.salesReturn }}</td>
+                        <th class="numeric" >Purchase Return</th>
+                        <td class="numeric" >{{ stockOverview.purchaseReturn }}</td>
+                    </tr>
+                    <tr>
+                        <th class="numeric" >&nbsp;</th>
+                        <td class="numeric" >&nbsp;</td>
+                        <th class="numeric" >Damage</th>
+                        <td class="numeric" >{{ stockOverview.damage }}</td>
+                    </tr>
+                    <tr>
+                        <th class="numeric" ></th>
+                        <td class="numeric" ></td>
+                        <th class="numeric" >Current Stock</th>
+                        <td class="numeric" >{{ stockOverview.remaining }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

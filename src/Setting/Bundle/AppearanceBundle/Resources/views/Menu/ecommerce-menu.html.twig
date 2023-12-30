@@ -1,0 +1,108 @@
+{% extends 'knp_menu.html.twig' %}
+
+{% block list %}
+    {% if item.hasChildren and options.depth is not sameas(0) and item.displayChildren %}
+        {% import "knp_menu.html.twig" as macros %}
+        {% if item.level == 1 %}
+            <ul class="dropdown-menu mega-dropdown-menu">
+                <li class="parent">
+                    {{ block('children') }}
+                </li>
+            </ul>
+        {% elseif item.level == 2 %}
+            <ul class="col-sm-3" >
+                {{ block('children') }}
+            </ul>
+        {% else %}
+        <ul class="nav navbar-nav" >
+            {{ block('children') }}
+        </ul>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block item %}
+    {% import "knp_menu.html.twig" as macros %}
+    {% if item.displayed %}
+        {%- set attributes = item.attributes %}
+        {%- set is_dropdown = attributes.dropdown|default(false) %}
+        {%- set is_brands = attributes.brands|default(false) %}
+        {%- set is_brand = attributes.brand|default(false) %}
+        {%- set divider_prepend = attributes.divider_prepend|default(false) %}
+        {%- set brand_image = attributes.icon|default(false) %}
+        {%- set divider_append = attributes.divider_append|default(false) %}
+
+        {# unset bootstrap specific attributes #}
+        {%- set attributes = attributes|merge({'dropdown': null, 'divider_prepend': null, 'divider_append': null, 'icon':null, 'brand':null, 'brands':null }) %}
+
+        {# building the class of the item #}
+        {%- set classes = item.attribute('class') is not empty ? [item.attribute('class')] : [] %}
+        {% if item.level == 2 and not is_brands %}
+            {% set classes = classes|merge(['col-sm-3']) %}
+        {% endif %}
+
+        {# adding classes for dropdown #}
+        {%- if is_dropdown %}
+            {% if item.level == 1 %}
+                {%- set classes = classes|merge(['dropdown mega-dropdown']) %}
+            {% else %}
+                {%- set classes = classes|merge(['']) %}
+            {% endif %}
+        {%- endif %}
+
+        {# putting classes together #}
+        {%- if classes is not empty %}
+            {%- set attributes = attributes|merge({'class': classes|join(' ')}) %}
+        {%- endif %}
+        {%- set listAttributes = item.childrenAttributes %}
+
+        {# displaying the item #}
+        {% if item.level == 2 %}
+            {% if not is_brands %}
+                {{ block('label') }}
+            {% endif %}
+            {{ block('list') }}
+        {% else %}
+            <li{{ macros.attributes(attributes) }}>
+                {%- if is_brand %}
+                    {{ block('linkElement') }}
+                {% elseif is_dropdown %}
+                    {{ block('dropdownElement') }}
+                {% else %}
+                    {{ block('linkElement') }}
+                {% endif %}
+                {{ block('list') }}
+            </li>
+        {% endif %}
+
+    {% endif %}
+{% endblock %}
+
+
+{% block linkElement %}
+    <a href="{{ item.uri }}"{{ macros.attributes(item.linkAttributes) }}>
+        {{ block('label') }}
+    </a>
+{% endblock %}
+
+{% block brandElement %}
+    <a href="{{ item.uri }}"{{ macros.attributes(item.linkAttributes) }}>
+        <img title="{{item.label|trans }}" alt="{{item.label|trans }}" src="{{ image(brand_image).resize(70, 70)  }}">
+    </a>
+{% endblock %}
+
+{% block dropdownElement %}
+    {%- set classes = item.linkAttribute('class') is not empty ? [item.linkAttribute('class')] : [] %}
+    {%- set classes = classes|merge(['dropdown-toggle']) %}
+    {%- set attributes = item.linkAttributes %}
+    {%- set attributes = attributes|merge({'class': classes|join(' ')}) %}
+    {%- set attributes = attributes|merge({'data-toggle': 'dropdown'}) %}
+    <a href="javascript:;"{{ macros.attributes(attributes) }}>
+        {{ block('label') }}
+    </a>
+{% endblock %}
+
+{% block label %}
+    {{ item.label|trans }}
+{% endblock %}
+

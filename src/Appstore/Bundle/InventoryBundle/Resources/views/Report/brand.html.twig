@@ -1,0 +1,88 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Brand Stock Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Brand Stock Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box blue tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Brand Stock Report</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('inventory_report_stock',{'group':'vendor'}) }}"><i class="icon-th-list"></i>&nbsp;Brand</a></li>
+                                    <li><a href="{{ path('inventory_report_stock',{'group':'brand'}) }}"><i class="icon-th-list"></i>&nbsp;Brand</a></li>
+                                    <li><a href="{{ path('inventory_report_stock',{'group':'product'}) }}" ><i class="icon-th-list"></i>&nbsp;Product</a></li>
+                                    <li><a href="{{ path('inventory_report_stock',{'group':'category'}) }}" ><i class="icon-th-list"></i>&nbsp;Category</a></li>
+                                    <li><a href="{{ path('inventory_report_stock',{'group':'size'}) }}" ><i class="icon-th-list"></i>&nbsp;Size</a></li>
+                                    <li><a href="{{ path('inventory_report_stock',{'group':'color'}) }}" ><i class="icon-th-list"></i>&nbsp;Color</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <th class="numeric" ><i class="icon-reorder"></i></th>
+                                    <th class="numeric" >Brand</th>
+                                    <th class="numeric" >Purchase Qnt.</th>
+                                    <th class="numeric" >Remaining Qnt.</th>
+                                    <th class="numeric" >Purchase</th>
+                                    <th class="numeric" >Sales</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td class="numeric" >{{ loop.index }}.</td>
+                                        <td class="numeric" >{{ entity.brand }}</td>
+                                        <td class="numeric" >{{ entity.purchaseQuantity }}</td>
+                                        <td class="numeric" >{{ entity.quantity }}</td>
+                                        <td class="numeric" >{{ entity.purchasePrice }}</td>
+                                        <td class="numeric" >{{ entity.salesPrice }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

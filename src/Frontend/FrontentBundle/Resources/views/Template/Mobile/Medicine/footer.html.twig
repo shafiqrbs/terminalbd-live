@@ -1,0 +1,329 @@
+<div class="" id="mobile-footer">
+    <ul class="social-networks">
+
+        <li>
+            <a href="#" data-title="">
+                <i class="fa fa-phone"></i>
+            </a>
+        </li>
+        <li>
+            <a  href="#sms-modal" data-title="">
+                <i class="fa fa-comment"></i>
+            </a>
+        </li>
+        <li>
+            <a  href="javascript:" class="scrollToTop" data-title="Top up">
+                <i class="fa fa-hand-o-up"></i>
+            </a>
+        </li>
+        <li>
+            <a  href="#email-modal" data-title="">
+                <i class="fa fa-envelope"></i>
+            </a>
+        </li>
+        <li>
+            <a class="last" href="{{ path('webservice_contact',{'contact':'contact'}) }}" data-title="">
+                <i class="fa fa-map-marker"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="remodal" data-remodal-id="sms-modal" role="dialog" aria-labelledby="modal1Title" aria-describedby="modal1Desc">
+    <form id="commentform" class="register">
+        <div style="padding:10px">
+            <h2 id="modal1Title">SEND SMS</h2>
+            <div>
+                <p><span class="fa-icon"><i class="fa  fa-user"></i></span>
+                    <input type="text" name="name" id="ContactName" placeholder="Enter your name">
+                </p>
+                <p><span class="fa-icon"><i class="fa  fa-mobile-phone"></i></span>
+                    <input type="text" class="mobile" name="mobile" id="mobile" placeholder="Enter your mobile no ">
+                </p>
+                <p><textarea id="ContactMessage" name="comment" placeholder="Message"></textarea></p>
+                <input type="hidden" name="globalOption" id="globalOption" value=""  >
+            </div>
+            <span id="error"></span>
+        </div>
+        <button data-remodal-action="cancel" class="remodal-cancel">Cancel</button>
+        <button data-remodal-action="confirm" class="remodal-confirm">Send</button>
+    </form>
+</div>
+</div>
+{% javascripts
+'assets/template/mobile/default/js/jquery.min.js'
+'assets/template/mobile/default/js/jquery.mmenu.min.all.js'
+'assets/template/mobile/default/js/slider/jquery.mobile.customized.min.js'
+'assets/template/mobile/default/js/slider/jquery.easing.1.3.js'
+'assets/template/mobile/default/js/slider/camera.min.js'
+'assets/template/mobile/default/js/photoswipe/klass.min.js'
+'assets/template/mobile/default/js/photoswipe/code.photoswipe.jquery-3.0.4.min.js'
+'assets/bindu/3rd/select2/select2.js'
+'assets/bindu/3rd/mask/js/jquery.maskedinput.min.js'
+'assets/module/accordion/js/jquery.cookie.js'
+'assets/module/accordion/js/jquery.accordion.js'
+'assets/module/remodal/js/jquery.remodal.js'
+'assets/bindu/3rd/tooltip/js/iml.js'
+'assets/bindu/3rd/simple-editor/js/jquery.classyedit.js'
+'assets/bindu/3rd/rcswitcher/js/rcswitcher.min.js'
+'assets/bindu/3rd/time-picker/js/jquery.ptTimeSelect.js'
+'assets/bindu/3rd/jquery-validation/jquery.validate.min.js'
+'assets/module/capSlide/js/jquery.capSlide.js'
+'assets/template/mobile/default/js/o-script.js'
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+        jQuery('#camera_wrap_4').camera({
+            height: 'auto',
+            loader: 'bar',
+            pagination: false,
+            thumbnails: false,
+            hover: false,
+            opacityOnGrid: false
+        });
+
+        $(".mobile").mask("(99999) 999-999");
+        jQuery('.select2').select2({
+
+            placeholder: "Select a institute level",
+            allowClear: true,
+            theme: "classic"
+
+
+        });
+        //  The second way to initialize:
+        $('[data-remodal-id=modal2]').remodal({
+            modifier: 'with-red-theme'
+        });
+
+        $('.scrollToTop').click(function(){
+            $('html, body').animate({scrollTop : 0},800);
+            return false;
+        });
+
+        $('.plainText').bind('keyup blur',function(){
+                    var node = $(this);
+                    node.val(node.val().replace(/[^a-z]/g,'') ); }
+        );
+        var acc_wrapper = $('.tm-accordion');
+        $('.tm-accordion .accordion-container').hide();
+        $.each(acc_wrapper, function(index, item){
+            $(this).find($('.accordion-title')).first().addClass('active').next().show();
+
+        });
+        $('.accordion-title').on('click', function(e) {
+            if( $(this).next().is(':hidden') ) {
+                $(this).parent().find($('.active')).removeClass('active').next().slideUp(300);
+                $(this).toggleClass('active').next().slideDown(300);
+            }
+            e.preventDefault();
+        });
+
+        $(".classy-editor").ClassyEdit();
+        $(".aboutus-editor").ClassyEdit();
+
+        var checkCookie = $.cookie("nav-item");
+        if (checkCookie != "") {
+            $('#nav > li > a:eq('+checkCookie+')').addClass('active').next().show();
+        }
+        $('#nav > li > a').click(function(){
+            var navIndex = $('#nav > li > a').index(this);
+            $.cookie("nav-item", navIndex);
+            $('#nav li div').slideUp();
+            if ($(this).next().is(":visible")){
+                $(this).next().slideUp();
+            } else {
+                $(this).next().slideDown();
+            }
+            $('#nav li a').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        $('.gallery').click(function(){
+            alert('test');
+            $("#Gallery a").photoSwipe();
+        });
+
+        {% block documentready %}
+        {% endblock %}
+
+    });
+</script>
+<style>
+
+    .o-buttons.firoza {
+        background:#008d71;
+    }
+
+    .o-buttons.green {
+        background:#35aa47;
+    }
+
+    .o-buttons.blue {
+        background: #0362fd;
+    }
+
+    .content-margin{
+        margin: 10px; margin-bottom:40px; margin-top:0; background-color:#ffffff!important;
+    }
+    article p.posts-summary {
+        height: 70px;
+        overflow: hidden;
+        padding-right: 5px;
+        line-height: 17px;
+        padding-top: 8px;
+        text-align: left;
+    }
+    article a:hover{
+        background-color:#c1cbd0!important;
+    }
+    .list{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+    }
+    .list .ul-list{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+    }
+    .list .ul-list li{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 20px;
+        line-height: 20px;
+
+    }
+    .list .ul-list li span{
+        width: 20px;
+        padding-right: 10px;
+        display: inline-block;
+    }
+    .center{
+        text-align: center;
+    }
+
+    .module-title{
+        position: relative;
+        margin-bottom:15px;
+        font-size: 13px;
+        padding-bottom: 5px;
+        padding-top: 5px;
+
+    }
+    .module-title p{
+        border-bottom: 1px solid #000033;
+        line-height: 18px;
+        padding-bottom: 5px;
+        color: rgb(60, 150, 175);
+    }
+/* ===========================Customer Register Form CSS Global for Mobile=========================================*/
+    .register {
+        margin-top: 30px;
+    }
+
+    .register .fa-icon {
+        display: inline-block;
+        top: 7px;
+        position: absolute;
+        left: 10px;
+    }
+
+    .register input[type="text"] , .register input[type="password"], .register textarea{
+        width: 100%;
+        background-color: #FFF;
+        border: 1px solid #D7D9DB;
+        padding: 3px 10px;
+        height: 35px;
+        color: #555;
+        outline: none;
+        font-size: 13px !important;
+        padding-left: 25px!important;
+        box-shadow: none;
+        margin-bottom: 5px;
+    }
+    .register textarea{
+        padding-left: 5px!important;
+        height: 80px;
+    }
+    .register p input[type="text"], #signup p input[type="password"] , .register .select2 {
+        width: 100%;
+        height: 35px;
+    }
+    .register .select2-container , .register .select2-choice {
+        height: 35px;
+        line-height: 32px;
+    }
+    .register ul{
+        margin-bottom: 2px;
+    }
+    .register ul li{
+        list-style: none;
+        color: red;
+    }
+
+    .register .submit {
+        background-color: #131e2d;
+        color: #FFF;
+        border: none;
+        text-transform: uppercase;
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    .register p {
+        text-align: left;
+        position: relative;
+    }
+    .register p {
+        margin-bottom: 20px;
+    }
+
+    .register .btn.blue {
+        color: white;
+        text-shadow: none;
+        background-color: #4d90fe;
+    }
+    .register .btn {
+        background-color: #e5e5e5;
+        background-image: none;
+        filter: none;
+        border: 0;
+        padding: 7px 14px;
+        font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color: #333333;
+        cursor: pointer;
+        outline: none;
+        -webkit-box-shadow: none !important;
+        -moz-box-shadow: none !important;
+        box-shadow: none !important;
+        -webkit-border-radius: 0 !important;
+        -moz-border-radius: 0 !important;
+        border-radius: 0 !important;
+        -webkit-text-shadow: none;
+        -moz-text-shadow: none;
+        text-shadow: none;
+    }
+    #modal1Desc{
+        padding: 0;
+    }
+    .remodal-close{
+        top:35px
+    }
+    .remodal #modal1Title {
+        color: #fff;
+        font-size: 15px;
+        padding: 0px;
+        text-align: left;
+        padding-bottom:20px;
+    }
+
+</style>
+</body>
+</html>

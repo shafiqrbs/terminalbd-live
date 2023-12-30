@@ -1,0 +1,61 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Templating list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Backgroundcolor</th>
+                <th>Headercolor</th>
+                <th>Footercolor</th>
+                <th>Bodycolor</th>
+                <th>Menucolor</th>
+                <th>Menulicolor</th>
+                <th>Menulihovercolor</th>
+                <th>Sitefontsize</th>
+                <th>Sitefontfamily</th>
+                <th>Anchorcolor</th>
+                <th>Anchorhovercolor</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('templating_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.backgroundColor }}</td>
+                <td>{{ entity.headerColor }}</td>
+                <td>{{ entity.footerColor }}</td>
+                <td>{{ entity.bodyColor }}</td>
+                <td>{{ entity.menuColor }}</td>
+                <td>{{ entity.menuLiColor }}</td>
+                <td>{{ entity.menuLiHoverColor }}</td>
+                <td>{{ entity.siteFontSize }}</td>
+                <td>{{ entity.siteFontFamily }}</td>
+                <td>{{ entity.anchorColor }}</td>
+                <td>{{ entity.anchorHoverColor }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('templating_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('templating_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('templating_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+    {% endblock %}

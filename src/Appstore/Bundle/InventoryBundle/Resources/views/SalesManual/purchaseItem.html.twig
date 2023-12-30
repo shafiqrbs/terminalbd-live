@@ -1,0 +1,181 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Item Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('item') }}">Item</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Item Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Item lists</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a target="_blank" href="{{ path('inventory_salesmanual_busket') }}" id="btn-create-barcode" class="btn blue" >
+                                    Busket
+                                    <i class="icon-shopping-cart"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+
+                                    <div class="row-fluid" style="margin-bottom: 10px">
+                                        <div class="span3">
+                                            <input type="text" id="barcode" name="barcode" required="required"  class="m-wrap span12 select2Item " >
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="sku" name="sku" required="required"  class="m-wrap span12 select2Item " >
+                                        </div>
+                                        <div class="span6">
+                                            <input type="text" id="sku" name="sku" required="required"  class="m-wrap span12 select2Item " >
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span3">
+                                            <input type="text" id="item" name="item"  class="span12 select2Product" value="{% if searchForm.item is defined %}{{ searchForm.item }}{% endif %}"  autocomplete="off" placeholder="Enter item name">
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="size" name="size"  class="leftMargin span12 select2Size" value="{% if searchForm.size is defined %}{{ searchForm.size }}{% endif %}"  autocomplete="off" placeholder="Select size name">
+                                        </div>
+
+                                        <div class="span3">
+                                            <input type="text" id="color" name="color"  class="leftMargin span12 select2Color" value="{% if searchForm.color is defined %}{{ searchForm.color }}{% endif %}"  autocomplete="off" placeholder="Select color name">
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="category" name="category"  class="leftMargin span12 select2Category" value="{% if searchForm.category is defined %}{{ searchForm.category }}{% endif %}"  autocomplete="off" placeholder="Select category name">
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span3">
+                                            <input type="text" id="brand" name="brand"  class="leftMargin span12 select2Brand" value="{% if searchForm.brand is defined %}{{ searchForm.brand }}{% endif %}"  autocomplete="off" placeholder="Product brand name">
+                                        </div>
+
+                                        <div class="span3">
+                                            <input type="text" id="vendor" name="vendor"  class="leftMargin span12 select2Vendor" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Select vendor name">
+                                        </div>
+                                        <div class="span6">
+                                            <div class="controls">
+                                                <div class="input-append span11">
+                                                    <input type="text" id="grn" name="grn"  class="m-wrap span12" value="{% if searchForm.grn is defined %}{{ searchForm.grn }}{% endif %}"  autocomplete="off" placeholder="Enter grn no">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="numeric" ><span class="btn black mini"><i class="icon  icon-shopping-cart"></i></span></th>
+                                    <th class="numeric" >SKU Name </th>
+                                    <th class="numeric" >Received</th>
+                                    <th class="numeric" >GRN</th>
+                                    <th class="numeric" >Purchase price</th>
+                                    <th class="numeric" >Sales price</th>
+                                    <th class="numeric" >Stock Qnt</th>
+                                    <th class="numeric" >Ongoing Qnt</th>
+                                    <th class="numeric" >Reaming Qnt</th>
+                                    <th class="numeric" >Unit</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for purchaseItem in entities %}
+
+                                    <tr {% if purchaseItem.itemStock == 0    %} class="disabled" aria-disabled="true" {% endif %}>
+                                        <td><input {% if purchaseItem.id in selected %} checked="checked" {% endif %}  data-id="{{ purchaseItem.id }}"  type="checkbox" name="item[]" value="{{ purchaseItem.id }}" class="check tooltips item" data-trigger="hover" data-original-title="Add sales"  ></td>
+                                        <td class="numeric" >{{ purchaseItem.item.name }}</td>
+                                        <td class="numeric" >{% if purchaseItem.purchase is not empty %}{{ purchaseItem.purchase.created|date('d-m-Y') }}{% endif %}</td>
+                                        <td class="numeric" >{% if purchaseItem.purchase is not empty %}{{ purchaseItem.purchase.grn }}{% endif %}</td>
+                                        <td class="numeric" >{% if app.user.granted("ROLE_DOMAIN_INVENTORY_PURCHASE") or app.user.granted("ROLE_DOMAIN") %}{{ purchaseItem.purchasePrice }}{% endif %}</td>
+                                        <td class="numeric" >{{purchaseItem.salesPrice }}</td>
+                                        <td class="numeric" >{{ purchaseItem.itemStock }}</td>
+                                        <td class="numeric" >{{ ongoingItem[purchaseItem.id]|default('')}}</td>
+                                        <td class="numeric" >{{ purchaseItem.itemStock - ongoingItem[purchaseItem.id]|default(0)  }}</td>
+                                        <td class="numeric" >{% if purchaseItem.item.masterItem.productUnit is not empty %}{{  purchaseItem.item.masterItem.productUnit.name }}{% endif %}</td>
+
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+<style>
+    .disabled{
+        opacity: 0.5;
+    }
+    ul.page-sidebar-menu > li.current_ancestor > ul.menu_level_1{
+        dispaly:none!important
+    }
+</style>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/editable.js'
+    '@InventoryBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+
+    var itemArr = $.cookie('items') ? $.cookie('items').split(',') : [];
+
+    $('body').on('change', 'input.item', function(el) {
+
+        var val = $(this).val();
+        if($(this).prop('checked')) {
+        itemArr.push(val);
+        }else{
+        var index = itemArr.indexOf(val);
+        if (index > -1) {
+        itemArr.splice(index, 1);
+        }
+        }
+        $.cookie('items', itemArr, {path: '/'});
+    });
+    EditableInit();
+    ApproveProcess();
+{% endblock %}

@@ -1,0 +1,22 @@
+{% if globalOption.ecommerceConfig.isSize == 1 and product.itemSubs is not empty  and product.itemSubs|length > 1  %}
+    <div class="row">
+        <div class="col-xs-12 col-lg-12 ">
+            <select class="col-xs-12 col-lg-12 item-select inlineSizeChange" data-id="{{ product.id }}" data-url="{{ path(globalOption.subDomain~'_webservice_product_inline_item_load', {'product' : product.id }) }}" name="size-{{ product.id }}" id="size-{{ product.id }}" >
+                {% for goodsItem in  product.itemSubs  %}
+                    <option {% if subItem.id == goodsItem.id %} selected="selected" {% endif %}  value="{{ goodsItem.id }}" >{% if goodsItem.size is not empty %}{{ goodsItem.size.name }}{% else %} Default {% endif %}{% if goodsItem.productUnit is not empty %} - {{ goodsItem.productUnit.name }}{% endif %} {{ globalOption.ecommerceConfig.currency }} {% if goodsItem.discountPrice is empty %}{{ goodsItem.salesPrice|number_format }} {% else %}{{ goodsItem.discountPrice|number_format }}{% endif %}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+{% endif %}
+{% if globalOption.ecommerceConfig.isColor == 1 and subItem.colors is not empty and subItem.colors is defined and subItem.colors|length > 1 %}
+    <div class="row">
+        <div class="col-xs-12 col-lg-12">
+            <select class="item-select col-xs-12 col-lg-12" name="color-{{ product.id }}" id="color-{{ product.id }}" >
+                {% for color in  subItem.colors %}
+                    <option value="{{ color.id }}" >{{ color.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+{% endif %}

@@ -1,0 +1,123 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN inventory_customer HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="inventory_customer-title">
+                    Calendar Weekend Setup
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Calendar Weekend Setup</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END inventory_customer HEADER-->
+        <!-- BEGIN inventory_customer CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Calendar Weekend Setup</div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div id="blackout"></div>
+                            {{ form_widget(form.weekendDate) }}
+                            <div class="clearfix"><br/></div>
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-center">
+                                    <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+<style>
+    .ui-datepicker.ui-widget-content{
+        width: 99.5%!important;
+    }
+    .ui-datepicker-calendar thead tr{
+        border: 1px solid #ffb848;
+    }
+    .ui-datepicker .ui-datepicker-calendar .ui-state-active {
+        background-image: none !important;
+        background-color: #ffb848 !important;
+        border-color: #ffb848;
+    }
+
+    .ui-datepicker .ui-datepicker-calendar .ui-state-highlight .ui-state-default{
+        background-image: none !important;
+        background-color: #ffb848 !important;
+        border-color: #ffb848;
+    }
+    /* jQuery UI Datepicker moving pixels fix */
+    table.ui-datepicker-calendar {border-collapse: separate;}
+    .ui-datepicker-calendar td {border: 1px solid transparent;}
+
+    /* jQuery UI Datepicker hide datepicker helper */
+    #ui-datepicker-div {display:none;}
+
+    /* jQuery UI Datepicker emphasis on selected dates */
+    .ui-datepicker .ui-datepicker-calendar .ui-state-highlight a {
+        background: #743620 none;
+        color: white;
+    }
+
+
+</style>
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+    var today = new Date();
+    var y = today.getFullYear();
+    {% if blackout is not empty %}
+        $('#blackout').multiDatesPicker({
+            altField:'#appstore_bundle_weekend_weekendDate',
+            addDates: [{{ blackout|raw }}],
+            numberOfMonths: [3,4],
+            defaultDate: '1/1/'+y
+        });
+    {% else %}
+        $('#blackout').multiDatesPicker({
+        altField:'#appstore_bundle_weekend_weekendDate',
+        numberOfMonths: [3,4],
+        defaultDate: '1/1/'+y
+        });
+    {% endif %}
+
+    $('.btn-dark').click(function(){
+        var blackout_date = $('#appstore_bundle_weekend_weekendDate').val();
+        if(blackout_date ==""){
+            alert('Error. You cannot select a date in the past. Please try again.');
+            return false;
+        }
+        $('#from').submit();
+
+    })
+
+{% endblock %}
+

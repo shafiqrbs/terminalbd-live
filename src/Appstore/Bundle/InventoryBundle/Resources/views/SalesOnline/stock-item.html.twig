@@ -1,0 +1,374 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="page-title">
+                Product Sales System
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li>
+                    <a href="{{ path('inventory_salesmanual') }}"> Product Sales System</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li><a href="#">Item Lists</a></li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box green tabbable">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-reorder"></i>Invoice No - {{ entity.invoice }} </div>
+                    <div class="actions">
+                        <div class="btn-group">
+                            <a class="btn" href="{{ path('inventory_salesonline') }}"><i class="icon-th-list"></i> Sales</a>
+                            <a class="btn red" href="{{ path('inventory_salesonline_new') }}"><i class="icon-plus-sign"></i> Add Sales</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="portlet-body flip-scroll">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="clearfix">&nbsp;</div>
+
+                        <div class="row-fluid">
+                            <div class="row-fluid particular-info" style="padding-bottom: 2px!important;" >
+                                <div class="span2">
+                                    <input type="text" style="text-align:center; margin-left:15px;height: 42px!important;" class="m-wrap span12 form-control"  id="barcode" name="barcode" data-id="{{ entity.id }}" placeholder="Barcode"  value="" >
+                                </div>
+                                {{ form_start(itemForm) }}
+                                {{ form_row(itemForm._token) }}
+                                    <div class="span4">
+                                        {{ form_widget(itemForm.item) }}
+                                        {{ form_errors(itemForm.item) }}
+                                    </div>
+                                    <div class="span2">
+                                        <select style="height: 42px!important;" class="m-wrap span12 form-control purchaseItem stockItem" name="purchaseItem" id="purchaseItem">
+                                            <option>Select Barcode</option>
+                                        </select>
+                                    </div>
+                                    <div class="span4">
+                                    <div class="input-append span12" style="margin-bottom:0!important;margin-left: -15px;!important;">
+                                        <div class="input-group">
+                                                <span class="input-group-btn">
+                                                     <button href="javascript:" class="btn btn-large yellow">QTY</button>
+                                                     <input type="text" style="text-align:center; width:80px; height: 42px!important;" class="m-wrap number span5 form-control stockItem btn-qnt-particular" id="quantity" name="quantity" value="1" min="1" max="100">
+                                                </span>
+                                                <span class="input-group-btn">
+                                                    <button href="javascript:" class="btn btn-large red">Tk.</button>
+                                                    <input type="text" style="text-align:center;height: 42px!important;" class="m-wrap span3 form-control stockItem"  id="salesPrice" name="salesPrice"  value="" >
+                                                    <input type="hidden" name="purchasePrice" id="purchasePrice" value="">
+                                                    <button type="button" style="width:55px" class="btn btn-large black unit">-</button>
+                                                    <button type="submit" class="btn btn-large blue" id="addItem"><i class="icon-shopping-cart"></i> <strong>Add</strong></button>
+                                                </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{ form_end(itemForm) }}
+                            </div>
+                            <div class="row-fluid text-left" style="background: #DDDDDD; min-height: 30px; line-height: 30px;" >
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr class="head-gray">
+                                        <th class="numeric product-list">Current Stock</th>
+                                        <th class="numeric product-list" id="current-stock"></th>
+                                        <th class="numeric product-list">Sales Price</th>
+                                        <th class="numeric product-list" id="sales-price"></th>
+                                        <th class="numeric product-list">Status</th>
+                                        <th class="numeric product-list" id="item-status"></th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="clearfix">&nbsp;</div>
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+                        <div class="row-fluid">
+                            <div class="span8">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                                            <thead class="flip-content ">
+                                            <tr class="head-blue">
+                                                <th class="numeric" ><i class="icon icon-th-list"></i></th>
+                                                <th class="numeric" >Name </th>
+                                                <th class="numeric" >Quantity</th>
+                                                <th class="numeric" >Price</th>
+                                                <th class="numeric" >Total</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="salesItem">
+                                            {% set quantity = 0 %}
+                                            {% set salesPrice = 0 %}
+                                            {% for salesitem in entity.salesItems %}
+                                                <tr id="remove-{{ salesitem.id }}">
+                                                    <td class="numeric" >{{ loop.index }}</td>
+                                                    <td  class="numeric">
+                                                        {{ salesitem.item.name }}
+                                                        {% if entity.inventoryConfig.isAttribute == 1 %}
+                                                            {% if salesitem.salesItemSerials is not empty %}
+                                                                <br/>Serial No:
+                                                                {% for serial in salesitem.salesItemSerials %}
+                                                                    {{ serial.barcode }}{{ not loop.last ? ',' }}
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                        {% if salesitem.assuranceType and salesitem.assuranceToCustomer is not empty %}
+                                                                <p>{{ salesitem.assuranceType }} : {{ salesitem.assuranceToCustomer }} - {{ salesitem.expiredDate|date('d-m-Y') }}</p>
+                                                        {% endif %}
+                                                            </td>
+                                                            <td class="span1" >
+                                                            {% if salesitem.salesItemSerials is not empty %}
+                                                            {{ salesitem.quantity }}
+                                                            <input type="hidden" id="quantity-{{ salesitem.id }}" rel="{{ salesitem.id }}" name="quantity[]"  value="{{ salesitem.quantity }}" class="quantity inputs td-inline-input" placeholder="{{ salesitem.purchaseItem.quantity }}" min="1" max="{{ salesitem.purchaseItem.quantity }}">
+                                                            {% else %}
+                                                            <input type="text" id="quantity-{{ salesitem.id }}" rel="{{ salesitem.id }}" name="quantity[]"  value="{{ salesitem.quantity }}" class="quantity inputs td-inline-input" placeholder="" min="1" max="">
+                                                            {% endif %}
+                                                            </td>
+                                                    <td>
+                                                        <input type="hidden" name="estimatePrice" id="estimatePrice-{{ salesitem.id }}" value="{{ salesitem.estimatePrice }}">
+                                                        <input class="numeric salesPrice inputs td-inline-input"  rel="{{ salesitem.id }}" id="salesPrice-{{ salesitem.id }}" type="text" name="salesPrice" value="{{ salesitem.salesPrice }}" placeholder="{{ salesitem.estimatePrice }}">
+                                                    </td>
+                                                    <td><span id="subTotalShow-{{ salesitem.id }}" ><strong>{{ salesitem.subTotal }}</strong></span></td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <a id="{{ salesitem.id }}" rel="{{ path('inventory_salesitem_delete',{'sales':entity.id,'salesItem':salesitem.id}) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="clearfix"></div>
+                                <div class="row-fluid">
+                                    <div class="span12" id="payment-info">
+                                        <div class="row-fluid">
+                                            <div class="span8"><strong>SUB-TOTAL TK.</strong></div>
+                                            <div class="span4"><strong class="subTotal">{{ entity.subTotal|number_format(2) }}</strong></div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span8"><strong>DISCOUNT TK.</strong></div>
+                                            <div class="span4"><strong class="discount">{{ entity.discount|number_format(2) }}</strong></div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span8"><strong>VAT/TAX TK.</strong></div>
+                                            <div class="span4"><strong class="vat">{{ entity.vat|number_format(2) }}</strong></div>
+                                        </div>
+                                        <div class="row-fluid" style="border-top: 2px solid #c49f47;padding-top: 10px;border-bottom: 2px solid #c49f47;margin-bottom: 10px;">
+                                            <div class="span8"><strong>NET-TOTAL TK.</strong></div>
+                                            <div class="span4"><strong class="salesTotal">{{ entity.total|number_format(2)    }}</strong></div>
+                                        </div>
+                                        <div class="row-fluid" id="dueReturn">
+                                            <div class="span8"><strong id="balance">DUE TK.</strong></div>
+                                            <div class="span4"><strong class="dueAmount">{{ entity.due }}</strong></div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span3"><label class="control-label"><strong>Discount</strong></label></div>
+                                            <div class="span5"> {{ form_widget(form.discountType) }}</div>
+                                            <div class="span4"> {{ form_widget(form.discountCalculation) }}</div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span8"><label class="control-label"><strong>Delivery Charge</strong></label></div>
+                                            <div class="span4">{{ form_widget(form.deliveryCharge) }}</div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span8"><label class="control-label"><strong>Receive TK.</strong></label></div>
+                                            <div class="span4">{{ form_widget(form.payment) }}</div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12 input-append-border">
+                                                {{ form_widget(form.transactionMethod) }}
+                                                {{ form_errors(form.transactionMethod) }}
+                                            </div>
+                                        </div>
+                                        <div id="cartMethod" class="bankHide">
+                                            <div class="row-fluid">
+                                                {{ form_widget(form.cardNo) }}
+                                                {{ form_errors(form.cardNo) }}
+                                            </div>
+                                            <div class="row-fluid">
+                                                {{ form_widget(form.paymentCard) }}
+                                                {{ form_errors(form.paymentCard) }}
+                                            </div>
+                                            <div class="row-fluid">
+                                                {{ form_widget(form.accountBank) }}
+                                                {{ form_errors(form.accountBank) }}
+                                            </div>
+                                        </div>
+                                        <div id="bkashMethod" class="mobileBankHide">
+                                            <div class="row-fluid">
+                                                {{ form_widget(form.accountMobileBank) }}
+                                                {{ form_errors(form.accountMobileBank) }}
+                                            </div>
+                                            <div class="row-fluid">
+                                                {{ form_widget(form.paymentMobile) }}
+                                                {{ form_errors(form.paymentMobile) }}
+                                            </div>
+                                            <div class="row-fluid">
+                                                {{ form_widget(form.transactionId) }}
+                                                {{ form_errors(form.transactionId) }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row-fluid">
+                                            <div class="span12 input-append-border">
+                                                {{ form_widget(form.salesBy) }}
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="input-append span12">
+                                                <input type="text" style="margin-left: 0!important; margin-bottom:15px!important" id="customerMobile" name="customerMobile"  class="span10 m-wrap select2CustomerName" value="{{ entity.customer.mobile }}"  autocomplete="off" placeholder="Customer mobile">
+                                                <a href="javascript:" class="pull-right btn blue  addCustomer"><i class="icon-user"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid customer" id="">
+                                            <div class="span12 input-append-border">
+                                                <div class="row-fluid">
+                                                    <div class="input-icon left input-height">
+                                                        <i class="icon-user"></i>
+                                                        <input type="text" id="customerName" name="customerName" class="m-wrap span12 customer-input" autocomplete="off" placeholder="Customer name" value="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid customer">
+                                            <div class="span12 input-append-border">
+                                                <div class="row-fluid">
+                                                    <div class="input-icon left input-height">
+                                                        <i class="icon-phone"></i>
+                                                        <input type="text" id="customerMobile" name="customerMobile" class="m-wrap span12 mobile customer-input" autocomplete="off" placeholder="Customer mobile no" value="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid customer">
+                                            <div class="span12 input-append-border">
+                                                <div class="row-fluid">
+                                                    <textarea id="customerAddress" name="customerAddress" class="m-wrap span12 customer-input" rows="2" placeholder="Enter customer address"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12 input-append-border">
+                                                <div class="row-fluid">
+                                                    {{ form_widget(form.remark) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="input-append span12">
+                                                <div class="btn-group">
+                                                    {{ form_widget(form.process) }}
+                                                    {{ form_errors(form.process) }}
+                                                   {# {{ form_widget(form.discount) }}#}
+                                                    <input type="hidden" name="total" id="total" value="{{ entity.total }}">
+                                                    <input type="hidden" name="paymentTotal" id="paymentTotal" value="{{ entity.total }}">
+                                                    <input type="hidden" name="salesId" id="salesId" value="{{ entity.id }}">
+                                                    <button rel=""  type="button" class="btn btn-large green paymentBtn" id="submitBtn"><i class="icon-refresh m-icon-white"></i>&nbsp;Process</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .disabled{
+            opacity: 0.5;
+        }
+        #sales_process{
+            height: 42px!important;
+        }
+        #payment-info{
+            padding:15px;
+            background-color:#E5E7E7;
+            border:1px solid #B7B9B9;
+        }
+        #sales_discount{
+            border: 2px solid #eca22e!important;
+        }
+        #sales_payment{
+            border: 2px solid red!important;
+        }
+        .customer{
+            display: none;
+        }
+        input[class*="span"].m-wrap{
+            background: #ffffff!important;
+        }
+        table.dataTable tbody th, table.dataTable tbody td {
+            padding: 1px 10px!important;
+        }
+        .table th.product-list, .table td.product-list {
+            font-size: 12px;
+            height: 30px;
+            text-align: left;
+            padding-right: 5px;
+            line-height: 12px;
+            font-weight: bold;
+            padding-left: 15px;
+            color: #e61212!important;
+
+        }
+        #dueReturn{
+            background: red;
+            color: #fff;
+            line-height: 45px;
+            margin-left: -15px!important;
+            padding-left: 15px;
+            margin-right: 16px!important;
+            margin-bottom: 10px;
+        }
+
+    </style>
+    {% endblock %}
+
+    {% block cssBlock %}
+        {% stylesheets filter='cssrewrite'
+            '@InventoryBundle/Resources/public/css/manual-sales.css'
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}"/>
+        {% endstylesheets %}
+    {% endblock  %}
+    {% block javascriptBlock %}
+        {{ parent() }}
+        {% javascripts
+            '@InventoryBundle/Resources/public/js/approveProcess.js'
+            '@InventoryBundle/Resources/public/js/sales-online.js'
+        %}
+            <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    {% endblock %}
+    {% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+    InventorySales({{ entity.id ? entity.id : 0 }});
+{% endblock %}

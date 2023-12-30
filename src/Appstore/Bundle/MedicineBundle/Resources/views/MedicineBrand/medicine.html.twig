@@ -1,0 +1,183 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage New Medicine
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">New Medicine</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage New Medicine</div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="portlet-body ">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="row-fluid">
+                                <!--/span-->
+                                <div class="span4">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Brand Name<span class="required">*</span></label>
+                                        <div class="controls">
+                                            <input type="text" id="brand" name="brand" required="required" class="m-wrap span12" autocomplete="off" placeholder="Enter medicine brand name">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Strength<span class="required">*</span></label>
+                                        <div class="controls">
+                                            <input type="text" id="strength" name="strength" required="required" class="m-wrap span12 select2Strength" autocomplete="off" placeholder="Strength Ex:500mg/10ml">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Medicine Form<span class="required">*</span></label>
+                                        <div class="controls">
+                                            <input type="text" id="medicineForm" name="medicineForm" required="required" class="m-wrap span12 select2MedicineForm" autocomplete="off" placeholder="Form Ex:tablet,capsule,injection">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row-fluid">
+                                <!--/span-->
+                                <div class="span4">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Generic</label>
+                                        <div class="controls">
+                                            <input type="text" id="generic" name="generic" required="required" class="m-wrap span12" autocomplete="off" placeholder="Enter medicine generic name">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Company Name</label>
+                                        <div class="controls">
+                                            <input type="text" id="companyName" name="companyName" required="required" class="m-wrap span12 select2MedicineCompany" autocomplete="off" placeholder="Enter medicine company name">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span2">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Pack Size</label>
+                                        <div class="controls">
+                                            <input type="text" id="packSize" name="packSize" required="required" class="m-wrap span12 select2PackSize" autocomplete="off" placeholder="Pack size ex:100's pack">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span2">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">MRP</label>
+                                        <div class="controls">
+                                            <input type="text" id="mrp" name="mrp" required="required" class="m-wrap span12" autocomplete="off" placeholder="MRP">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green" id="submitBtn" ><i class="icon-save"></i> Add Medicine</button>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+
+                            <table id="product" class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Generic</th>
+                                    <th class="numeric" >Strength</th>
+                                    <th class="numeric" >Medicine Form</th>
+                                    <th class="numeric" >Pack Size</th>
+                                    <th class="numeric" >Medicine Company</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in pagination %}
+                                    <tr>
+                                        <td class="numeric" >{{ entity.name }}</td>
+                                        <td class="numeric" >{{ entity.medicineGeneric.name }}</td>
+                                        <td class="numeric" >{{ entity.medicineForm }}</td>
+                                        <td class="numeric" >{{ entity.packSize }}</td>
+                                        <td class="numeric" >{{ entity.strength }}</td>
+                                        <td class="numeric" >{{ entity.medicineCompany.name }}</td>
+                                        <td class="numeric" >
+                                            <a href="{{ path('medicine_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+                                            <a href="{{ path('medicine_copy', { 'id': entity.id }) }}" class="btn purple mini" ><i class="icon-retweet"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@MedicineBundle/Resources/public/css/datatable-pagination.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/medicine.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $('#product').DataTable( {
+    iDisplayLength: 25,
+    scrollY:        '110vh',
+    scrollCollapse: true,
+    paging:         true,
+    bInfo : true,
+    orderable: true,
+    bSort: true,
+    aoColumnDefs: [
+    {
+    bSortable: false,
+    aTargets: [ -1 ]
+    }
+    ]
+    });
+{% endblock %}

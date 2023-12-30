@@ -1,0 +1,100 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Damage
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Damage</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Damage Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('business_damage_new') }}"><i class="icon-plus-sign"></i> Add Damage</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Particular Name </th>
+                                    <th class="numeric" >Date </th>
+                                    <th class="numeric" >Quantity</th>
+                                    <th class="numeric" >Purchase Price</th>
+                                    <th class="numeric" >SubTotal</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td class="numeric" >{{ entity.businessParticular.name }}</td>
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.quantity }}</td>
+                                        <td class="numeric" >{{ entity.businessParticular.purchasePrice }}</td>
+                                        <td class="numeric" >{{ entity.subTotal }}</td>
+                                       <td class="numeric" >
+                                           {% if (entity.process == 'Created' and app.user.granted("ROLE_BUSINESS_MANAGER")) or (entity.process == 'Created' and app.user.granted("ROLE_DOMAIN")) %}
+                                               <a title="Are you sure went to delete ?" href="{{ path('business_damage_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                               <a  href="javascript:" data-id=""  data-url="{{ path('business_damage_approved',{'id':entity.id}) }}" class="btn blue mini approve"><i class="icon-ok"></i>&nbsp;Approve</a>
+                                           {% else %}
+                                               <a  href="javascript:"  class="btn green mini approve"><i class="icon-ok"></i>&nbsp;Approved</a>
+                                           {% endif %}
+                                       </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@DomainUserBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+
+
+
+

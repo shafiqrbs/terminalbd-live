@@ -1,0 +1,105 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Payroll Generate
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('payroll') }}">Payroll Generate Sheet</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Payroll Generate Sheet</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Payroll Generate Sheet </div>
+                        <div class="actions">
+                            <a href="{{ path('payroll') }}" class=" btn red"><i class="fa fa-th-list"></i> Payroll</a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content">
+                                <tr class="head-yellow">
+                                    <th class="numeric" ><strong>Account Type</strong></th>
+                                    <td>{{ entity.salaryType|capitalize }}</td>
+                                    <th class="numeric" ><strong>Basic</strong></th>
+                                    <td>{{ entity.basicAmount|number_format }}</td>
+                                    <th class="numeric" ><strong>Allowance</strong></th>
+                                    <td>{{ entity.allowanceAmount }}</td>
+                                    <th class="numeric" ><strong>Deduction</strong></th>
+                                    <td>{{ entity.deductionAmount }}</td>
+                                    <th class="numeric" ><strong>Total Amount</strong></th>
+                                    <td>{{ entity.totalAmount }}</td>
+                                </tr>
+                                <tr class="head-red">
+                                    <th class="numeric" ><strong>Month & Year</strong></th>
+                                    <td>{{ entity.effectedMonth }}</td>
+                                    <th class="numeric" ><strong>Loan Receive</strong></th>
+                                    <td>{{ entity.loanReceive|number_format }}</td>
+                                    <th class="numeric" ><strong>Advance</strong></th>
+                                    <td>{{ entity.advanceAmount|number_format }}</td>
+                                    <th class="numeric" ><strong>Arear</strong></th>
+                                    <td>{{ entity.arearAmount|number_format }}</td>
+                                    <th class="numeric" ><strong>Payables</strong></th>
+                                    <td>{{ entity.payableAmount|number_format }}</td>
+                                </tr>
+                                </thead>
+                            </table>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Employee </th>
+                                    <th class="numeric" >Total Day</th>
+                                    <th class="numeric" >Weekend</th>
+                                    <th class="numeric" >Leave</th>
+                                    <th class="numeric" >Present</th>
+                                    <th class="numeric" >Basic</th>
+                                    <th class="numeric" >Allowance</th>
+                                    <th class="numeric" >Deduction</th>
+                                    <th class="numeric" >Advance</th>
+                                    <th class="numeric" >Loan</th>
+                                    <th class="numeric" >Arear</th>
+                                    <th class="numeric" >Salary</th>
+                                    <th class="numeric" >Payable</th>
+                                    <th class="numeric" >Hold</th>
+                                    <th class="numeric" ><i class='fa fa-cog'></i></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{ data|raw }}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+

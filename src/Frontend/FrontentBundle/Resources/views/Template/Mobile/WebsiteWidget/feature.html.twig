@@ -1,0 +1,79 @@
+{% if widget.jsFeature is empty %}
+<div class="details-grid">
+    <div class="details-shade">
+        <div class="details-right">
+            {% if globalOption.templateCustomize.mobileHomeShowLogo == 1 %}
+                {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% if widget.jsFeature is not empty and widget.jsFeature.slug == 'slider' %}
+    <div id="main-carousel"  class="carousel slide carousel-fade" data-ride="carousel" data-match-height="slider-height">
+        <!-- Indicators -->
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" >
+            {% if globalOption.templateCustomize.mobileHomeShowLogo == 1 %}
+                <a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}" id="mobile-logo">
+                    {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+                </a>
+            {% endif %}
+            {% for slide in widget.featureWidgetItems %}
+                {% set path ='' %}
+                 {% if slide.feature.targetTo == 'Page' and slide.feature.menu is not empty %}
+                    {% set path =  path(globalOption.subDomain ~ '_webservice_module',{'module':slide.feature.menu.slug})  %}
+                 {% endif %}
+                <div class="item carousel-cover {% if loop.index-1 == 0 %} active {% endif %}" style="background-image: url('{{ image(slide.feature.webPath) }}')!important;">
+                    <div class="carousel-caption" >
+                        {% if slide.feature.targetTo == 'Page' and slide.feature.menu is not empty %}
+                        <a class=""  href="{{ path(globalOption.subDomain ~ '_webservice_module',{'module':slide.feature.menu.slug}) }}">{{ slide.feature.name }} <i class="fa fa-angle-double-right"></i></a>
+                    {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <a class="carousel-main-control carousel-left" href="#main-carousel" data-slide="prev">‹</a>
+        <a class="carousel-main-control carousel-right" href="#main-carousel" data-slide="next">›</a>
+    </div>
+    <div class="clearfix"></div>
+    {% if globalOption.templateCustomize.siteTitle is not empty %}
+        <div class="container wow fadeInDown grid" data-wow-delay="2s" >
+            <div class="section-header" style="margin-top:60px">
+                <{{ globalOption.templateCustomize.siteTitleSize }} class="animated fadeInLeftBig slide-delay-1" >{{ globalOption.templateCustomize.siteTitle }}</{{ globalOption.templateCustomize.siteTitleSize }}>
+                {% if globalOption.templateCustomize.siteSlogan is not empty %}
+                    <p class="animated fadeInUpBig slide-delay-3" >{{  globalOption.templateCustomize.siteSlogan }}</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
+{% if widget.jsFeature is not empty and widget.jsFeature.slug == 'feature' %}
+<div class="container">
+    <div class="wow fadeInDown" data-wow-delay="1s">
+        <div class="row">
+            {% for slide in widget.featureWidgetItems %}
+                {% if(slide.feature.webPath) %}
+                    {% set path ='' %}
+                    {% if slide.feature.targetTo == 'Page' and slide.feature.menu is not empty %}
+                        {% set path =  path(globalOption.subDomain ~ '_webservice_module',{'module':slide.feature.menu.slug})  %}
+                    {% endif %}
+                    <div  style="overflow: hidden;height: {{ slide.divHeight }}px; width: {{ slide.divWidth }}%;"  class="col-xs-12 col-md-12 feature-box">
+                        <div class="box-img">
+                            {%  set imageWidth =  slide.divWidth~'%' %}
+                            <img class="img-responsive img-responsive-feature" style="height:{{ slide.divHeight }}px; width: 100%"   src="{{ image(slide.feature.webPath) }}" alt="">
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="container">
+    {% if widget.content is not empty %}
+        <div class="clearfix"><br/></div>
+        <div class="row grid wow fadeInDown" data-wow-delay="2s"> <div class="col-md-12 text-justify">{{ widget.content|raw }}</div></div>
+        <div class="clearfix"><br/></div>
+    {% endif %}
+</div>

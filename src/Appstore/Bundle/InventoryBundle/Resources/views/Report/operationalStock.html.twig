@@ -1,0 +1,152 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Operational Group Stock Items
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> Operational Stock Item Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i> Operational Stock Item Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                {#<ul class="dropdown-menu pull-right">
+                                    <li><a href=""><i class="icon-print"></i>&nbsp; Print</a></li>
+                                    <li><a href=""><i class=" icon-download"></i>&nbsp;Pdf</a></li>
+                                    <li><a href=""><i class=" icon-download-alt"></i>&nbsp;Excel</a></li>
+                                </ul>#}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body flip-scroll">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="item" name="item"  class="span12 select2Product" value="{% if searchForm.item is defined %}{{ searchForm.item }}{% endif %}"  autocomplete="off" placeholder="Enter item name ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="unit" name="unit"  class="span12 select2Unit" value="{% if searchForm.unit is defined %}{{ searchForm.unit }}{% endif %}"  autocomplete="off" placeholder="Enter unit name ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="size" name="size"  class="span12 select2Size" value="{% if searchForm.size is defined %}{{ searchForm.size }}{% endif %}"  autocomplete="off" placeholder="Enter size name ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="color" name="color"  class="span12 select2Color" value="{% if searchForm.color is defined %}{{ searchForm.color }}{% endif %}"  autocomplete="off" placeholder="Enter color name ">
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="brand" name="brand"  class="span12 select2Brand" value="{% if searchForm.brand is defined %}{{ searchForm.brand }}{% endif %}"  autocomplete="off" placeholder="Enter brand name ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="" name="vendor"  class="span12 select2Vendor" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Enter vendor name">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="category" name="category"  class="span12 select2Category" value="{% if searchForm.category is defined %}{{ searchForm.category }}{% endif %}"  autocomplete="off" placeholder="Enter category name">
+                                    </div>
+                                    <div class="span3">
+
+                                        <select id="mode" name="mode"  class="span12 select2" >
+                                            <option>Select Operation</option>
+                                            <option value="purchase" {% if searchForm.mode is defined and searchForm.mode == 'purchase' %} selected="selected" {% endif %} >Purchase</option>
+                                            <option value="purchaseReturn" {% if searchForm.mode is defined and searchForm.mode == 'purchaseReturn' %} selected="selected" {% endif %} >Purchase Return</option>
+                                            <option value="sales" {% if searchForm.mode is defined and searchForm.mode == 'sales' %} selected="selected" {% endif %} >Sales</option>
+                                            <option value="salesReturn" {% if searchForm.mode is defined and searchForm.mode == 'salesReturn' %} selected="selected" {% endif %} >Sales Return</option>
+                                            <option value="online" {% if searchForm.mode is defined and searchForm.mode == 'online' %} selected="selected" {% endif %} >Online Sales</option>
+                                            <option value="onlineReturn" {% if searchForm.mode is defined and searchForm.mode == 'onlineReturn' %} selected="selected" {% endif %} >Online Sales Return</option>
+                                            <option value="damage" {% if searchForm.mode is defined and searchForm.mode == 'damage' %} selected="selected" {% endif %} >Damage</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <input type="text" id="startDate" name="startDate"  class="span11 m-wrap date-picker" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}{{ "now"|date("m-d-Y") }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %}  ">
+                                    </div>
+                                    <div class="span6">
+                                        <div class="controls">
+                                            <div class="input-append span11">
+                                                <input type="text" id="endDate" name="endDate"  class="span11 m-wrap date-picker" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}{{ "now"|date("m-d-Y") }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                            <thead class="flip-content ">
+                            <tr class="head-grey">
+                                <th class="numeric" ><i class="icon-reorder"></i></th>
+                                <th class="numeric" >Sku</th>
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Unit</th>
+                                <th class="numeric" >Quantity</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for entity in entities %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td class="numeric" >{{ entity.sku }}</td>
+                                    <td class="numeric" >{{ entity.name }}</td>
+                                    <td class="numeric" >{% if entity.unit is not empty %}{{ entity.unit }}{% endif %}</td>
+                                    <td class="numeric" >{% if quantity[entity.itemId] is defined %}{{ quantity[entity.itemId] }}{% endif %}</td>
+                                 </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="pagination pull-center"  >
+                            {{ knp_pagination_render(entities) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}

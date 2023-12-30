@@ -1,0 +1,15 @@
+{% if entity.purchaseItems is not empty %}
+    {% for item in entity.purchaseItems %}
+        <tr id="remove-{{ item.id }}">
+            <td  class="span1">{{ loop.index }}</td>
+            <td  class="span1">{{ item.businessParticular.particularCode }}</td>
+            <td class="span3">{{ item.businessParticular.name }}</td>
+            <td class="span1">{{ item.salesPrice }}</td>
+            <td class="span1">{{ item.purchasePrice }}</td>
+            <td class="span1">{{ item.quantity }}</td>
+            <td class="span1">{% if item.businessParticular.unit is not empty %}{{ item.businessParticular.unit.name }}{% endif %}</td>
+            <td class="span1">{{ item.purchaseSubTotal|number_format }}</td>
+            <td class="span1"><a id="{{ item.id }}" title="Are you sure went to delete ?" data-url="{{ path('business_purchase_particular_delete',{'invoice': entity.id ,'id': item.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a></td>
+        </tr>
+    {% endfor %}
+{% endif %}

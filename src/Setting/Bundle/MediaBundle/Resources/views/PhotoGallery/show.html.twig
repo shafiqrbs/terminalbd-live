@@ -1,0 +1,113 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    {{ entity.name }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('gallery') }}">Gallery</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">{{ entity.name }}</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Photo Gallery: {{ entity.name }}</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn black" href="{{ path('gallery') }}"><i class="icon-th-list"></i> Gallery</a>
+                                <a class="btn red"  href="{{ path('gallery_new') }}"><i class="icon-plus-sign"></i>&nbsp;Add Gallery</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body ">
+                        <div class="row-fluid">
+                            {% for entity in entity.galleryImages %}
+                            <div class="span3">
+                                <div class="item">
+                                    <a class="fancybox-button" data-rel="fancybox-button" title="Photo" href="{{ portal_domain~'/'~entity.webPath(entity.photoGallery.globalOption.id,entity.photoGallery.id) }}">
+                                        <div class="zoom text-center">
+                                            <img src="{{ image(entity.getAbsolutePath(entity.photoGallery.globalOption.id,entity.photoGallery.id)).resize(200,200) }}" alt="Photo" />
+                                            <div class="zoom-icon"></div>
+                                        </div>
+                                    </a>
+                                    <div class="details">
+                                         <a href="javascript:" data-url="{{ path('galleryimage_delete',{'id':entity.id}) }}"  class="icon remove"><i class="icon-remove"></i></a>
+                                    </div>
+                                    <div><input type="text" class="span12" value="http://www.{{ entity.photoGallery.globalOption.domain~'/'~entity.getWebPath(entity.photoGallery.globalOption.id,entity.photoGallery.id) }}"></div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+ <style>
+     .row-fluid .span3:nth-child(5n) , .row-fluid .span3:nth-child(9n), .row-fluid .span3:nth-child(13n), .row-fluid .span3:nth-child(17n){
+         margin-left:0;
+     }
+ </style>
+{% endblock %}
+{% block documentready %}
+    var Gallery = function () {
+        return {
+            //main function to initiate the module
+            init: function () {
+            App.initFancybox();
+            }
+        };
+    }();
+    Gallery.init();
+    $(".fancybox-button").fancybox({
+        groupAttr: 'data-rel',
+        prevEffect: 'none',
+        nextEffect: 'none',
+        closeBtn: true,
+        helpers: {
+        title: {
+        type: 'inside'
+        }
+        }
+    });
+
+    $(document).on("click", ".delete , .remove", function() {
+
+        var url = $(this).attr('data-url');
+        $('#confirm-content').confirmModal({
+            topOffset: 0,
+            top: '25%',
+            onOkBut: function(event, el) {
+            $.get(url, function( data ) {
+                location.reload();
+            });
+            }
+        });
+
+    });
+
+{% endblock %}

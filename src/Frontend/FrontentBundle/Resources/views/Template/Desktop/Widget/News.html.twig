@@ -1,0 +1,168 @@
+{% if entities is defined and entities is not empty  %}
+    <style>
+        .news {
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+            z-index:1;
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+
+            border: 1px solid #eaeaea;
+        }
+
+        .news .img-figure {
+            position: relative;
+        }
+
+        .news .img-figure img {
+            position: relative;
+            overflow: hidden;
+            -webkit-transition: all 1s ease;
+            -moz-transition: all 1s ease;
+            -ms-transition: all 1s ease;
+            -o-transition: all 1s ease;
+            transition: all 1s ease;
+        }
+
+        .news:hover .img-figure img {
+            -webkit-transform: scale(1.10);
+            -moz-transform: scale(1.10);
+            -ms-transform: scale(1.10);
+            -o-transform: scale(1.10);
+            transform: scale(1.10);
+        }
+
+        .news .title {
+            /*padding: 29px 30px;*/
+            padding: 20px 15px;
+            position: absolute;
+            left: 0;
+            background: #fff;
+            width: 100%;
+            height: 100%;
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+        }
+
+        .news .title h1 {
+            margin: 0;
+            text-transform: uppercase;
+            font-size:15px;
+            /*	color: #3D6AA2;*/
+            text-align: left;
+        }
+
+        .news:hover .title  {
+            margin-top: -90px;
+            background: #fff;
+        }
+
+        .news  span.description {
+            position: relative;
+            font-weight: normal;
+            line-height: 22px;
+            opacity: 0;
+            text-align: left;
+            padding: 15px 15px 0px 15px;
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            display: inline-block;
+        }
+
+        .news:hover span.description  {
+            opacity: 1;
+        }
+
+        span.more {
+            text-align: center;
+            display:block ;
+            line-height: 17px;
+        }
+
+        .more a {
+            position: relative;
+            font-size: 13px;
+            display: block;
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            color: #28998b;
+            margin-bottom: 20px;
+        }
+
+        .more a:after {
+            content: '';
+            width: 18px;
+            height: 1px;
+            position: absolute;
+            left: 55px;
+            top: 9px;
+            background: #28998b;
+            vertical-align: middle;
+            margin-left: 10px;
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+        }
+
+
+        .news:hover a:after {
+            width: 30px;
+        }
+
+        .cat {
+            background: #a0bc9f;
+            color: #fff;
+            text-transform: uppercase;
+            position: absolute;
+            left: 0;
+            top: 20px;
+            z-index: 1;
+            padding: 3px 15px;
+        }
+    </style>
+<section>
+    <div class="container">
+        <div class="text-center"><h2>{% if pageModule.name is not empty %}{{ pageModule.name }}{% else %}Latest News {% endif %}</h2>
+            <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+        </div>
+        <div class="row">
+                {% for news in entities  %}
+                    <div class="col-sm-3">
+                        <div class="news  js-equal-height">
+                            <div class="img-figure">
+                                <div class="cat"><i class="fa fa-calendar"></i> {{ news.updated|date('d-F-Y') }} </div>
+                                <img src="{{ image(news.webPath).scaleResize() }}" class="img-responsive">
+                            </div>
+
+                            <div class="title">
+                                <h1>{{ news.name }}</h1>
+                            </div>
+                            <span class="description">
+                                {{ news.content|raw|truncate(150) }}
+                            </span>
+
+                            <span class="more">
+                                <a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'news','slug':news.slug }) }}">read more</a><i class="fa fa-angle-right" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}

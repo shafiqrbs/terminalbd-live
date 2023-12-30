@@ -1,0 +1,255 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN item HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="item-title">
+                    {{ entity.masterItem.name }}-{{ entity.color.name }}-{{ entity.size.name }}-{{ entity.vendor.vendorCode }} Details
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('item') }}">Item</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">{{ entity.masterItem.name }}-{{ entity.color.name }}-{{ entity.size.name }}-{{ entity.vendor.vendorCode }}</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END item HEADER-->
+        <!-- BEGIN item CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Item Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('item_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('item') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                    {% if(entity.id > 0 ) %}
+                                        <li><a href="{{ path('item_edit',{'id':entity.id}) }}"><i class="icon-edit"></i>&nbsp;Edit</a></li>
+                                        <li><a href="{{ path('item_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;Show</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="row-fluid " id="purchaseItemx">
+                            <div class="span4">
+                                <ul class="unstyled">
+                                    <li><strong>Master Item:</strong>&nbsp;{{ entity.masterItem.name }}</li>
+                                    <li><strong>Color & Size:</strong>&nbsp;{{ entity.color.name }}&nbsp;/&nbsp;{{ entity.size.name }}</li>
+                                     <li><strong>Vendor name:</strong>&nbsp;{{ entity.vendor.name }}</li>
+                                </ul>
+                            </div>
+                            <div class="span4">
+                                <ul class="unstyled">
+                                    <li><strong>Purchase Quantity:</strong>&nbsp;{{ entity.purchaseQuantity }}</li>
+                                    <li><strong>Purchase Quantity Return:</strong>&nbsp;{{ entity.purchaseQuantityReturn }}</li>
+                                    <li><strong>Purchase Quantity Replace:</strong>&nbsp;{{ entity.purchaseQuantityReplace }}</li>
+                                </ul>
+                            </div>
+                            <div class="span4">
+                                <ul class="unstyled">
+                                    <li><strong>Sales Quantity:</strong> &nbsp;{{ entity.salesQuantity }}</li>
+                                    <li><strong>Sales Quantity Return:</strong>&nbsp;{{ entity.salesQuantityReturn }}</li>
+                                    <li><strong>Remaining Quantity:</strong>&nbsp;{{ (entity.purchaseQuantity + entity.salesQuantityReturn + entity.purchaseQuantityReplace )- (entity.purchaseQuantityReturn + entity.salesQuantity )  }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- BEGIN FORM-->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+
+
+                        <div class="row-fluid">
+                            <div class="span8">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Name</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-font"></i>
+                                            {{ form_widget(form.name) }}
+                                            {{ form_errors(form.name) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Web price</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.webPrice) }}
+                                        {{ form_errors(form.webPrice) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Is web</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.isWeb) }}
+                                        {{ form_errors(form.isWeb) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                        <!--/span-->
+                        <div class="row-fluid">
+                            <div class="span8">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Material</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(form.material) }}
+                                            {{ form_errors(form.material) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Gender</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(form.gender) }}
+                                            {{ form_errors(form.gender) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Age Group</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(form.ageGroup) }}
+                                            {{ form_errors(form.ageGroup) }}
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                     <!--/span-->
+                        <div class="row-fluid">
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Made in</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(form.country) }}
+                                            {{ form_errors(form.country) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Brand</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(form.brand) }}
+                                            {{ form_errors(form.brand) }}
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!--/span-->
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label" >Description</label>
+                                     <div class="controls">
+                                         {{ form_widget(form.content) }}
+                                         {{ form_errors(form.content) }}
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            {% if(entity.itemGalleries) %}
+                                {% for photo in entity.itemGalleries %}
+                                     <div class="span2">
+                                        <input type="checkbox" class="checker popovers" data-trigger="hover" data-content="Are you remove image, Please click here." data-original-title="Remove image" name="imageId[]"  value="{{ photo.id }}">
+                                        <a href="/{{ photo.getWebPath(entity.inventoryConfig.globalOption.id,entity.id) }}" target="_blank"> <img src="{{ image(photo.getAbsolutePath(entity.inventoryConfig.globalOption.id,entity.id)).resize(100,100) }}" /></a>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/span-->
+                        {% if(entity.id > 0 ) %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div id="pluploadUploader">
+                                    <p>You browser doesn't have Flash, Silverlight, Gears, BrowserPlus or HTML5 support.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                        {% endif %}
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-center">
+                                <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                <a href="{{ path('item_edit_web',{'id': entity.id}) }}" class="btn purple"><i class="icon-refresh"></i> Reset</a>
+
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                        <!-- END FORM-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/item.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    InventoryItemEditPage({{ entity.id ? entity.id : 0 }});
+{% endblock %}

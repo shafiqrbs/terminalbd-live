@@ -1,0 +1,194 @@
+medicine_purchase:
+    path:     /
+    defaults: { _controller: "MedicineBundle:Purchase:index" }
+
+medicine_purchase_item:
+    path:     /stock-item-details
+    defaults: { _controller: "MedicineBundle:Purchase:purchaseItem" }
+
+medicine_expiry_item:
+    path:     /medicine-expiration-item
+    defaults: { _controller: "MedicineBundle:Purchase:medicineExpiry" }
+
+medicine_purchase_show:
+    path:     /{id}/show
+    defaults: { _controller: "MedicineBundle:Purchase:show" }
+
+medicine_purchase_copy:
+    path:     /{id}/copy
+    defaults: { _controller: "MedicineBundle:Purchase:copy" }
+
+medicine_purchase_new:
+    path:     /new
+    defaults: { _controller: "MedicineBundle:Purchase:new" }
+
+medicine_purchase_opening:
+    path:     /opening
+    defaults: { _controller: "MedicineBundle:Purchase:vendorOpening" }
+
+medicine_purchase_opening_create:
+    path:     /opening/create
+    defaults: { _controller: "MedicineBundle:Purchase:openingCreate" }
+    methods:  [POST, PUT]
+
+medicine_purchase_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "MedicineBundle:Purchase:edit" }
+
+medicine_purchase_update:
+    path:     /{id}/update
+    defaults: { _controller: "MedicineBundle:Purchase:update" }
+    methods:  [POST, PUT]
+
+medicine_purchase_status:
+    path:     /{id}/status
+    defaults: { _controller: "MedicineBundle:Purchase:edit" }
+
+medicine_purchase_vendor_update:
+    path:     /vendor-update
+    defaults: { _controller: "MedicineBundle:Purchase:vendorUpdate" }
+    methods:  [POST, PUT]
+    options:
+        expose: true
+
+medicine_purchase_ajax_update:
+    path:     /ajax-update
+    defaults: { _controller: "MedicineBundle:Purchase:ajaxUpdate" }
+    methods:  [POST, PUT]
+    options:
+        expose: true
+
+
+medicine_purchase_approve:
+    path:     /{id}/approve
+    defaults: { _controller: "MedicineBundle:Purchase:approve" }
+
+medicine_purchase_emptyDelete:
+    path:     /empty/delete
+    defaults: { _controller: "MedicineBundle:Purchase:emptyDelete" }
+
+medicine_purchase_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "MedicineBundle:Purchase:delete" }
+
+medicine_purchase_particular_search:
+    path:     /{id}/medicine-stock-search
+    defaults: { _controller: "MedicineBundle:Purchase:particularSearch" }
+    options:
+            expose: true
+
+medicine_purchase_stock_item_search:
+    path:     /medicine-stock-item-search
+    defaults: { _controller: "MedicineBundle:Purchase:autoPurchaseStockItemSearch" }
+    options:
+            expose: true
+
+medicine_purchase_particular_add:
+    path:     /{invoice}/particular-add
+    defaults: { _controller: "MedicineBundle:Purchase:addParticular" }
+    methods:  POST
+    options:
+            expose: true
+
+medicine_purchase_particular_add_manual:
+    path:     /{invoice}/particular-add-manual
+    defaults: { _controller: "MedicineBundle:Purchase:addParticularManual" }
+    methods:  POST
+    options:
+            expose: true
+
+medicine_purchase_manual_item_update:
+    path:     /particular-add-manual
+    defaults: { _controller: "MedicineBundle:Purchase:purchaseManulItemUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+medicine_purchase_barcode_search:
+    path:     /{id}/barcode-stock-search
+    defaults: { _controller: "MedicineBundle:Purchase:barcodeSearch" }
+    options:
+            expose: true
+
+medicine_purchase_barcode_item:
+    path:     /{purchase}/create-barcode-item
+    defaults: { _controller: "MedicineBundle:Purchase:addBarcodeItem" }
+    methods:  POST
+    options:
+            expose: true
+
+
+medicine_stock_item_create:
+    path:     /{id}/stock-item-create
+    defaults: { _controller: "MedicineBundle:Purchase:stockItemCreate" }
+    methods:  POST
+    options:
+            expose: true
+
+medicine_purchase_discount_update:
+    path:     /discount-update
+    defaults: { _controller: "MedicineBundle:Purchase:invoiceDiscountUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+medicine_purchase_item_update:
+    path:     /item-update
+    defaults: { _controller: "MedicineBundle:Purchase:purchaseItemUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+medicine_purchase_update_brand:
+    path:     /{id}/invoice-update-brand
+    defaults: { _controller: "MedicineBundle:Purchase:updateBrand" }
+    options:
+            expose: true
+
+medicine_purchase_approved:
+    path:     /{id}/invoice-approved
+    defaults: { _controller: "MedicineBundle:Purchase:approved" }
+
+medicine_purchaseitem_status:
+    path:     /{id}/purchase-item-status
+    defaults: { _controller: "MedicineBundle:Purchase:purchaseItemStatus" }
+
+medicine_purchase_vendor_merge:
+    path:     /{id}/invoice-merge
+    defaults: { _controller: "MedicineBundle:Purchase:vendorMerge" }
+
+
+medicine_purchase_particular_delete:
+    path:     /{invoice}/{id}/particular-delete
+    defaults: { _controller: "MedicineBundle:Purchase:invoiceParticularDelete" }
+
+medicine_purchaseitem_inline_update:
+    path:     /purchase-item-inline-update
+    defaults: { _controller: "MedicineBundle:Purchase:inlineUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+medicine_purchaseitem_inline_update_purchase_price:
+    path:     /purchase-item-inline-update-purchase-price
+    defaults: { _controller: "MedicineBundle:Purchase:inlineUpdatePurchasePrice" }
+    methods:  POST
+    options:
+            expose: true
+
+medicine_expiration_inline:
+    path:     /purchase-item-inline-update
+    defaults: { _controller: "MedicineBundle:Purchase:inlineExpirationUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+
+medicine_purchase_android:
+    path:     /android
+    defaults: { _controller: "MedicineBundle:Purchase:androidPurchase" }
+
+
+medicine_device_purchase_import:
+    path:      /device-sales-delete-import/{android}
+    defaults: { _controller: "MedicineBundle:Purchase:insertGroupApiPurchaseImport" }

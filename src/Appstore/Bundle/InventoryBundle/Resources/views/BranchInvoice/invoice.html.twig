@@ -1,0 +1,145 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid row-print">
+            <table class="table">
+                <tr>
+                    <td>
+                        <div class="span4  pull-left invoice-logo-space">
+                            <img src="/{{ entity.inventoryConfig.globalOption.templateCustomize.webPath('logo') }}">
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="span4 pull-right">
+                            <ul class="unstyled">
+                                <li><strong>{{ entity.inventoryConfig.globalOption.name }}</strong></li>
+                                <li><i class="icon-phone"></i>&nbsp;{{ entity.inventoryConfig.globalOption.mobile }}</li>
+                                {% if  entity.inventoryConfig.globalOption.email is not empty %}<li><i class="icon-envelope"></i>&nbsp;{{ entity.inventoryConfig.globalOption.email }}</li>{% endif %}
+                                {% if  entity.inventoryConfig.globalOption.contactPage.address1 %}<li><i class="icon-home"></i>&nbsp;{{ entity.inventoryConfig.globalOption.contactPage.address1 }}</li>{% endif %}
+                                {% if entity.inventoryConfig.globalOption.domain is not empty %}<li><i class="icon-link"></i>&nbsp;www.{{ entity.inventoryConfig.globalOption.domain }}</li>{% endif %}
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!-- END purchase_order HEADER-->
+
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box">
+
+                    <div class="portlet-title">
+                        <div class="caption"><strong>Invoice Details</strong></div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+                                <table class="table">
+                                    <tr>
+                                        <td>
+                                            <div class="span4">
+                                                <h4>About:</h4>
+                                                <ul class="unstyled">
+                                                    {% if entity.customer is not empty %}<li><strong>Customer #:</strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                                                    <li><strong>Sales ID:</strong>&nbsp;{{ entity.invoice }}</li>
+                                                    <li><strong>Total item:</strong>&nbsp;{{ entity.totalItem }}</li>
+                                                    <li><strong>Created:</strong>&nbsp;{{ entity.created|date('d-m-Y') }}</li>
+                                                    <li><strong>Created By:</strong>&nbsp;{% if entity.salesBy is defined and entity.salesBy is not empty %}{{ entity.salesBy }}{% endif %}</li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="span4 invoice-payment">
+                                                <h4>Payment Details:</h4>
+                                                <ul class="unstyled">
+
+                                                    <li><strong>Total BDT:</strong>&nbsp;{{ entity.total|number_format() }}</li>
+                                                    <li><strong>Payment BDT:</strong>&nbsp;{{ entity.payment|number_format() }}</li>
+                                                    {% if entity.discount %}<li><strong>Discount BDT:</strong>&nbsp;{{ entity.discount|number_format() }}</li>{% endif %}
+                                                    {% if entity.due %}<li><strong>Due BDT:</strong>&nbsp;{{ entity.due|number_format() }}</li>{% endif %}
+                                                    <li><strong>Payment status</strong>&nbsp;{{  entity.paymentStatus|capitalize }}</li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="span4">
+                                                <h4>Payment method:</h4>
+                                                <ul class="unstyled">
+                                                    <li><strong>Payment method:</strong>&nbsp;{{ entity.paymentMethod }}</li>
+                                                    {% if entity.paymentCard is not empty %}<li><strong>Payment Card:</strong>&nbsp;{{ entity.paymentCard.name }}{% endif %}</li>
+                                                    {% if entity.chequeCardNo is not empty %}<li><strong>Cheque/Card no:</strong>&nbsp;{{ entity.chequeCardNo }}</li>{% endif %}
+                                                    {% if entity.bank is not empty %}<li><strong>Bank:</strong>&nbsp;{{ entity.bank.name  }}</li>{% endif %}
+
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                            <div class="clearfix"><br/></div>
+                            <div class="row-fluid box green">
+                                {% if entity.salesItems is defined and  entity.salesItems is not empty  %}
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                        <thead class="flip-content ">
+                                        <tr class="head-green">
+                                            <td>&nbsp;&nbsp;<i class="icon-reorder"></i></td>
+                                            <th class="numeric" >Item name</th>
+                                            <th class="numeric" >Barcode</th>
+                                            <th class="numeric" >Qnt</th>
+                                            <th class="numeric" >Unit price</th>
+                                            <th class="numeric" >Sub-total</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for salesItem in entity.salesItems %}
+                                            <tr>
+                                                <td class="numeric" >{{ loop.index }}</td>
+                                                <td class="numeric" >{{ salesItem.item.masterItem.name }}-{{ salesItem.item.color.name }}-{{ salesItem.item.size.name }}-{{ salesItem.item.vendor.vendorCode }}</td>
+                                                <td class="numeric" >{{ salesItem.purchaseItem.barcode }}</td>
+                                                <td class="numeric" >{{ salesItem.quantity }}</td>
+                                                <td class="numeric" >{{ salesItem.salesPrice|number_format() }}</td>
+                                                <td class="numeric" >{{ salesItem.subTotal|number_format() }}</td>
+
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                        <tfoot>
+                                        <tr><td colspan="5"><strong class="pull-right" >Total Amount</strong></td><td>{{ entity.total|number_format() }}</td></tr>
+                                        {% if entity.discount %}<tr><td colspan="5"><strong class="pull-right" >Discount Amount</strong></td><td>{{ entity.discount|number_format() }}</td></tr>{% endif %}
+                                        {% if entity.due %}<tr><td colspan="5"><strong class="pull-right" >Due Amount</strong></td><td>{{ entity.due|number_format() }}</td></tr>{% endif %}
+                                        {% if entity.vat %}<tr><td colspan="5"><strong class="pull-right" >Vat/Tax Amount</strong></td><td>{{ entity.vat|number_format() }}</td></tr>{% endif %}
+                                        <tr><td colspan="3"><strong class="pull-right" >Total Item</strong></td><td>{{ entity.totalItem }}</td><td><strong class="pull-right" >Net Amount</strong></td><td>{{ entity.payment|number_format() }}</td></tr>
+                                        </tfoot>
+
+                                    </table>
+                                {% endif %}
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@SettingToolBundle/Resources/public/css/print.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    window.print();
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "login.html.twig" %}
+{% trans_default_domain 'FOSUserBundle' %}
+{% block body %}
+    <!-- BEGIN LOGO -->
+    <div class="logo">
+        <img style="background-color: #FFFFff" src="{{ asset('assets/frontend/img/logo.png') }}" height="80" width="420" alt="" />
+    </div>
+    <!-- END LOGO -->
+    <!-- BEGIN LOGIN -->
+    <div class="content">
+        <!-- BEGIN LOGIN FORM -->
+        <form class="form-vertical login-form" action="{{ path("fos_user_security_check") }}" method="post">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+            <h3 class="form-title">Login to your account</h3>
+            {% for flashMessage in app.session.flashbag.get('notice') %}
+                <div class="alert alert-notice alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button>
+                    <strong></strong> {{ flashMessage }}.
+                </div>
+            {% endfor %}
+
+            {% for flashMessage in app.session.flashbag.get('success') %}
+                <div class="alert alert-success alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button>
+                    <strong></strong> {{ flashMessage }}.
+                </div>
+            {% endfor %}
+
+            {% for flashMessage in app.session.flashbag.get('error') %}
+                <div class="alert alert-error alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button>
+                    <strong></strong> {{ flashMessage }}.
+                </div>
+            {% endfor %}
+
+            {% for flashMessage in app.session.flashbag.get('info') %}
+                <div class="alert alert-success alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button>
+                    <strong></strong> {{ flashMessage }}.
+                </div>
+            {% endfor %}
+
+            {% for type, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+
+                    <div class="alert alert-{{ type }}">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        {{ flashMessage }}
+                    </div>
+
+                {% endfor %}
+            {% endfor %}
+
+            {% if(error) %}
+                <div class="alert alert-error">
+                    <button class="close" data-close="alert"></button>
+                    <span>
+                       <div class="tm-alert error"><strong>Error</strong> &ndash; {{ error }}</div>
+                    </span>
+                </div>
+            {% endif  %}
+            <div class="control-group">
+                <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                <label class="control-label visible-ie8 visible-ie9">Username</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <i class="icon-user"></i>
+                        <input class="m-wrap placeholder-no-fix" type="text" autocomplete="off" placeholder="Username" id="username" name="_username" value="{{ last_username }}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label visible-ie8 visible-ie9">Password</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <i class="icon-lock"></i>
+                        <input class="m-wrap placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" id="password" name="_password"/>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <label class="checkbox">
+                    <input type="checkbox" id="remember_me" name="_remember_me" checked="checked" value="on"/> Remember me
+                </label>
+                <input type="submit" id="submit" name="_submit" value="{{ 'security.login.submit'|trans }}"
+                       class="btn blue pull-right">
+                Login <i class="m-icon-swapright m-icon-white"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <!-- END LOGIN -->
+    <!-- BEGIN COPYRIGHT -->
+    <div class="copyright">
+        {{ "now"|date('Y') }} &copy; Terminalbd.com.
+    </div>
+    <style>
+        input{
+            width: 88%;
+        }
+    </style>
+    <!-- END COPYRIGHT -->
+{% endblock body %}

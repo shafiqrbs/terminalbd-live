@@ -1,0 +1,256 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Domain
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('tools_domain') }}">Manage Domain</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Domain Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Domain Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn blue" href="{{ path('tools_domain_generate_path') }}">
+                                    <i class="icon-umbrella"></i>&nbsp;Generate Route
+                                </a>
+                                <a target="_blank" class="btn yellow" href="{{ path('tools_domain_database') }}"><i class="icon-download"></i>&nbsp; Database</a>
+                                <a class="btn green" href="{{ path('tools_option_cache_clean') }}"><i class="icon-trash"></i>&nbsp; Cache Clean</a>
+                                <a class="btn purple" href="{{ path('tools_option_androoid_clean') }}"><i class="icon-trash"></i>&nbsp; Android</a>
+                            <a class="btn red" href="{{ path('globaloption_new') }}"><i class="icon-plus-sign"></i>&nbsp; New Customer</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <form class="search-form" action="" method="get" name="itemSearch">
+                            <div class="row-fluid">
+                                <div class="span3">
+                                    <input type="text" id="name" name="name"  class="span12 m-wrap select2Customer" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Enter customer company name ">
+                                </div>
+                                <div class="span3">
+                                    <input type="text" id="mobile" name="mobile"  class="span12 m-wrap select2User" value="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% endif %}"  autocomplete="off" placeholder="Enter customer mobile no">
+                                </div>
+                                <div class="span3">
+                                    <select id="mainApp" name="mainApp" class="m-wrap span12">
+                                        <option value="">Select Main Application</option>
+                                        {% for app in apps %}
+                                        <option {% if searchForm.mainApp is defined and searchForm.mainApp == app.id %} selected {% endif %} value="{{ app.id }}">{{ app.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="span3">
+                                    <div class="controls">
+                                        <div class="input-append span10">
+                                            <select name="paymentStatus" id="paymentStatus" class="span12 m-wrap">
+                                                <option value="">Select Customer Status</option>
+                                                <option value="Active">Active</option>
+                                                <option value="Hold">Hold</option>
+                                                <option value="Suspend">Suspend</option>
+                                            </select>
+                                            <div class="btn-group">
+                                                <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <th class="numeric" >Created</th>
+                                    {%  set sort = app.request.query.get('sort') %}
+                                    {%  set direction = app.request.query.get('direction') %}
+                                    <th class="numeric" >Location</th>
+                                    <th {% if entities.isSorted('e.name') %} class="sorted" {% endif %} >{{ knp_pagination_sortable(entities, 'Organization', 'e.name') }}{% if( direction == 'desc' and sort == 'e.name') %}<i class="icon-sort-by-alphabet-alt"></i> {% else %}<i class="icon-sort-by-alphabet"></i> {% endif %}</th>
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Active Key</th>
+                                    <th {% if entities.isSorted('m.name') %} class="sorted" {% endif %} >{{ knp_pagination_sortable(entities, 'Main Application', 'm.name') }}{% if( direction == 'desc' and sort == 'm.name') %}<i class="icon-sort-by-alphabet-alt"></i> {% else %}<i class="icon-sort-by-alphabet"></i> {% endif %}</th>
+                                    <th {% if entities.isSorted('e.doamin') %} class="sorted" {% endif %} >{{ knp_pagination_sortable(entities, 'Domain', 'e.domain') }}{% if( direction == 'desc' and sort == 'e.domain') %}<i class="icon-sort-by-alphabet-alt"></i> {% else %}<i class="icon-sort-by-alphabet"></i> {% endif %}</th>
+                                    <th class="numeric" >Monthly</th>
+                                    <th {% if entities.isSorted('e.status') %} class="sorted" {% endif %} >{{ knp_pagination_sortable(entities, 'status', 'e.status') }}{% if( direction == 'desc' and sort == 'e.status') %}<i class="icon-sort-by-alphabet-alt"></i> {% else %}<i class="icon-sort-by-alphabet"></i> {% endif %}</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{#{% if entity.location %}{{ entity.location.name }},{{ entity.location.parent.name }}{% endif %}#}</td>
+                                        <td class="numeric" >{{ entity.name }}</td>
+                                        <td class="numeric" >{{ entity.mobile }}</td>
+                                        <td class="numeric" >{{ entity.uniqueCode }}</td>
+                                        <td class="numeric" >{% if entity.mainApp is not empty %}{{ entity.mainApp.name }}{% endif %}</td>
+                                        <td class="numeric" ><a target="_blank" href="http://{{ entity.domain }}">{{ entity.domain }}</a></td>
+                                        <td class="numeric" ><a href="#" class="editable" data-name="MonthlyAmount" id="group" data-type="text" data-pk="{{ entity.id }}" data-value="{{ entity.monthlyAmount }}"  data-url="{{ path('tools_option_status_update') }}" data-original-title="Enter monthly amount">{{ entity.monthlyAmount }}</a></td>
+                                        <td class="numeric" ><a href="#" class="editable" data-name="Status" id="group" data-type="select" data-pk="{{ entity.id }}" data-value="{{ entity.status }}" data-source="{{ path('tools_option_status') }}" data-url="{{ path('tools_option_status_update') }}" data-original-title="Select domain status">{{ entity.currentStatus }}</a></td>
+                                        <td class="numeric" >
+                                            <div class="btn-group">
+                                            <a href="javascript:" class="btn blue mini badge badge-warning toggle badge-custom" id="{{ entity.id }}" ><i class="icon-cogs"></i>&nbsp;Operation</a>
+                                       {#     <a href="javascript:" class="btn green mini badge badge-warning toggle badge-custom" id="software-{{ entity.id }}" ><i class="icon-money"></i>&nbsp;Software</a>
+                                            <a href="javascript:" class="btn purple mini badge badge-warning toggle badge-custom" id="sms-{{ entity.id }}" ><i class="icon-money"></i>&nbsp;SMS Invoice</a>
+                                      #}      </div>
+                                        </td>
+                                    </tr>
+                                    <tr id="show-{{ entity.id }}" class="showing-overview">
+                                        {% if app.user.granted("ROLE_SUPER_ADMIN") and app.user.id == 1 %}
+                                        <td colspan="10">
+                                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                                <tr>
+                                                    <th class="numeric" >Manage Global Setting</th>
+                                                    <td class="numeric" >
+                                                        <a href="{{ path('globaloption_edit',{id: entity.id}) }}" data-url="" class="btn blue mini" ><i class="icon-pencil"></i>&nbsp;Edit Global Option</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="numeric" >Change Password</th>
+                                                    <td class="numeric" >
+                                                        <a href="{{ path('tools_domain_reset_password',{option: entity.id}) }}" data-url="{{ path('tools_domain_reset_password',{option: entity.id}) }}" class="btn blue mini resetPass" ><i class="icon-key"></i>&nbsp;Generate new password</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="numeric" >Reset Operational Data</th>
+                                                    <td class="numeric" >
+                                                        <a href="javascript:" data-url="{{ path('tools_option_reset',{id: entity.id}) }}" class="btn purple mini reset" ><i class="icon-refresh"></i>&nbsp;Reset Data</a>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <th class="numeric" >Invoice Generate for Module & Software</th>
+                                                    <td class="numeric" >
+                                                        <a href="{{ path('invoicemodule_new',{option:entity.id}) }}" class="btn green mini" ><i class="icon-credit-card"></i>&nbsp;Generate Invoice</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="numeric" >Invoice Generate for sms or email</th>
+                                                    <td class="numeric" >
+                                                        <a href="{{ path('invoicesmsemail',{option:entity.id}) }}" class="btn yellow mini" ><i class="icon-phone"></i>&nbsp;Sms Invoice</a>
+                                                    </td>
+                                                </tr>
+
+
+                                            </table>
+                                        </td>
+                                        {% endif %}
+                                    </tr>
+                                    {% if entity.invoiceSmsEmails is not empty %}
+                                        <tr id="show-sms-{{ entity.id }}" class="showing-overview">
+                                            <td colspan="10">
+                                                <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                                    <thead class="flip-content ">
+                                                    <tr class="head-grey">
+                                                        <th class="numeric" >Invoice</th>
+                                                        <th class="numeric" >Created</th>
+                                                        <th class="numeric" >Total Amount</th>
+                                                        <th class="numeric" >Paid Amount</th>
+                                                        <th class="numeric" >Due Amount</th>
+                                                        <th class="numeric" >Created By</th>
+                                                        <th class="numeric" >Payment Method</th>
+                                                        <th class="numeric" >Process</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    {% for invoice in entity.invoiceSmsEmails %}
+                                                          {% if invoice.process =='In-progress' %}
+                                                              <tr>
+                                                            <td class="numeric" >{{ invoice.invoice }}</td>
+                                                            <td class="numeric" >{{ invoice.updated|date('d-m-Y') }}</td>
+                                                            <td class="numeric" >{{ invoice.totalAmount }}</td>
+                                                            <td class="numeric" >{{ invoice.paidAmount }}</td>
+                                                            <td class="numeric" >{{ invoice.dueAmount }}</td>
+                                                            <td class="numeric" >{{ invoice.createdBy }}</td>
+                                                            <td class="numeric" >
+                                                                {% if invoice.paymentMethod == 'Bank' %}
+                                                                    {{ invoice.portalBankAccount.bank.name }}/{{ invoice.portalBankAccount.accountNo }}
+                                                                {% elseif invoice.paymentMethod == 'bKash' %}
+                                                                    {{ invoice.portalBkash.mobile }}/{{ invoice.portalBkash.accounttype }}
+                                                                {% endif %}
+
+                                                            </td>
+                                                            <td class="numeric" >
+                                                                {% if invoice.process == 'In-progress' %}
+                                                                    <span  class="btn yellow approve mini" data-id="{{ invoice.id }}" data-url="{{ path('invoicesmsemail_approve',{id:invoice.id}) }}" ><i class="icon-ok"></i>&nbsp;Approve</span>
+                                                                {% endif %}
+                                                            </td>
+
+                                                        </tr>
+                                                         {% endif %}
+                                                    {% endfor %}
+
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+
+
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@SettingToolBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@SettingToolBundle/Resources/public/js/editable.js'
+    '@SettingToolBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    ApproveProcessInt();
+{% endblock %}
+
+

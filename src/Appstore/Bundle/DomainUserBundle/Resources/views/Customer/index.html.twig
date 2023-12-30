@@ -1,0 +1,131 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Customer list
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('domain') }}">Customer list</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Customer list</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('domain_customer_new') }}"><i class="icon-th-list"></i>&nbsp;New Customer</a>
+                                <a class="btn purple" href="{{ path('domain_gp_customer_import') }}"><i class="icon-th-list"></i>&nbsp;Import Customer</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span4">
+                                        <input type="text" id="mobile" name="mobile"  class="span12 m-wrap select2Customer" value="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% endif %}"  autocomplete="off" placeholder="Search customer name/mobile">
+                                    </div>
+                                    <div class="span4">
+                                        <input type="text" id="location" name="location"  class="span12 m-wrap select2Location" value="{% if searchForm.location is defined %}{{ searchForm.location }}{% endif %}"  autocomplete="off" placeholder="Customer location">
+                                    </div>
+                                    <div class="span4">
+                                        <div class="controls">
+                                            <div class="input-append span9">
+                                                <input type="text" id="keyword" name="keyword"  class="m-wrap span12 search-input" value="{% if searchForm.keyword is defined %}{{ searchForm.keyword }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.keyword is defined %}{{ searchForm.keyword }}{% else %}Enter customer keyword{% endif %} ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            {% include('flash-message.html.twig')  %}
+
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i> Customer ID</td>
+                                    <th class="numeric">Name</th>
+                                    <th class="numeric">Mobile</th>
+                                    <th class="numeric">Marketing</th>
+                                    <th class="numeric">Credit Limit</th>
+                                    <th class="numeric">Reference No</th>
+                                    <th class="numeric">Alt. Mobile</th>
+                                    <th class="numeric">Location</th>
+                                    <th class="numeric">Email</th>
+                                    <th class="numeric">Address</th>
+                                    <th class="numeric">Enable</th>
+                                    <th class="numeric">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td>{{ entity.customerId }}</td>
+                                        <td>{{ entity.name }}</td>
+                                        <td class="numeric"><a href="tel:+88 {{ entity.mobile }}"> {{ entity.mobile }}</a></td>
+                                        <td>{{ (entity.marketing) ? entity.marketing.userFullName : '' }}</td>
+                                        <td>{{ entity.creditLimit }}</td>
+                                        <td>{{ entity.referenceId }}</td>
+                                        <td>{{ entity.alternativeMobile }}</td>
+                                        <td class="numeric">{% if entity.location is not empty %}{{ entity.location.name }},{{ entity.location.parent.name }}{% endif %}</td>
+                                        <td>{{ entity.email }}</td>
+                                        <td>{{ entity.address|raw }}</td>
+                                        <td>{% if entity.status == 1 %}Active{% else %} In-active{% endif %}</td>
+                                        <td class="numeric">
+                                            {% if (app.user.granted("ROLE_DOMAIN")) or (app.user.granted("ROLE_CRM_MANAGER"))  %}
+                                                <a class="btn mini green" href="{{ path('domain_customer_edit', { 'id': entity.id }) }}"><i class="icon-pencil"></i></a>
+                                                <a class="btn mini delete red" href="javascript:" data-url="{{ path('domain_customer_delete', { 'id': entity.id }) }}" >&nbsp;<i class="icon-trash"></i> </a>
+                                             {% endif %}
+                                           {# {% if (app.user.granted("ROLE_CRM_MANAGER") and app.user.globalOption.mainApp.slug == "hms")  %}
+                                             <a class="btn mini  blue" href="{{ path('domain_customer_rehab_show', { 'id': entity.id }) }}" >&nbsp;<i class="icon-user"></i> Patient </a>
+                                            {% endif %}#}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <link href="{{ asset('assets/css/pages/timeline.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@DomainUserBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}

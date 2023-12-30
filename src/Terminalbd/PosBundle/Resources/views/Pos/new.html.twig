@@ -1,0 +1,588 @@
+{% extends '::pos-base.html.twig' %}
+{% block body %}
+    {#{% if config.templateCss is not empty %}
+    <style>{{ config.templateCss|raw }}</style>
+    {% endif %}#}
+    <div class="row-fluid" id="pos-area">
+        <div class="portlet box">
+            <div class="portlet-body">
+                {% if invoiceMode == 'search' %}
+                <div style="background: #e5e5e5; padding: 15px">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="input-prepend input-append span3" style="width: 250px!important;">
+                                <span class="add-on add-on-height"><i class="icon-barcode"></i></span>
+                                <input type="text" id="barcode" name="barcode" required="required" class="m-wrap span12" placeholder="0008000045" autocomplete="off" value="">
+                            </div>
+                            <form name="stockItem" id="stockItem" method="post" action="{{ path('pos_item_create') }}">
+                                <div class="input-prepend input-append span9">
+                                    {% if globalOption.inventoryConfig.salesMode == "purchase-item" %}
+                                    <input type="text" id="item" name="item" class="span5 m-wrap m-wrap-bg stockInput select2StockItem" value="" autocomplete="off"  placeholder="Search product">
+                                    <select class="span3 m-wrap m-wrap-bg" style="height: 50px!important;" id="purchaseItem" name="purchaseItem">
+                                        <option>Select Barcode</option>
+                                    </select>
+                                    <select class="span2 m-wrap m-wrap-bg" style="height: 50px!important;" id="serialNo" name="serialNo">
+                                        <option>Select Serial No</option>
+                                    </select>
+                                    {% else %}
+                                    <input type="text" id="item" name="item" class="span7 m-wrap m-wrap-bg stockInput select2StockItem" value="" autocomplete="off"  placeholder="Search product">
+                                    {% endif %}
+                                    <input type="text" id="quantity" name="quantity" class="span m-wrap m-wrap-bg pull-center stockInput amount" style="width: 80px;" value="" autocomplete="on"  placeholder="QTY" >
+                                    <input type="text" id="price" name="price" class="span2 m-wrap m-wrap-bg stockInput pull-center amount" value="" autocomplete="on"  placeholder="Price" >
+                                    <button type="submit" style="height: 50px" class="btn yellow big" id="addItem" name="addItem" value="addItem"><i class="icon-print"></i> Add Item</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="row-fluid">
+                    {% if invoiceMode == 'search' %}
+                        <div class="span8">
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr class="head-gray">
+                                            <th class="numeric product-list">Current Stock</th>
+                                            <th class="numeric product-list" id="current-stock"></th>
+                                            <th class="numeric product-list">Sales Price</th>
+                                            <th class="numeric product-list" id="sales-price"></th>
+                                            <th class="numeric product-list">Status</th>
+                                            <th class="numeric product-list" id="item-status"></th>
+                                        </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <table class="table table-bordered">
+                                <thead class="flip-content ">
+                                <tr class="head-gray">
+                                    <th class="numeric">&nbsp;</th>
+                                    <th class="numeric span8 product-title-name">Product</th>
+                                    <th class="numeric product-price pull-center">Price</th>
+                                    <th class="numeric span2 pull-center">Quantity</th>
+                                    <th class="numeric product-price">Total</th>
+                                    <th class="numeric"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="invoiceItems">
+                                {% if  cart.contents is not empty %}
+                                    {% for item in cart.contents %}
+                                        <tr id="remove-{{ item.rowid }}">
+                                            <th>{{ loop.index }}.</th>
+                                            <td class="numeric product-title">
+                                                {{ item.name }}
+                                                {% if item.item.serial is defined and item.item.serial is not empty %} <br/>IME/Serial no : {{ item.serial }}{% endif %}
+                                            </td>
+                                            <td class="numeric product-price">
+                                                <input type="text" class="form-control inline-m-wrap updateProductPrice btn-qnt-particular" data-id="{{ item.rowid }}"  id="price-{{ item.rowid }}" name="price-{{ item.rowid }}"  value="{{ item.price }}" data-action="{{ path('pos_item_update',{'product':item.rowid}) }}" >
+                                            </td>
+                                            <td class="product-quantity">
+                                                <div class="input-append" style="margin-bottom: 0!important;">
+                                                    <span class="input-group-btn">
+  <a href="javascript:" data-action="{{ path('pos_item_update',{'product':item.rowid}) }}" class="btn green btn-number-pos mini" data-type="minus" data-id="{{ item.rowid }}"  data-text="{{ item.rowid }}" data-title="{{ item.price }}"  data-field="quantity"> <span class="fa fa-minus"></span> </a>
+                                                       <input type="text" class="form-control inline-m-wrap updateProduct btn-qnt-particular" data-id="{{ item.rowid }}"  id="quantity-{{ item.rowid }}" name="quantity-{{ item.rowid }}" data-title="{{ item.price }}" value="{{ item.quantity }}" data-action="{{ path('pos_item_update',{'product':item.rowid}) }}" min="1" max="100">
+                                                      <a href="javascript:" data-action="{{ path('pos_item_update',{'product':item.rowid}) }}" class="btn green btn-number-pos mini"  data-type="plus" data-id="{{ item.rowid }}" data-title="{{ item.price }}"  data-text="{{ item.rowid }}" data-field="quantity"> <span class="fa fa-plus"></span></a></span>
+                                                </div>
+                                            </td>
+                                            <td class="numeric product-price"><strong id="subTotal-{{ item.rowid }}">{{ (item.quantity * item.price)|number_format(2) }}</strong></td>
+                                            <td class="numeric">
+                                                <a id="{{ item.rowid }}" data-id="{{ item.rowid }}" data-url="{{ path('pos_item_remove',{'product':item.rowid}) }}" href="javascript:" class="btn red mini particularDelete"><i class="icon-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                </tbody>
+                                <tfoot>
+                                <tr><td colspan="6" style="border-bottom: 2px solid #3598dc">&nbsp;</td></tr>
+                                <tr class="head-gray">
+                                    <th colspan="4" class="product-title text-right">Sub-Total</th>
+                                    <th id="" class="product-title"><span class="subTotal">{{ cart.total|number_format(2) }}</span></th>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                            <div class="clearfix"></div>
+                        </div>
+                    {% else %}
+                        <div class="span8">
+                            <div class="row-fluid">
+                                <div class="tabbable tabbable-custom" style="float: left; width: 100%">
+                                    <div class="tab-content">
+                                        <div class="tab-pane tab-height active" id="all-product">
+                                            <div class="row-fluid productBox" >
+                                                <div class="loader loader-double"></div>
+                                                <div class="" id="items"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {#<ul  class="nav nav-tabs tabs-left categoryBox" id="category-nav" style="width: 20%; float:left; background-color:#444d58">
+                                    <li class="active span12"><a href="#all-product" data-toggle="tab" class="saveButton" id="allproduct" aria-expanded="false">All Products</a></li>
+                                    {% for category in categories %}
+                                        <li><a href="#{{ category.slug }}" data-action="{{ path('pos_category_stock_item',{'id':category.category_id}) }}" data-toggle="tab" class="saveButton category" aria-expanded="false">{{ category.name }}</a></li>
+                                    {% endfor %}
+                                </ul>#}
+                            </div>
+
+                        </div>
+                    {% endif %}
+                    <div class="span4">
+                        <div class="row-fluid">
+                            <div class="portlet box royal-blue">
+                                <div class="portlet-body">
+                                    {{ form_start(form) }}
+                                    {{ form_row(form._token) }}
+                                    <div class="transactionBox" id="transaction-box">
+                                        <div class="payment-info">
+                                            {% if invoiceMode != 'search' %}
+                                                <div class="clearfix"></div>
+                                                <table class="table table-bordered">
+                                                    <thead class="flip-content ">
+                                                    <tr class="head-royal-blue">
+                                                        <th class="numeric">&nbsp;</th>
+                                                        <th class="numeric span8 product-title-name">Product</th>
+                                                        <th class="numeric product-price pull-center">Price</th>
+                                                        <td class="numeric">&nbsp;</td>
+                                                        <th class="numeric product-price">Total</th>
+                                                        <th class="numeric"></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="invoiceItems">
+                                                    {% if  cart.contents is not empty %}
+                                                        {% for item in cart.contents %}
+                                                            <tr id="remove-{{ item.rowid }}">
+                                                                <td>{{ loop.index }}.</td>
+                                                                <td class="numeric product-title">{{ item.name }}</td>
+                                                                <td class="numeric product-price">
+                                                                    <input type="text" class="form-control inline-m-wrap updateProductPrice btn-qnt-particular" data-id="{{ item.rowid }}"  id="price-{{ item.rowid }}" name="price-{{ item.rowid }}"  value="{{ item.price }}" data-action="{{ path('pos_item_update',{'product':item.rowid}) }}" >
+                                                                </td>
+                                                                <td class="product-quantity text-center">
+                                                                    <div class="input-append" style="margin-bottom: 0!important;">
+                                                                <span class="input-group-btn">
+              <a href="javascript:" data-action="{{ path('pos_item_update',{'product':item.rowid}) }}" class="btn green btn-number-pos mini" data-type="minus" data-id="{{ item.rowid }}"  data-text="{{ item.rowid }}"  data-field="quantity"> <span class="fa fa-minus"></span> </a>
+                                                                   <input type="text" class="form-control inline-m-wrap updateProduct btn-qnt-particular" data-id="{{ item.rowid }}"  id="quantity-{{ item.rowid }}" name="quantity-{{ item.rowid }}"  value="{{ item.quantity }}" data-action="{{ path('pos_item_update',{'product':item.rowid}) }}" min="1" max="100">
+                                                                  <a href="javascript:" data-action="{{ path('pos_item_update',{'product':item.rowid}) }}" class="btn green btn-number-pos mini"  data-type="plus" data-id="{{ item.rowid }}" data-title="{{ item.price }}"  data-text="{{ item.rowid }}" data-field="quantity"> <span class="fa fa-plus"></span></a></span>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="numeric product-price"><strong id="subTotal-{{ item.rowid }}">{{ (item.quantity * item.price)|number_format(2) }}</strong></td>
+                                                                <td class="numeric">
+                                                                    <a id="{{ item.rowid }}" data-id="{{ item.rowid }}" data-url="{{ path('pos_item_remove',{'product':item.rowid}) }}" href="javascript:" class="btn red mini particularDelete"><i class="icon-trash"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                            {% if item.serial is not empty %}
+                                                            <tr><td></td><td colspan="3">Serial No:
+                                                                    {% for imc in item.serial %}
+                                                                        {{ imc }} {{ not loop.last ? ',' }}
+                                                                    {% endfor %}
+                                                                </td><td></td><td></td></tr>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+
+                                                    </tbody>
+                                                    <tfoot>
+                                                    <tr><td colspan="6" style="border-bottom: 2px solid #3598dc">&nbsp;</td></tr>
+                                                    <tr>
+                                                        <th colspan="4" class="product-title text-right">Sub-Total</th>
+                                                        <th class="product-title"><span class="subTotal">{{ entity.subTotal|number_format(2) }}</span></th>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th colspan="4" class="product-title text-right">Total</th>
+                                                        <th class="product-title"><span class="total">{{ entity.total|number_format(2) }}</span></th>
+                                                        <td></td>
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+                                            {% endif %}
+                                            <div class="row-fluid">
+                                                <div class="span12">{{ form_widget(form.salesBy) }}</div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                            <div class="transaction-box">
+                                                <div class="row-fluid" style="border-bottom: 1px solid #fff; padding-bottom: 15px; margin-bottom: 15px" >
+                                                    <div class="span4">
+                                                        {{ form_widget(form.discountType) }}
+                                                    </div>
+                                                    <div class="span4">
+                                                        {{ form_widget(form.discountCalculation) }}
+                                                    </div>
+                                                    <div class="span4">
+                                                        {{ form_widget(form.discountCoupon) }}
+                                                    </div>
+                                                </div>
+                                                <div class="row-fluid" style="border-bottom: 1px solid #fff; padding-bottom: 15px; margin-bottom: 15px">
+                                                    <div class="span8" style="line-height: 34px"><span>Delivery Charge</span></div>
+                                                    <div class="span4"> {{ form_widget(form.deliveryCharge) }}</div>
+                                                </div>
+                                                <div class="row-fluid">
+                                                    <div class="span6">
+                                                        <div class="row-fluid">
+                                                            <div class="span6"><span>Discount</span></div>
+                                                            <div class="span6"><strong class="discount">{{ entity.discount|number_format(2) }}</strong></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="span6">
+                                                        <div class="row-fluid">
+                                                            <div class="span6"><span>Vat{% if entity.vatPercent > 0 %}({{ entity.vatPercent }})%{% endif %}</span></div>
+                                                            <div class="span6"><strong class="vat">{{ entity.vat|number_format(2) }}</strong></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row-fluid">
+                                                    <div class="span6">
+                                                        <div class="row-fluid">
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="span6">
+                                                        <div class="row-fluid">
+                                                            <div class="span6"><span>Total</span></div>
+                                                            <div class="span6"><strong class="total">{{ entity.total|number_format(2) }}</strong></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                            <div class="row-fluid">
+                                                <div class="span12">
+                                                    <div class="switch-method">
+                                                        {% set methods = ['Cash','Mobile','Bank'] %}
+                                                        {% for method in methods %}
+                                                            <input {% if entity.transactionMethod is not empty and entity.transactionMethod.name == method %} checked="checked" {% endif %} type="radio" id="{{ method }}" class="method-process" name="method" value="{{ method }}"/>
+                                                            <label  for="{{ method }}">{{ method }}</label>
+                                                        {% endfor %}
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+
+                                            <div id="cartMethod" class="bankHide">
+                                                <div class="payment-box">
+                                                    <div class="row-fluid">
+                                                        <div class="span6">{{ form_widget(form.accountBank) }}</div>
+                                                        <div class="span3">{{ form_widget(form.paymentCard) }}</div>
+                                                        <div class="span3">{{ form_widget(form.cardNo) }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="bkashMethod" class="mobileBankHide">
+                                                <div class="payment-box">
+                                                    <div class="row-fluid">
+                                                        <div class="span6">{{ form_widget(form.accountMobileBank) }}</div>
+                                                        <div class="span3">{{ form_widget(form.paymentMobile) }}</div>
+                                                        <div class="span3">{{ form_widget(form.transactionId) }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                            <div class="row-fluid">
+                                                <div class="input-prepend input-append span12" >
+                                                    <input type="text" style="margin-left:0!important;" id="mobile" name="mobile"  class="span10 m-wrap select2Customer" value=""  autocomplete="off" placeholder="Customer mobile no">
+                                                    <span class="add-on add-on-height span2 addCustomer" style="width: 70px; height: 50px!important;" id="btn-refresh"><i class="icon-user"></i></span>
+                                                </div>
+                                            </div>
+                                            <div class="row-fluid customer" id="">
+                                                <div class="span12 input-append-border">
+                                                    <div class="row-fluid">
+                                                        <div class="input-icon input-height">
+                                                            <input type="text" id="customerName" name="customerName" class="m-wrap span12 customer-input" autocomplete="off" placeholder="Customer name" value="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row-fluid customer">
+                                                <div class="span12 input-append-border">
+                                                    <div class="row-fluid">
+                                                        <div class="input-icon input-height">
+                                                            <input type="text" id="customerMobile" name="customerMobile" class="m-wrap span12 mobile customer-input" autocomplete="off" placeholder="Customer mobile no" value="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row-fluid customer">
+                                                <div class="span12 input-append-border">
+                                                    <div class="row-fluid">
+                                                        <textarea id="customerAddress" name="customerAddress" class="m-wrap span12 customer-input" rows="2" placeholder="Enter customer address"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="clearfix"></div>
+                                            <div class="row-fluid">
+                                                <div class="buttons">
+                                                    {#<div class="row-fluid">
+                                                        <div class="span12">
+
+                                                            <input type="button" class="btn cal-button" name="b1" value="1" onClick="calcNumbers(b1.value)">
+                                                            <input type="button" class="btn cal-button" name="b2" value="2" onClick="calcNumbers(b2.value)">
+                                                            <input type="button" class="btn cal-button" name="b3" value="3" onClick="calcNumbers(b3.value)">
+                                                            <input type="button" class="btn cal-button" name="b4" value="4" onClick="calcNumbers(b4.value)">
+                                                            <input type="button" class="btn cal-button" name="b5" value="5" onClick="calcNumbers(b5.value)">
+                                                            <input type="button" class="btn cal-button" name="b6" value="6" onClick="calcNumbers(b6.value)">
+                                                            <input type="button" class="btn cal-button" name="b7" value="7" onClick="calcNumbers(b7.value)">
+                                                            <input type="button" class="btn cal-button" name="b8" value="8" onClick="calcNumbers(b8.value)">
+                                                            <input type="button" class="btn cal-button" name="b9" value="9" onClick="calcNumbers(b9.value)">
+                                                            <input type="button" class="btn cal-button" name="b0" value="0" onClick="calcNumbers(b0.value)">
+                                                        </div>
+                                                    </div>#}
+                                                    <div class="row-fluid">
+                                                        <div class="span12">
+                                                            <input type="button" class="btn cal-button-lg" name="b1000" value="1000" onClick="calcGroupNumbers(b1000.value)">
+                                                            <input type="button" class="btn cal-button-lg" name="b500" value="500" onClick="calcGroupNumbers(b500.value)">
+                                                            <input type="button" class="btn cal-button-lg" name="b300" value="300" onClick="calcGroupNumbers(b300.value)">
+                                                            <input type="button" class="btn cal-button-lg" name="b200" value="200" onClick="calcGroupNumbers(b200.value)">
+                                                            <input type="button" class="btn cal-button-lg" name="b100" value="100" onClick="calcGroupNumbers(b100.value)">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row-fluid">
+                                                        <div class="span12">
+                                                            <input type="button" class="btn cal-button-lg" name="b5000" value="5000" onClick="calcGroupNumbers(b5000.value)">
+                                                            <input type="button" class="btn cal-button-lg" name="b4000" value="4000" onClick="calcGroupNumbers(b4000.value)">
+                                                            <input type="button" class="btn cal-button-lg" name="b3000" value="3000" onClick="calcGroupNumbers(b3000.value)">
+                                                            <input type="button" class="btn cal-button-lg" name="b2000" value="2000" onClick="calcGroupNumbers(b2000.value)">
+                                                            <input type="button" class="btn cal-button-lg" name="b1500" value="1500" onClick="calcGroupNumbers(b1500.value)">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="row-fluid text-center" style="background: #3598dc; padding-top: 15px; padding-bottom: 15px">
+                                        <div class="input-prepend input-append span12" >
+                                            <span class="add-on add-on-height yellow"><strong id="balance">Due {{ entity.total|number_format(2) }}</strong></span>
+                                            {{ form_widget(form.payment) }}
+                                            <span class="add-on add-on-height" id="btn-refresh"><strong>C</strong></span>
+                                            <span class="add-on add-on-height" >{{ form_widget(form.isHold) }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="pull-center">
+                                            {{ form_widget(form.discount) }}
+                                            <input type="hidden" class="" name="invoiceEntity" id="invoiceEntity" value="{{ entity.id }}" >
+                                            <input type="hidden" class="total due" name="total" id="total" value="{{ entity.total }}" >
+                                            <input type="hidden" class="due" name="due" id="due" value="{{ entity.total }}" >
+                                            <input type="hidden" name="discount" id="discount" value="">
+                                            <input type="hidden" name="buttonType" id="buttonType" value="posBtn">
+
+                                        </div>
+                                    </div>
+                                    {{ form_end(form) }}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="height: 60px; position: fixed; bottom:0; background: #dddddd; width: 100%; padding-top: 7px">
+       <div class="container-fluid">
+           <div class="row-fluid" id="process-box">
+               <div class="span4">
+                   <div class="switch-field">
+                       <input type="radio" data-id="" id="search" {% if invoiceMode == 'search' %} checked="checked" {% endif %} data-action="{{ path('pos_invoice_mode',{'mode':'search'}) }}" class="invoice-mode" name="process" value="search">
+                       <label for="search"><i class="icon-search"></i> Search</label>
+                       <input type="radio" data-id="" id="list" {% if invoiceMode == 'list' %} checked="checked" {% endif %}  data-action="{{ path('pos_invoice_mode',{'mode':'list'}) }}" class="invoice-mode" name="process" value="list">
+                       <label for="list"><i class="icon-th-list"></i> List</label>
+                       <input type="radio" data-id="" id="grid" {% if invoiceMode == 'grid' %} checked="checked" {% endif %}  data-action="{{ path('pos_invoice_mode',{'mode':'grid'}) }}" class="invoice-mode" name="process" value="grid">
+                       <label for="grid"><i class="icon-th-large"></i> Grid</label>
+                   </div>
+               </div>
+               <div class="span4">
+                   <div class="pull-right">
+                       <div class="btn-group">
+                           {% if invoiceMode != 'search' %} %}
+                           <div id="menu">
+                               <ul>
+                                   <li><center><a href="#all-product" data-toggle="tab"  id="allproduct" aria-expanded="false">All Products</a></center>
+                                       <ul>
+                                           {% for category in categories %}
+                                               <li><a href="#{{ category.slug }}" data-action="{{ path('pos_category_stock_item',{'id':category.category_id}) }}" data-toggle="tab" class="saveButton category" aria-expanded="false">{{ category.name }}</a></li>
+                                           {% endfor %}
+                                       </ul>
+                                   </li>
+                               </ul>
+                           </div>
+                           <a href="javascript:" id="item-reload"  class="btn red big"><i class="icon-refresh"></i> Stock Reload</a>
+                           {% endif %}
+                           {#<a href="javascript:" id="item-reload"  class="btn green big"><i class="icon-eye-open"></i> Preview</a>#}
+                       </div>
+                   </div>
+               </div>
+               <div class="span4">
+                   <div class="switch-progress">
+                       <input type="radio" data-id="print" id="Print" data-action="{{ path('pos_create',{'mode':'print'}) }}" class="invoice-process" name="progress" value="print">
+                       <label for="Print" class="print"><i class="icon-print"></i> Print</label>
+                       <input type="radio" data-id="pos" id="POS" data-action="{{ path('pos_create',{'mode':'pos'}) }}" class="invoice-process" name="progress" value="pos">
+                       <label for="POS" class="pos"><i class="icon-print"></i> POS</label>
+                       <input type="radio" data-id="save" id="Save" data-action="{{ path('pos_create',{'mode':'save'}) }}" class="invoice-process" name="progress" value="save">
+                       <label for="Save" class="save"><i class="icon-save"></i> Save</label>
+                       <input type="radio" data-id="save-hold" id="save-hold" data-action="{{ path('pos_create',{'mode':'save-hold'}) }}" class="invoice-process" name="progress" value="save-hold">
+                       <label for="save-hold" class="save-hold"><i class="icon-pencil"></i> Hold</label>
+                   </div>
+               </div>
+
+           </div>
+       </div>
+    </div>
+
+    {% if globalOption.inventoryConfig.isPos == 1 %}
+        <script>
+
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "http://localhost.xiidea.net:9432/assets/easy-print-server.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, "script", "xiidea-epp-sdk"));
+        </script>
+    {% endif %}
+<style>
+
+    #menu * {
+        padding:0;
+        margin: 0;
+        list-style-type:none;
+        font-size: 14px;
+    }
+    #menu {
+        float: left;
+        line-height:30px;
+      }
+    #menu a {
+        display: block;
+        text-decoration: none;
+        color: #ffffff;
+    }
+    #menu a:hover { background: #158bdc;}
+    #menu ul li ul li a:hover {
+        background: #158bdc;
+        color:#ffffff;
+    }
+    #menu ul li ul li {
+        width: 244px;
+        border: none;
+        color: #000000;
+        padding: 3px;
+        background:#dddddd;
+        z-index: 1;
+        height: 36px;
+        border-top: 1px solid #b1b2b3;
+        line-height:30px;
+    }
+    #menu ul li ul li a {
+        padding-top:3px;
+        padding-bottom:3px;
+        color: #000000;
+    }
+    #menu ul li {
+        float: left;
+        width: 250px;
+        font-weight: bold;
+        border-top: solid 1px #283923;
+        border-bottom: solid 1px #283923;
+        background:#3598dc;
+    }
+    #menu ul li a {
+        padding: 16px 10px;
+    }
+    #menu li{
+        position:relative;
+        float:left;}
+    #menu ul li ul, #menu:hover ul li ul, #menu:hover ul li:hover ul li ul{
+        display: none;
+        list-style-type: none;
+        width: 244px;
+        max-height: 500px;
+        overflow: scroll;
+        border: 2px solid #158bdc;
+    }
+    #menu:hover ul, #menu:hover ul li:hover ul, #menu:hover ul li:hover ul li:hover ul {
+        display:block;}
+    #menu:hover ul li:hover ul li:hover ul {
+        position: absolute;
+        margin-left: 145px;
+        margin-top: -22px;
+    }
+    #menu:hover ul li:hover ul {
+        position: absolute;
+    }
+    #menu>ul>li:hover>ul {
+        bottom:100%;
+        border-bottom: 1px solid transparent
+    }
+
+    .product-price input[type="text"].inline-m-wrap{
+        width: 75px!important;
+        border: 2px solid #f0ad4e;
+        padding: 0!important;
+    }
+    .mini {
+        height: 20px;
+        font-size: 11px !important;
+        line-height: 20px;
+        padding: 4px 10px;
+    }
+    input[type="text"].inline-m-wrap {
+        width: 30px;
+        font-size: 12px;
+        border: 2px solid #c49f47;
+        margin-bottom: 0;
+        text-align: center;
+        font-weight: bold;
+        height: 16px;
+        margin-left: 0;
+    }
+    input[type="checkbox"].isHold{
+        font-size: 20px;
+        width: 30px!important;
+        height: 30px!important;
+        margin-top: 0;
+    }
+    .table th.product-list, .table td.product-list {
+        font-size: 12px;
+        height: 30px;
+        text-align: left;
+        padding-right: 5px;
+        line-height: 12px;
+        font-weight: bold;
+        padding-left: 15px;
+        color: #e61212!important;
+
+    }
+
+</style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@PosBundle/Resources/public/css/pos.css'
+    '@PosBundle/Resources/public/css/table.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@PosBundle/Resources/public/js/jquery.filtertable.js'
+    '@PosBundle/Resources/public/js/numeric.js'
+    '@PosBundle/Resources/public/js/pos.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $('table').filterTable();
+{% endblock %}

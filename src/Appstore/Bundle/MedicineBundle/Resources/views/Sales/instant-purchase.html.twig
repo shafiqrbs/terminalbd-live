@@ -1,0 +1,87 @@
+<div class="clearfix">&nbsp;</div>
+<form name="instantPurchase" method="post" action="{{ path('medicine_instantpurchase_particular_add') }}" class="form-horizontal" id="instantPurchase" novalidate="novalidate">
+    <div class="row-fluid particular-info">
+        <div class="span4">
+            <input type="text" id="vendor" name="vendor" required="required" class="m-wrap span12 input select2Vendor" placeholder="Search vendor name" aria-required="true">
+        </div>
+        <div class="span2">
+            <input type="text" id="purchasesBy" name="purchasesBy" required="required" class="m-wrap span12 input select2User" placeholder="Search received user name" aria-required="true">
+        </div>
+        <div class="span6">
+            <input type="text" id="medicineName" name="medicineName" required="required" class="m-wrap span12 input select2StockMedicine" placeholder="Search medicine name" aria-required="true">
+        </div>
+    </div>
+    <div class="row-fluid particular-info">
+        <div class="span4">&nbsp;</div>
+        <div class="span4">
+            <input type="text" id="expirationStartDate" name="expirationStartDate" required="required" class="m-wrap span4 input" placeholder="Expiry start date" aria-required="true">
+            <input type="text" id="expirationEndDate" name="expirationEndDate" required="required" class="m-wrap span4 input" placeholder="Expiry end date" aria-required="true">
+            <input type="text" id="purchasePrice" name="purchasePrice" required="required" class="m-wrap span4 input" placeholder="Purchase price" aria-required="true">
+        </div>
+        <div class="input-append span4 pull-right">
+            <div class="input-group">
+                <input type="text" id="purchaseQuantity" name="purchaseQuantity" required="required" class="m-wrap span5 form-control input-number input" placeholder="Purchase qnt" aria-required="true">
+                <input type="text" id="salesQuantity" name="salesQuantity"  class="m-wrap span5 form-control input-number input" placeholder="Sales qnt" aria-required="true">
+                <input type="hidden" id="salesId" name="salesId" value="{{ sales.id }}">
+                <button type="submit" class="btn green" id="addInstantPurchase" data-url=""> <span class="fa fa-save"></span> Add</button>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="clearfix">&nbsp;</div>
+{#<table class="table table-bordered table-striped table-condensed flip-content ">
+
+    <thead class="flip-content ">
+    <tr class="head-blue">
+        <th class="numeric" >Vendor</th>
+        <th class="numeric" >Received By</th>
+        <th class="numeric" >Barcode</th>
+        <th class="numeric" >Medicine</th>
+        <th class="numeric" >Purchase</th>
+        <th class="numeric" >Total-Purchase</th>
+        <th class="numeric" >Sales</th>
+        <th class="numeric" >Total-Sales</th>
+        <th class="numeric" >Qnt</th>
+        <th class="numeric" >Remin. Qnt</th>
+        <th class="numeric span3" >Action</th>
+    </tr>
+    </thead>
+    <tbody id="instantPurchaseItem">
+    {% for instant in instantPurchase %}
+        <tr id="removeInstantItem-{{ instant.id }}">
+            <td class="numeric" >{% if instant.medicinePurchase.medicineVendor is not empty %}{{ instant.medicinePurchase.medicineVendor.companyName }}{% endif %}</td>
+            <td class="numeric" >{{ instant.medicinePurchase.createdBy }}</td>
+            <td class="numeric" >{{ instant.barcode }}</td>
+            <td class="numeric" >{{ instant.medicineStock.name }}</td>
+            <td class="numeric" >{{ instant.purchasePrice }}</td>
+            <td class="numeric" >{{ instant.quantity*instant.purchasePrice }}</td>
+            <td class="numeric" >{{ instant.salesPrice }}</td>
+            <td class="numeric" >{{ instant.quantity*instant.salesPrice }}</td>
+            <td class="numeric" >{{ instant.quantity }}</td>
+            <td class="numeric" >{{ instant.remainingQuantity }}</td>
+            <td class="numeric" >
+                <div class="input-append">
+                    <input type="number" id="quantity-{{ instant.id }}"  style="height: 20px!important;" name="quantity-{{ instant.id }}" max="{{ instant.quantity }}" required="required" class="span5 td-input input-number input" placeholder="quantity" aria-required="true">
+                    <input type="hidden" id="remainingQnt-{{ instant.id }}"  name="quantity-{{ instant.id }}" value="{{ instant.remainingQuantity }}">
+                    <button type="button" class="btn blue mini instantSales" style="height: 25px" data-id="{{ instant.id }}"  data-url="{{ path('medicine_sales_instant_item',{'sales':sales.id,'item':instant.id}) }}"> <span class="fa fa-save"></span> Add</button>
+                    <button type="button" class="btn red mini instantDelete" style="height: 25px" id="{{ instant.id }}" data-url="{{ path('medicine_instant_purchase_delete',{'id':instant.id}) }}"> <span class="fa fa-trash"></span></button>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>#}
+<style>
+    .td-input{
+        height: 25px!important;
+        padding: 0!important;
+        min-height: 25px!important;
+    }
+    .ui-autocomplete{
+        z-index: 99999!important;
+    }
+    .ul.ui-autocomplete{
+        background-color:#4d90fe!important;
+    }
+</style>
+<div class="clearfix">&nbsp;</div>

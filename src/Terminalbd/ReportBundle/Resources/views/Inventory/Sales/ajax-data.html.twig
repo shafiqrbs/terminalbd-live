@@ -1,0 +1,32 @@
+{% set totalSales = 0 %}
+{% set totalPurchase = 0 %}
+{% set totalPayment = 0 %}
+{% set totalDue = 0 %}
+{% for entity in entities %}
+    {% set totalSales = (totalSales + entity.total) %}
+    {% set totalPurchase = (totalPurchase + entity.purchasePrice) %}
+    {% set totalPayment = (totalPayment + entity.payment) %}
+    {% set totalDue = (totalDue + entity.due) %}
+    <tr id="salesRemove-{{ entity.id }}">
+        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+        <td class="numeric" >{{ entity.invoice }}</td>
+        <td class="numeric" >{{ entity.salesBy }}</td>
+        <td class="numeric" >{{ entity.transactionMethod }}</td>
+        <td class="text-right" >{{ entity.subTotal|number_format  }}</td>
+        <td class="text-right" >{{ entity.discount|number_format  }}</td>
+        <td class="text-right" >{{ entity.vat|number_format  }}</td>
+        <td class="text-right" >{{ entity.total|number_format  }}</td>
+        <td class="text-right" >{{ entity.payment|number_format }}</td>
+        <td class="text-right" >{{ entity.due|number_format }}</td>
+        <td class="text-right" >{{ entity.purchasePrice|number_format }}</td>
+        <td class="text-right" >{{ (entity.total - entity.purchasePrice)|number_format }}</td>
+    </tr>
+{% endfor %}
+<tr>
+    <td colspan="7" class="text-right"><strong>Grand Total</strong></td>
+    <th class="text-right"><strong>{{ totalSales|number_format(2) }}</strong></th>
+    <th class="text-right"><strong>{{ totalPayment|number_format(2) }}</strong></th>
+    <th class="text-right"><strong>{{ totalDue|number_format(2) }}</strong></th>
+    <th class="text-right"><strong>{{ totalPurchase|number_format(2) }}</strong></th>
+    <th class="text-right"><strong>{{ (totalSales-totalPurchase)|number_format(2) }}</strong></th>
+</tr>

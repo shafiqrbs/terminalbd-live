@@ -1,0 +1,158 @@
+home:
+    path:     /
+    defaults: { _controller: UserBundle:Security:login }
+
+bindu_login:
+    path:     /login
+    defaults: { _controller: "UserBundle:Security:login" }
+
+bindu_homepage:
+    path:     /main
+    defaults: { _controller: BinduBundle:Bindu:home }
+
+bindu_desktop_home:
+    path:     /desktop/{subdomain}
+    defaults: { _controller: DesktopBundle:Default:index }
+
+bindu_mobile_home:
+    path:     /mobile/{subdomain}
+    defaults: { _controller: BinduBundle:Default:index }
+
+bindu_build_syndicate:
+    path:     /syndicate/{syndicate}
+    defaults: { _controller: BinduBundle:Bindu:businessDirectoryDetails }
+
+bindu_search:
+    path:     /main-search
+    defaults: { _controller: BinduBundle:Bindu:searching }
+    requirements: { _method: post }
+
+bindu_new:
+    path:     /web-builder/new
+    defaults: { _controller: BinduBundle:Bindu:new }
+
+bindu_web_bulder:
+    path:     /web-builder/web-site-builder
+    defaults: { _controller: BinduBundle:Bindu:builder }
+
+bindu_create:
+    path:     /web-builder/create
+    defaults: { _controller: BinduBundle:Bindu:create }
+    requirements: { _method: post }
+
+bindu_confirm:
+    path:     /web-builder/confirm
+    defaults: { _controller: BinduBundle:Bindu:confirm }
+
+bindu_signup_check:
+    path:     /web-builder/signup-user-availability
+    defaults: { _controller: BinduBundle:Bindu:userChecking }
+    methods:  GET
+    options:
+            expose: true
+
+bindu_signup_check_doamin:
+    path:     /web-builder/check-domain-availability
+    defaults: { _controller: BinduBundle:Bindu:doaminChecking }
+    methods:  GET
+    options:
+            expose: true
+
+bindu_signup_check_subdoamin:
+    path:     /web-builder/check-subdomain-availability
+    defaults: { _controller: BinduBundle:Bindu:subdomainChecking }
+    methods:  GET
+    options:
+            expose: true
+
+bindu_option_check_mobile:
+    path:     /web-builder/check-mobile-availability
+    defaults: { _controller: BinduBundle:Bindu:mobileChecking }
+    methods:  GET
+    options:
+            expose: true
+
+bindu_option_check_email:
+    path:     /web-builder/check-email-availability
+    defaults: { _controller: BinduBundle:Bindu:emailChecking }
+    methods:  GET
+    options:
+            expose: true
+
+bindu_check:
+    path:     /web-builder/check
+    defaults: { _controller: BinduBundle:Bindu:check }
+    requirements: { _method: post }
+
+bindu_preview:
+    path:     /web-builder/preview
+    defaults: { _controller: BinduBundle:Bindu:preview }
+
+bindu_application:
+    path:     /application
+    defaults: { _controller: BinduBundle:Bindu:application }
+
+bindu_partner:
+    path:     /partner
+    defaults: { _controller: BinduBundle:Bindu:find }
+
+bindu_find:
+    path:     /find
+    defaults: { _controller: BinduBundle:Bindu:find }
+
+bindu_about:
+    path:     /web-builder/about
+    defaults: { _controller: BinduBundle:Bindu:about }
+
+bindu_service:
+    path:     /web-builder/product-service
+    defaults: { _controller: BinduBundle:Bindu:service }
+
+bindu_contact:
+    path:     /web-builder/contact
+    defaults: { _controller: BinduBundle:Bindu:contact }
+
+bindu_page_content:
+    path:     /{slug}/page-content
+    defaults: { _controller: BinduBundle:Bindu:pageContent }
+
+bindu_business_directory:
+    path:     /business-directory
+    defaults: { _controller: BinduBundle:Bindu:businessDirectory }
+
+bindu_business_directory_details:
+    path:     /{directory}/business-directory-details
+    defaults: { _controller: BinduBundle:Bindu:businessDirectoryDetails }
+
+bindu_business_location:
+    path:     /business-location
+    defaults: { _controller: BinduBundle:Bindu:locationDirectory }
+
+bindu_business_location_details:
+    path:     /{location}/business-location-details
+    defaults: { _controller: BinduBundle:Bindu:locationDirectoryDetails }
+
+bindu_directory_business_location:
+    path:      /{business}/{location}/directory-business-location
+    defaults: { _controller: BinduBundle:Bindu:businessLocation }
+
+bindu_sms_receive:
+    path:     /customer/sms-receive
+    defaults: { _controller: BinduBundle:Bindu:receiveSMS }
+    requirements: { _method: post }
+
+bindu_email_receive:
+    path:     /customer/email-receive
+    defaults: { _controller: BinduBundle:Bindu:receiveEmail }
+    requirements: { _method: post }
+
+BinduBundle_build:
+    resource: "@BinduBundle/Resources/config/routing/build.yml"
+    prefix:   /web-builder/build
+
+BinduBundle_mobile:
+    resource: "@BinduBundle/Resources/config/routing/mobile.yml"
+    prefix:    /web-builder/mobile/
+
+
+

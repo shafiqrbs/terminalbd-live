@@ -1,0 +1,774 @@
+{% extends ':bindu/mobile:base.html.twig' %}
+{% block body %}
+    <div class="bannerPane bannerPane-webbuilder">
+
+        <div class="s-banner-content">
+            <div><img width="100" src="{{ asset('assets/frontend/img/logo.png') }}" /></div>
+            Web Site Builder
+        </div>
+    </div>
+    <div id="content">
+        <div class="tm-accordion tm-style4">
+            <div class="accordion-title">
+                <h3><a href="javascript:"  ><i class="fa fa-external-link-square"></i>&nbsp;Domain Setup</a></h3>
+            </div>
+            <div class="accordion-container">
+                <blockquote class="tm-style1">
+                    <span>Welcome to: {{ entity.name }}</span> {% if(entity.subDomain is not null) %}  <span id="settingMainClose" class="fa-icon"><i class="fa  fa-close"></i></span> {% endif %}
+                </blockquote>
+                <br/>
+                Select from any of the options below to change or customize the look and feel of your mobile site. To edit/add or update content on your mobile site go to the Features and Tools sections. Remember to save changes to your website, click the blue ‘Add to site’ or ‘Update’ buttons.
+                <br/><br/>First time? Click here for more instructions.
+                <form class="design-form option" id="optionID"  action="" method="post" >
+                    <label for="domain">Your domain name<a class="small-text align-right"  href="#"
+                                                           data-interface="tooltip"
+                                                           data-position="top"
+                                                           data-content="Enter the name of your company. This name will appear at the top of every page of your mobile site."
+                                                           data-shift="10"
+                                                           data-defineClass = "bord"
+                                                           data-radius = "0px"
+                                >help</a></label>
+                    <p><span class="fa-icon"><i class="fa  fa-anchor"></i></span><input id="domain" type="text" value="http://{{ entity.domain }}" placeholder="Enter your existing domain name" name="domain">
+                        <span>Follow this example:http://google.com</span>
+                    </p>
+                    <label for="subDomain">Your sub-domain name<a class="small-text align-right"  href="#"
+                                                                  data-interface="tooltip"
+                                                                  data-position="top"
+                                                                  data-content="Enter the name of your sub-domain name. This name will appear at the top of every page of your mobile site."
+                                                                  data-shift="10"
+                                                                  data-defineClass = "bord"
+                                                                  data-radius = "0px"
+                                >help</a></label>
+                    <p><span class="fa-icon"><i class="fa  fa-anchor"></i></span><input id="subDomain" type="text" value="http://{{ app.request.host }}/{{ entity.subDomain }}" placeholder="Enter your chose any sub-domain name" name="subDomain"></p>
+                    <div class="clear"></div>
+
+                    <p class="align-right" >
+                        To keep these changes, click 'Update'&nbsp;&nbsp;&nbsp;<input type="submit" id="optionBtn" class="align-right tm-btn mini" value="update"></p>
+                </form>
+                <div class="brclear"></div>
+            </div>
+            <div class="accordion-title">
+                <h3><a href="javascript:" ><i class="fa  fa-home"></i>&nbsp;Home Overview</a></h3>
+            </div>
+            <div class="accordion-container">
+                Enter a description for your business. This text will appear above/below the logo on the home page of your mobile site only.
+                <form class="design-form home-submitted" id="homepage"  action="" method="post" >
+                    <label>Your site name<a class="small-text align-right"  href="#"
+                                            data-interface="tooltip"
+                                            data-position="top"
+                                            data-content="Enter the name of your company. This name will appear at the top of every page of your mobile site."
+                                            data-shift="10"
+                                            data-defineClass = "bord"
+                                            data-radius = "0px"
+                                >help</a></label>
+                    <p><span class="fa-icon"><i class="fa  fa-pencil"></i></span><input id="name" type="text" value="{{ entity.homePage.name }}" placeholder="Enter your name" name="name"></p>
+                    <label>A few words to summarise your business<a class="small-text align-right"  href="#"
+                                                                    data-interface="tooltip"
+                                                                    data-position="top"
+                                                                    data-content="Enter a description of your company. This text will appear below the logo on the homepage on your mobile site."
+                                                                    data-shift="10"
+                                                                    data-defineClass = "bord"
+                                                                    data-radius = "0px"
+                                >help</a></label>
+                    <p><textarea class="classy-editor" id="content" name="content">{{ entity.homePage.content|raw }}</textarea></p>
+
+                    <p class="align-right" >
+                        To keep these changes, click 'Update'&nbsp;&nbsp;&nbsp;<input type="submit" class="align-right tm-btn mini" value="update">
+                    </p>
+                </form>
+                <div class="brclear"></div>
+            </div>
+
+            <div class="accordion-title">
+                <h3><a href="javascript:"><i class="fa  fa-upload"></i>&nbsp;Logo</a></h3>
+            </div>
+            <div class="accordion-container">
+                <form class="design-form customize-submitted" id="" action="" method="post" enctype="multipart/form-data" >
+                    <p>Valid formats: jpeg, gif, png, Max upload: 200kb</p>
+                    <!-- loader.gif -->
+                    <!-- simple file uploading form -->
+                    <div class="img-preview"><img  id="logoPreview" {%  if(entity.templateCustomize.webPath('logo') is not null )  %} style="display: inline-block" {% endif %}  src="{{ image(entity.templateCustomize.webPath('logo')).resize() }} "></div>
+                    <p><input id="logoUpload" type="file" accept="image/*" name="logo" /></p>
+                    <div class="checkbox block">
+                        <label class="label-left" >Display only on website</label><input type="checkbox" {% if(entity.templateCustomize.logoDisplayWebsite == 1) %} checked {% endif %} name="logoDisplayWebsite" value="1" />
+                    </div>
+                    <div class="brclear"></div>
+                    <p class="align-right" >To keep these changes, click 'Update'&nbsp;&nbsp;&nbsp;<input id="button" type="submit" class="tm-btn mini" value="Upload"></p>
+                </form>
+                <div class="brclear"></div>
+            </div>
+            <div class="accordion-title">
+                <h3><a href="#">Features</a></h3>
+            </div>
+            <div class="accordion-container">
+                Below are the active features / pages that have been added to your site.
+
+                Click on the features below to update content on your site. To change the title, icon or the position of a feature, click the Options tab of that feature. To add a new feature/page to your site click ‘Add Feature’ button
+
+            </div>
+
+            <div class="accordion-title">
+                <h3><a href="#"><i class="fa  fa-users"></i>&nbsp;About us</a></h3>
+            </div>
+            <div class="accordion-container">
+                Enter a description for your business. This text will appear above/below the logo on the home page of your mobile site only.
+                {% render controller("BinduBundle:Widget:aboutus") %}
+                <div class="clear"></div>
+            </div>
+            <div class="accordion-title">
+                <h3><a href="#"><i class="fa  fa-phone"></i>&nbsp;Contact us</a></h3>
+            </div>
+            <div class="accordion-container">
+                <form class="design-form option" action="" method="post"  >
+                    <div class="brclear"></div>
+                    <label>Add a number for one-click calling.</label>
+                    <p><span class="fa-icon"><i class="fa  fa-pencil"></i></span><input id="name" class="mobile" type="text" value="{{ entity.mobile }}" placeholder="enter your avabilable contact mobile no " name="mobile"></p>
+                    <div class="clear"></div>
+                    <label>Add a email for any information 24 hours.</label>
+                    <p><span class="fa-icon"><i class="fa  fa-envelope"></i></span><input id="name" class="email" type="text" value="{{ entity.email }}" placeholder="enter your valid email address" name="email"></p>
+                    <div class="clear"></div>
+                    <p class="align-right" >To keep these changes, click 'Update'&nbsp;&nbsp;&nbsp;<button id="signup" class="tm-btn mini"  name="submit">update</button></p>
+                </form>
+                <div class="clear"></div>
+            </div>
+            <div class="accordion-title">
+                <h3><a href="#"><i class="fa  fa-mobile"></i>&nbsp;Opening Hour</a></h3>
+            </div>
+            <div class="accordion-container">
+                <form class="design-form contact" action="" method="post" enctype="multipart/form-data" >
+                    <label>Start hour</label>
+                    <p><span class="fa-icon"><i class="fa fa-calendar-times-o"></i></span><input id="startHour" class="timepicker" type="text" value="{{ entity.contactPage.startHour }}" placeholder="hh:mm:ss" name="startHour"></p>
+                    <label>End hour</label>
+                    <p><span class="fa-icon"><i class="fa fa-calendar-times-o"></i></span><input id="endHour" class="timepicker" type="text" value="{{ entity.contactPage.endHour }}" placeholder="hh:mm:ss" name="endHour"></p>
+                    <label>Weekly Off day</label>
+                    <p>
+                        <select name="weeklyOffDay" id="weeklyOffDay" class="select2">
+                            <option  value="">---Select weekly off day---</option>
+                            <option {% if(entity.contactPage.weeklyOffDay == 'Sunday') %} selected="selected" {% endif %} value="Sunday">Sunday</option>
+                            <option {% if(entity.contactPage.weeklyOffDay == 'Monday') %} selected="selected"  {% endif %} value="Monday">Monday</option>
+                            <option {% if(entity.contactPage.weeklyOffDay == 'Tuesday') %} selected="selected"  {% endif %} value="Tuesday">Tuesday</option>
+                            <option {% if(entity.contactPage.weeklyOffDay == 'Wednesday') %} selected="selected" {% endif %} value="Wednesday">Wednesday</option>
+                            <option {% if(entity.contactPage.weeklyOffDay == 'Thursday') %} selected="selected" {% endif %} value="Thursday">Thursday</option>
+                            <option {% if(entity.contactPage.weeklyOffDay == 'Friday') %} selected="selected" {% endif %} value="Friday">Friday</option>
+                            <option {% if(entity.contactPage.weeklyOffDay == 'Saturday') %} selected="selected" {% endif %} value="Saturday">Saturday</option>
+                        </select>
+                    </p>
+                    <p class="align-right" >To keep these changes, click 'Update'<button id="signup" class="tm-btn mini"  name="submit">update</button></p>
+                </form>
+                <div class="clear"></div>
+            </div>
+            <div class="accordion-title">
+                <h3><a href="#"><i class="fa  fa-map-marker"></i>&nbsp;Find us</a></h3>
+            </div>
+            <div class="accordion-container">
+                Add your address(es) so visitors can find you on Google maps.
+                <form class="design-form contact" action="" method="post" enctype="multipart/form-data" >
+                    <div class="brclear"></div>
+                    <label>Location name</label>
+                    <p>
+
+                    </p>
+                    <label>Address1</label>
+                    <p><span class="fa-icon"><i class="fa  fa-pencil"></i></span><input id="address1" class="" type="text" value="{{ entity.contactPage.address1 }}" placeholder="Enter your communication address1" name="address1"></p>
+                    <label>Address2</label>
+                    <p><span class="fa-icon"><i class="fa  fa-pencil"></i></span><input id="address2" class="" type="text" value="{{ entity.contactPage.address2 }}" placeholder="Enter your communication address1" name="address2"></p>
+                    <label>Town/District</label>
+                    <p>
+                        <select name="district" id="district" class="select2" >
+                            <option>Select district </option>
+                            {% for location in locations %}
+                                <option {% if entity.contactPage.district is defined and entity.contactPage.district.id|default('') == location.id %} selected="selected" {% endif %} value="{{ location.id }}">{{ location.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </p>
+                    <div id="child">{% if(child) %}{{ child|raw }}{% endif %}</div>
+                    <label>Zip code/Postal Code</label>
+                    <p><span class="fa-icon"><i class="fa  fa-pencil"></i></span><input id="postalCode" class="" type="text" value="{{ entity.contactPage.postalCode }}" placeholder="Enter your postal code" name="postalCode"></p>
+                    <label>Additional Phone & Mobile</label>
+                    <p><span class="fa-icon"><i class="fa  fa-mobile"></i></span><input id="additionalPhone" class="" type="text" value="{{ entity.contactPage.additionalPhone }}" placeholder="Enter your others contact no" name="additionalPhone"></p>
+                    <label>Email address</label>
+                    <p><span class="fa-icon"><i class="fa  fa-envelope-o"></i></span><input id="additionalEmail" class="" type="text" value="{{ entity.contactPage.additionalEmail }}" placeholder="Enter your others email address" name="additionalEmail"></p>
+
+                    <label>Fax</label>
+                    <p><span class="fa-icon"><i class="fa  fa-phone"></i></span><input id="fax" class="" type="text" value="{{ entity.contactPage.fax }}" placeholder="Enter your fax no" name="fax"></p>
+
+                    <label>Contact Person</label>
+                    <p><span class="fa-icon"><i class="fa  fa-user"></i></span><input id="contactPerson" class="" type="text" value="{{ entity.contactPage.contactPerson }}" placeholder="Enter your others email address" name="contactPerson"></p>
+                    <label>Designation</label>
+                    <p><span class="fa-icon"><i class="fa  fa-pencil"></i></span><input id="designation" class="" type="text" value="{{ entity.contactPage.designation }}" placeholder="Enter your others email address" name="designation"></p>
+
+                    <p class="align-right" >To keep these changes, click 'Update'&nbsp;&nbsp;&nbsp;<button id="contact" class="tm-btn mini"  name="submit">update</button></p>
+                </form>
+                <div class="clear"></div>
+            </div>
+
+
+        </div>
+      {#  {{ include ('@Bindu/Builder/moduleApp.html.twig')}}#}
+
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BinduBundle/Resources/public/js/webBuilder.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    builderJs();
+{% endblock %}
+
+{#{% block documentready %}
+
+    {{ parent() }}
+
+    $("#domain").keydown(function(e) {
+
+        var oldvalue=$(this).val();
+        var field=this;
+        setTimeout(function () {
+        if(field.value.indexOf('http://') !== 0) {
+        $(field).val(oldvalue);
+        }
+        }, 1);
+
+    });
+
+    $("#subDomain").keydown(function(e) {
+
+        var oldvalue=$(this).val();
+        var field=this;
+        setTimeout(function () {
+        if(field.value.indexOf('http://{{ app.request.host }}/') !== 0) {
+        $(field).val(oldvalue);
+        }
+        }, 1);
+
+    });
+
+    $("#facebookPageUrl").keydown(function(e) {
+
+        var oldvalue=$(this).val();
+        var field=this;
+        setTimeout(function () {
+        if(field.value.indexOf('https://facebook.com/') !== 0) {
+        $(field).val(oldvalue);
+        }
+        }, 1);
+
+    });
+
+    $("#googlePlus").keydown(function(e) {
+
+        var oldvalue=$(this).val();
+        var field=this;
+        setTimeout(function () {
+        if(field.value.indexOf('https://plus.google.com/') !== 0) {
+        $(field).val(oldvalue);
+        }
+        }, 1);
+
+    });
+
+    $("#twitterUrl").keydown(function(e) {
+
+        var oldvalue=$(this).val();
+        var field=this;
+        setTimeout(function () {
+        if(field.value.indexOf('https://twitter.com/') !== 0) {
+        $(field).val(oldvalue);
+        }
+        }, 1);
+
+    });
+
+    $('.checkbox :checkbox').rcSwitcher({
+
+        // reverse: true,
+        inputs:false,
+        // width: 70,
+        // height: 24,
+        // blobOffset: 2,
+        onText: 'Yes',
+        offText: 'No',
+        theme: 'modern',
+        // autoFontSize: true,
+
+    });
+
+
+    function isValidEmailAddress(emailAddress) {
+        var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+        return pattern.test(emailAddress);
+    };
+
+    $('#callBackEmail').focusout(function(){
+
+            var emil=$('#callBackEmail').val();
+            if( ! isValidEmailAddress( emil ) ) {
+                $('#callBackEmail').val('').addClass('error-input');
+                $('#callBackEmailError').html(emil+' is not valid e-mail address.');
+            }else{
+                $('#callBackEmail').removeClass('error-input');
+                $('#callBackEmailError').html('');
+            }
+
+    });
+
+    $('#leaveEmail').focusout(function(){
+
+            var emil=$('#leaveEmail').val();
+            if( ! isValidEmailAddress( emil ) ) {
+                $('#leaveEmail').val('').addClass('error-input');
+                $('#leaveEmailError').html(emil+' is not valid e-mail address.');
+            }else{
+                $('#leaveEmail').removeClass('error-input');
+                $('#leaveEmailError').html('');
+            }
+
+    });
+
+    $('.timepicker').ptTimeSelect();
+
+    $('.finish').submit( function( e ) {
+
+        $.ajax({
+            url:'{{ path('bindu_build_finish') }}',
+            type: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+            $('.ajax-loading').show().addClass('loading').fadeIn(3000);
+            },
+            success: function(response) {
+                $('.ajax-loading').fadeOut(3000);
+            },
+            complete: function(){
+                document.location.reload();
+            }
+        })
+        e.preventDefault();
+
+    });
+
+    $('#Core_userbundle_user_profile_mobile').change(function(){
+
+        var mobile = $(this).val();
+        $.ajax({
+        url:'{{ path('bindu_user_check') }}',
+        type: "POST",
+        beforeSend: function() {
+        $('#checking').html('<img class="loadingImg" src="{{ asset('assets/img/loader-red.gif') }}" alt="" >');
+        },
+        data: 'mobile='+ mobile,
+        success: function(response) {
+        if(response == 'failed'){
+        $('#checking').html('Someone already has that mobile no. Try another?').css({'top':0, 'right':0,'width':'auto'});
+        $('#Core_userbundle_user_profile_mobile').val('');
+        $('#Core_userbundle_user_profile_mobile').css('border','1px solid red');
+        }else{
+        $('#checking img').fadeOut(3000);
+        $('#Core_userbundle_user_profile_mobile').css('border','1px solid #2dbae7');
+        }
+
+        }
+        });
+    });
+
+
+
+    $('.option').validate({
+
+        rules: {
+            subDomain: {
+                url: true
+            },
+            subDomain: {
+                required: true,
+                url: true,
+                remote: {
+                    url: "{{ path('bindu_build_checking_subdomain') }}",
+                    type: "post",
+                    data:
+                    {
+                        subDomain: function()
+                        {
+                        return $('#optionID :input[name="subDomain"]').val();
+                        }
+                    }
+                }
+            },
+
+
+        },
+        messages:{
+            domain:{
+                emailordomain: "Please specify the correct domain name"
+            },
+            subDomain:{
+                required: "Please enter your choseable sub domain name.",
+                remote: jQuery.validator.format("{0} is already taken.")
+            }
+        },
+        submitHandler: function(form) {
+            $.ajax({
+                url:'{{ path('bindu_build_option') }}',
+                type: "POST",
+                beforeSend: function() {
+                 $('.ajax-loading').show().addClass('loading').fadeIn(3000);
+                },
+                data: $('form.option').serialize(),
+                success: function(response) {
+                        $('.ajax-loading').fadeOut(3000);
+                        $('.main-setting').fadeOut(3500);
+                },
+                complete: function(){
+                    #}{#document.location.reload();#}{#
+                }
+            });
+        }
+
+    });
+
+    $('#setting').click(function(){
+        $('.main-setting').toggle();
+    })
+
+    $('#settingMainClose').click(function(){
+        $('.main-setting').fadeOut(3000);
+    })
+
+
+    $('.tm-accordion').on('click', '.accordion-title', function(){
+        $(".tm-accordion-setting" ).hide();
+        $(this).find( ".tm-accordion-setting" ).show();
+    });
+
+
+    $('.tm-accordion').on('click', 'a.setting-tab,dt.setting-tab', function(){
+
+        var container = $(this).closest('.accordion-title').next();
+
+        $('.setting-tab').removeClass('active');
+        $(this).addClass('active');
+        $('.setting-hidden').hide();
+        container.find("."+$(this).data('ref')).show();
+    });
+
+
+    $('.theme-submitted').submit( function( e ) {
+
+        $.ajax({
+            url:'{{ path('bindu_build_template') }}',
+            type: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+            $('.ajax-loading').show().addClass('loading').fadeIn(3000);
+            },
+            success: function(response) {
+            $('.ajax-loading').fadeOut(3000);
+            }
+        });
+
+        e.preventDefault();
+
+    });
+
+    $('.home-submitted').submit( function( e ) {
+
+        $.ajax({
+
+            url:'{{ path('bindu_build_homepage') }}',
+            type: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+            $('.ajax-loading').show().addClass('loading').fadeIn(3000);
+            },
+            success: function(response) {
+            $('.ajax-loading').fadeOut(3000);
+            }
+        });
+
+        e.preventDefault();
+
+    });
+
+    $('.customize-submitted').submit(function(e){
+
+        $.ajax({
+
+            url:'{{ path('bindu_build_customize') }}',
+            type: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+            $('.ajax-loading').show().addClass('loading').fadeIn(3000);
+            },
+            success: function(response) {
+            $('.ajax-loading').fadeOut(3000);
+            }
+        });
+            e.preventDefault();
+    })
+
+    $('.footer-submitted').submit(function(e){
+
+        $.ajax({
+
+            url: '{{ path('bindu_build_footer') }}',
+            type: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+            $('.ajax-loading').show().addClass('loading').fadeIn(3000);
+            },
+            success: function(response) {
+            $('.ajax-loading').fadeOut(3000);
+            }
+        });
+            e.preventDefault();
+
+
+    })
+
+    $('.about-us').submit(function(e){
+
+        $.ajax({
+
+            url: '{{ path('bindu_build_about') }}',
+            type: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+            $('.ajax-loading').show().addClass('loading').fadeIn(3000);
+            },
+            success: function(response) {
+            $('.ajax-loading').fadeOut(3000);
+            }
+            });
+            e.preventDefault();
+
+
+    })
+
+    $('.sitesetting').submit(function(e){
+
+        $.ajax({
+
+            url: '{{ path('bindu_build_sitesetting') }}',
+            type: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+            $('.ajax-loading').show().addClass('loading').fadeIn(3000);
+            },
+            success: function(response) {
+            $('.ajax-loading').fadeOut(3000);
+            }
+            });
+            e.preventDefault();
+
+
+    })
+
+
+    var usernameCheck = $('#usernameCheck');
+
+    $('#username').on('keyup', function(){
+
+        var username = $('#username').val();
+        if (username.length >= 3) {
+            $.ajax({
+            type: 'POST',
+            cache: 'false',
+            data: {username: username}, // form data
+            beforeSend: function() {
+            // show loading image
+            usernameCheck.attr('class', 'usernameLoading');
+            },
+            success: function(d) {
+            console.log(d)
+            if (d == 200) {
+            // show ok image
+            usernameCheck.attr('class', 'usernamePassed');
+            }
+            else if (d == 201) {
+            // show fail image
+            usernameCheck.attr('class', 'usernameFail');
+            }
+            }
+            });
+        };
+    });
+
+    $('.customizeTemplate').submit( function( e ) {
+
+        $.ajax({
+            url: '{{ path('bindu_build_template') }}',
+            type: 'POST',
+            data: new FormData( this ),
+            processData: false,
+            contentType: false,
+            success: function(data){}
+        });
+        e.preventDefault();
+
+    });
+
+    $('#callEmail').submit( function( e ) {
+
+        $.ajax({
+            url: '{{ path('bindu_build_contact') }}',
+            type: 'POST',
+            data: new FormData( this ),
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+            $('.ajax-loading').show().addClass('loading').fadeIn(3000);
+            },
+            success: function(response) {
+            $('.ajax-loading').fadeOut(3000);
+            }
+            });
+            e.preventDefault();
+
+    });
+
+    $('.contact').submit( function( e ) {
+
+        $.ajax({
+            url: '{{ path('bindu_build_contact') }}',
+            type: 'POST',
+            data: new FormData( this ),
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+            $('.ajax-loading').show().addClass('loading').fadeIn(3000);
+            },
+            success: function(response) {
+            $('.ajax-loading').fadeOut(3000);
+            }
+            });
+            e.preventDefault();
+
+    });
+
+    $('.adsTool').submit( function( e ) {
+
+        $.ajax({
+            url: '{{ path('bindu_build_adsTool') }}',
+            type: 'POST',
+            data: new FormData( this ),
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+            $('.ajax-loading').show().addClass('loading').fadeIn(3000);
+            },
+            success: function(response) {
+            $('.ajax-loading').fadeOut(3000);
+            }
+            });
+            e.preventDefault();
+
+    });
+
+
+    $("#district").change(function(){
+
+        var district = $(this).val();
+        $.ajax({
+        url: '{{ path('bindu_build_find_child') }}',
+        type: "POST",
+        data: 'district='+ district,
+        beforeSend: function() {
+            $('#child').show().addClass('loading').fadeIn(3000);
+        }
+        }).done(function(child){
+            $('#child').html(child);
+            $('#thana').select2();
+        });
+
+    });
+
+    $('#footerSettingID').click(function(){
+
+        var serialized = $('form#footerSetting').serialize();
+        $.ajax({
+        url: '{{ path('bindu_build_footer') }}',
+        type: "POST",
+        data: serialized
+        }).done(function(data){});
+    })
+
+
+    $("#logoUpload").change(function(){
+        logoPreview(this);
+    });
+
+    function logoPreview(input) {
+
+        if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#logoPreview').show().attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#bgImage").change(function(){
+        bgImagePreview(this);
+    });
+
+    function bgImagePreview(input) {
+
+        if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#bgImagePreview').show().attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#headerBgImage").change(function(){
+        headerBgImagePreview(this);
+    });
+
+    function headerBgImagePreview(input) {
+
+        if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#headerBgImagePreview').show().attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+    $(".theme").click(function () {
+
+        var id = $(this).attr('rel');
+        $(".theme").removeClass('themeSelected');
+        $("#theme-"+id).addClass('themeSelected');
+        $('#themeId').val(id);
+
+    });
+
+{% endblock %}#}

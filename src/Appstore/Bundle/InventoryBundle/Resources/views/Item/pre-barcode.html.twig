@@ -1,0 +1,166 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    View Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('item') }}">item</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Item Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <form id="barcode" name="barcode" method="post" action="{{ path('barcode_add') }}">
+                    <div class="portlet box green tabbable">
+
+                        <div class="portlet-title">
+                            <div class="caption"><i class="icon-reorder"></i>Item lists</div>
+                            <div class="actions">
+                                <div class="btn-group">
+                                    <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                        Tools
+                                        <i class="icon-tasks"></i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a href="{{ path('item_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                        <li><a href="{{ path('item') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <div class="btn-group">
+                                    <button class="btn" type="submit" >
+                                        Barcode
+                                        <i class="icon-barcode"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="portlet-body">
+                            <div class="portlet-body flip-scroll">
+                                {% include('flash-message.html.twig')  %}
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                    <thead class="flip-content ">
+                                    <tr class="head-grey">
+                                        <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                        <th class="numeric" >Name </th>
+                                        <th class="numeric" >Product code</th>
+                                        <th class="numeric" >Type</th>
+                                        <th class="numeric" >Qnt</th>
+                                        <th class="numeric" >Purchase</th>
+                                        <th class="numeric" >Purchase avg</th>
+                                        <th class="numeric" >Sales</th>
+                                        <th class="numeric" >Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for entity in entities %}
+                                        <tr>
+                                            <td> {% if entity.purchaseItems is defined and  entity.purchaseItems is not empty  %}<span data-trigger="hover" data-original-title="Barcode print" class="btn blue mini toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span>{% endif %}</td>
+                                            <td class="numeric" ><a href="{{ path('item_edit',{'id': entity.id })}}">{{ entity.name }}</a></td>
+                                            <td class="numeric" >{% if entity.vendor is not empty %}{{ entity.vendor.vendorCode }}-{% endif %}{{ entity.productCode }}</td>
+                                            <td class="numeric" >{% if  entity.parentCategory is defined and entity.parentCategory %}{{ entity.parentCategory.name }}{% endif %}</td>
+                                            <td class="numeric" >{{ entity.quantity }}</td>
+                                            <td class="numeric" >{{ entity.purchasePrice  }}</td>
+                                            <td class="numeric" >{{ entity.purchaseAvgPrice  }}</td>
+                                            <td class="numeric" >{{ entity.salesPrice }}</td>
+                                            <td class="numeric" >
+
+                                                {% if( entity.status == 1) %}
+                                                    <a href="{{ path('item_status', { 'id': entity.id}) }}" class="btn yellow mini"><i class="icon-check"></i></a>
+                                                {% else %}
+                                                    <a  href="{{ path('item_status', { 'id': entity.id}) }}" class="btn yellow mini" ><i class="icon-check-empty"></i></a>
+                                                {% endif %}
+                                                <a href="{{ path('item_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+                                                <a href="{{ path('item_show', { 'id': entity.id }) }}" class="btn purple mini" ><i class="icon-eye-open"></i></a>
+                                                <a data-title="Add purchase item" href="{{ path('inventory_purchaseitem_new', { 'purchase': entity.id }) }}" class="btn blue mini" ><i class="icon-plus-sign"></i></a>
+                                                <a title="Are you sure went to delete ?" href="{{ path('item_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+
+                                            </td>
+                                        </tr>
+                                        <tr id="show-{{ entity.id }}" class="showing-overview">
+                                            <td colspan="10">
+                                                {% if entity.purchaseItems is defined and  entity.purchaseItems is not empty  %}
+                                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                                        <thead class="flip-content ">
+                                                        <tr class="head-green">
+                                                            <th class="numeric" ><input type="checkbox" name="allCheck" class="tooltips" data-trigger="hover" data-original-title="Barcode print" ></th>
+                                                            <th class="numeric" >Received/Memo</th>
+                                                            <th class="numeric" >Qnt</th>
+                                                            <th class="numeric" >Purchase price</th>
+                                                            <th class="numeric" >Sales price</th>
+                                                            <th class="numeric" >Web price</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {% for purchaseItem in entity.purchaseItems %}
+                                                            <tr>
+                                                                <td><input type="checkbox" name="item[]" value="{{ entity.id }}" class="check tooltips"  ></td>
+                                                                <td class="numeric" >{% if purchaseItem.purchase is not empty %}{{ purchaseItem.purchase.receiveDate|date('d-m-Y') }}/{{ purchaseItem.purchase.memo }}{% endif %}</td>
+                                                                <td class="numeric" >{{ purchaseItem.quantity }}</td>
+                                                                <td class="numeric" >{{ purchaseItem.purchasePrice|number_format(2, '.', ',') }}</td>
+                                                                <td class="numeric" >{{ purchaseItem.salesPrice|number_format(2, '.', ',') }}</td>
+                                                                <td class="numeric" >{{ purchaseItem.webPrice|number_format(2, '.', ',') }}</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                        </tbody>
+                                                        <tfoot><tr><td colspan="9"></td></tr></tfoot>
+                                                    </table>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{#{% block documentready %}
+
+    //set initial state.
+    $('#allCheck').val($(this).is(':checked'));
+
+    $('#allCheck').change(function() {
+
+    if($(this).is(":checked")) {
+        $('.check').attr("checked", returnVal);
+    }
+    $('#allCheck').val($(this).is(':checked'));
+
+    });
+
+{% endblock %}#}
+

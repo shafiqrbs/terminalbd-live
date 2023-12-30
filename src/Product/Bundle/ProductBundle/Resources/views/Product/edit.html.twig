@@ -1,0 +1,598 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+    <!-- BEGIN product HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="product-title">
+                Form Components
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li>
+                    <a href="{{ path('product') }}">Product</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li><a href="#">Form Components</a></li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END product HEADER-->
+    <!-- BEGIN product CONTENT-->
+    <div class="row-fluid">
+    <div class="span12">
+    <div class="btn-group pull-right">
+        
+    </div>
+    <div class="portlet box green tabbable">
+
+    <div class="portlet-title">
+        <div class="caption"><i class="icon-reorder"></i>Basic Information</div>
+    </div>
+
+    <div class="portlet-body">
+
+    <div class="tabbable portlet-tabs">
+    <ul class="nav nav-tabs">
+        {% if entity.id > 0  %}
+            <li><a  href="{{ path('product_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;View</a></li>
+        {% endif %}
+        <li class=""><a  href="{{ path('product') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+        <li class="active"><a  href="javascript:"><i class="icon-edit"></i>&nbsp;Add/Edit</a></li>
+    </ul>
+    <div class="tab-content">
+
+    <div class="portlet-body form">
+    {% include('flash-message.html.twig')  %}
+    <!-- BEGIN FORM-->
+    {{ form_start(form) }}
+    {{ form_row(form._token) }}
+
+    <div class="row-fluid">
+        <div class="span12 ">
+            <div class="control-group">
+                <label class="control-label" for="firstName">Title <span class="required">*</span></label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <i class="icon-font"></i>
+                        {{ form_widget(form.name) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--/row-->
+    <div class="row-fluid">
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Vendor price<span class="required">*</span></label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <div class="input-prepend input-append">
+                            <span class="add-on">BDT</span>{{ form_widget(form.vendorPrice) }}
+                            {{ form_errors(form.vendorPrice) }}<span class="add-on">.00</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Regular Price</label>
+                <div class="controls">
+                    <div class="input-prepend input-append">
+                        <span class="add-on">BDT</span>{{ form_widget(form.price) }}
+                        {{ form_errors(form.price) }}<span class="add-on">.00</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+    </div>
+    <!--/row-->
+    <div class="row-fluid">
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Sales price</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <div class="input-prepend input-append">
+                            <span class="add-on">BDT</span>{{ form_widget(form.salesPrice) }}
+                            {{ form_errors(form.vendorPrice) }}<span class="add-on">.00</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Shipping Charge</label>
+                <div class="controls">
+                    <div class="input-prepend input-append">
+                        <span class="add-on">BDT</span>{{ form_widget(form.shipping) }}
+                        {{ form_errors(form.shipping) }}<span class="add-on">.00</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+    </div>
+    <!--/row-->
+    <!--/row-->
+    <div class="row-fluid">
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Quantity</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <div class="input-prepend input-append">
+                            <span class="add-on">Qnt</span>{{ form_widget(form.quantity) }}
+                            {{ form_errors(form.quantity) }}<span class="add-on">.00</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Unit</label>
+                <div class="controls">
+                    {{ form_widget(form.unit) }}
+                    {{ form_errors(form.unit) }}
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+    </div>
+    <!--/row-->
+    <!--/row-->
+    <div class="row-fluid">
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Availability</label>
+                <div class="controls">
+                        {{ form_widget(form.availability) }}
+                        {{ form_errors(form.availability) }}
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Is Feature</label>
+                <div class="controls">
+                        {{ form_widget(form.isFeature) }}
+                        {{ form_errors(form.isFeature) }}
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+    </div>
+    <!--/row-->
+    <div class="row-fluid">
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Brand name</label>
+                <div class="controls">
+                        {{ form_widget(form.brand) }}
+                        {{ form_errors(form.brand) }}
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Made in</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <i class="icon-font"></i>
+                        {{ form_widget(form.madeIn) }}
+                        {{ form_errors(form.madeIn) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+    </div>
+    <!--/row-->
+    <div class="row-fluid">
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Size</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <i class="icon-font"></i>
+                        {{ form_widget(form.size) }}
+                        {{ form_errors(form.size) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Color</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <i class="icon-font"></i>
+                        {{ form_widget(form.color) }}
+                        {{ form_errors(form.color) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+    </div>
+    <!--/row-->
+    <div class="row-fluid">
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Weight</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <i class="icon-font"></i>
+                        {{ form_widget(form.weight) }}
+                        {{ form_errors(form.weight) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Dimension</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <i class="icon-font"></i>
+                        {{ form_widget(form.dimension) }}
+                        {{ form_errors(form.dimension) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+    </div>
+    <!--/row-->
+    <div class="form-actions portlet box grey">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Deal/Offre Feature</div>
+        </div>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+    <!--/row-->
+    <div class="row-fluid">
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Deal</label>
+                <div class="controls">
+                    {{ form_widget(form.dealType) }}
+                    {{ form_errors(form.dealType) }}
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Collection</label>
+                <div class="controls">
+                    <select id="collection" name="collection" class="selectbox form-control input-sm" >
+                        <option value="0">Select collection</option>
+                        {% for collection in collections %}
+                            <optgroup label="{{ collection.name }}">
+
+                                {% for child in collection.children %}
+                                    <option {% if entity.collection.id|default(0) == child.id %} selected="selected" {% endif %} value="{{ child.id }}">{{ child.name }}|{{ child.discountPercentage|default(0) }}%</option>
+                                {% endfor %}
+                            </optgroup>
+                        {% endfor %}
+                    </select>
+
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+    </div>
+    <div class="clearfix">&nbsp;</div>
+    <!--/row-->
+    <div class="form-actions portlet box grey">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Category: {% if (entity.parentCategory) %}{{ entity.parentCategory.name }}{% endif %}</div>
+        </div>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+    <div class="row-fluid">
+        <div class="span12  product-categories" id="productCategories" >
+                {{ categories|raw }}
+        </div>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+
+
+    <!--/row-->
+    <div class="form-actions portlet box grey">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Content</div>
+        </div>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+    <div class="row-fluid">
+        <div class="span12 ">
+            <div class="control-group">
+                <div class="controls">
+                    {{ form_widget(form.content) }}
+                    {{ form_errors(form.content) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Feature image</label>
+                <div class="controls">
+
+                </div>
+                <div class="controls">
+                    <div class="input-icon">
+                        <div data-provides="fileupload" class="fileupload fileupload-new">
+                            <div style="width: 200px; height: 150px;" class="fileupload-new thumbnail">
+                                {% if(entity.webPath) %}
+                                    <img alt="" src="{{ image(entity.webPath).resize(200,150) }}">
+                                {% else %}
+                                    <img alt="" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
+                                {% endif %}
+                            </div>
+                            <div style="max-width: 200px; max-height: 150px; line-height: 20px;" class="fileupload-preview fileupload-exists thumbnail"></div>
+                            <div>
+													<span class="btn btn-file"><span class="fileupload-new">Select image</span>
+													<span class="fileupload-exists">Change</span>
+                                                        {{ form_widget(form.file) }}</span>
+                                <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+        <div class="span6 ">
+            <div class="control-group">
+                <label class="control-label" >Status</label>
+                <div class="controls">
+                    <div class="input-icon left">
+
+                        {{ form_widget(form.status) }}
+                        {{ form_errors(form.status) }}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+
+
+    </div>
+    <div class="clearfix">&nbsp;</div>
+
+    <div class="clearfix"></div>
+    <!--/row-->
+    <div class="form-actions portlet box green disabled">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Additional Field & Value </div>
+            <div style="float: right">
+                <button type="button" id="addmore" class="btn mini green-stripe purple" >Add Block</button>
+                <button type="button" id="rmvbtn" class="btn mini purple-stripe red" disabled>Remove</button>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="clearfix">&nbsp;</div>
+    {% if(entity.productCustomAttributes|length > 0) %}
+            {% for attribute in entity.productCustomAttributes %}
+
+                <div class="row-fluid clone  box blue clone-block ">
+                    <input type="hidden" name="attributeId[]" value="{{ attribute.id }}">
+                    <div class="span3">
+                        <div class="control-group">
+                            <div class="controls">
+                                <div class="input-icon left">
+                                    <i class="icon-font"></i>
+                                <input type="text" id="caption" name="attributeName[]"  class="m-wrap span12" placeholder="Attribute name" value="{{ attribute.name }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/span-->
+                    <div class="span7">
+                        <div class="control-group">
+                            <div class="controls">
+                                <div class="input-icon left">
+                                    <i class="icon-font"></i>
+                                <input type="text" id="caption" name="attributeContent[]"  class="m-wrap span12" placeholder="Enter some text, or some attributes by pipe (|) separating values." value="{{ attribute.content }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/span-->
+                    <div class="span1">
+                        <div class="control-group">
+                            <div class="controls">
+                                <input type="checkbox" class="checker popovers" data-trigger="hover" data-content="Are you remove attribute, Please click here." data-original-title="Remove image" name="removeAttributeId[]"  value="{{ attribute.id }}">
+                            </div>
+                        </div>
+                    </div>
+                    <!--/span-->
+                </div>
+
+
+            {% endfor %}
+        {% else %}
+            <div class="row-fluid clone  box blue clone-block">
+                <input type="hidden" name="attributeId[]" value="">
+                <div class="span3">
+                    <div class="control-group">
+                        <div class="controls">
+                            <div class="input-icon left">
+                                <i class="icon-font"></i>
+                            <input type="text" id="caption" name="attributeName[]"  class="m-wrap span12" placeholder="Attribute name" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/span-->
+                <div class="span7">
+                    <div class="control-group">
+                        <div class="controls">
+                            <div class="input-icon left">
+                                <i class="icon-font"></i>
+                            <input type="text" id="caption" name="attributeContent[]"  class="m-wrap span12" placeholder="Enter some text, or some attributes by pipe (|) separating values." value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/span-->
+                <div class="span1">
+                    <div class="control-group">
+                        <div class="controls">
+                            <input type="checkbox" class="checker popovers" data-trigger="hover" data-content="Are you remove attribute, Please click here." data-original-title="Remove image" name="removeAttributeId[]"  value="">
+                        </div>
+                    </div>
+                </div>
+                <!--/span-->
+            </div>
+
+
+        {% endif %}
+
+    <div class="clearfix"></div>
+    <!--/row-->
+    <div class="form-actions portlet box grey">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Manage Product Gallery</div>
+        </div>
+
+    </div>
+    <div class="clearfix">&nbsp;</div>
+
+    <div class="row-fluid">
+
+        {% if(entity.productGalleries) %}
+            {% for photo in entity.productGalleries %}
+                <div class="span2">
+                    <input type="checkbox" class="checker popovers" data-trigger="hover" data-content="Are you remove image, Please click here." data-original-title="Remove image" name="imageId[]"  value="{{ photo.id }}">
+                    <a href="{{ image(photo.webPath) }}" target="_blank"> <img src="{{ image(photo.webPath).resize(100,100) }}" /></a>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="clearfix">&nbsp;</div>
+
+        <div id="pluploadUploader">
+            <p>You browser doesn't have Flash, Silverlight, Gears, BrowserPlus or HTML5 support.</p>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="form-actions portlet box grey">
+        <div class="pull-center">
+            <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+            <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+            {% if(entity.id > 0 ) %}
+                <a href="{{ path('product_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+            {% endif %}
+        </div>
+    </div>
+    {{ form_end(form) }}
+    <!-- END FORM-->
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+    </div>
+    </div>
+    </div>
+{% endblock %}
+
+
+{% block documentready %}
+
+    {{ parent() }}
+
+    $('#productCategories').tree({
+
+        onCheck: { node: 'expand' },
+        onUncheck: { node: 'collapse' }
+        }).on('change', 'input[type=checkbox]', function(){
+            App.updateUniform();
+    });
+
+    $("#pluploadUploader").pluploadQueue({
+
+    // General settings
+    runtimes : 'gears,browserplus,html5',
+    url :'{{ path('product_upload') }}',
+    max_file_size : '10mb',
+    chunk_size : '2mb',
+    unique_names : true,
+    sortable: true,
+    // Resize images on clientside if we can
+    resize : {width :1024, height : 1024, quality : 90},
+    // Specify what files to browse for
+    filters : [
+    {title : "Image files", extensions : "jpeg,jpg,gif,png"},
+    {title : "Zip files", extensions : "zip"}
+    ],
+
+    // Flash settings
+    flash_swf_url : 'theme/scripts/plupload/js/plupload.flash.swf',
+
+    // Silverlight settings
+    silverlight_xap_url : 'theme/scripts/plupload/js/plupload.silverlight.xap'
+
+    });
+
+    var count = 0;
+    $('#addmore').click(function(){
+
+    var $clone = $('.clone:eq(0)').clone();
+    $clone.find('[id]').each(function(){this.id+='someotherpart'});
+    $clone.find(':text,textarea,:hidden' ).val("");
+    $clone.attr('id', "added"+(++count));
+    $('.clone:eq(0)').after($clone);
+    $('#rmvbtn').removeAttr('disabled');
+
+    });
+
+    $('#rmvbtn').click(function(){
+    $('#added'+(count--)).remove();
+    if (count>0)  $('#rmvbtn').removeAttr('disabled');
+    else $('#rmvbtn').attr('disabled', 'disabled');
+    });
+
+
+{% endblock %}

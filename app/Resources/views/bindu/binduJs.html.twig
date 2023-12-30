@@ -1,0 +1,35 @@
+{% block documentready %}
+
+
+    $('#template').click(function(){
+
+    var serialized = $('form#templateID').serialize();
+    $.ajax({
+    url: '{{ path('bindu_build_template') }}',
+    type: "POST",
+    data: serialized
+    }).done(function(data){
+    console.log(data);
+    });
+    })
+
+    $(".mobileTheme").click(function () {
+
+    var id = $(this).attr('rel');
+    $(".mobileTheme").removeClass('themeSelected');
+    $("#mobile-"+id).addClass('themeSelected');
+    $('#mobileThemeId').val(id);
+
+    });
+
+    $(".webTheme").click(function () {
+
+    var id = $(this).attr('rel');
+    $(".webTheme").removeClass('themeSelected');
+    $("#web-"+id).addClass('themeSelected');
+    $('#webThemeId').val(id);
+
+    });
+
+
+{% endblock %}

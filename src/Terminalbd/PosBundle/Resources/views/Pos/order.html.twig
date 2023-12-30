@@ -1,0 +1,50 @@
+<div class="portlet-body">
+    <table class="table-order">
+        <caption>Sales Statement</caption>
+        <thead>
+        <tr>
+            <th scope="col">S/N</th>
+            <th scope="col">Invoice</th>
+            <th scope="col">Date</th>
+            <th scope="col">Time</th>
+            <th scope="col">Sub-Total</th>
+            <th scope="col">Discount</th>
+            <th scope="col">Net Total</th>
+            <th scope="col">Payment</th>
+            <th scope="col">Due</th>
+            <th scope="col">Sales By</th>
+            <th scope="col">Transaction</th>
+            <th scope="col" style="width: 170px">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for dailySales in entities %}
+            <tr id="salesRemove-{{ dailySales.id }}">
+                <td data-label="S/N">{{ loop.index }}</td>
+                <td data-label="Invoice">{{ dailySales.invoice }}</td>
+                <td data-label="Date">{{ dailySales.created|date('d-m-Y') }}</td>
+                <td data-label="Time">{{ dailySales.created|date('h:i A') }}</td>
+                <td data-label="Sub-Total">{{ dailySales.subTotal|number_format  }}</td>
+                <td data-label="Discount">{{ dailySales.discount|number_format  }}</td>
+                <td data-label="Net Total">{{ dailySales.total|number_format  }}</td>
+                <td data-label="Payment">{{ dailySales.payment|number_format }}</td>
+                <td data-label="Due">{{ dailySales.due|number_format }}</td>
+                <td data-label="Sales By">{% if dailySales.salesBy %}{{ dailySales.salesBy }}{% endif %}</td>
+                <td data-label="Transaction">{{ dailySales.method }}</td>
+                <td data-label="Action">
+                    <span class="btn-group">
+                        <a href="{{ path('inventory_sales_show', { 'id': dailySales.id }) }}" target="_blank" class="btn purple mini" ><i class="icon-eye-open"></i></a>
+                        <a href="{{ path('inventory_salesonline_print_invoice',{'invoice':dailySales.invoice}) }}" target="_blank" class="btn blue mini" ><i class="icon-print"></i> POS</a>
+                        <a href="{{ path('inventory_salesonline_print_invoice',{'invoice':dailySales.invoice}) }}" target="_blank" class="btn green mini" ><i class="icon-print"></i> Print</a>
+                    </span>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<style>
+    .dialogModal_content .mini {
+        height: 28px!important;
+    }
+</style>

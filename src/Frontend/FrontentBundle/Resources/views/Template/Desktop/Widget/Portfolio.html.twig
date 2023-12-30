@@ -1,0 +1,35 @@
+{% if entities is defined and entities is not empty  %}
+<section id="portfolio1">
+    <div class="container">
+        <div class="row">
+            <div class="text-center">
+                <h2>{% if pageModule.name is not empty %}{{ pageModule.name }}{% else %}Portfolio{% endif %}</h2>
+                <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+            </div>
+            <ul class="filter nav nav-pills">
+                <li data-value="all" ><a class="active" href="#">All</a></li>
+                {% for category in globalOption.moduleCategories  %}
+                <li data-value="{{ category.slug }}"><a href="#">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+            <ul class="port2">
+                {% for key,portfolio in entities  %}
+                <li data-type="{% if portfolio.moduleCategory is not empty %}{{ portfolio.moduleCategory.slug }}{% endif %}" data-id="id-{{ portfolio.id }}" class="port3">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="our-portfolio">
+                            <img src="{{ image(portfolio.webPath).scaleResize(380,266) }}" alt="">
+                            <div class="team-content">
+                                <h3 class="team-prof">
+                                    <a href="#">{{ portfolio.name }}</a>
+                                    {% if portfolio.moduleCategory is not empty %}<small>{{ portfolio.moduleCategory.name }}</small>{% endif %}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</section>
+{% endif %}

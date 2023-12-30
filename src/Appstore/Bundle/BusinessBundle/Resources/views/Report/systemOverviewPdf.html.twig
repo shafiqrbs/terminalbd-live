@@ -1,0 +1,167 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+     h4 {
+        font-size: 18px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+    .numeric{
+        width: 85% !important;
+    }
+
+</style>
+<div class="portlet-body form">
+    <div class="row-fluid">
+        <table class="table">
+            <tr><th class="pull-center"><h3>{{ option.name }}</h3></th></tr>
+            <tr><th class="pull-center" ><h4>SYSTEM OVERVIEW STATEMENT SHEET</h4></th></tr>
+            <tr><td class="pull-right">Created: {{ "now"|date('d-m-Y') }}</td></tr>
+        </table>
+    </div>
+    <div class="row-fluid">
+        <div class="clearfix"><br/></div>
+        <div class="span12">
+            <div class="form-actions portlet box yellow">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-reorder"></i>Approximately Current Stock Overview</div>
+                </div>
+            </div>
+            <div class="clearfix">&nbsp;</div>
+            <table class="table">
+                <tr>
+                    <th class="numeric" >Sales Price</th>
+                    <td class="numeric" >{{ currentStockPrice.salesPrice|number_format }}</td>
+                </tr>
+                <tr>
+                    <th class="numeric" >Purchase Price</th>
+                    <td class="numeric" >{{ currentStockPrice.purchasePrice|number_format }}</td>
+                </tr>
+                <tr>
+                    <th class="numeric" >Approximately Profit</th>
+                    <td class="numeric" >{{ (currentStockPrice.salesPrice - currentStockPrice.purchasePrice)|number_format }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="clearfix">&nbsp;</div>
+        <div class="span12">
+            <div class="form-actions portlet box red">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-reorder"></i>Income/Loss</div>
+                </div>
+            </div>
+            <div class="clearfix">&nbsp;</div>
+            <table class="table table-bordered table-striped table-condensed flip-content ">
+                {% set totalExpense = 0 %}
+                {% for expense in income.expenditures %}
+                    {% set totalExpense = totalExpense + expense.amount  %}
+                {% endfor %}
+                <tr><th class="numeric" >Total Sales</th><td>{{ income.sales|number_format }}</td></tr>
+                <tr><th class="numeric" >Purchase Price</th><td>{{ income.purchase|number_format }}</td></tr>
+                <tr><th class="numeric" >Expenditure</th><td>{{ totalExpense|number_format }}</td></tr>
+                <tr><th class="numeric" >Net Income</th><td>{{ (income.sales - (income.purchase + totalExpense ))|number_format }}</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+    <div class="form-actions portlet box blue">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Purchase Overview</div>
+        </div>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+    <div class="row-fluid">
+        <div class="span12">
+            <table class="table table-bordered table-striped table-condensed flip-content ">
+                <tr><th class="numeric" >Purchase BDT</th><td>{{ accountPurchase.purchaseAmount|number_format }}</td></tr>
+                <tr><th class="numeric" >Payment BDT</th><td>{{ accountPurchase.payment|number_format }}</td></tr>
+                <tr><th class="numeric" >Due BDT</th><td>{{ (accountPurchase.purchaseAmount - accountPurchase.payment)|number_format }}</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+    <div class="form-actions portlet box blue">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Sales Overview</div>
+        </div>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+    <div class="row-fluid">
+        <div class="span12">
+            <table class="table table-bordered table-striped table-condensed flip-content ">
+                <tr><th class="numeric" >Sales BDT</th><td>{{ accountSales.totalAmount|number_format }}</td></tr>
+                <tr><th class="numeric" >Payment BDT</th><td>{{ accountSales.receiveAmount|number_format }}</td></tr>
+                <tr><th class="numeric" >Due BDT</th><td>{{ (accountSales.totalAmount - accountSales.receiveAmount)|number_format }}</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+    <div class="form-actions portlet box red">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Current Capital</div>
+        </div>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+    <div class="row-fluid">
+        <div class="span12">
+            <table class="table table-bordered table-striped table-condensed flip-content ">
+                {% set payable = (accountPurchase.purchaseAmount - accountPurchase.payment) %}
+                {% set receivable = (accountSales.totalAmount - accountSales.receiveAmount) %}
+                <tr><th class="numeric" >Cash in hand</th><td>{{ ((transactionCashOverviews['openingBalance']+transactionCashOverviews['debit']) - transactionCashOverviews['credit'])|number_format }}</td></tr>
+                <tr><th class="numeric" >Stock Purchase Price</th><td>{{ currentStockPrice.purchasePrice|number_format }}</td></tr>
+                <tr><th class="numeric" >Sales Receivable Amount</th><td>{{ (receivable)|number_format }}</td></tr>
+                <tr><th class="numeric" >Purchase Payable Amount</th><td>({{ payable|number_format }})</td></tr>
+                <tr><th class="numeric" >Capital</th><th>{{ ((currentStockPrice.purchasePrice + receivable + ((transactionCashOverviews['openingBalance']+transactionCashOverviews['debit']) - transactionCashOverviews['credit']))-payable)|number_format }}</th></tr>
+            </table>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,246 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN account_sales HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="account_sales-title">
+                    Customer Payment Receive
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_sales') }}">Customer Payment Receive</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Customer Payment  Receive New</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END account_sales HEADER-->
+        <!-- BEGIN account_sales CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Customer Payment Receive Information</div>
+                        {% if app.user.granted("ROLE_DOMAIN_ACCOUNTING_SALES") or app.user.granted("ROLE_DOMAIN") %}
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('account_sales') }}"><i class="icon-th-list"></i>&nbsp;Account Sales</a>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+                        <div class="row-fluid">
+                            <div class="span8">
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Created Date</label>
+                                            <div class="controls">
+                                                <input type="date" class="m-wrap span12 customer-input"  name="created" id="created"  value="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="vendor">Customer/Company</label>
+                                            <div class="controls">
+                                                <div class="span12">
+                                                    {{ form_widget(form.customer) }}
+                                                    {{ form_errors(form.customer) }}
+                                                    <div class="btn-group">
+                                                        <a href="javascript:" class="pull-right btn green addCustomer inputs"><i class="icon-plus"></i> Add New</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="customer">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="Customer">Customer/Company</label>
+                                            <div class="controls">
+                                                <input type="text" id="customerName" name="customerName" class="m-wrap span12 customer-input" autocomplete="off" placeholder="Customer name/company" value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="Customer">Mobile</label>
+                                            <div class="controls">
+                                                <input type="text" id="customerMobile" name="customerMobile" class="m-wrap span12 mobile customer-input" autocomplete="off" placeholder="Customer mobile no" value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="Customer">Address</label>
+                                        <div class="controls">
+                                            <textarea id="customerAddress" name="customerAddress" class="m-wrap span12 customer-input" rows="2" placeholder="Enter customer address"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="transactionMethod">Method<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.transactionMethod) }}
+                                                {{ form_errors(form.transactionMethod) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bankHide"  {% if entity.transactionMethod is defined and entity.transactionMethod is not empty and entity.transactionMethod.slug == 'bank'  %} id="bankMethod" {% endif %}>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="paymentMethod">Account Bank</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.accountBank) }}
+                                            {{ form_errors(form.accountBank) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                            </div>
+                        </div>
+                        <div class="mobileHide" {% if entity.transactionMethod is defined and entity.transactionMethod is not empty and  entity.transactionMethod.slug == 'mobile'  %} id="mobileMethod" {% endif %}  >
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="paymentMethod">Account Mobile</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.accountMobileBank) }}
+                                            {{ form_errors(form.accountMobileBank) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="control-group">
+                                    <label class="control-label" for="amount">Invoice Mode<span class="required">*</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.processHead) }}
+                                        {{ form_errors(form.processHead) }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% if app.user.granted("ROLE_DOMAIN_ACCOUNTING_SALES") or app.user.granted("ROLE_DOMAIN") %}
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="amount">Current Outstanding</label>
+                                            <div class="controls">
+                                                <label class="control-label" style="text-align: left!important;"><strong id="outstanding"></strong></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                            {% endif %}
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span5">
+                                <div class="control-group">
+                                    <label class="control-label">SMS Alert</label>
+                                    <div class="controls" style="margin-top: 10px">
+                                        {{ form_widget(form.smsAlert) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <div class="control-group">
+                                    <label class="control-label" for="amount">Amount<span class="required">*</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.amount) }}
+                                        {{ form_errors(form.amount) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Remark</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.remark) }}
+                                        {{ form_errors(form.remark) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-right">
+                                <button type="submit" class="btn green"><i class="icon-save"></i>&nbsp;SAVE</button>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                        <!-- END FORM-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        input.removeZero{
+            border: 2px solid red!important;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/common.js'
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $('.select2Customer').select2('open');
+    CommonJs();
+    AccountingApproveProcess();
+{% endblock %}

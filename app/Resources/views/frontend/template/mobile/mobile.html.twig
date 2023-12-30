@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+
+<head>
+    <meta charset="utf-8"/>
+    <title>{{ globalOption.name }}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <meta name="MobileOptimized" content="320">
+    <meta property="og:site_name" content="{{ globalOption.name }}">
+    <meta property="og:title" content="{{ globalOption.name }}">
+    <meta property="og:description" content="-CUSTOMER VALUE-">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{{ image(globalOption.templateCustomize.webPath('logo')).resize() }}"><!-- link to image for socio -->
+    <meta property="og:url" content="{{ globalOption.domain }}">
+    <link rel="shortcut icon" href="favicon.ico">
+    <script type="application/x-javascript"> addEventListener("load", function() {setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    {% stylesheets filter='cssrewrite'
+    'assets/template/mobile/css/bootstrap.min.css'
+    'assets/template/mobile/css/font-awesome.min.css'
+    'assets/template/mobile/css/jquery.mmenu.all.css'
+    'assets/template/mobile/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+    <!-- web-fonts -->
+    <link href='//fonts.googleapis.com/css?family=Abril+Fatface' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
+    <!-- //web-fonts -->
+</head>
+<body >
+{% block cssBlock %}{% endblock %}
+<div class="body-back">
+    <div class="masthead pdng-stn1">
+        <div class="phone-box wrap push" id="home">
+            <div class="menu-notify">
+                <div class="profile-left">
+                    <a href="#mm-menu" class="main-menu"><i class="fa fa-list-ul"></i></a>
+                </div>
+                <div class="Profile-mid">
+                    <h5 class="pro-link"><a
+                                href="{{ path('mobile_home',{'subdomain':globalOption.subDomain}) }}">{{ globalOption.name }}</a>
+                    </h5>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <!-- banner -->
+            <div class="details-grid">
+                <div class="details-shade">
+                    <div class="details-right">
+                        <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize() }}" alt=" ">
+
+                        <h3>Welcome To</h3>
+                        <h4>{{ globalOption.name }}</h4>
+                    </div>
+                </div>
+            </div>
+            <!-- //banner -->
+{% block body %}{% endblock %}
+<!--/footer-->
+<div class="w3agile">
+    <div class="" id="mobile-footer">
+        <ul class="footer-icon">
+
+            <li>
+                <a href="tel:+88 {{ globalOption.mobile }}" class="hvr-radial-out" data-title="Phone">
+                    <i area-hidden=true class="fa fa-phone"></i>
+                </a>
+            </li>
+            <li>
+                <a href="#sms-modal" class="hvr-radial-out" data-title="">
+                    <i class="fa fa-comment"></i>
+                </a>
+            </li>
+{#            <li>
+                <a href="javascript:" class="scrollToTop" data-title="Top up">
+                    <i class="fa fa-hand-o-up"></i>
+                </a>
+            </li>
+            <li>
+                <a href="#email-modal" class="hvr-radial-out" data-title="">
+                    <i class="fa fa-envelope"></i>
+                </a>
+            </li>#}
+            <li>
+                <a class="last hvr-radial-out"
+                   href="{{ path('mobile_contact',{'contact':'contact'}) }}" data-title="">
+                    <i class="fa fa-map-marker"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!--/footer-->
+
+</div>
+</div>
+</div>
+<nav id="mm-menu">
+    {{ menuTree|raw }}
+</nav>
+{% block javascriptBlock %}{% endblock %}
+{% javascripts
+'assets/template/mobile/js/jquery-2.1.4.min.js'
+'assets/template/mobile/js/bootstrap.min.js'
+'assets/template/mobile/js/bigSlide.js'
+'assets/template/mobile/js/jquery.magnific-popup.js'
+'assets/template/mobile/js/modernizr.custom.js'
+'assets/template/mobile/js/jquery.mmenu.min.all.js'
+'assets/template/mobile/js/jquery.nicescroll.min.js'
+'assets/template/mobile/js/scripts.js'
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#mm-menu").mmenu();
+        $('.popup-top-anim').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in'
+        });
+        $('.scrollToTop').click(function(){
+            $('html, body').animate({scrollTop : 0},800);
+            return false;
+        });
+
+        {% block documentready %}
+        {% endblock %}
+
+    });
+</script>
+<style>
+    .main-menu:link, .main-menu:visited {
+        color: #fff;
+        background: rgba(0, 0, 0, .4);
+        border-radius: 4px;
+        padding: .6em .6em;
+    }
+    .profile-left {
+        text-align: left;
+        padding-left: 7%;
+    }
+    #mobile-footer {
+
+        bottom:0;
+        color: #EEE;
+        left: 0;
+        margin: 0;
+        position: fixed;
+        right: 0;
+        z-index: 99999;
+        display: block;
+        height: 36px;
+        text-align: center;
+        background: #cccccc;
+
+    }
+
+    #mobile-footer ul.footer-icon{
+        padding: 0!important;
+        margin: 2px;
+
+    }
+
+    #mobile-footer ul.footer-icon li {
+        display: inline-block;
+        margin: 0 .3em;
+        font-size: 1em;
+        color: #999;
+    }
+
+    #mobile-footer ul.footer-icon li a{
+        color: #ffffff;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: center;
+        margin-left: 5px;
+        background: #2ad2c9;
+
+    }
+    #mobile-footer ul.footer-icon li a:hover{
+        background: #000000;
+    }
+     #mobile-footer ul.footer-icon li a i {
+        line-height: 31px;
+    }
+
+
+</style>
+</body>
+</html>

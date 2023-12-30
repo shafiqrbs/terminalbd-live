@@ -1,0 +1,125 @@
+{% extends ':bindu:base.html.twig' %}
+{% block body %}
+    <style>
+        #tm-template-default-box.tm-container{
+            margin-top: -10px;
+        }
+    </style>
+    <div id="tm-page-body">
+        <div id="tm-page-title">
+            <div class="tm-wrap tm-table">
+                <div class="tm-title-captions">
+                    <h2 class="tm-entry-title">About Us</h2>
+                </div>
+                <ul class="tm-breadcrumbs">
+                    <li>
+                        <a href="{{ path('bindu_homepage') }}">Home</a>
+                    </li>
+                    <li>
+                        About Us
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--tm-page-title-->
+        <div id="tm-page-body">
+            <div id="tm-blog" class="tm-container tm-wrap tm-blog-style-magazine1 tm-sidebar-right">
+                <div class="page-content">
+                    <div class="page-content-inner tm-content">
+                        <div class="tm-row" style="padding:50px 0">
+                            <div class="tm-wrap">
+                                {% if entity.webPath is not empty or entity.photoGallery is not empty  %}
+                                <div class="one-half">
+                                    <div class="tm-gallery gallery-slide flexslider">
+                                        <ul class="slides">
+                                            {% if entity.webPath is not empty %}
+                                            <li>
+                                                <a class="expand" href="{{ image(entity.webPath).scaleResize(1024,512,'#000000') }}" data-rel="prettyPhoto[gallery3]">
+                                                    <img alt="img" src="{{ image(entity.webPath).scaleResize(1024,512,'#000000') }}">
+                                                </a>
+                                            </li>
+                                            {% endif %}
+                                            {% for slide in entity.photoGallery.galleryImages %}
+                                                <li>
+                                                    <a class="expand" href="{{ image(slide.getAbsolutePath(1,entity.photoGallery.id)).scaleResize(1024,512,'#000000') }}" data-rel="prettyPhoto[gallery3]">
+                                                        <img alt="img" src="{{ image(slide.getAbsolutePath(1,entity.photoGallery.id)).scaleResize(1024,512,'#000000') }}">
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="{% if entity.webPath is not empty or entity.photoGallery is not empty  %} one-half last {% endif %}">
+                                    <div class="header-double-line-right">
+                                        <h3 class="tm-title">Welcome to Terminalbd.com</h3>
+                                    </div>
+                                    <div>
+                                        <p>{{ entity.content|raw }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tm-row" style="padding:0 0 50px 0;">
+                            <div class="tm-wrap">
+                                <div class="header-double-line-right">
+                                    <h3 class="tm-title">Meet the Team</h3>
+                                </div>
+                                <div class="tm-main-content">
+                                    <div class="tm-main-content-inner">
+                                        {% if teams is defined and teams is not empty %}
+                                        {% for team in teams %}
+                                        <article>
+                                            <div class="tm-content-inner">
+                                                <div class="entry-thumbnail">
+                                                    <a href="javascript:">
+                                                        <img src="{{ image(team.webPath).scaleResize(320,220) }}" alt="Thumb">
+                                                    </a>
+                                                </div>
+                                                <div class="entry-container">
+                                                    <h3>
+                                                        <a href="javascript:">{{ team.name }}</a>
+                                                    </h3>
+                                                    <div class="meta">
+                                                        <span class="incategory"><a href="javascript:">{{ team.designation }}</a></span>
+                                                    </div>
+                                                    <p>{{ team.content|raw }}</p>
+                                                </div>
+                                            </div>
+                                        </article>
+                                        {% endfor %}
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--page-content-->
+            </div>
+            <!--tm-template-->
+        </div>
+
+    </div>
+
+{% endblock %}
+    {% block cssBlock %}
+        {% stylesheets filter='cssrewrite'
+        '@BinduBundle/Resources/public/css/style.css'
+        %}
+        <link rel="stylesheet" href="{{ asset_url }}"/>
+        {% endstylesheets %}
+    {% endblock  %}
+    {% block javascriptBlock %}
+        {{ parent() }}
+        {% javascripts
+        '@BinduBundle/Resources/public/js/common.js'
+        %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    {% endblock %}
+    {% block documentready %}
+        {{ parent() }}
+        indexFormValidation();
+    {% endblock %}

@@ -1,0 +1,39 @@
+account_balancetransfer:
+    path:     /
+    defaults: { _controller: "AccountingBundle:AccountBalanceTransfer:index" }
+
+account_balancetransfer_new:
+    path:     /new
+    defaults: { _controller: "AccountingBundle:AccountBalanceTransfer:new" }
+
+account_balancetransfer_create:
+    path:     /create
+    defaults: { _controller: "AccountingBundle:AccountBalanceTransfer:create" }
+    methods:  POST
+
+account_balancetransfer_reverse:
+    path:     /{id}/reverse
+    defaults: { _controller: "AccountingBundle:AccountBalanceTransfer:journalReverse" }
+
+account_balancetransfer_approve:
+    path:     /{id}/payment-approve
+    defaults: { _controller: "AccountingBundle:AccountBalanceTransfer:approve" }
+    options:
+           expose: true
+
+account_balancetransfer_inline:
+    path:     /inline-update
+    defaults: { _controller: "AccountingBundle:AccountBalanceTransfer:inlineUpdate" }
+
+
+account_balancetransfer_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "AccountingBundle:AccountBalanceTransfer:delete" }
+    options:
+           expose: true
+
+account_balancetransfer_approve_delete:
+    path:     /{id}/approve-delete
+    defaults: { _controller: "AccountingBundle:AccountBalanceTransfer:approveDelete" }
+    options:
+           expose: true

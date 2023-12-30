@@ -1,0 +1,25 @@
+ <div class="content">
+        <div class="container">
+            <h1>Syndicate Content</h1><button id="slidx_button" >Lists</button>
+            <div class="col-xs-12">
+                <ul>
+                    {% for row in pagination %}
+                        <li>
+                            <div class="one-responsive">
+                                <div class="big-notification dark-notification">
+                                    <h4>{{ row.name }} </h4>
+                                    <p><a href="{{ path('mobile_module',{'subdomain': entity.user.globalOption.subDomain,'module':'syndicate' ,'slug':row.slug }) }}">{{ row.content | truncate(100, true) }}</a></p>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+
+                </ul>
+            </div>
+            <div class="decoration"></div>
+
+        </div>
+    </div>
+ <div class="pagination pull-center"  >
+     {{ knp_pagination_render(pagination) }}
+ </div>

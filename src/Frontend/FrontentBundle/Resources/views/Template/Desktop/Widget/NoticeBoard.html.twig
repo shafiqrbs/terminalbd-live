@@ -1,0 +1,37 @@
+{% if entities is defined and entities is not empty  %}
+    <section id="testmonial-noticeboard">
+        <div class="container">
+            <div class="text-center"><h2>{% if pageModule.name is not empty %}{{ pageModule.name }}{% else %}Notice Boards{% endif %}</h2></div>
+            <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="short" />
+            <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="news-slider" class="owl-carousel">
+                                    {% for key,notice in entities  %}
+                                        <div class="notice-slide">
+                                            <div class="post-content">
+                                                <div class="post-date">
+                                                    <span class="month">{{ notice.updated|date('F') }}</span>
+                                                    <span class="date">{{ notice.updated|date('d') }}</span>
+                                                </div>
+                                                <h5 class="post-title"><a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'noticeBoard','slug':notice.slug }) }}"> {{ notice.name }}</a></h5>
+                                                <p class="post-description">
+                                                    {{ notice.content|truncate(200)|raw }}
+                                                </p>
+                                            </div>
+                                            <ul class="post-bar">
+                                                {% if notice.webPath is not empty %}<li> <i class="fa fa-file"></i> <a target="_blank" href="{{ notice.webPath }}">Download</a> </li>{% endif %}
+                                            </ul>
+                                        </div>
+
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+        </div>
+    </section>
+{% endif %}

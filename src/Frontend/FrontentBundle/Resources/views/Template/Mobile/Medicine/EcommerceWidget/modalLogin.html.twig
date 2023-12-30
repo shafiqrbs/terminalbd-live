@@ -1,0 +1,159 @@
+<!-- Modal -->
+<div id="loginModal" class="modal fade" tabindex="-10" role="dialog" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content  col-xs-12 col-md-12">
+            <form class="register" id="loginForm" action="{{ path("fos_user_security_check") }}" method="post" novalidate="novalidate">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">LOGIN</h4>
+                </div>
+                <div class="modal-body">
+                     <input type="hidden" name="_csrf_token" value="{{ csrfToken }}"/>
+                    <div class="panel panel-default">
+
+                        <div class="panel-body">
+                            <div id="loginMsg"></div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>
+                                    <input type="text" id="_username" name="_username" required="required" class="form-control" placeholder="Enter your mobile no">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                                    <input type="password" id="_password" name="_password" required="required" class="form-control secured" placeholder="Enter your password">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="checkbox" id="remember_me" name="_remember_me" value="on" /> Remember me!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit"  class="btn btn-sm btn-primary pull-right" role="button">Log in</button>
+                </div>
+                <div class="modal-footer">
+
+                    <div class="" style="text-align: left">
+                        <div class="forget-password">
+                            <h4>Forgot your password ?</h4>
+                                    <span>
+                                        no worries, click <a href="javascript:" id="forget-password">here</a>
+                                        to reset your password.
+                                    </span>
+                        </div>
+                        <div class="create-account">
+                                    <span>
+                                        Don't have an account yet ?&nbsp;
+                                        <a href="javascript:" class="register-btn">Create an account</a>
+                                    </span>
+                        </div>
+                    </div>
+
+
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Modal -->
+<div id="registerModal" class="modal fade" tabindex="-11" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content  col-xs-12 col-md-12">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">SIGN IN</h4>
+                </div>
+                {{ form_start(form) }}
+                {{ form_row(form._token) }}
+                <div class="modal-body">
+                    <div class="panel panel-default">
+                        <div class="panel-body" style="height: 290px;">
+                            <div class="form-group">
+                                {{ form_errors(form.profile.name) }}
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                                    {{ form_widget(form.profile.name) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_errors(form.profile.mobile) }}
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>
+                                    {{ form_widget(form.profile.mobile) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+                                    {{ form_widget(form.email) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_errors(form.profile.location) }}
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-map-marker"></span></span>
+                                    {{ form_widget(form.profile.location) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{  form_errors(form.profile.address) }}
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-home"></span></span>
+                                    {{ form_widget(form.profile.address) }}
+                                </div>
+                            </div>
+                            <div class="checkbox">
+                                {{  form_errors(form.profile.termsConditionAccept) }}
+                                <label>
+                                    {{ form_widget(form.profile.termsConditionAccept) }}
+                                    I agree to &nbsp;<a target="_blank"  href="{{ path('bindu_page_content',{'slug':'terms-of-service'}) }}">Terms</a>&nbsp;&&nbsp;<a target="_blank" id="PrivacyLink" href="{{ path('bindu_page_content',{'slug':'privacy-policy'}) }}">Privacy</a>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <span style="text-align: left; display:block; float: left">Click here for
+                    <a href="javascript:" class="login-preview" id="register-btn1">Login</a></span>
+                    <button type="submit"  class="btn btn-sm btn-primary pull-right" role="button">Register</button>
+                </div>
+                {{ form_end(form) }}
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Modal -->
+<div id="forgetModal" class="modal fade" tabindex="-11" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content  col-xs-12 col-md-12">
+            <form class="register" id="commentform" action="{{ path("fos_user_security_check") }}" method="post" novalidate="novalidate">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Reset Password</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>
+                                    <input type="text" id="_usernamex" name="_usernamex" required="required" class="form-control" placeholder="Enter your mobile no">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <span style="text-align: left; display:block; float: left">Click here for
+                    <a href="javascript:" class="login-preview" id="register-btn1">Login</a></span>
+                    <button type="submit"  class="btn btn-sm btn-primary pull-right" role="button">Send</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

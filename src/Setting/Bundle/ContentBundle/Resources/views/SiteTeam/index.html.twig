@@ -1,0 +1,95 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Site Team Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('siteteam') }}">Site Team</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green ">
+
+                     <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Site Team Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('siteteam_new') }}"><i class="icon-plus-sign"></i>&nbsp;Add Content</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        {% include('flash-message.html.twig')  %}
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                            <thead class="flip-content ">
+                            <tr class="head-grey">
+                                <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                <th class="numeric" >Business Sector</th>
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Designation</th>
+                                <th class="numeric" >Action</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for entity in entities %}
+                                <tr>
+                                    <td><span class="badge badge-warning toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+
+                                    <td class="numeric" >{{ entity.businessSector|capitalize }}</td>
+                                    <td class="numeric" ><a href="{{ path('siteteam_edit',{'id': entity.id })}}">{{ entity.name }}</a></td>
+                                    <td class="numeric" >{{ entity.designation|capitalize }}</td>
+                                    <td class="numeric" >
+                                        {% if( entity.status == 1) %}
+                                            <a class="btn mini green-stripe btn-action" href="{{ path('siteteam_status', { 'id': entity.id}) }}"><span class="badge badge-success">x</span></a>
+                                        {% else %}
+                                            <a class="btn mini green-stripe btn-action" href="{{ path('siteteam_status', { 'id': entity.id}) }}"><span class="badge badge-important">a</span>    </a>
+                                        {% endif %}
+                                        <a class="btn mini green-stripe btn-action" href="{{ path('siteteam_edit', { 'id': entity.id }) }}">Edit</a>
+                                        <a class="btn mini red-stripe btn-action confirm" title="Are you sure went to delete ?" href="{{ path('siteteam_delete', { 'id': entity.id }) }}" >Delete</a>
+                                    </td>
+                                </tr>
+                                <tr id="show-{{ entity.id }}" class="showing-overview">
+                                    <td colspan="6">
+                                        <table class="inner-table">
+                                            <tr><td>Content</td><td>{{ entity.content|raw }}</td></tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

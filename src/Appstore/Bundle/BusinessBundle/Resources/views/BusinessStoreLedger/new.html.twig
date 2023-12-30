@@ -1,0 +1,202 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Store Ledger
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('business_store') }}">Manage Store Ledger</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green ">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Store Ledger</div>
+                        <div class="actions">
+                            <a href="{{ path('business_store_ledger') }}" class=" btn black"><i class="icon-th-list"></i> Store Ledger</a>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        <div>
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+
+                            <div class="row-fluid" >
+                                <div class="span3"></div>
+                                <div class="span6">
+                                    <div class="row-fluid" >
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label"  for="category" >Store Name<span class="required">*</span></label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.store) }}
+                                                    {{ form_errors(form.store) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid" >
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label"  for="category" >Mode <span class="required">*</span></label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.transactionType) }}
+                                                    {{ form_errors(form.transactionType) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="row-fluid" >
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label"  for="category" >Method <span class="required">*</span></label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.transactionMethod) }}
+                                                    {{ form_errors(form.transactionMethod) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div id="cartMethod">
+
+                                         <div class="row-fluid" >
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label"  for="category" >Bank Account</label>
+                                                    <div class="controls">
+                                                        {{ form_widget(form.accountBank) }}
+                                                        {{ form_errors(form.accountBank) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid" >
+                                            <div class="span6">
+                                                <div class="control-group">
+                                                    <label class="control-label"  for="category" >Payment Card</label>
+                                                    <div class="controls">
+                                                        {{ form_widget(form.paymentCard) }}
+                                                        {{ form_errors(form.paymentCard) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="span6">
+                                                <div class="control-group">
+                                                    <label class="control-label"  for="category" >Card No</label>
+                                                    <div class="controls">
+                                                        {{ form_widget(form.cardNo) }}
+                                                        {{ form_errors(form.cardNo) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div id="bkashMethod">
+                                        <div class="row-fluid" >
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label"  for="category" >Mobile Account</label>
+                                                    <div class="controls">
+                                                        {{ form_widget(form.accountMobileBank) }}
+                                                        {{ form_errors(form.accountMobileBank) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid" >
+                                            <div class="span6">
+                                                <div class="control-group">
+                                                    <label class="control-label"  for="category" >Receive Mobile</label>
+                                                    <div class="controls">
+                                                        {{ form_widget(form.paymentMobile) }}
+                                                        {{ form_errors(form.paymentMobile) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="span6">
+                                                <div class="control-group">
+                                                    <label class="control-label"  for="category" >Transaction ID</label>
+                                                    <div class="controls">
+                                                        {{ form_widget(form.transactionId) }}
+                                                        {{ form_errors(form.transactionId) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="row-fluid" >
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label"  for="category" >Amount<span class="required">*</span></label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.amount) }}
+                                                    {{ form_errors(form.amount) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                        </div>
+                        <!-- END FORM-->
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+<style>
+    #cartMethod , #bkashMethod{
+        display: none;
+    }
+    #hide{
+        display: none;
+    }
+</style>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+        '@BusinessBundle/Resources/public/js/invoice.js'
+        '@BusinessBundle/Resources/public/js/approveProcess.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}

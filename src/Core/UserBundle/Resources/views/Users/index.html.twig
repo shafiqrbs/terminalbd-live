@@ -1,0 +1,231 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ parent() }} : Users{% endblock %}
+{% block breadcrumb %}
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home"></i>
+            <a href="/">Home</a>
+            <i class="icon-angle-right"></i>
+            <span>Configuration</span>
+            <i class="icon-angle-right"></i>
+            <span>Users</span>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block body %}
+
+    <style>
+        .pagination > li > a, .pagination > li > span
+        {
+            background-color: #eee !important;
+            color: #000000 !important;
+        }
+        .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
+            background-color: #428bca !important;
+        }
+
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Users
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-user"></i>
+                    <a href="/users" style="color: #333 !important;">Users</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {% for flashMessage in app.session.flashbag.get('user-success') %}
+        <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+
+    {% for flashMessage in app.session.flashbag.get('user-error') %}
+        <div class="alert alert-error">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+
+    <!--BEGIN TABS-->
+    <div class="tabbable tabbable-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="index.html#tab_1_1" style="color: black !important;" data-toggle="tab">All</a></li>
+            <li style="float: right;margin-right: -1px;">
+                <a href="{{ path('docudex_user_manager_create') }}" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                     Add User
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content" style="height: auto;background: #eee;">
+            <div class="tab-pane active" id="tab_1_1">
+                <div class="" data-always-visible="1" data-rail-visible="0">
+
+                    <div class="fluid" id="category-list-div">
+                        <div class="form-group">
+                            <div class="col-md-12" style="margin-top: 30px;">
+
+                                <table class="table bold" style="border: 1px solid ghostwhite;" id="user-list-table">
+                                    <thead style="background: #4b8df8;color: #fff;">
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Full Name</th>
+                                        <th>Access Level</th>
+                                        <th>Email</th>
+                                        <th>Cell Phone</th>
+                                        <th>designation</th>
+                                        <th></th>
+                                        <th style="width: 140px; text-align: center">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {# table body #}
+                                    {% for user in pagination %}
+                                        {% set bgColor = ["#fff"] %}
+
+                                        <tr style="background: {{ bgColor|join("") }};border-top: 3px solid #eee !important;">
+                                            <td>{{ user.username|raw }}</td>
+                                            <td>{{ user.fullName|default('<span class="muted">N/A</span>')|raw }}</td>
+                                            <td>{% for user1 in user.groups %}
+
+                                                    {{ user1.name }}
+
+                                                {% endfor %}
+                                            </td>
+                                            <td>{{ user.email }}</td>
+                                            <td>{{ user.profile.cellphone|default('<span class="muted">N/A</span>')|raw }}</td>
+                                            <td>{{ user.profile.designation|default('<span class="muted">N/A</span>')|raw }}</td>
+                                            <td>
+                                                {% if user.enabled == 0 %}
+                                                <a href="/user/active/{{ user.id }}" style="width: 65px;" class="btn default btn-xs"> Enable</a>
+                                                {% endif %}
+                                            </td>
+                                            <td style="text-align: center">
+                                                {% if user.isSuperAdmin() %}
+                                                    --
+                                                {% else %}
+                                                    <div class="btn-group" style="text-align: left">
+                                                        <a class="btn blue mini" href="#" data-toggle="dropdown">
+                                                            <i class="icon-user"></i> User Action
+                                                            <i class="icon-angle-down"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu" style="!important;height: 64px;width: 120px !important;min-width: 100px!important;">
+                                                            <li><a href="{{ path('docudex_user_manager_edit',{'id':user.id}) }}" style="float: right;width:120px;margin: auto;background: gray;"><i class="icon-pencil"></i> Edit</a></li>
+                                                            <li>
+                                                                <form action="{{ path('docudex_user_manager_delete',{'id':user.id}) }}" method="post" style="">
+                                                                    <input type="hidden" name="_token" value="{{ csrf_token("delete_action_" ~ user.id) }}">
+                                                                    <input type="hidden" name="id" value="{{ user.id }}">
+                                                                    <a class="button-delete" type="submit" href="#"><i class="icon-trash"></i> Delete</a>
+                                                                </form>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="4">No user available</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                {# display navigation #}
+                                <div class="navigation" style="text-align: right">
+                                    {{ knp_pagination_render(pagination) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END TABS-->
+
+    <div id="modal-change-password" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <form id="user-change-password-form" action="" method="post" style="margin-bottom: 0;">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h3>Set new password for user</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <input type="hidden" value="" name="_token">
+                    <input type="hidden" value="{{ pagination.currentPageNumber }}" name="page">
+
+                    <div class="control-group">
+                        <label class="control-label">Password<span class="required">*</span></label>
+                        <div class="controls">
+                            <input type="password" class="m-wrap" name="password" id="submit_form_password"/>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Confirm Password<span class="required">*</span></label>
+                        <div class="controls">
+                            <input type="password" class="m-wrap" name="confirm_password"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn green">Save</button>
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            </div>
+
+        </form>
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    {% javascripts
+    'assets/plugins/jquery-validation/dist/jquery.validate.min.js'
+    'assets/plugins/jquery-validation/dist/additional-methods.min.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+{% endblock javascripts %}
+
+{% block documentReady %}
+
+    {{ parent() }}
+
+    PasswordChange.init();
+
+{% endblock %}
+

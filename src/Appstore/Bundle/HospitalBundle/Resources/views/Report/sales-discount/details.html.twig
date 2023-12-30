@@ -1,0 +1,155 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    {% set posted = searchForm.posted is defined ? searchForm.posted : '' %}
+                    {% if posted is not empty %}
+                    Sales Details Report {{ posted }}
+                    {% else %}
+                    Sales Details Report {{ "now"|date("d-m-Y") }}
+                    {% endif %}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> Sales Details Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i> {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i> Sales Details Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% set referred = searchForm.referred is defined ? searchForm.referred :'' %}
+                                {% set name = searchForm.name is defined ? searchForm.name :'' %}
+                                {% set mobile = searchForm.mobile is defined ? searchForm.mobile :'' %}
+                                {% set posted = searchForm.posted is defined ? searchForm.posted :'' %}
+                                <a class="btn red" target="_blank" href="{{ path('hms_report_sales_discount_details_pdf',{'referred':referred,'name':name,posted:posted,mobile:mobile}) }}" >
+                                    <i class=" icon-download"></i>&nbsp;Download PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="row-fluid" >
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid" style="margin-bottom: 10px">
+                                    <div class="span4">
+                                        <select name="referred" id="referred" class="m-wrap span12 select2">
+                                            <option value="" >--Patient Referred--</option>
+                                            {% for referred in referredDoctors %}
+                                                <option {% if searchForm.referred is defined and searchForm.referred == referred.id %} selected="selected" {% endif %} value="{{ referred.id }}" >{{ referred.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span4">
+                                        <select name="user" id="user" class="m-wrap span12 select2">
+                                            <option value="" >--Created By--</option>
+                                            {% for row in salesTodayUser %}
+                                                <option {% if searchForm.user is defined and searchForm.user == row.userId %} selected="selected" {% endif %} value="{{ row.userId }}" >{{ row.createdBy }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="input-append span11">
+                                            <input style="padding-left: 15px" class="m-wrap span10 search-input dateCalendar" name="posted" id="posted" value="{% if searchForm.posted is defined %}{{ searchForm.posted }}{% endif %}"  autocomplete="off" placeholder="Date">
+                                            <div class="btn-group">
+                                                <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </div>
+                                <div class="clearfix"></div>
+                            </form>
+                        </div>
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-green">
+                                <th class="numeric" >Created</th>
+                                <th class="numeric" >Invoice No</th>
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Referred</th>
+                                <th class="numeric" >Assign Doctor</th>
+                                <th class="numeric" >Sub-Total</th>
+                                <th class="numeric" >Discount</th>
+                                <th class="numeric" >Total</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% set grandSubTotal = 0 %}
+                            {% set grandTotal = 0 %}
+                            {% set grandCommission = 0 %}
+                            {% set grandDiscount = 0 %}
+                            {% for entity in entities %}
+                                {% set  grandSubTotal = grandSubTotal + entity.subTotal %}
+                                {% set  grandTotal = grandTotal + entity.total %}
+                                {% set  grandDiscount = grandDiscount + entity.discount %}
+                                {% set  grandCommission = grandCommission + entity.commission %}
+                                <tr id="delete-{{ entity.id }}">
+                                    <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                    <td class="numeric" >{{ entity.invoice }}</td>
+                                    <td class="numeric" >{% if entity.customer is defined and entity.customer is not empty %}{{ entity.customer.name }}{% endif %}</td>
+                                    <td class="numeric" >{% if entity.referredDoctor is not empty %}{{ entity.referredDoctor.name }}{% endif %}</td>
+                                    <td class="numeric" >{% if entity.assignDoctor is not empty %}{{ entity.assignDoctor.name }}{% endif %}</td>
+                                    <td class="numeric" >{{ entity.subTotal }}</td>
+                                    <td class="numeric" >{{ entity.discount }}</td>
+                                    <td class="numeric" >{{ entity.total }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="5"><span class="pull-right">Grand Total</span></th>
+                                    <td>{{ grandSubTotal }}</td>
+                                    <td>{{ grandDiscount }}</td>
+                                    <td>{{ grandTotal }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+
+
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/jquery-ui.css'
+    '@HospitalBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/patient.js'
+    '@HospitalBundle/Resources/public/js/approveProcess.js'
+    '@HospitalBundle/Resources/public/js/datetimepicker_css.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $(document).on('click', '.print', function(e){});
+{% endblock %}

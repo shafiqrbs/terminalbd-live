@@ -1,0 +1,143 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr td{
+        font-size: 12px;
+        height: 15px;
+        vertical-align: middle;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h2 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    h3 {
+        font-size: 20px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-left{
+        text-align: left!important;
+        display: block;
+        padding-right: 20px;
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+    .numeric{
+        width: 80%;
+    }
+
+</style>
+{% set name = searchForm.name is defined ? searchForm.name :'' %}
+{% set month = searchForm.month is defined ? searchForm.month :"now"|date("F") %}
+{% set year = searchForm.year is defined ? searchForm.year :"now"|date("Y") %}
+
+<table class="table">
+    <thead>
+    <tr>
+        <td class="pull-center"><h2>{{ option.name }}</h2></td>
+    </tr>
+    <tr>
+        <th class="pull-center"><h3><strong>{{ name|upper }} LEDGER STATEMENT</strong></h3></th>
+    </tr>
+    </thead>
+</table>
+<table class="table">
+    <thead class="flip-content ">
+    <tr>
+        <th class="pull-center" colspan="9"><h5><strong>DATE WISE STATEMENT SHEET: {{ month|capitalize }} , {{ year }}</strong></h5></th>
+    </tr>
+    <tr class="head-green">
+        <th>Date</th>
+        <th>Opening</th>
+        <th>Purchase</th>
+        <th>PurchaseReturn</th>
+        <th>Sales</th>
+        <th>SalesReturn</th>
+        <th>Damage</th>
+        <th>Closing</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% set fullDate =  date(year~'-'~month~'-1')|date('Y-m-d') %}
+    {% set month =  date(year~'-'~month~'-1')|date('Y-m-') %}
+    {% set max =  fullDate|date("t") %}
+    {% set sales = 0 %}
+    {% set purchase = 0 %}
+    {% set purchaseReturn = 0 %}
+    {% set expenditure = 0 %}
+    {% set purchaseExpenditure = 0 %}
+    {% set openingQuantity = 0 %}
+    {% set opening = app.session.get('opening') %}
+    {% set balance = 0 %}
+    {% set closing = 0 %}
+    {% set totalPurchase = 0 %}
+    {% set totalPurchaseReturn = 0 %}
+    {% set totalSales = 0 %}
+    {% set totalSalesReturn = 0 %}
+    {% set totalDamage = 0 %}
+    {% set totalClosing = 0 %}
+    {% for i in 1..max %}
+        {% set blackO               = date(month~i)|date('d-m-Y') %}
+        {% set openingQuantity       = openingBalance[blackO] is defined and openingBalance[blackO] is not empty ? openingBalance[blackO] : 0  %}
+        {% set sales                = entity[blackO] is defined and entity[blackO] is not empty ? entity[blackO].salesQuantity : 0  %}
+        {% set salesReturn          = entity[blackO] is defined and entity[blackO] is not empty ? entity[blackO].salesReturnQuantity : 0  %}
+        {% set purchase             = entity[blackO] is defined and entity[blackO] is not empty ? entity[blackO].purchaseQuantity : 0  %}
+        {% set purchaseReturn       = entity[blackO] is defined and entity[blackO] is not empty ? entity[blackO].purchaseReturnQuantity : 0  %}
+        {% set damage               = entity[blackO] is defined and entity[blackO] is not empty ? entity[blackO].damageQuantity : 0  %}
+        {% set closing              = ((openingQuantity + purchase + salesReturn) - (sales + purchaseReturn + damage))|default(0)|number_format  %}
+        {% set totalPurchase = totalPurchase + purchase %}
+        {% set totalPurchaseReturn = totalPurchaseReturn + purchaseReturn %}
+        {% set totalSales = totalSales + sales %}
+        {% set totalSalesReturn = totalSalesReturn + salesReturn %}
+        {% set totalDamage = totalDamage + damage %}
+        {% set totalClosing = totalClosing + closing %}
+        <tr>
+            <td>{{ blackO }}</td>
+            <td>{{ openingQuantity }}</td>
+            <td>{{ purchase }}</td>
+            <td>{{ purchaseReturn }}</td>
+            <td>{{ sales }}</td>
+            <td>{{ salesReturn }}</td>
+            <td>{{ damage }}</td>
+            <td>{{ closing }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+

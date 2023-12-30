@@ -1,0 +1,90 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 print-bar">
+            <form name="searchForm" id="searchForm" action="{{ path('accounting_report_sales_ajax') }}" method="post">
+
+                <div class="grid-container-4">
+                    <div class="grid-item">
+                        <label>Customer</label>
+                        <select class="search-input span12 select2 m-wrap" id="customerId" name="customerId">
+                            <option value="">--Select Customer--</option>
+                            {% for row in customers %}
+                                <option {% if searchForm.customerId is defined and searchForm.customerId == row.id %} selected="selected" {% endif %} value="{{ row.id }}">{{ row.mobile }}-{{ row.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                     <div class="grid-item">
+                         <label>User</label>
+                         <select class="search-input span12 m-wrap" id="user" name="user">
+                             <option value="">--Select System User--</option>
+                             {% for row in users %}
+                                 <option {% if searchForm.user is defined and searchForm.user == row.id %} selected="selected" {% endif %} value="{{ row.id }}">{{ row.name }}</option>
+                             {% endfor %}
+                         </select>
+                    </div>
+                     <div class="grid-item">
+                         <label>Method</label>
+                         <select class="search-input span12 m-wrap" id="method" name="method">
+                             <option value="">--Select Method--</option>
+                             {% for row in transactionMethods %}
+                                 <option {% if searchForm.method is defined and searchForm.method == row.id %} selected="selected" {% endif %} value="{{ row.id }}">{{ row.name }}</option>
+                             {% endfor %}
+                         </select>
+                    </div>
+                     <div class="grid-item">
+                         <label>Mode</label>
+                         <select class="search-input span12 m-wrap" id="mode" name="mode">
+                             <option value="">--Select Mode--</option>
+                             {% for row in groups %}
+                                 <option {% if searchForm.mode is defined and searchForm.mode == row.name %} selected="selected" {% endif %} value="{{ row.name }}">{{ row.name }}</option>
+                             {% endfor %}
+                         </select>
+                    </div>
+                    <div class="grid-item">
+                        <label>Invoice</label>
+                        <input type="text" class="m-wrap" id="invoice" name="invoice" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}">
+
+                    </div>
+                    <div class="grid-item">
+                        <label>Start Date</label><br/>
+                        <input type="datetime-local" class="m-wrap span12 datepicker" required="required"  id="startDateTime" name="startDateTime" value="{% if searchForm.startDateTime is defined %}{{ searchForm.startDateTime }}{% endif %}">
+                    </div>
+                    <div class="grid-item">
+                        <label>End Date</label><br/>
+                        <input type="datetime-local" class="m-wrap span12 datepicker m-wrap" required="required"  id="endDateTime" name="endDateTime" value="{% if searchForm.endDateTime is defined %}{{ searchForm.endDateTime }}{% endif %}">
+                    </div>
+                    <div class="grid-item">
+                        <div class="col-md-12 margin-top-15" >
+                            <button type="button" class='btn btn-download btn-margin-left ajax-btn' value="search" name="submit" ><i class='fa fa-search'></i></button>
+                            <button class="btn purple" onclick="exportExcel()" type="button"><i class="fa fa-file"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="loader loader-double" ></div>
+    <div id="print-area">
+        <div class="row print-header">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size:18px">{{ option.name }}</strong></p>
+                <p><strong>Name of Report: Customer Sales & Receive</strong></p>
+            </div>
+            <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" id="data-load"></div>
+        </div>
+    </div>
+    <script>
+        function exportExcel() {
+            var table = document.querySelector('#downloadExcel');
+            TableToExcel.convert(table);
+        }
+    </script>
+{% endblock %}
+
+
+

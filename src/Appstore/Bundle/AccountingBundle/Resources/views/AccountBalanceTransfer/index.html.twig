@@ -1,0 +1,244 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Account of Balance Transfer
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_balancetransfer') }}">Account of Balance Transfer</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Account of Balance Transfer Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account Balance Transfer</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('account_balancetransfer_new') }}"><i class="icon-plus-sign"></i>&nbsp;Add New</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body">
+                            {% include('flash-message.html.twig') %}
+                            {#<form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <select class="search-input  span12 m-wrap" id="accountHeadDebit" name="accountHeadDebit">
+                                            <option value="">Account Debit Head</option>
+                                            {% for account in accountHead %}
+                                                {% if account.children is not empty %}
+                                                    <optgroup label="{{ account.name }}">
+                                                        {% for child in account.children %}
+                                                            {% if child.toIncrease == 'Debit' %}
+                                                                <option {% if searchForm.accountHeadDebit is defined and searchForm.accountHeadDebit == child.id %} selected="selected" {% endif %} value="{{ child.id }}">{{ child.name }}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </optgroup>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <select class="search-input  span12 m-wrap" id="accountHeadCredit" name="accountHeadCredit">
+                                            <option value="">Account Credit Head</option>
+                                            {% for account in accountHead %}
+                                                {% if account.children is not empty %}
+                                                    <optgroup label="{{ account.name }}">
+                                                        {% for child in account.children %}
+                                                            {% if child.toIncrease == 'Credit' %}
+                                                                <option {% if searchForm.accountHeadDebit is defined and searchForm.accountHeadDebit == child.id %} selected="selected" {% endif %} value="{{ child.id }}">{{ child.name }}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </optgroup>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span2">
+                                        <input type="text" id="toUser" name="toUser"  class="span12 select2User leftMargin " value="{% if searchForm.toUser is defined %}{{ searchForm.toUser }} {% endif %}"  autocomplete="off" placeholder="Search user name">
+                                    </div>
+                                    <div class="span2">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 m-wrap search-input  date-picker" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span2">
+                                        <div class="controls">
+                                            <div class="input-append span11">
+                                                <input type="text" id="endDate" name="endDate"  class="span8 m-wrap search-input  m-ctrl-medium date-picker" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %} ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            #}
+                            {#<table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content">
+                                <tr class="head-red">
+                                    <th class="numeric" ><strong>Debit</strong></th>
+                                    <th class="numeric" ><strong>Credit</strong></th>
+                                    <th class="numeric" ><strong>Balance</strong></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="numeric" ><strong>{{ overview.debit|number_format }}</strong></td>
+                                    <td class="numeric" ><strong>{{ overview.credit|number_format }}</strong></td>
+                                    <td class="numeric" ><strong>{{ (overview.debit - overview.credit)|number_format }}</strong></td>
+                                </tr>
+                                </tbody>
+                            </table>#}
+                        </div>
+                        <div class="portlet-body flip-scroll">
+
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >User</th>
+                                    <th class="numeric" >Ref No</th>
+                                    <th class="numeric" >From Method</th>
+                                    <th class="numeric" >To Method</th>
+                                    <th class="numeric" >Amount</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr id="remove-{{ entity.id }}">
+                                        <td><span class="badge badge-success toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+                                        <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" ><a href="javascript:" class="tooltips" data-title="{% if entity.createdBy is not empty %}{{ entity.createdBy.profile.name }}{% endif %}" data-trigger="hover">{{ entity.createdBy }}</a></td>
+                                        <td class="numeric" >{{ entity.accountRefNo }}</td>
+                                        <td class="numeric" >{% if entity.fromTransactionMethod is not empty %}{{ entity.fromTransactionMethod.name }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.toTransactionMethod is not empty %}{{ entity.toTransactionMethod.name }}{% endif %}</td>
+                                        <td class="numeric" >
+                                            {% if entity.process == 'approved'  %}
+                                                {{ entity.amount|number_format }}
+                                            {% else %}
+                                                <a data-mode="inline" class="editable" data-name="amount" href="#"  data-url="{{ path('account_balancetransfer_inline') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change your amount">{{ entity.amount }}</a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="" >
+                                            <div class="btn-group">
+                                            {% if entity.process != 'approved' or app.user.granted("ROLE_DOMAIN")  %}
+                                                <a href="javascript:" id="delete-{{ entity.id }}" data-id="{{ entity.id }}" class="btn red mini delete"  data-url="{{ path('account_balancetransfer_delete',{'id':entity.id}) }}"><i class="icon-trash"></i></a>
+                                            {% endif %}
+                                            {% if(entity.process == 'approved' and ("now"|date("d-m-y") == entity.updated|date('d-m-y'))  and app.user.granted("ROLE_DOMAIN_ACCOUNT_REVERSE")) or (("now"|date("d-m-y") == entity.updated|date('d-m-y')) and entity.process == 'Approved' and app.user.granted("ROLE_DOMAIN")) %}
+                                                <a href="{{ path('account_balancetransfer_reverse',{'id':entity.id}) }}" id="" data-id="" class="btn yellow mini "><i class="icon-retweet"></i>&nbsp;Reverse</a>
+                                            {% endif %}
+                                            {% if entity.process != 'approved' %}
+                                                <a href="javascript:" id="action-{{ entity.id }}" data-id="{{ entity.id }}" class="btn green mini approve "  data-url="{{ path('account_balancetransfer_approve',{'id':entity.id}) }}"><i class="icon-check"></i>&nbsp;Approve</a>
+                                            {% else %}
+                                                <a href="javascript:" class="btn purple mini "><i class="icon-check"></i>&nbsp;Approved</a>
+                                            {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr id="show-{{ entity.id }}" class="showing-overview">
+                                        <td colspan="8">
+                                            <table class="table">
+                                                <tr><td>Remark</td><td>{{ entity.remark }}</td></tr>
+                                                <tr><td colspan="2">From Information</td></tr>
+                                                {% if entity.fromAccountBank is not empty %}
+                                                    <tr><td>Bank name</td><td>{{ entity.fromAccountBank.bank.name }}</td></tr>
+                                                    <tr><td>Account no.</td><td>{{ entity.fromAccountBank.accountNo }}</td></tr>
+                                                {% endif %}
+                                                {% if entity.fromAccountMobileBank is not empty %}
+                                                    <tr><td>Mobile Account</td><td>{{ entity.fromAccountMobileBank.name }}</td></tr>
+                                                {% endif %}
+                                                <tr><td colspan="2">To Information</td></tr>
+                                                {% if entity.toAccountBank is not empty %}
+                                                    <tr><td>Bank name</td><td>{{ entity.toAccountBank.bank.name }}</td></tr>
+                                                    <tr><td>Account no.</td><td>{{ entity.toAccountBank.accountNo }}</td></tr>
+                                                {% endif %}
+                                                {% if entity.toAccountMobileBank is not empty %}
+                                                    <tr><td>Mobile Account</td><td>{{ entity.toAccountMobileBank.name }}</td></tr>
+                                                {% endif %}
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/editable.js'
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    AccountingApproveProcess();
+    $('.mobileBankHide').hide();
+    $('.bankHide').hide();
+    $(document).on('change', '.transactionMethod', function() {
+
+    var transactionMethod = $(this).val();
+    if(transactionMethod == 2 ){
+    $('.bankHide').show(500);
+    $('.mobileBankHide').hide(500);
+    }else if(transactionMethod == 3 ){
+    $('.bankHide').hide(500);
+    $('.mobileBankHide').show(500);
+    }else{
+    $('.bankHide').hide(500);
+    $('.mobileBankHide').hide(500);
+    }
+
+    });
+
+
+{% endblock %}
+
+
+

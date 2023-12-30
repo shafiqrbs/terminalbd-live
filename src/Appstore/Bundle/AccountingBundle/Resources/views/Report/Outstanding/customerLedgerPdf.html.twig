@@ -1,0 +1,508 @@
+
+<style>
+    @media print{@page {size: landscape}}
+    @media print {
+        h1 , h2 , h3 , h4 , h5 , h6,p{
+            display: block;
+            padding: 0;
+            margin: 0;
+        }
+        h3 {
+            font-size: 24px;
+            line-height: 45px;
+            height: 45px;
+        }
+
+        body{
+            background-color:#fff!important;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 10px;
+        }
+
+        ul{
+            list-style: none;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        ul li {
+            list-style: none;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .pull-right {
+            float: right;
+            text-align: right;
+            width: 220px!important;
+        }
+
+        .table-margin{
+            margin-bottom: 15px!important;
+            margin-top: 15px !important;
+        }
+
+        label{
+            text-decoration:underline;
+            font-size:13px
+        }
+
+        table.table {
+            clear: both;
+            margin-bottom: 6px !important;
+            max-width: none !important;
+            font-family: Helvetica, Arial, sans-serif;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+
+
+
+        table.table-border{
+            border: 1px solid #777777!important;
+        }
+
+        table.table-no-border {
+            clear: both;
+            max-width: none !important;
+            border-collapse: collapse;
+            width: 100%;
+            border: none!important;
+        }
+
+        .print-header{
+            height: 50px;
+            border: 1px solid #777777;
+        }
+        .print-header .title{
+            float: left;
+            padding-left: 10px;
+            line-height: 50px;
+            font-size: 18px;
+            clear: both;
+            display: inline-block;
+
+        }
+        .print-header .title-center{
+            padding-left: 10px;
+            line-height: 50px;
+            font-size: 18px;
+            clear: both;
+            display: inline-block;
+        }
+
+        .print-header .barcode-left{
+            float: left;
+            padding-left: 10px;
+            margin-top: 5px;
+        }
+
+        .print-header .barcode-right{
+            float: right;
+            padding-right: 10px;
+            margin-top: 5px;
+        }
+
+        .print-header .barcode{
+            float: right;
+            padding-right: 10px;
+            margin-top: 5px;
+        }
+
+
+        .table td {
+            padding:1px;
+            line-height: 20px;
+            vertical-align: top;
+            font-size: 11px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+        }
+        .table thead tr th {
+            font-size: 11px;
+            line-height: 30px;
+            padding-left: 10px!important;
+            padding-right: 10px!important;
+        }
+        .table-bordered tr td{
+            border: 1px solid #444 !important;
+        }
+
+        .table-no-border tr td{
+            border: 0!important;
+            padding: 0!important;
+        }
+
+        .table-no-border tr td .table-bordered tr td{
+            padding-left: 8px!important;
+            padding-right: 8px!important;
+        }
+
+
+        .table-striped tbody>tr:nth-child(add)>td,
+        .table-striped tbody>tr:nth-child(add)>th {
+            background-color: #313131;
+        }
+        .table-striped tbody>tr:nth-child(odd)>td,
+        .table-striped tbody>tr:nth-child(odd)>th {
+            background-color: #f9f9f9;
+        }
+
+        .head-blue{
+            background:#ddd!important;
+            height: 30px;
+            color: #000;
+            line-height: 30px;
+            border:1px solid #dddddd;
+            text-align: left;
+            padding-left:10px;
+        }
+
+        .header .navbar-inner{
+            display: none;
+        }
+        .page-sidebar{
+            display: none;
+        }
+
+        .page-content{
+            margin-left: 0 !important;
+        }
+        .table{
+            border: none!important;
+        }
+        .table th, .table td{
+            border-top: none;
+        }
+        .table th .span4, .table td .span4{
+            width: 100%;
+        }
+        .table-bordered th, .table-bordered td{
+            border-left:none;
+        }
+
+        .footer{
+            display: none!important;
+        }
+        .page-content{
+            margin: 0 auto !important;
+            width: 100%;
+        }
+
+        .barcode-block {
+            text-align: center!important;
+            white-space: nowrap;
+            width: 140px;
+            float: left;
+            height: 80px;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-top: none;
+        }
+
+        /* The ghost, nudged to maintain perfect centering */
+        .barcode-block:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -0.25em; /* Adjusts for spacing */
+        }
+
+        /* The element to be centered, can also be of any width and height */
+        .centered {
+            display: inline-block;
+            vertical-align: middle;
+            width: 113px;
+        }
+        .centered p{
+            padding: 0!important;
+            margin: 0!important;
+            display: block;
+            height: 14px;
+            font-size: 11px;
+            line-height: 13px;
+            font-weight: bold;
+        }
+
+        .centered .left{
+            text-align: left;
+            float: left;
+            display: inline-block;
+            height: 14px;
+            font-size: 9px;
+        }
+        .centered .center{
+            text-align: center;
+            display: inline-block;
+            height: 14px;
+        }
+        .centered .right{
+            text-align: right;
+            float: right;
+            display: inline-block;
+            height: 14px;
+            font-size: 9px;
+        }
+
+        .text-left{
+            text-align: left!important;
+        }
+        .text-center{
+            text-align: center !important;
+        }
+        .text-right{
+            text-align: right !important;
+        }
+        .span12{
+            width: 100%
+        }
+        .span9{
+            width:75%
+        }
+        .span8{
+            width:66.66666667%
+        }
+        .span6{
+            width: 50%
+        }
+        .span4{
+            width: 33.33333333%
+        }
+        .span3{
+            width: 25%
+        }
+        .span2{
+            width: 12.50%
+        }
+        .span1{
+            width: 8.33333333%
+        }
+
+        .approve-box{
+            height:30px;
+            padding-top: 40px;
+            text-align:center;
+            font-weight:bold;
+            float: left;
+        }
+
+
+        h1 , h2 , h3 , h4 , h5 , h6,p{
+            display: block;
+            padding: 0;
+            margin: 0;
+        }
+        h3 {
+            font-size: 18px;
+            line-height: 36px;
+            height: 36px;
+        }
+
+        h4 {
+            font-size: 16px;
+            line-height: 32px;
+            height: 32px;
+        }
+
+        .table{
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            font-family:tahoma, geneva, sans-serif;
+        }
+        .table tr.head th, .table tr.head td{
+            font-size: 15px;
+            background: #333;
+            color: #fff;
+            height: 40px;
+        }
+
+        .table tr.sub-head th, .table tr.sub-head td{
+            font-size: 15px;
+            background: #666;
+            color: #fff;
+            height: 40px;
+        }
+
+        .table th, .table td{
+            border: 1px solid rgba(97, 101, 221, 0.09);
+            text-align: left;
+            height: 30px;
+            line-height: 30px;
+
+        }
+        h3 {
+            font-size: 24px;
+            display: block;
+            padding: 0;
+            margin: 0;
+            line-height: 45px;
+            height: 45px;
+        }
+        .pull-center{
+            background: #e5e5e5;
+            text-align: center!important;
+
+        }
+        .pull-right{
+            text-align: right!important;
+            display: block;
+            padding-right: 20px;
+        }
+
+        .unstyled li{
+            margin: 0;
+            padding: 0;
+            list-style: none!important;
+        }
+
+        .span12, .span9, .span8, .span6,.span5, .span4, .span3, .span2, .span1{
+            display: inline-block;
+        }
+    }
+
+
+</style>
+{% set startDate = searchForm.month is defined ? searchForm.month :"now"|date("d-m-Y") %}
+{% set endDate = searchForm.year is defined ? searchForm.year :"now"|date("d-m-Y") %}
+
+<table class="table">
+    <thead>
+    <tr><td class="pull-center" colspan="10"><h3>{{ globalOption.name }}</h3></td></tr>
+    <tr>
+        <th class="pull-center" colspan="10"><h4><strong>Customer OUTSTANDING</strong></h4></th>
+    </tr>
+    <tr>
+        <th class="pull-left"  colspan="8">
+            <ul class="unstyled">
+                <li><strong>Customer #:</strong> {% if customer is not empty %}{{ customer.name }}{% endif %},<strong> Mobile #:</strong>&nbsp;{% if customer is not empty %}{{ customer.mobile }}{% endif %}</li>
+                {% if customer is not empty %}<li><strong>Address #:</strong>&nbsp;{{ customer.address }}</li>{% endif %}
+                {% if customer is not empty and customer.location is not empty %}<li><strong>Location #:</strong>&nbsp;{{ customer.location.name }}, {{ customer.location.parent.name }}</li>{% endif %}
+            </ul>
+        </th>
+    </tr>
+    <tr>
+        <th class="pull-left"  colspan="10">Printed Date: {{ "now"|date("d-m-Y") }}, Date Period:  {{ startDate }} To {{ endDate }}</th>
+    </tr>
+    <tr class="head-blue">
+        <th class="numeric" >S/N</th>
+        <th class="numeric" style="width:70px!important;" >Created</th>
+        <th class="numeric" >Invoice</th>
+        <th class="numeric" style="padding: 0!important;border: 0 0 1px 0!important;" >
+            {% if globalOption.mainApp.slug == 'business' %}
+                <table class="inner-table" style="width: 100%; border-collapse: collapse;" border="0">
+                    <tr>
+                        <th width="40%">Particular</th>
+                        <th width="20%">Size</th>
+                        <th width="10%">Qnt</th>
+                        <th width="10%">Unit</th>
+                        <th width="10%">Price</th>
+                        <th width="10%">Total</th>
+                    </tr>
+                </table>
+            {% else %}
+                Particulars
+            {% endif %}
+        </th>
+        <th class="numeric" >Method</th>
+        <th class="numeric" >Mode</th>
+        <th class="numeric" >Total</th>
+        <th class="numeric" >Received</th>
+        <th class="numeric" >Due</th>
+        <th class="numeric" >Created</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr id="remove-{{ entity.id }}">
+            <td class="numeric" >{{ loop.index }}.</td>
+            <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+            <td class="numeric" >
+                {{ entity.sourceInvoice }}
+            </td>
+            <td class="numeric" style="padding: 0!important; border: none!important;">
+                {% if entity.businessInvoice is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'business' %}
+                    <table style="width: 100%; border-collapse: collapse" >
+                        {% for item in entity.businessInvoice.businessInvoiceParticulars  %}
+                            <tr>
+                                <td  width="40%">{{ loop.index }}. {{ item.particular }}</td>
+                                {% if entity.businessInvoice.businessConfig.businessModel == 'sign' %}
+                                <td  width="20%">
+                                    {% if item.height is not empty and item.width is not empty %}
+                                        {{ item.height }} x {{ item.width }} = {{ item.subQuantity }}
+                                    {% endif %}
+                                </td>
+                                {% endif %}
+                                <td width="10%">{{ item.quantity }}</td>
+                                <td width="10%">{{ item.unit }}</td>
+                                <td width="10%">{{ item.price }}</td>
+                                <td width="10%" id="subTotal-{{ item.id }}">{{ item.subTotal|number_format }}</td></tr>
+                        {% endfor %}
+                    </table>
+                {% elseif entity.sales is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'inventory' %}
+                    {% for item in entity.sales.salesItems  %}
+                        <p>{{ loop.index }}. {{ item.item.name }}</p>
+                    {% endfor %}
+                {% elseif entity.hmsInvoices is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'hms' %}
+                    {% for item in entity.hmsInvoices.invoiceParticulars  %}
+                        <p>{{ loop.index }}. {{ item.particular.name }}</p>
+                    {% endfor %}
+                {% elseif entity.dmsInvoices is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'dms' %}
+                    {% for item in entity.dmsInvoices.invoiceParticulars  %}
+                        <p>{{ loop.index }}. {{ item.particular.name }}</p>
+                    {% endfor %}
+                {% elseif entity.restaurantInvoice is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'restaurant' %}
+                    {% for item in entity.restaurantInvoice.invoiceParticulars  %}
+                        <p>{{ loop.index }}. {{ item.particular.name }}</p>
+                    {% endfor %}
+                {% elseif entity.medicineSales is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'miss' %}
+                    {% for item in entity.medicineSales.medicineSalesItems  %}
+                        <p>{{ loop.index }}. {{ item.medicineStock.name }} ({{ item.quantity }}x{{ item.price }}={{  item.subTotal }}) </p>
+                    {% endfor %}
+                {% elseif entity.hotelInvoice is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'hotel' %}
+                    {% for item in entity.hotelInvoice.hotelInvoiceParticulars  %}
+                        <p>{{ loop.index }}. {{ item.hotelParticular.name }}</p>
+                    {% endfor %}
+                {% endif %}
+            </td>
+            <td class="numeric" >
+                {% if entity.transactionMethod is defined and entity.transactionMethod is not empty %}{{ entity.transactionMethod.name }}{% endif %}
+            </td>
+            <td class="numeric" >{{ entity.processHead }}</td>
+            <td class="numeric" >{{ entity.totalAmount|number_format }}</td>
+            <td class="numeric" >
+                {% if entity.process == 'approved'  %}
+                    {{ entity.amount|number_format }}
+                {% else %}
+                    <a data-mode="inline" class="editable" data-name="amount" href="#"  data-url="{{ path('account_sales_inline') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change your amount">{{ entity.amount }}</a>
+                {% endif %}
+            </td>
+            <td class="numeric" >{{ entity.balance|number_format }}</td>
+            <td class="numeric" >{{ entity.createdBy }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    {% if searchForm['mobile'] is defined and searchForm['mobile'] is not empty  %}
+        <tfoot>
+        <tr>
+            <td class="numeric pull-right" colspan="6" ><strong>Grand Total</strong></td>
+            <td class="numeric" ><strong>{{ overview.totalAmount|number_format }}</strong></td>
+            <td class="numeric" ><strong>{{ overview.receiveAmount|number_format }}</strong></td>
+            <td class="numeric" ><strong>{{ (overview.totalAmount - overview.receiveAmount)|number_format }}</strong></td>
+            <td></td>
+        </tr>
+        </tfoot>
+    {% endif %}
+</table>
+<script>
+    window.print();
+    setTimeout(function () {
+        window.open('', '_self', '');
+        window.close();
+    }, 2000);
+</script>

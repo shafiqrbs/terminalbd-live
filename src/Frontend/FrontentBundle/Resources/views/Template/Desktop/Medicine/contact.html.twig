@@ -1,0 +1,325 @@
+{% extends ':frontend/template:ecommerce-base.html.twig' %}
+{% block body %}
+    <div class="clearfix"></div>
+    {% if globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'flat-left'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="col-md-6">
+                    <ul class="simple-breadcrumb-left">
+                        <li class=""><span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} হোম {% else %}Home{% endif %}</a></li>
+                        <li class="active">{{ menu.menu }}</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-right">
+                    <h2 class="title"> {% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} যোগাযোগ {% else %}CONTACT US{% endif %}</h2>
+                </div>
+
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'flat-right'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="col-md-6">
+                    <h2 class="title">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} যোগাযোগ {% else %}CONTACT US{% endif %}</h2>
+                </div>
+                <div class="col-md-6">
+                    <ul class="simple-breadcrumb-right">
+                        <li class="active">{{ menu.menu }}</li>
+                        <li class=""><span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">Home</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'center'  %}
+
+        <div class="pageheader">
+            <div class="container">
+                <div class="col-md-12 text-center">
+                    <h2 class="title">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} যোগাযোগ {% else %}CONTACT US{% endif %}</h2>
+                    <p><span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}"><span class="glyphicon glyphicon-home"></span> Home</a> &nbsp;&nbsp;<i class="fa fa-angle-right"></i> &nbsp;&nbsp; {{ menu.menu }}</p>
+                </div>
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'left'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="col-md-12 text-left">
+                    <h2 class="title">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} যোগাযোগ {% else %}CONTACT US{% endif %}</h2>
+                    <p><a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}"><span class="glyphicon glyphicon-home"></span> Home</a> &nbsp;&nbsp;<i class="fa fa-angle-right"></i> &nbsp;&nbsp; {{ menu.menu }}</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="clearfix"></div>
+    <section>
+        <div class="container">
+            {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'header-bottom'}) %}
+            {% endif %}
+        </div>
+    </section>
+    <div class="clearfix"></div>
+    <section class="contain-section">
+        <div class="container">
+            <div class="row">
+                {% if globalOption.templateCustomize.showSidebar == 1 and globalOption.templateCustomize.sidebarPosition == 'left' and menu.featureWidgetExist == 'ture' %}
+                    <div class="col-md-3"  >
+                        {% if globalOption.templateCustomize.sidebarTitle is not empty %}
+                            <div class="page-title-bar">
+                                <div class="btn-group pull-left">
+                                    <div class="page-title"><span class="glyphicon glyphicon-tag"></span>&nbsp;{{ globalOption.templateCustomize.sidebarTitle }}</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                            {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'sidebar-top'}) %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <div class="{% if globalOption.templateCustomize.showSidebar == 1 and menu.featureWidgetExist == 'true'  %} col-md-9 {% else %} col-md-12 {% endif %}"  >
+                    {# <div class="page-title-bar">
+                         <div class="col-md-12">
+                             <div class="page-title"><span class="glyphicon glyphicon-home"></span>&nbsp;{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} যোগাযোগ {% else %}CONTACT US{% endif %}
+                                 <div class="pull-right">
+                                     {% if globalOption.templateCustomize.showSocialIcon == 1 %}
+                                     <ul class="mbm_social">
+                                         <li><a class="social-facebook" target="_blank" href="https://www.facebook.com/share.php?u={{ app.request.getSchemeAndHttpHost() }}/{{ menu.slug }}&title={{ page.name }}">
+                                                 <i class="fa fa-facebook"></i>
+                                                 <div class="tooltip"><span>facebook</span></div>
+                                             </a>
+                                         </li>
+                                         <li><a class="social-linkedin" target="_blank" href="//www.linkedin.com/shareArticle?mini=true&url={{ app.request.getSchemeAndHttpHost() }}/{{ menu.slug }}">
+                                                 <i class="fa  fa-linkedin"></i>
+                                                 <div class="tooltip"><span>LinkedIn</span></div>
+                                             </a>
+                                         </li>
+                                         <li><a class="social-google-plus" target="_blank" href="//plus.google.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{menu.slug }}">
+                                                 <i class="fa fa-google-plus"></i>
+                                                 <div class="tooltip"><span>Google</span></div>
+                                             </a>
+                                         </li>
+                                         <li><a class="social-twitter" target="_blank" href="//twitter.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ menu.slug }}">
+                                                 <i class="fa fa-twitter"></i>
+                                                 <div class="tooltip"><span>Twitter</span></div>
+                                             </a>
+                                         </li>
+                                         <li><a class="social-instagram" target="_blank" href="//instagram.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ menu.slug }}">
+                                                 <i class="fa  fa-instagram"></i>
+                                                 <div class="tooltip"><span>Instagram</span></div>
+                                             </a>
+                                         </li>
+                                     </ul>
+                                     {% endif %}
+                                 </div>
+                             </div>
+                         </div>
+                     </div>#}
+                    <div class="clearfix"><br/></div>
+                    <div class="clearfix"><br/></div>
+                    <div class="clearfix"><br/></div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <strong><i class="fa fa-home"></i>&nbsp;{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} অফিস ঠিকানা  {% else %}Office{% endif %}</strong><br>
+                                {{ page.address1|raw }}
+                                {% if page.location is defined and page.location %}
+                                    ,{{ page.location.name }}
+                                {% endif %}
+                                {% if page.location is defined and page.location %}
+                                ,{{ page.location.parent.name }} {% endif %}-{{ page.postalCode }}<br>
+
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <strong><i class="fa fa-hand-o-right"></i>&nbsp;{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} যোগাযোগ {% else %}Communication{% endif %}</strong><br>
+                                {% if page.startHour %}
+                                    <strong><i class="fa fa-clock-o"></i></strong>&nbsp;{{ page.startHour }} To {{ page.endHour }}
+                                {% endif %}
+                                {% if page.weeklyOffDay %}
+                                    <br/>
+                                    <strong><i class="fa fa-power-off"></i></strong>&nbsp;{% for day in page.weeklyOffDay %}{{ day }}{{ loop.last ? '' : ', ' }}{% endfor %}<br>
+                                {% endif %}
+                                <br/>
+                                {% if(page.additionalPhone) %}<strong><i class="fa fa-mobile"></i></strong>&nbsp;<a href="javascript:" >{{ page.additionalPhone|raw }}</a></br>{% endif %}
+                                {% if(page.additionalEmail) %}<strong><i class="fa fa-envelope"></i></strong>&nbsp;<a href="javascript:" >{{ page.additionalEmail|raw }}</a></br>{% endif %}
+                                <strong><i class="fa fa-fax"></i></strong>&nbsp;{% if(page.fax) %}<a href="javascript:">Fax: + 02{{ page.fax|raw }}</a></br>{% endif %}
+                            </div>
+                        </div>
+                        <hr>
+                        {% if(page.contactPerson is not empty) %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <strong><i class="fa fa-user"></i>&nbsp;{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} যোগাযোগের তথ্য {% else %}Contact Information{% endif %}</strong><br>
+                                    <em>{{ page.contactPerson|raw }}</em><br/>
+                                    {% if page.designation %}{{ page.designation }}{% endif %} </br>
+                                    {% if(page.contactMobile) %}<a href="javascript:" ><strong><i class="fa fa-phone"></i></strong>&nbsp;{{ page.contactMobile|raw }}</a></br>{% endif %}
+                                    {% if(page.contactEmail) %}<a href="javascript:" ><strong><i class="fa fa-envelope"></i></strong>&nbsp;{{ page.contactEmail|raw }}</a></br>{% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        <hr>
+                        {% if page.address2 is not empty %}
+                            {{ page.address2|raw }}
+                        {% endif %}
+                        {% if(page.isContactForm == 1) %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="well well-sm">
+                                        <form id="contactUs" name="contactUs" method="post" action="{{ path(globalOption.subDomain ~ '_webservice_email_receive') }}">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="name">Name</label>
+                                                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter name or company"  />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="email">Mobile no</label>
+                                                        <input type="text" class="form-control mobile" id="mobile" name="mobile" placeholder="Enter mobile no" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="name">Email Address</label>
+                                                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter valid email address ie. user@domain.com"  />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="name">Message</label>
+                                                        <textarea name="message" id="message"  class="form-control" rows="3" cols="25"  placeholder="Message"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12" style="margin-bottom:15px">
+                                                    <input type="hidden" class="hiddenRecaptcha required" name="hiddenRecaptcha" id="hiddenRecaptcha">
+                                                    <div class="g-recaptcha" data-sitekey="6LdSLy8UAAAAAO3p8W8JcrplH4x-bcXFOOJ9ZJhL"></div>
+                                                    {#<div id="captcha"></div>#}
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div id="contactMsg" class="msg-area alert-success" role="alert">
+                                                        Thanks! receive your msg.
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button type="submit" class="btn btn-info pull-right" id="contactForm" ><i class="fa fa-send"></i> Send</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            {% if page.latitude is not empty and page.longitude is not empty %}
+                                <div id="gmap_canvas" class="gmap">
+                                    <div class="Lat">{{ page.latitude }}</div>
+                                    <div class="Lng">{{ page.longitude }}</div>
+                                    <div class="imgMap">{{ asset('assets/img/placeholder.png') }}</div>
+                                    <div class="infoWindow">
+                                        <span>{% if page.address1 is not empty %}
+                                                <i class="fa fa-home"></i>&nbsp;{{ page.address1|raw }}<br>
+                                                {% if page.location is defined and page.location %}
+                                                    ,{{ page.location.name }}
+                                                {% endif %}
+                                                {% if page.location is defined and page.location %}
+                                                    ,{{ page.location.parent.name }} {% endif %}-{{ page.postalCode }}
+                                            {% endif %}
+                                            {% if page.startHour %}
+                                                <br><i class="fa fa-clock-o"></i>&nbsp;<strong>{{ page.startHour }} To {{ page.endHour }}</strong>
+                                            {% endif %}
+                                            <br>
+                                            <i class="fa fa-mobile-phone"></i> <a href="tel:{{ globalOption.hotline }}" class="contact-call">{{ globalOption.hotline }}</a>
+                                            <i class="fa fa-map-pin"></i>&nbsp;<a target="_blank" href="https://maps.google.com?saddr={{ page.address1 }}&daddr={{ page.latitude }},{{ page.longitude }}">Direction</a>
+                                        </span>
+                                    </div>
+                                    <div class="mapCenter">true</div>
+                                    <div class="Title">{{ globalOption.name }}</div>
+                                    <div class="infoWidth">250</div>
+                                    <div class="mapZoom">15</div>
+                                    <div class="scrollwheel">true</div>
+                                    <div class="disableDoubleClickZoom">false</div>
+                                    <div class="fullscreenControl">true</div>
+                                    <div class="disableOpenURL">false</div>
+                                    <div class="OpenURL">View full map</div>
+                                    <div class="draggable">true</div>
+                                    <div class="disableDefaultUI">false</div>
+                                </div>
+                            {% elseif page.googleMap is not empty %}
+                                {{ page.googleMap|raw }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="clearfix"><br/></div>
+                </div>
+                {% if globalOption.templateCustomize.showSidebar == 1 and globalOption.templateCustomize.sidebarPosition == 'right' and menu.featureWidgetExist == 'true'  %}
+                    <div class="col-md-3">
+                        {% if globalOption.templateCustomize.sidebarTitle is not empty %}
+                            <div class="page-title-bar row">
+                                <div class="col-md-12">
+                                    <div class="btn-group pull-left">
+                                        <div class="page-title"><span class="glyphicon glyphicon-tag"></span>&nbsp;{{ globalOption.templateCustomize.sidebarTitle }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                            {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'sidebar-top'}) %}
+                        {% endif %}
+                        {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                            {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'sidebar-bottom'}) %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </section>
+    <div class="clearfix"></div>
+    <section>
+        <div class="container">
+            {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'footer-top'}) %}
+            {% endif %}
+            <div class="clearfix"><br></div>
+        </div>
+    </section>
+    <div class="clearfix"></div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@FrontendBundle/Resources/public/template/desktop/css/product.css'
+    '@FrontendBundle/Resources/public/template/desktop/css/medicine.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@FrontendBundle/Resources/public/template/desktop/js/headerfooter.js'
+    '@FrontendBundle/Resources/public/js/kmaps.min.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $('#gmap_canvas').kmaps();
+    sliderPageOwl(4);
+{% endblock %}
+

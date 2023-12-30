@@ -1,0 +1,228 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN account_journal HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="account_journal-title">
+                    Journal Entry
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_journal') }}">Journal Entry</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Journal Entry</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END account_journal HEADER-->
+        <!-- BEGIN account_journal CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Journal Entry Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('account_journal') }}"><i class="icon-th-list"></i>&nbsp; Journal</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+
+                            <div class="row-fluid">
+
+                                <div class="span4">
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Transaction Type</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.transactionType) }}
+                                                    {{ form_errors(form.transactionType) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="span4">
+                                   <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="transactionMethod">Transaction Method</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.transactionMethod) }}
+                                                    {{ form_errors(form.transactionMethod) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="bankHide"  {% if entity.transactionMethod is defined and entity.transactionMethod is not empty and entity.transactionMethod.slug == 'bank'  %} id="bankMethod" {% endif %}>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName">Bank Account</label>
+                                                    <div class="controls">
+                                                        {{ form_widget(form.accountBank) }}
+                                                        {{ form_errors(form.accountBank) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                    </div>
+                                    <div class="mobileHide" {% if entity.transactionMethod is defined and entity.transactionMethod is not empty and  entity.transactionMethod.slug == 'mobile'  %} id="mobileMethod" {% endif %}  >
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName">Mobile Account</label>
+                                                    <div class="controls">
+                                                        {{ form_widget(form.accountMobileBank) }}
+                                                        {{ form_errors(form.accountMobileBank) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                    </div>
+
+                                    {#
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Transactional Account</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.processHead) }}
+                                                    {{ form_errors(form.processHead) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>#}
+
+
+                                </div>
+                                <div class="span4">
+
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Debit Account<span class="required">*</span></label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.accountHeadDebit) }}
+                                                    {{ form_errors(form.accountHeadDebit) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Credit Account<span class="required">*</span></label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.accountHeadCredit) }}
+                                                    {{ form_errors(form.accountHeadCredit) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="toUser">To/Form User</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.toUser) }}
+                                                    {{ form_errors(form.toUser) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Amount<span class="required">*</span></label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.amount) }}
+                                                    {{ form_errors(form.amount) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Remark</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.remark) }}
+                                            {{ form_errors(form.remark) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green"><i class="icon-save"></i>&nbsp;Save</button>
+                                    {% if(entity.id > 0 ) %}
+                                        <a href="{{ path('account_journal_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    '@AccountingBundle/Resources/public/js/common.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    AccountingApproveProcess();
+    CommonJs();
+{% endblock %}

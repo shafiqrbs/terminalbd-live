@@ -1,0 +1,96 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN syndicate HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="syndicate-title">
+                    Bulk SMS Details
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('smsbulk') }}"> Bulk SMS Details</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Bulk SMS Details</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END syndicate HEADER-->
+        <!-- BEGIN syndicate CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+               <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i> Bulk SMS Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn blue" href="{{ path('smsbulk_send_msg',{'id': entity.id }) }}"  data-close-others="true"><i class="icon-ok"></i>&nbsp;Send SMS</a>
+                                <a class="btn red" href="{{ path('smsbulk_new') }}"><i class="icon-plus"></i>&nbsp; Create SMS</a>
+                                <a class="btn" href="{{ path('smsbulk') }}"><i class="icon-th-list"></i>&nbsp;Bulk SMS</a>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tbody id="purchaseItem" >
+                                <tr>
+                                    <th class="numeric" >Location</th>
+                                    <td class="numeric" >{% if entity.location %}{{ entity.location.name }},{{ entity.location.parent.name }}{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Source To</th>
+                                    <td class="numeric" >{{ entity.sourceTo }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Name</th>
+                                    <td class="numeric" >{% if entity.name %}{{ entity.name }}{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Text Message</th>
+                                    <td class="numeric" >{% if entity.smsText %}{{ entity.smsText }}{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Bulk Mobile No</th>
+                                    <td class="numeric" >{% if entity.bulkMobile %}{{ entity.bulkMobile }}{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Process Status</th>
+                                    <td class="numeric" >{{ entity.process }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .select2-container-multi .select2-choices .select2-search-field input{
+            height: auto;
+            min-height: 24px;
+            padding:0;
+            line-height: 30px;
+        }
+    </style>
+{% endblock %}

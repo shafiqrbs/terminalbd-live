@@ -1,0 +1,112 @@
+    <div class="content">
+        <div class="container">
+            <h1 class="left-text">Admission Information</h1><button id="slidx_button" >Lists</button>
+            Admission Date: <em>{{ details.startDate|date('M j, Y') }}</em> To <em>{{ details.endDate|date('M j, Y') }}</em>
+            <div class="decoration"></div>
+            <h3 class="left-text">{{ details.name|default() }}</h3>
+            <p class="justify-text">{{ details.content }}</p>
+            {% if(details.webPath) %}
+            <div class="decoration"></div>
+            <a target="_blank" href="/{{ details.webPath }}">Click here download admission form</a>
+            {% endif %}
+            <div class="decoration hide-if-responsive"></div>
+        </div>
+        <div class="container">
+            <div class="tabs">
+                <a class="tab-but tab-but-1 tab-active" href="javascript:">Information</a>
+                <a class="tab-but tab-but-2" href="javascript:">Contact</a>
+            </div>
+            <div class="decoration"></div>
+            <div class="tab-content tab-content-1" style="display: block;">
+                <div class="one-half-responsive last-column">
+                    <div class="container no-bottom">
+                        <p>
+                            <strong>{{ details.contactPerson }}</strong><br>
+                            Address: {{ details.address|raw }}
+                        </p>
+                        <p>
+                            <strong>Office hour:</strong><br>
+                            {{ details.officeHour|raw }}
+                        </p>
+                        <p>
+                            <strong>Contact Information:</strong><br>
+                            <a href="#" class="contact-call">Mobile: + 088 {{ details.mobileNo|raw }}</a>
+                            <a href="#" class="contact-call">Phone: + 088 8919488</a>
+                            <a href="#" class="contact-mail">Email: {{ details.mobileNo|raw }}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content tab-content-2" style="display: none;">
+                <div class="one-responsive">
+
+                    <div class="container no-bottom">
+                        <h4>Admission Contacts</h4>
+                        <div class="contact-form no-bottom">
+                            <div class="formSuccessMessageWrap" id="formSuccessMessageWrap">
+                                <div class="big-notification green-notification">
+                                    <h3 class="uppercase">Blog Comments</h3>
+                                    <a href="#" class="close-big-notification">x</a>
+                                    <p>Your message has been successfuly sent. Please allow up to 48 hours for a reply! Thank you!</p>
+                                </div>
+                            </div>
+
+                            <form action="{{ path('admission_message',{'subdomain': entity.user.globalOption.subDomain,'module': moduleName|lower,'slug':details.slug }) }}" method="post" class="contactForm" id="contactForm">
+                                <fieldset>
+                                    <div class="formValidationError" id="contactNameFieldError">
+                                        <div class="static-notification-red tap-dismiss-notification">
+                                            <p class="center-text uppercase">Name is required!</p>
+                                        </div>
+                                    </div>
+                                    <div class="formValidationError" id="contactEmailFieldError">
+                                        <div class="static-notification-red tap-dismiss-notification">
+                                            <p class="center-text uppercase">Mail address required!</p>
+                                        </div>
+                                    </div>
+                                    <div class="formValidationError" id="contactEmailFieldError2">
+                                        <div class="static-notification-red tap-dismiss-notification">
+                                            <p class="center-text uppercase">Mail address must be valid!</p>
+                                        </div>
+                                    </div>
+                                    <div class="formValidationError" id="contactMessageTextareaError">
+                                        <div class="static-notification-red tap-dismiss-notification">
+                                            <p class="center-text uppercase">Message field is empty!</p>
+                                        </div>
+                                    </div>
+                                    <div class="formFieldWrap">
+                                        <label class="field-title contactNameField" for="contactNameField">Name:<span>(required)</span></label>
+                                        <input type="text" name="name" value="" class="contactField requiredField" id="contactNameField"/>
+                                    </div>
+                                    <div class="formFieldWrap">
+                                        <label class="field-title contactEmailField" for="contactEmailField">Email: <span>(required)</span></label>
+                                        <input type="text" name="email" value="" class="contactField requiredField requiredEmailField" id="contactEmailField"/>
+                                    </div>
+                                    <div class="formTextareaWrap">
+                                        <label class="field-title contactMessageTextarea" for="contactMessageTextarea">Message: <span>(required)</span></label>
+                                        <textarea name="content" class="contactTextarea requiredField" id="contactMessageTextarea"></textarea>
+                                    </div>
+                                    <div class="formSubmitButtonErrorsWrap">
+                                        <input type="hidden" name="id" value="{{ details.id }}" >
+                                        <input type="submit" class="buttonWrap button button-dark contactSubmitButton" id="contactSubmitButton" value="SUBMIT" data-formId="contactForm"/>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <nav id="slidx_menu">
+        <ul>
+            {% for row in entity.user.admissions %}
+                <li>
+                    <a href="{{ path('mobile_module',{'subdomain': entity.user.globalOption.subDomain,'module': moduleName|lower,'slug':row.slug }) }}">{{ row.name | truncate(50, true) }}</a>
+                </li>
+            {% endfor %}
+
+        </ul>
+    </nav>
+
+

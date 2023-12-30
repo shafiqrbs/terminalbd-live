@@ -1,0 +1,96 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="page-title">
+               Yearly Sales overview
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li>
+                    <a href="javascript:">Yearly Sales overview</a>
+                </li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-reorder"></i>Yearly Sales Overview</div>
+                    <div class="actions">
+                                <a target="_blank" href="{{ path('dps_report_sales_all_yearly_pdf') }}" class="btn purple"><i class="icon icon-print"></i> Download</a>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                        <thead class="flip-content ">
+                        <tr class="head-blue">
+                            <th class="numeric"><i class="icon-list"></i>&nbsp;Year</th>
+                            <th class="numeric">Sub-Total</th>
+                            <th class="numeric">Discount</th>
+                            <th class="numeric">Net Total</th>
+                            <th class="numeric">Receive</th>
+                            <th class="numeric">Balance</th>
+                        </tr>
+                        </thead>
+                        <tbody id="invoiceParticulars">
+                            {% set subTotal = 0 %}
+                            {% set discount = 0 %}
+                            {% set payment = 0 %}
+                            {% for entity in entities %}
+                            {%  set subTotal = subTotal + entity.subTotal  %}
+                            {%  set discount = discount + entity.discount  %}
+                            {%  set payment = payment + entity.payment  %}
+                              <tr>
+                                <th  class="numeric">{{ entity.year }}</th>
+                                <td  class="numeric">{{ entity.subTotal|number_format }}</td>
+                                <td  class="numeric">{{ entity.discount|number_format }}</td>
+                                <td  class="numeric">{{ (entity.subTotal - entity.discount)|number_format }}</td>
+                                <td  class="numeric">{{ entity.payment|number_format }}</td>
+                                <td  class="numeric">{{ (entity.subTotal - entity.discount - entity.payment) |number_format }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+                        <tr><th>Sales Summary</th><th>{{ subTotal|number_format }}</th><th>{{ discount|number_format }}</th><th>{{ (subTotal- discount)|number_format }}</th><th>{{ payment|number_format }}</th><th>{{ (subTotal- discount - payment)|number_format }}</th></tr>
+                        </tfoot>
+                    </table>
+                    <div class="clearfix">&nbsp;</div>
+                    <div class="clearfix">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    {% block cssBlock %}
+        {% stylesheets filter='cssrewrite'
+        '@AccountingBundle/Resources/public/css/style.css'
+        %}
+        <link rel="stylesheet" href="{{ asset_url }}"/>
+        {% endstylesheets %}
+    {% endblock  %}
+    {% block javascriptBlock %}
+        {{ parent() }}
+        {% javascripts
+        '@AccountingBundle/Resources/public/js/approveProcess.js'
+        %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    {% endblock %}
+    {% block documentready %}
+        {{ parent() }}
+        AccountingApproveProcess();
+    {% endblock %}

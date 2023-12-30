@@ -1,0 +1,103 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Account of Mobile Bank
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('accountmobilebank') }}">Account of Mobile Bank</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Account of Mobile Bank</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account Mobile Bank</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('accountmobilebank_new') }}"><i class="icon-plus-sign"></i>&nbsp; Add Account</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+
+                                <tr class="head-blue">
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Account Owner</th>
+                                    <th class="numeric" >Service Name</th>
+                                    <th class="numeric" >Authorised</th>
+                                    <th class="numeric" >Account Type</th>
+                                    <th class="numeric" >Service Charge<span class="required">(%)</span></th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr id="remove-{{ entity.id }}">
+                                        <td class="numeric" >{{   entity.mobile }}</td>
+                                        <td class="numeric" >{{ entity.accountOwner }}</td>
+                                        <td class="numeric" >{{ entity.serviceName }}</td>
+                                        <td class="numeric" >{{ entity.authorised }}</td>
+                                        <td class="numeric" >{{ entity.accountType }}</td>
+                                        <td class="numeric" >{{ entity.serviceCharge }}</td>
+                                        <td class="numeric" >
+                                            <a href="{{ path('accountmobilebank_edit',{'id':entity.id}) }}" id=""  class="btn blue mini"><i class="icon-pencil"></i></a>
+                                            <a href="{{ path('accountmobilebank_delete',{'id':entity.id}) }}" id="" data-id="{{ entity.id }}" class="btn red mini"  data-url=""><i class="icon-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+
+

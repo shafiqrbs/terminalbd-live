@@ -1,0 +1,64 @@
+<div class="tm-row">
+
+    <div id="tm-portfolio" class="tm-portfolio-classic">
+
+        {% for entity in entities %}
+            <div class="tm-content">
+                <article>
+
+                    {%  set image =  random([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20 ,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40]) %}
+                    <img alt="img" height="200" width="250" src="/assets/bindu/img/vendor-bg/{{ image }}.jpg">
+                    <div class="tm-mask">
+                        <div class="tm-mask-content">
+                            <h3><a href="{{ path('desktop',{'subdomain':entity.subDomain}) }}">{{ entity.name }}</a></h3>
+                            <span class="line"></span>
+                            <div class="incategory">
+                                <a href="{{ path('bindu_build_syndicate',{'syndicate':entity.syndicate.slug }) }}">{{ entity.syndicate.name }}</a>
+                            </div>
+                            <a class="o-buttons blue" href="{{ path('desktop',{'subdomain':entity.subDomain}) }}" ><i class="fa fa-home"></i> Visit Now</a>
+
+                        </div>
+                    </div>
+                    {% if(entity.templateCustomize.webPath('logo') is defined) %}
+                        <img class="img-ceneter" src="{{ image(entity.templateCustomize.webPath('logo')).resize() }}">
+                    {% endif %}
+                    <div style="text-align: center">
+                        <div class="org-title" >{{ entity.name }}</div>
+                        <ul class="social-networks">
+                            <li>
+                                <a target="_blank" href="{{ path('desktop',{'subdomain':entity.subDomain}) }}" data-title="http://{{ portal_name }}/{{ entity.subDomain }}">
+                                    <i class="fa fa-home"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-title="+88{{ entity.mobile }}">
+                                    <i class="fa fa-phone"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-title="+88{{ entity.mobile }}">
+                                    <i class="fa fa-comment"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-title="{{ entity.email }}">
+                                    <i class="fa fa-envelope"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="last" href="#" data-title="{% if  entity.location is defined and entity.location is not null  %}{{ entity.location.name }}{% endif %}">
+                                    <i class="fa fa-map-pin"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </article>
+            </div>
+        {% endfor %}
+
+
+        <div class="clear"></div>
+    </div>
+    <!--portfolio-->
+</div>

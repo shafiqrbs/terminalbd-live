@@ -1,0 +1,115 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 print-bar">
+            <form action="" method="get">
+                <div class="row">
+                    <div class="col-md-2 margin-top">
+                        <label>Created Employee</label>
+                        <select class="search-input select span12 m-wrap" id="user" name="user">
+                            <option value="">--Select Created User--</option>
+                            {% for employee in employees %}
+                                <option {% if searchForm.user is defined and searchForm.user == employee.id %} selected="selected" {% endif %} value="{{ employee.id }}">{{ employee.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2 margin-top">
+                        <label>Doctor</label>
+                        <select name="doctor" id="doctor" class="search-input select2 span12 m-wrap">
+                            <option value="" >--Assign Doctor--</option>
+                            {% for doctor in assignDoctors %}
+                                <option {% if searchForm.doctor is defined and searchForm.doctor == doctor.id %} selected="selected" {% endif %} value="{{ doctor.id }}" >{{ doctor.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2 margin-top">
+                        <label>Visit Process</label>
+                        <select name="process" id="process" class="search-input select2 span12 m-wrap">
+                            <option value="" >--Select Process--</option>
+                            {% for process in processes %}
+                                <option {% if searchForm.process is defined and searchForm.process == process.process %} selected="selected" {% endif %} value="{{ process.process }}" >{{ process.process }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2 margin-bottom-5">
+                        <label>Start Date</label>
+                        <input type="datetime-local" class="search-input span12 m-wrap" required="required" id="startDate" name="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-2 margin-bottom-5">
+                        <label>End Date</label>
+                        <input type="datetime-local" class="search-input span12 m-wrap" required="required" id="endDate" name="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-1 margin-top">
+                        <label>&nbsp;</label>
+                        <button class='btn btn-download btn-margin-left' value="search" name="submit" ><i class='fa fa-search'></i> Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="print-area">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size: 16px">{{ option.name }}</strong></p>
+                <p>Name of Report: Patient Visit Invoice</p>
+            </div>
+            <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}
+                <p><strong>Start Date:&nbsp;</strong><strong>{% if searchForm['startDate'] is defined and searchForm['startDate'] is not empty %}{{ searchForm['startDate']|date('d-m-Y') }}{% endif %}</strong>
+                    <strong>End Date:&nbsp;<strong>{% if searchForm['endDate'] is defined and searchForm['endDate'] is not empty %}{{ searchForm['endDate']|date('d-m-Y') }}{% endif %}</strong></strong>
+                </p>
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table even" border="1">
+                    <colgroup>
+                        <col class="w">
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <tbody><tr>
+                        <th>SI.</th>
+                        <th>Created</th>
+                        <th>Created By</th>
+                        <th>Invoice</th>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th>Doctor</th>
+                        <th>Visit Type</th>
+                        <th class="text-right">Receive</th>
+                    </tr>
+                    <tbody>
+                    {% set balance = 0 %}
+                    {% set sales = 0 %}
+                    {% set receive = 0 %}
+                    {% for entity in entities %}
+                        {% set sales = sales + entity.receive %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                            <td class="numeric" >{{ entity.createdUser }}</td>
+                            <td class="numeric" >{{ entity.invoice }}</td>
+                            <td class="numeric" >{{ entity.name }}</td>
+                            <td class="numeric" >{{ entity.mobile }}</td>
+                            <td class="numeric" >{{ entity.doctor }}</td>
+                            <td class="numeric" >{{ entity.visitType }}</td>
+                            <td class="text-right" >{{ entity.receive|number_format(2) }}</td>
+                        </tr
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th class="text-right" colspan="8">Grand Balance</th>
+                        <th class="text-right">{{ sales|number_format(2) }}</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

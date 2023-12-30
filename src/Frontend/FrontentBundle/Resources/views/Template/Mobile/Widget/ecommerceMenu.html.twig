@@ -1,0 +1,77 @@
+<nav id="mm-menu" style="display: none">
+    <ul>
+            {% for  menu in globalOption.ecommerceMenus  %}
+            <li><a href="{% if menu.menu is not empty %}/{{ menu.menu.slug }}{% endif %}"> {{ menu.name }}</a>
+                <ul>
+                    {% if menu.childMenus is not empty %}
+                        {% for childMenu in  menu.childMenus %}
+                            <li><a href="{{ path(globalOption.subDomain ~ '_webservice_module',{'module':childMenu.slug}) }}">{{ childMenu.menu }}</a></li>
+                        {% endfor %}
+                    {% endif %}
+                    {% if menu.features is not empty %}
+                        <li><a href="javascript:">Feature's</a>
+                            <ul>
+                                {% for feature in  menu.features %}
+                                    {% if feature.targetTo == 'Category' and feature.category is not empty %}
+                                        {% set path = path(globalOption.subDomain ~ '_webservice_product_category',{'category':feature.category.slug}) %}
+                                    {% elseif feature.targetTo == 'Promotion' and feature.promotion is not empty %}
+                                        {% set path = path(globalOption.subDomain ~ '_webservice_product_promotion',{'promotion':feature.promotion.slug}) %}
+                                    {% elseif feature.targetTo == 'Tag' and feature.tag is not empty %}
+                                        {% set path = path(globalOption.subDomain ~ '_webservice_product_tag',{'tag':feature.tag.slug}) %}
+                                    {% elseif feature.targetTo == 'Discount' and feature.discount is not empty %}
+                                        {% set path = path(globalOption.subDomain ~ '_webservice_product_discount',{'discount':feature.discount.slug}) %}
+                                    {% elseif feature.targetTo == 'Brand' and feature.brand is not empty %}
+                                        {% set path = path(globalOption.subDomain ~ '_webservice_product_brand',{'brand':feature.brand.slug}) %}
+                                    {% elseif feature.targetTo == 'Page' and feature.menu is not empty %}
+                                        {% set path = path(globalOption.subDomain ~ '_webservice_module',{'module':feature.menu.slug}) %}
+                                    {% else %}
+                                        {% set path = path(globalOption.subDomain ~ '_webservice_product') %}
+                                    {% endif %}
+                                    <li><a href="{{ path }}">{{ feature.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endif %}
+                    {% if menu.promotions is not empty %}
+                        <li><a href="javascript:">Promotion's</a>
+                            <ul>
+                                {% for promotion in  menu.promotions %}
+                                    <li><a href="{{ path(globalOption.subDomain ~ '_webservice_product',{'promotion':promotion.slug}) }}">{{ promotion.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endif %}
+                    {% if menu.discounts is not empty %}
+                        <li><a href="javascript:">Discount Offer's</a>
+                            <ul>
+                                {% for discount in  menu.discounts %}
+                                    <li><a href="{{ path(globalOption.subDomain ~ '_webservice_product',{'discount':discount.slug}) }}">{{ discount.name }}&nbsp;{{ discount.type|capitalize }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endif %}
+                    {% if menu.tags is not empty %}
+                        <li><a href="javascript:">Popular Tag's</a>
+                            <ul>
+                                {% for tag in  menu.tags %}
+                                    <li><a href="{{ path(globalOption.subDomain ~ '_webservice_product',{'tag':tag.slug}) }}">{{ tag.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endif %}
+                    {% if menu.categories is not empty %}
+                        <li>
+                            {% render controller("FrontendBundle:EcommerceWidget:returnSimpleCategoryMenu",{categories: menu.categories}) %}
+                        </li>
+                    {% endif %}
+                    {% if menu.brands is not empty %}
+                        {% for brand in menu.brands %}
+                            <li><a href="{{ path(globalOption.subDomain ~ '_webservice_product_brand',{'brand' : brand.slug}) }}">{{ brand.name }}</a></li>
+                        {% endfor %}
+                    {% endif %}
+
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</nav>

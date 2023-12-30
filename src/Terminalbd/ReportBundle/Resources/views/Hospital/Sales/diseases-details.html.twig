@@ -1,0 +1,98 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 print-bar">
+            <form action="" method="get">
+
+                <div class="row">
+                    <div class="col-md-3 margin-top">
+                        <label>Diseases Profile</label>
+                        <select name="diseases" id="diseases" class="search-input select2 span12 m-wrap">
+                            <option value="" >--Select Diseases Profile--</option>
+                            {% for diseases in diseaseses %}
+                                <option {% if searchForm.diseases is defined and searchForm.diseases == diseases.id %} selected="selected" {% endif %} value="{{ diseases.id }}" >{{ diseases.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>Assign Doctor</label>
+                        <select name="doctor" id="doctor" class="search-input select2 span12 m-wrap">
+                            <option value="" >--Assign Doctor--</option>
+                            {% for doctor in assignDoctors %}
+                                <option {% if searchForm.doctor is defined and searchForm.doctor == doctor.id %} selected="selected" {% endif %} value="{{ doctor.id }}" >{{ doctor.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>Created Start Date</label>
+                        <input type="date" class="m-wrap datepicker"  id="startDate" name="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-2 margin-top">
+                        <label>Created End Date</label>
+                        <input type="date" class="m-wrap datepicker"  id="endDate" name="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-1 margin-top">
+                        <label>&nbsp;</label>
+                        <button class='btn btn-download btn-margin-left' value="search" name="submit" ><i class='fa fa-search'></i> Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="print-area">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size: 16px">{{ option.name }}</strong></p>
+                <p>Name of Report: Diseases Profile Details</p>
+            </div>
+            <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}
+                <p><strong>Start Date:&nbsp;</strong><strong>{% if searchForm['startDate'] is defined and searchForm['startDate'] is not empty %}{{ searchForm['startDate']|date('d-m-Y') }}{% endif %}</strong>
+                    <strong>End Date:&nbsp;<strong>{% if searchForm['endDate'] is defined and searchForm['endDate'] is not empty %}{{ searchForm['endDate']|date('d-m-Y') }}{% endif %}</strong></strong>
+                </p>
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table even" border="1">
+                    <colgroup>
+                        <col class="w">
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <tbody><tr>
+                        <th>SI.</th>
+                        <th>Created</th>
+                        <th>Updated</th>
+                        <th>Invoice</th>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th>Assign</th>
+                        <th>Mode</th>
+                        <th>Diseases Profile</th>
+                    </tr>
+                    <tbody>
+                    {% for entity in entities %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                            <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                            <td class="numeric" >{{ entity.invoice }}</td>
+                            <td class="numeric" >{{ entity.customer }}</td>
+                            <td class="numeric" >{{ entity.mobile }}</td>
+                            <td class="numeric" >{{ entity.assignDoctor }}</td>
+                            <td class="numeric" >{{ entity.mode|capitalize }}</td>
+                            <td class="numeric" >{{ entity.diseases }}</td>
+                        </tr
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,188 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage  Invoice
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('restaurant_invoice') }}"> Order  Invoice</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i> {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage  Invoice</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('restaurant_invoice_empty_delete') }}"><i class="icon-trash"></i> Empty Delete</a>
+                       {#         <a class="btn purple" href="{{ path('restaurant_report_sales_summary') }}"><i class="icon-cart"></i> Sales Summary</a>#}
+                                <a href="javascript:"  class="btn yellow big addInvoice"><i class="fa fa-shopping-cart"></i> POS</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid" >
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid" style="margin-bottom: 10px">
+                                        <div class="span3">
+                                            <input type="text" id="customer" name="customer"  class="span12 m-wrap select2Customer" value="{% if searchForm.customer is defined %}{{ searchForm.customer }}{% endif %}"  autocomplete="off" placeholder="Enter customer mobile no ">
+                                        </div>
+                                        <div class="span3">
+                                            <select name="process" id="process" class="m-wrap span12">
+                                                <option value="" >--Process--</option>
+                                                <option value="In-progress" {% if searchForm.process is defined and searchForm.process == 'In-progress' %} selected="selected" {% endif %} >In-progress</option>
+                                                <option value="Done"  {% if searchForm.process is defined and searchForm.process == 'Done' %} selected="selected" {% endif %} >Done</option>
+                                                <option value="Cancel"  {% if searchForm.process is defined and searchForm.process == 'Cancel' %} selected="selected" {% endif %} >Cancel</option>
+                                            </select>
+                                        </div>
+                                        <div class="span3">
+                                            <div class="input-append span12">
+                                                <div class="input-icon left span6">
+                                                    <i class="icon-calendar"></i>
+                                                    <input class="m-wrap span12 search-input date-picker" name="startDate" id="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined and searchForm.startDate is not empty %}{{ searchForm.startDate }}{% else %}Start Date{% endif %}" >
+                                                </div>
+                                                <div class="input-icon left span6">
+                                                    <i class="icon-calendar"></i>
+                                                    <input class="m-wrap span12 search-input date-picker" name="endDate" id="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined and searchForm.endDate is not empty %}{{ searchForm.endDate }}{% else %}End Date{% endif %}" >
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div class="span3">
+                                            <div class="input-append span12">
+                                                <input type="text" id="slipNo" name="slipNo"  class="m-wrap span5" value="{% if searchForm.slipNo is defined %}{{ searchForm.slipNo }}{% endif %}"  autocomplete="off" placeholder="Enter Slip no">
+                                                <input type="text" id="invoice" name="invoice"  class="m-wrap span5" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}"  autocomplete="off" placeholder="Enter invoice no">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <th class="numeric" >endDate</th>
+                                    <th class="numeric" >Invoice No</th>
+                                    <th class="numeric" >Slip/Table No</th>
+                                    <th class="numeric" >Total</th>
+                                    <th class="numeric" >Vat</th>
+                                    <th class="numeric" >Discount</th>
+                                    <th class="numeric" >NetTotal</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Due</th>
+                                    <th class="numeric" >Process</th>
+                                    <th class="numeric" >Revised</th>
+                                    <th class="numeric" >Served By</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in entities %}
+                                    <tr id="delete-{{ entity.id }}">
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.invoice }}</td>
+                                        <td class="numeric" >{{ entity.slipNo }} / {% if entity.tokenNo is not empty %}{{ entity.tokenNo.name }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.subTotal }}</td>
+                                        <td class="numeric" >{{ entity.vat }}</td>
+                                        <td class="numeric" >{{ entity.discount }}</td>
+                                        <td class="numeric" >{{ entity.total }}</td>
+                                        <td class="numeric" >{{ entity.payment }}</td>
+                                        <td class="numeric" >{{ entity.due }}</td>
+                                        <td class="numeric" > {{ entity.process }}</td>
+                                        <td class="numeric" > {% if entity.revised == 1 %}<a class="btn mini yellow" target="_blank" href="{{ path('restaurant_invoice_reverse_show',{'invoice':entity.id}) }}">Revised</a>{% endif %} </td>
+                                        <td class="numeric" > {{ entity.salesBy }}</td>
+                                        <td class="numeric"  >
+                                            <div class="btn-group">
+                                                {% set processIntArr = ['Created','Pending','Kitchen','Revised','Hold'] %}
+                                                {% if  entity.process in processIntArr %}
+                                                    <a href="{{ path('restaurant_invoice_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i> Edit </a>
+                                                    <a href="javascript:" data-url="{{ path('restaurant_sales_invoice_delete', { 'id': entity.id }) }}"  class="btn red mini delete" ><i class="icon-remove"></i></a>
+                                                {% endif %}
+                                                {% if  entity.process == 'Done' and config.posPrint == 1 %}
+                                                    <a href="javascript:" data-url="{{ path('restaurant_invoice_payment',{'id':entity.id}) }}" data-id="{{ entity.id }}" data-value="pos-print" class="btn purple mini paymentReceive" ><i class="icon-print"></i> Print </a>
+                                                {% endif %}
+                                                {% if  entity.process == 'Done' and config.deliveryPrint == 1 %}
+                                                    <a href="javascript:" data-url="{{ path('restaurant_invoice_delivery_print',{'id':entity.id}) }}" data-id="{{ entity.id }}" data-value="delivery-print" class="btn purple mini paymentReceive" ><i class="icon-print"></i> Print </a>
+                                                {% endif %}
+                                                <a href="{{ path('restaurant_invoice_show',{'id':entity.id}) }}"  class="btn blue mini" ><i class="icon-eye"></i> View </a>
+                                                {% if ( entity.process == 'Done' and app.user.granted("ROLE_DOMAIN")) or ( entity.process in ['Done','Delivered']  and app.user.granted("ROLE_RESTAURANT_REVERSE")) %}
+                                                <a href="{{ path('restaurant_invoice_reverse',{'invoice':entity.invoice}) }}"  class="btn yellow mini" ><i class="icon-retweet"></i> Reverse </a>
+                                                {% endif %}
+                                                {% if (entity.process == 'Done' and app.user.granted("ROLE_DOMAIN")) or (entity.process in ['Done','Delivered'] and app.user.granted("ROLE_DOMAIN_RESTAURANT_ADMIN")) %}
+                                                <a href="{{ path('restaurant_invoice_approve',{'id':entity.id}) }}"  class="btn green mini" ><i class="icon-ok"></i> Approve </a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if config.posPrint == 1 %}
+    <script>
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "http://localhost.xiidea.net:9432/assets/easy-print-server.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, "script", "xiidea-epp-sdk"));
+    </script>
+    {% endif %}
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@RestaurantBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@RestaurantBundle/Resources/public/js/temporary.js'
+    '@RestaurantBundle/Resources/public/js/approveProcess.js'
+    '@RestaurantBundle/Resources/public/js/posprint.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

@@ -1,0 +1,105 @@
+<ul>
+    {% for news in newses %}
+        <li>
+            <a href="{{ path('frontend_subdomain_module_content',{'subdomain':news.user.globalOption.slug,'module':'news','slug':news.slug|default('')}) }}">
+                <span class="thumb"><img src="{{ image(news.webPath).resize(100,100) }}" alt="thumb"></span>
+                <h3>{{ news.name }}</h3>
+                <span class="time">{{ news.startDate|date('F j, Y') }}</span>
+
+            </a>
+        </li>
+    {% endfor  %}
+
+</ul>
+
+
+<div class="tm-content page-content-inner ">
+
+    <div id="tm-portfolio" class="tm-portfolio-text">
+        <div class="tm-content tm-col-4" style="margin-top:0">
+            {% for promotion in promotions %}
+
+                <article class="cat1 cat3">
+                    <img alt="img" src="{{ image( promotion.user.tutor.webPath).resize(189,139) }}">
+                    <div class="tm-mask">
+                        <div class="tm-mask-content">
+                            <h3><a href="{{ path('frontend_tutor_subdomain',{'subdomain':promotion.slug }) }}">{{ promotion.name }}</a></h3>
+                            <span class="line"></span>
+                            <div class="incategory">
+                                <a href="javascript:">{{ promotion.user.tutor.address }}</a>,
+                                <a href="mailto={{ promotion.user.tutor.email }}">{{ promotion.user.tutor.email }}</a>
+                                <a href="tel:+88 {{ promotion.user.tutor.mobile|default('') }}">{{ promotion.user.tutor.mobile }}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <p><a href="{{ path('frontend_tutor_subdomain',{'subdomain':promotion.slug }) }}">{{ promotion.name }}</a></p>
+                </article>
+            {% endfor %}
+
+        </div>
+        <div class="clear"></div>
+    </div>
+    <!--portfolio-->
+    <div class="tm-double-line"></div>
+    <div class="tm-main-content">
+        <div class="tm-main-content-inner">
+            {% for entity in pagination %}
+            <div class="tm-row">
+                <div class="one-third">
+                    <div class="tm-team">
+                        <div class="tm-team-img">
+                            <img src="{{ image(entity.user.tutor.webPath).resize(250,185) }}" alt="img">
+                            <div class="tm-mask">
+                                <div class="tm-mask-inner">
+                                    <ul class="social-networks">
+                                        <li>
+                                            <a href="#" data-title="Facebook">
+                                                <i class="fa fa-facebook"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" data-title="Twitter">
+                                                <i class="fa fa-twitter"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" data-title="GooglePlus">
+                                                <i class="fa fa-google-plus"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" data-title="Tumblr">
+                                                <i class="fa fa-tumblr"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <h2>{{ entity.name|default('') }}</h2>
+                        <div class="job-title">
+                            {{ entity.user.tutor.currentPosition|default('') }}
+                        </div>
+                        <div class="description">
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="tm-paginator" style="margin-top:30px">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+            <!--tm-paginator-->
+        </div>
+        <!--tm-main-content-->
+
+        <div class="clear"></div>
+    </div>
+</div>
+<!--page-content-->
+<!--page-sidebar-->
+{{ include('frontend/sidebar.html.twig')}}
+<!--end-page-sidebar-->

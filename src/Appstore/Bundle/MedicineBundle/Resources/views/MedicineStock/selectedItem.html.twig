@@ -1,0 +1,39 @@
+<div class="portlet box green ">
+<div class="portlet-title">
+    <div class="caption"><i class="icon-reorder"></i>Selected Item List</div>
+    <div class="actions">
+        <div class="btn-group">
+            <a  href="{{ path('medicine_prepurchase_create') }}"  id="btn-create-barcode" class="btn purple" >
+                <i class="icon-shopping-cart"></i> Pre-Purchase</a>
+        </div>
+    </div>
+</div>
+</div>
+<table class="table table-bordered table-striped" id="datatable">
+    <thead class="flip-content ">
+    <tr class="head-blue">
+        <th class="numeric" ><i class="icon icon-th-list"></i></th>
+        <th class="numeric" >Name</th>
+        <th class="numeric" >Brand Name</th>
+        <th class="numeric" >MRP</th>
+        <th class="numeric" >Stock Qnt</th>
+        <th class="numeric" >Pack</th>
+        <th class="numeric" >Min. Qnt</th>
+        <th class="numeric" >Unit</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entity in pagination %}
+        <tr>
+            <td><input type="checkbox" checked class="checkbox stockId" id=""  value="{{ entity.id }}"></td>
+            <td class="numeric" >{{ entity.name }}</td>
+            <td class="numeric" >{{ entity.brandName }}</td>
+            <td class="numeric">{{ entity.salesPrice }}</td>
+            <td class="numeric" >{{ entity.remainingQuantity }}</td>
+            <td class="numeric" >{% if entity.pack > 1 %}{{ entity.pack }} => {{ entity.minQuantity/entity.pack }}{% endif %}</td>
+            <td class="numeric">{{ entity.minQuantity }}</td>
+            <td class="numeric" >{{ entity.unit }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

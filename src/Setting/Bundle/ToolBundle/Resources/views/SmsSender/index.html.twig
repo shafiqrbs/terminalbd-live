@@ -1,0 +1,92 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    View SMS Logs
+                    <span class="pull-right btn purple">Balance:{% if globalOption.smsSenderTotal is defined and globalOption.smsSenderTotal is not empty %} {{ globalOption.smsSenderTotal.remaining }} sms{% endif %}</span>
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('smssender') }}">Sms Logs</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Logs Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('smsbulk_new') }}"><i class="icon-plus-sign"></i>&nbsp;Custom SMS</a></li>
+                                    <li><a href="{{ path('smssender') }}"><i class="icon-list"></i>&nbsp;List</a></li>
+                                    <li><a href="{{ path('smssender_delete') }}"><i class="icon-trash"></i>&nbsp;Delete Old Logs</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="tabbable portlet">
+                            <div class="portlet-body flip-scroll">
+                                {% include('flash-message.html.twig')  %}
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                    <thead class="flip-content ">
+                                    <tr class="head-grey">
+                                        <th class="numeric">Date</th>
+                                        <th class="numeric">Mobile</th>
+                                        <th class="numeric">Process</th>
+                                        <th class="numeric">Receiver</th>
+                                        <th class="numeric">Remark</th>
+                                        <th class="numeric">Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for entity in entities %}
+                                        <tr>
+                                            <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                            <td class="numeric" >{{ entity.mobile }}</td>
+                                            <td class="numeric" >{{ entity.process }}</td>
+                                            <td class="numeric" >{{ entity.receiver }}</td>
+                                            <td class="numeric" >{{ entity.remark }}</td>
+                                            <td class="numeric" >{{ entity.status }}</td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

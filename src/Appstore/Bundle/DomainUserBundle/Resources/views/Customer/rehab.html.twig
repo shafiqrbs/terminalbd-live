@@ -1,0 +1,115 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Patient : {{ entity.name }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_customer') }}">Customers</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Add/Edit sales</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>c
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Patient Details</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn black" href="{{ path('domain_customer') }}"><i class="icon-th-list"></i>&nbsp;Customers</a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Customer #</strong>&nbsp;{{ entity.name }}</li>
+                                       <li><strong>Mobile #</strong>&nbsp;{{ entity.mobile }}</li>
+                                        <li><strong>Address #</strong>&nbsp;{{ entity.address|raw }}</li>
+                                       <li><strong>Location #</strong>&nbsp;{% if entity.location is not empty %}{{ entity.location.name }}, {{ entity.location.parent.name }}{% endif %}</li>
+                                    </ul>
+                                </div>
+                                <div class="span4">
+                                    <h4>&nbsp;</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Age Group #</strong>&nbsp;{{ entity.ageGroup }}</li>
+                                        <li><strong>Age #</strong>&nbsp;{{ entity.age }}</li>
+                                        <li><strong>Gender #</strong>&nbsp;{{ entity.gender }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% include('flash-message.html.twig')  %}
+                            <div class="clearfix">&nbsp;</div>
+                            {% set paymentID = entity.globalOption.id~'-customer-'~entity.id %}
+                            {% include 'FOSCommentBundle:Thread:async.html.twig' with {'id': paymentID } %}
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        #fos_comment_comment_body{
+            width: 99%;
+            border: 2px solid #800080;
+            min-height: 220px;
+        }
+        .fos_comment_submit input[type="submit"]{
+            color: white;
+            text-shadow: none;
+            background-color: #cb5a5e;
+            background-image: none;
+            filter: none;
+            border: 0;
+            padding: 7px 60px;
+            font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+            font-size: 15px;
+            cursor: pointer;
+            outline: none;
+        }
+        .fos_comment_comment_reply_show_form {
+            padding: 5px 60px;
+            font-size: 15px;
+        }
+    </style>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@DomainUserBundle/Resources/public/js/comment-mod.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

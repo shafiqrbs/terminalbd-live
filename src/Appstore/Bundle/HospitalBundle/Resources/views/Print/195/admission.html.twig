@@ -1,0 +1,147 @@
+{% extends '::hms-print.html.twig' %}
+{% block body %}
+    {%  if entity.hospitalConfig.isPrintHeader == 1 %}
+    <table class="table" style="margin-top:{{ entity.hospitalConfig.printTopMargin }}px;margin-left:{{ entity.hospitalConfig.printLeftMargin }}px;">
+        <tr>
+            <td>
+                <div class="span4  pull-left invoice-logo-space">
+                    {%  if entity.hospitalConfig.invoicePrintLogo == 1 %}
+                    {% if entity.hospitalConfig.globalOption.templateCustomize.webPath('logo') is not empty %}   <img style="max-width: 180px; max-height: 60px" src="/{{ entity.hospitalConfig.globalOption.templateCustomize.webPath('logo') }}">{% endif %}
+                    {%  endif %}
+                </div>
+            </td>
+            <td class="pull-right">
+                <div class="span4">
+                    <ul class="unstyled">
+                        <li><strong>{{ entity.hospitalConfig.globalOption.name }}</strong></li>
+                        <li><p>{{ entity.hospitalConfig.address|raw }}</p></li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    </table>
+    {% endif %}
+    <table class="table table-border" >
+        <thead class="flip-content ">
+        <tr class="head-black">
+            <th><strong class="pull-left">Bill To</strong></th><th><strong class="pull-right">Transaction</strong></th>
+        </tr>
+        </thead>
+        <tr class="print-header">
+            <th colspan="2">
+                <span class="barcode-left">{{ patientBarcode|raw }}</span>
+                <span class="title-center text-center"> {%  if entity.hospitalConfig.isInvoiceTitle == 1 %}{{ entity.printFor|capitalize }} Invoice{% endif %}</span>
+                <span class="barcode-right">{{ invoiceBarcode|raw }}</span>
+            </th>
+        </tr>
+        <tr>
+            <td>
+                <ul class="unstyled">
+                    <li><strong>Invoice no:</strong>&nbsp;{{ entity.invoice }}</li>
+                    {% if entity.customer is not empty %}<li><strong>Patient Name:</strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                    {% if entity.customer is not empty %}<li><strong>Mobile No:</strong>&nbsp;{{ entity.customer.mobile }}</li>{% endif %}
+                    {% if entity.customer is not empty %}<li><strong>Gender:</strong>&nbsp;{{ entity.customer.gender }}{% if entity.customer is not empty %}, {{ entity.customer.age }}&nbsp;{{ entity.customer.ageType }}  {% endif %}</li>{% endif %}
+                    {% if entity.customer is not empty and entity.customer.location is not empty %}<li><strong>Location</strong>&nbsp;{{ entity.customer.location.name }}, {{ entity.customer.location.parent.name }}</li>{% endif %}
+                </ul>
+            </td>
+            <td class="pull-right">
+                <ul class="unstyled">
+                    <li><strong>Admission Date: </strong>&nbsp;<strong>{{ entity.created|date('d-m-Y h:i A') }}</strong></li>
+                    <li><strong>Release Date: </strong>&nbsp;<strong>{{ entity.releaseDate|date('d-m-Y h:i A') }}</strong></li>
+                    <li><strong>Payment status:</strong>&nbsp;{{  entity.paymentStatus|capitalize }}</li>
+                    <li><hr></li>
+                    <li><strong>Patient status:</strong>&nbsp;{{  entity.process|capitalize }}</li>
+                    {% if entity.referredDoctor is not empty %}<li><strong>Referred By:</strong>&nbsp;{{ entity.referredDoctor.particularCode }}-{{ entity.referredDoctor.name }}</li>{% endif %}
+                </ul>
+            </td>
+        </tr>
+    </table>
+    {% if entity.invoiceParticulars is defined and  entity.invoiceParticulars is not empty  %}
+        <table class="table table-bordered table-striped">
+            <thead class="flip-content ">
+            <tr class="head-black">
+                <th class="span9" colspan="2">Investigation</th>
+                <th class="span1">Qnt</th>
+                <th class="span2">Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for key, serviceDetails in invoiceDetails %}
+                {% if key != 'Pathology' %}
+                    <tr><td colspan="4" class="span9 service-group"><strong>{{ key }}</strong></td></tr>
+                {% endif %}
+                {% set colSpan = serviceDetails.hasQuantity? 2 : 3 %}
+                {% for item in serviceDetails.items %}
+                    <tr>
+                        <td class="span9" colspan="{{ colSpan }}">{{ item.particular.particularCode }} - {{ item.particular.name }}</td>
+                        {% if serviceDetails.hasQuantity %}
+                            <td class="span1">{{ item.quantity }}</td>
+                        {% endif %}
+                        <td class="span1" style="text-align: right!important;">{{ item.subTotal|number_format }}</td>
+                    </tr>
+                {% endfor %}
+                <tr><td colspan="3" class="span11"><strong class="pull-right">Sub-Total</strong></td><td class="span1" style="text-align: right!important;">{{ serviceDetails.total|number_format }}</td></tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr><td colspan="4">&nbsp;</td></tr>
+            <tr><td colspan="4" style="padding: 0!important;">
+                    <table class="table-no-border">
+                        <tr>
+                            <td class="span8" >
+
+                            </td>
+                            <td class="span4">
+                                <table class="table table-bordered table-striped">
+                                    <tr><td class="span8" ><strong class="pull-right" >Total Amount</strong></td><td class="span4 text-right" ><strong class="text-right">{{ entity.subTotal|number_format() }}</strong></td></tr>
+                                    {% if entity.discount %}<tr><td class="span8"><strong class="pull-right" >Discount Amount</strong></td><td class="span4 text-right" ><strong class="text-right">{{ entity.discount|number_format() }}</strong></td></tr>{% endif %}
+                                    {% if entity.vat %}<tr><td class="span8" ><strong class="pull-right" >Vat/Tax Amount</strong></td><td class="span4 text-right" ><strong class="text-right" >{{ entity.vat|number_format() }}</strong></td></tr>{% endif %}
+                                    <tr><td class="span8" ><strong class="pull-right" >Grand Total</strong></td><td class="span4 text-right" ><strong class="text-right" >{{ entity.total|number_format() }}</strong></td></tr>
+                                    <tr><td class="span8" ><strong class="pull-right" >Paid Amount</strong></td><td class="span4 text-right" ><strong class="text-right">{{ entity.payment|number_format() }}</strong></td></tr>
+                                    {% if entity.due %}<tr><td class="span8" ><strong class="pull-right" >Due Amount</strong></td><td class="span4 text-right" ><strong class="text-right">{{ entity.due|number_format() }}</strong></td></tr>{% endif %}
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                </td></tr>
+            <tr><td colspan="4" style="text-align:right"><strong>Paid In word TK. </strong>({{ inWords|raw }} only).</td></tr>
+            <tr><td colspan="4"><strong>Remarks</strong>{{ entity.comment|raw }}.</td></tr>
+            </tfoot>
+        </table>
+        <table class="table table-border">
+            <tr><td colspan="3">&nbsp;</td></tr>
+            <tr><td colspan="3">&nbsp;</td></tr>
+            <tr><td colspan="3">&nbsp;</td></tr>
+            <tr>
+                <td class="span4">
+                    <ul class="unstyled">
+                        <li>Prepared By</li>
+                        <li>{{ entity.createdBy.profile.name }}</li>
+                    </ul>
+                </td>
+                <td class="span4 text-center">
+                    <ul class="unstyled">
+                        <li>Checked By</li>
+                        <li>Printed: {{ "now"|date("d-m-Y h:i A") }}</li>
+                    </ul>
+                </td>
+                <td class="span4 pull-right">
+                    <ul class="unstyled">
+                        <li>Printed By</li>
+                        <li>{{ app.user }}</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr><td colspan="3">&nbsp;</td></tr>
+        </table>
+    {% endif %}
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@HospitalBundle/Resources/public/css/print.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}

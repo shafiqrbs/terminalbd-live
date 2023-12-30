@@ -1,0 +1,245 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Customer Base Sales Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_sales') }}">Customer Sales</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Customer Sales Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Customer Sales lists</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn blue" id="searchToggole" href="javascript:"><i class="icon-search"></i>&nbsp;Product Search</a>
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('inventory_sales') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                    <li><a href="{{ path('inventory_sales_item') }}"><i class="icon-th-list"></i>&nbsp;Sales Items</a></li>
+                                    <li><a href="{{ path('inventory_sales_empty_delete') }}"><i class="icon-th-list"></i>&nbsp;Delete Empty Invoice</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div id="search-product">
+                                <div class="row-fluid" style="margin-bottom: 5px">
+                                    <form class="search-form" >
+                                        <input type="text" id="item" name="item" required="required"  class="m-wrap span12 select2Item " >
+                                    </form>
+                                </div>
+                                <div class="row-fluid">
+                                    <table class="table table-bordered table-striped table-condensed flip-conten" id="stockItemDetails">
+                                        <thead class="flip-content ">
+                                        <tr class="head-green">
+                                            <th class="numeric" ><span class="btn black mini"><i class="icon-barcode"></i></span></th>
+                                            <th class="numeric" >SKU</th>
+                                            <th class="numeric" >GRN</th>
+                                            <th class="numeric" >Remaining Qnt</th>
+                                            <th class="numeric" >Ongoing Qnt</th>
+                                            <th class="numeric" >Current Stock</th>
+                                            <th class="numeric" >Purchase price</th>
+                                            <th class="numeric" >Sales price</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="itemDetails"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="customer" name="customer"  class="span12 m-wrap select2Customer" value="{% if searchForm.customer is defined %}{{ searchForm.customer }}{% endif %}"  autocomplete="off" placeholder="Enter customer mobile no ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="toUser" name="toUser"  class="span12 m-wrap select2User" value="{% if searchForm.toUser is defined %}{{ searchForm.toUser }}{% endif %}"  autocomplete="off" placeholder="Enter sales user">
+                                    </div>
+                                    <div class="span3">
+                                        <select name="process" id="process" class="span12 m-wrap">
+                                            <option  value="">Select Process</option>
+                                            <option {% if searchForm.process is defined and searchForm.process == 'Done' %} selected="selected" {% endif %} value="Done">Done</option>
+                                            <option {% if searchForm.process is defined and searchForm.process == 'In-progress' %} selected="selected" {% endif %} value="In-progress">In-progress</option>
+                                            <option {% if searchForm.process is defined and searchForm.process == 'Waiting for Delivery' %} selected="selected" {% endif %} value="Waiting for Delivery">Waiting for Delivery</option>
+                                            <option {% if searchForm.process is defined and searchForm.process == 'Return & Cancel' %} selected="selected" {% endif %} value="Return & Cancel">Return & Cancel</option>
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <select name="transactionMethod" id="transactionMethod" class="span12 m-wrap">
+                                            <option value="">Transaction Method</option>
+                                            {% for method in transactionMethods %}
+                                                <option {% if searchForm.method is defined and searchForm.method == method.id %} selected="selected" {% endif %} value="{{ method.id }}" >{{ method.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="invoice" name="invoice"  class="span12 m-wrap" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}"  autocomplete="off" placeholder="Enter invoice no ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="courierInvoice" name="courierInvoice"  class="span12 m-wrap" value="{% if searchForm.courierInvoice is defined %}{{ searchForm.courierInvoice }}{% endif %}"  autocomplete="off" placeholder="Enter courier invoice no ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 m-wrap date-picker" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="endDate"  name="endDate"  class="span12 m-wrap date-picker" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off"  placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric" >Invoice</th>
+                                    <th class="numeric" >Date</th>
+                                    <th class="numeric" >Sub-Total</th>
+                                    <th class="numeric" >Discount</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Due</th>
+                                    <th class="numeric" >Customer</th>
+                                    <th class="numeric" >Courier &  Process</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="sales">
+                                {% for entity in entities %}
+                                    <tr id="salesRemove-{{ entity.id }}">
+                                        <td> {% if entity.salesItems is defined and  entity.salesItems is not empty  %}<span class="badge badge-warning toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span>{% endif %}</td>
+                                        <td class="numeric" >{{ entity.invoice }}</td>
+                                        <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.subTotal|number_format  }}</td>
+                                        <th class="numeric" >{{ entity.discount|number_format  }}</th>
+                                        <th class="numeric" >{{ entity.total|number_format  }}</th>
+                                        <th class="numeric" >{{ entity.payment|number_format }}</th>
+                                        <td class="numeric" >{{ entity.due|number_format }}</td>
+                                        <td class="numeric" >{% if entity.customer %}<a href="{{ path('inventory_customer_show',{'id':entity.customer.id}) }}" target="_blank"  class="btn mini blue">{{ entity.customer.mobile }}</a>{% endif %}</td>
+                                        <td class="numeric" >
+                                            {% if entity.process == 'Done' %}
+                                                <a  class="btn mini purple">{% if entity.process is not empty %}{{ entity.process }}{% endif %}</a>
+                                                <a class="btn mini green" >{{entity.courierInvoice}}</a>
+                                            {% elseif entity.process == 'Returned' %}
+                                                <a  class="btn mini red">{% if entity.process is not empty %}{{ entity.process }}{% endif %}</a>
+                                                <a class="btn mini green" >{{ entity.courierInvoice }}</a>
+                                            {% elseif entity.total > 0 %}
+                                                <a class="btn mini green-stripe btn-action editable"  href="#"  data-url="{{ path('inventory_sales_inline_update') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Enter courier invoice">{{ entity.courierInvoice }}</a>
+                                                <a  data-type="select" class="btn mini purple-stripe btn-action editable" id="process" data-name="process" href="#" data-source="{{ path('inventory_sales_inline_status_select') }}"  data-url="{{ path('inventory_sales_inline_process_update') }}" data-pk="{{ entity.id }}" data-value="{% if entity.process is not empty %}{{ entity.process }}{% endif %}" data-original-title="Enter invoice process">{% if entity.process is not empty %}{{ entity.process }}{% endif %}</a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric" >
+                                            {% if entity.salesItems is defined and  entity.salesItems is not empty  %}
+                                                <a href="{{ path('inventory_sales_show', { 'id': entity.id }) }}" class="btn purple mini" ><i class="icon-eye-open"></i></a>
+                                                <a  href="{{ path('inventory_sales_print_invoice',{'invoice':entity.invoice}) }}" target="_blank" class="btn green mini" ><i class="icon-print"></i></a>
+                                            {% endif %}
+                                            {% if entity.paymentStatus == "Pending" or entity.process == "In-progress" %}
+                                                <a href="{{ path('inventory_sales_edit', { 'code': entity.invoice }) }}" class="btn yellow mini" ><i class="icon-pushpin"></i></a>
+                                                <a title="Are you sure went to delete ?" id="{{ entity.id }}" rel="{{ path('inventory_sales_delete', { 'id': entity.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a>
+                                            {% endif %}
+                                            {% if entity.paymentStatus == "Due" and entity.process != "Returned" %}
+                                                <a href="{{ path('account_sales_new') }}" class="btn mini blue" ><i class="icon-money"></i></a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr id="show-{{ entity.id }}" class="showing-overview">
+                                        <td colspan="11">
+                                            {% if entity.salesItems is defined and  entity.salesItems is not empty  %}
+                                                <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                                    <thead class="flip-content ">
+                                                    <tr class="head-green">
+                                                        <td>&nbsp;&nbsp;<i class="icon-reorder"></i></td>
+                                                        <th class="numeric" >Item</th>
+                                                        <th class="numeric" >Barcode</th>
+                                                        <th class="numeric" >Qnt</th>
+                                                        <th class="numeric" >Estimate price</th>
+                                                        <th class="numeric" >Sales price</th>
+                                                        <th class="numeric" >Sub-total</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for salesItem in entity.salesItems %}
+                                                        <tr>
+                                                            <td class="numeric" >{{ loop.index }}</td>
+                                                            <td class="numeric" >{{ salesItem.item.name }}/{{ salesItem.item.sku }}</td>
+                                                            <td class="numeric" >{{ salesItem.purchaseItem.barcode }}</td>
+                                                            <td class="numeric" >{{ salesItem.quantity }}</td>
+                                                            <td class="numeric" >{{ salesItem.estimatePrice|number_format() }}</td>
+                                                            <td class="numeric" >{{ salesItem.salesPrice|number_format() }}</td>
+                                                            <td class="numeric" >{{ salesItem.subTotal|number_format() }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/editable.js'
+    '@InventoryBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $( "#search-product" ).hide();
+    $( "#searchToggole" ).click(function() {
+    $( "#search-product" ).slideToggle("slow");
+    });
+    EditableInit();
+    ApproveProcess();
+{% endblock %}

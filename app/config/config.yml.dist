@@ -1,0 +1,135 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: bundles.yml }
+
+framework:
+    #esi:             ~
+    translator: { fallback: %locale% }
+    default_locale:  "%locale%"
+    secret:          "%secret%"
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: true }
+    templating:
+        engines: ['twig']
+        #assets_version: SomeVersionScheme
+    default_locale:  "%locale%"
+    trusted_hosts:   ~
+    trusted_proxies: ~
+    session:
+        # handler_id set to null will use default session handler from php.ini
+        handler_id:  ~
+        cookie_lifetime: 0 # 365 days in seconds
+    fragments:       ~
+    http_method_override: true
+
+# Twig Configuration
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+    date:
+        timezone: Asia/Dhaka
+    globals:
+            #myGlobaService: "@SettingContentBundle.content_footer_service"  'footer-content'
+            portal_domain: 'http://www.terminalbd.com'
+            portal_name: 'terminalbd.com'
+            portal_design_development: 'TERMINALBD.COM'
+            portal_power: 'Powered By: www.terminalbd.com'
+            portal_copyright: 'Copy Right TERMINALBD.COM'
+
+# Assetic Configuration
+assetic:
+    debug:          "%kernel.debug%"
+    use_controller: false
+    bundles:        [UserBundle,FOSCommentBundle,InventoryBundle,HospitalBundle,AccountingBundle, DomainUserBundle, BinduBundle , XiideaDomainBundle, SettingToolBundle, FrontendBundle,SettingContentBundle,CustomerBundle,HumanResourceBundle,BusinessBundle,MedicineBundle,RestaurantBundle,DoctorPrescriptionBundle,MedicineBundle,PosBundle,ReportBundle]
+    #java: /usr/bin/java
+    filters:
+        cssrewrite: ~
+        #closure:
+        #    jar: "%kernel.root_dir%/Resources/java/compiler.jar"
+        #yui_css:
+        #    jar: "%kernel.root_dir%/Resources/java/yuicompressor-2.4.7.jar"
+        # Swiftmailer Configuration
+
+swiftmailer:
+    transport:  gmail
+    encryption: ssl
+    auth_mode:  login
+    username:   terminalbd@gmail.com
+    password:   @01707148148
+
+services:
+    twig.extension.text:
+        class: Twig_Extensions_Extension_Text
+        tags:
+            - { name: twig.extension }
+
+    helper.imageresizer:
+        class: Setting\Bundle\ToolBundle\Service\ImageResizer
+
+    MyModule.twig_extension:
+        class: Setting\Bundle\ToolBundle\Twig\MyModuleTwigExtension
+        tags:
+            - { name: twig.extension }
+
+fos_comment:
+    db_driver: orm
+    class:
+        model:
+            comment: Setting\Bundle\ContentBundle\Entity\Comment
+            thread: Setting\Bundle\ContentBundle\Entity\Thread
+    acl: true
+    service:
+        acl:
+            thread:  fos_comment.acl.thread.roles
+            comment: fos_comment.acl.comment.roles
+            vote:    fos_comment.acl.vote.roles
+        manager:
+            thread:  fos_comment.manager.thread.acl
+            comment: fos_comment.manager.comment.acl
+            vote:    fos_comment.manager.vote.acl
+    acl_roles:
+        comment:
+            create: IS_AUTHENTICATED_ANONYMOUSLY
+            view: IS_AUTHENTICATED_ANONYMOUSLY
+            edit: ROLE_ADMIN
+            delete: ROLE_ADMIN
+        thread:
+            create: IS_AUTHENTICATED_ANONYMOUSLY
+            view: IS_AUTHENTICATED_ANONYMOUSLY
+            edit: ROLE_ADMIN
+            delete: ROLE_ADMIN
+        vote:
+            create: IS_AUTHENTICATED_ANONYMOUSLY
+            view: IS_AUTHENTICATED_ANONYMOUSLY
+            edit: ROLE_ADMIN
+            delete: ROLE_ADMIN
+
+
+guzzle:
+    clients:
+        api_crm:
+            base_url: "http://messaging.icombd.com:9000"
+            headers:
+                Accept: "application/json"
+
+fos_js_routing:
+    cache_control:
+        # All are optional, defaults shown
+        public: true   # can be true (public) or false (private)
+        maxage: null    # integer value, e.g. 300
+        smaxage: null   # integer value, e.g. 300
+        expires: null   # anything that can be fed to "new \DateTime($expires)", e.g. "5 minutes"
+        vary: []        # string or array, e.g. "Cookie" or [ Cookie, Accept ]
+
+doctrine:
+    orm:
+        dql:
+            string_functions:
+                group_concat:   Setting\Bundle\ToolBundle\DQL\GroupConcat
+                date_format:  Setting\Bundle\ToolBundle\DQL\DateFormat
+                random:  Setting\Bundle\ToolBundle\DQL\Random

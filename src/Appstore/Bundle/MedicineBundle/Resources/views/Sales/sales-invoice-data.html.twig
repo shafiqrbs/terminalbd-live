@@ -1,0 +1,40 @@
+{% if entity.medicineSalesItems is not empty %}
+    {% for item in entity.medicineSalesItems %}
+        <tr id="remove-{{ item.id }}">
+            <td  class="span1">{{ loop.index }}.</td>
+            <td class="span5">{{ item.medicineStock.name }}</td>
+            <td class="span1">{{ item.mrpPrice }}</td>
+            <td class="span1">
+                <div class="input-append">
+                    <input type="hidden" class=""  data-id="{{ item.id }}"  id="estimatePrice-{{ item.id }}" name="estimatePrice[]" value="{{ item.mrpPrice }}">
+                    <input type="text" class="td-inline-input salesPrice"  data-id="{{ item.id }}" autocomplete = "off"   id="salesPrice-{{ item.id }}" name="salesPrice[]" value="{{ item.salesPrice }}" placeholder="{{ item.salesPrice }}">
+                </div>
+            </td>
+            <td class="span1">
+                <div class="input-append">
+                    <input type="text" class="td-inline-input quantity" data-id="{{ item.id }}" autocomplete = "off" min="1" max="{{ item.quantity }}"  id="quantity-{{ item.id }}" name="quantity[]" value="{{ item.quantity }}" placeholder="{{ item.quantity }}"> {% if item.medicineStock.unit is not empty %}<span class="btn mini">{{ item.medicineStock.unit.name }}</span>{% endif %}
+                </div>
+            </td>
+            <td class="span1">
+                <div class="input-append">
+                    <input type="text" class="td-inline-input itemPercent"  data-id="{{ item.id }}" autocomplete = "off"   id="itemPercent-{{ item.id }}" name="itemPercent-{{ item.id }}" value="{{ item.itemPercent }}" placeholder="{{ item.itemPercent }}">
+                </div>
+            </td>
+            <td class="span1" id="subTotal-{{ item.id }}">{{ item.subTotal|number_format }}</td>
+            <td class="span1"><a id="{{ item.id }}" title="Are you sure went to delete ?" data-url="{{ path('medicine_sales_item_delete',{'invoice': entity.id ,'id': item.id }) }}" href="javascript:" class="btn red mini itemDelete" ><i class="icon-trash"></i></a></td>
+        </tr>
+    {% endfor %}
+{% endif %}
+<tr>
+    <td colspan="8" class="span12" style="border: 1px double #000"></td>
+</tr>
+<tr>
+    <td colspan="6" class="span9"><span class="pull-right"><strong>Total TK.</strong> =</span></td>
+    <td class="span2"><strong id="subTotal">{{ entity.subTotal|number_format }}</strong></td>
+    <td class="span1"></td>
+</tr>
+<tr>
+    <td colspan="6" class="span9"><span class="pull-right"><strong>Discount TK.</strong> =</span></td>
+    <td class="span2"><strong class="discount">{{ entity.discount|number_format }}</strong></td>
+    <td class="span1"></td>
+</tr>

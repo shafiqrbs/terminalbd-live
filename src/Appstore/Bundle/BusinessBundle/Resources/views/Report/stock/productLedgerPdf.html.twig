@@ -1,0 +1,111 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr td{
+        font-size: 12px;
+        height: 15px;
+        vertical-align: middle;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h2 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    h3 {
+        font-size: 20px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-left{
+        text-align: left!important;
+        display: block;
+        padding-right: 20px;
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+    .numeric{
+        width: 80%;
+    }
+
+</style>
+{% set name = searchForm.name is defined ? searchForm.name :'' %}
+{% set month = searchForm.month is defined ? searchForm.month :"now"|date("F") %}
+{% set year = searchForm.year is defined ? searchForm.year :"now"|date("Y") %}
+
+<table class="table">
+    <thead>
+    <tr>
+        <td class="pull-center"><h2>{{ option.name }}</h2></td>
+    </tr>
+    <tr>
+        <th class="pull-center"><h3><strong>{{ name|upper }} LEDGER STATEMENT</strong></h3></th>
+    </tr>
+    </thead>
+</table>
+<table class="table">
+    <thead class="flip-content ">
+    <tr>
+        <th class="pull-center" colspan="9"><h5><strong>DATE WISE STATEMENT SHEET: {{ month|capitalize }} , {{ year }}</strong></h5></th>
+    </tr>
+    <tr class="head-green">
+        <th class="numeric" >Invoice ID</th>
+        <th class="numeric" >Date</th>
+        <th class="numeric" >Created By</th>
+        <th class="numeric" >Customer/Vendor</th>
+        <th class="numeric" >Opening QTY</th>
+        <th class="numeric" >QTY</th>
+        <th class="numeric" >Closing QTY</th>
+        <th class="numeric" >Process</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in pagination %}
+        <tr>
+            <td class="numeric" >{{ item.salesInvoice }}</td>
+            <td class="numeric" >{{ item.created|date('d-m-Y') }}</td>
+            <td class="numeric" >{{ item.createdBy }}</td>
+            <td class="numeric" >{{ item.createdBy }}</td>
+            <td class="numeric" >{{ item.openingQuantity }}</td>
+            <td class="numeric" >{% if item.quantity > 0 %}{{ item.quantity }}{% else %}({{ item.quantity|abs }}){% endif %}</td>
+            <td class="numeric" >{{ item.closingQuantity }}</td>
+            <td class="numeric" >{{ item.process }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+

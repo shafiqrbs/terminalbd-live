@@ -1,0 +1,123 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Vendor
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Vendor</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Vendor Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+
+                            <div class="row-fluid">
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Company name<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.companyName) }}
+                                            {{ form_errors(form.companyName) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Name</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.name) }}
+                                                {{ form_errors(form.name) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Mobile</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.mobile) }}
+                                                {{ form_errors(form.mobile) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Email</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.email) }}
+                                                {{ form_errors(form.email) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Address</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.address) }}
+                                                {{ form_errors(form.address) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"><br/></div>
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                        <div class="clearfix"><br/></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+

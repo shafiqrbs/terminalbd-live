@@ -1,0 +1,145 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Vendor base Sales Item Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Vendor base Sales Item Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i> Vendor base Sales Item Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% set name = searchForm.name is defined ? searchForm.name :'' %}
+                                {% set customer = searchForm.customer is defined ? searchForm.customer :'' %}
+                                {% set vendor = searchForm.vendor is defined ? searchForm.vendor :'' %}
+                                {% set grn = searchForm.grn is defined ? searchForm.grn :'' %}
+                                {% set startDate = searchForm.startDate is defined ? searchForm.startDate : "now"|date("d-m-Y") %}
+                                {% set endDate = searchForm.endDate is defined ? searchForm.endDate :"now"|date("d-m-Y") %}
+                                <a target="_blank" href="{{ path('business_report_vendor_commission_sales',{'pdf':'pdf','startDate':startDate,'endDate':endDate,'vendor':vendor,'customer':customer,'name':name,'grn':grn}) }}" class="btn purple"><i class="icon icon-print"></i> Download</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input class="m-wrap span12 select2ParticularName" name="name" id="name" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Search particular name">
+                                    </div>
+                                    <div class="span2">
+                                        <select name="vendor" id="vendor" class="m-wrap span12">
+                                            <option value="" >--Select Vendor--</option>
+                                            {% for vendor in vendors %}
+                                                <option value="{{ vendor.id }}" {% if searchForm.vendor is defined and searchForm.vendor == vendor.id %} selected="selected" {% endif %} >{{ vendor.companyName }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span2">
+                                        <div class="controls">
+                                            <input class="m-wrap span12 select2Customer" name="customer" id="customer" value="{% if searchForm.customer is defined %}{{ searchForm.customer }}{% endif %}"  autocomplete="off" placeholder="Search customer name">
+                                        </div>
+                                    </div>
+                                    <div class="span2">
+                                        <div class="controls">
+                                            <input class="m-wrap span12" name="grn" id="grn" value="{% if searchForm.grn is defined %}{{ searchForm.grn }}{% endif %}"  autocomplete="off" placeholder="Enter grn">
+                                        </div>
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span12">
+                                                <input type="text" id="startDate" name="startDate" autocomplete="off"  class="span5 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  placeholder="Start date">
+                                                <input type="text" id="endDate" name="endDate" autocomplete="off" class="span5 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}" placeholder="End Date">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric" ><i class="icon-reorder"></i> SKU</th>
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Created</th>
+                                <th class="numeric" >Invoice</th>
+                                <th class="numeric" >Vendor</th>
+                                <th class="numeric" >GRN</th>
+                                <th class="numeric" >Customer</th>
+                                <th class="numeric" >Quantity</th>
+                                <th class="numeric" >Unit</th>
+                                <th class="numeric" >Rate</th>
+                                <th class="numeric" >Sales Price</th>
+                                <th class="numeric" >Purchase Price</th>
+                                <th class="numeric" >Profit/Loss</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {%  set totalSales = 0 %}
+                            {% for entity in entities %}
+                                <tr>
+                                    <td class="numeric" >{{ entity.sku }}</td>
+                                    <td class="numeric" >{{ entity.name }}</td>
+                                    <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                    <td class="numeric" >{{ entity.invoice }}</td>
+                                    <td class="numeric" >{% if entity.companyName is not empty %}{{ entity.companyName }}{% endif %}</td>
+                                    <td class="numeric" >{% if entity.grn is not empty %}{{ entity.grn }}{% endif %}</td>
+                                    <td class="numeric" >{{ entity.customerName }}</td>
+                                    <td class="numeric" >{{ entity.quantity }}</td>
+                                    <td class="numeric" >{{ entity.unit }}</td>
+                                    <td class="numeric" >{{ entity.price }}</td>
+                                    <td class="numeric" >{{ entity.salesPrice|number_format }}</td>
+                                    <td class="numeric" >{{ entity.purchasePrice|number_format }}</td>
+                                    <td class="numeric" >{{ (entity.salesPrice -  entity.purchasePrice)|number_format }}</td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                        <div class="pagination pull-center"  >
+                            {{ knp_pagination_render(entities) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BusinessBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

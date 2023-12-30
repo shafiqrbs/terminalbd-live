@@ -1,0 +1,94 @@
+{% extends ':bindu:base.html.twig' %}
+{% block body %}
+    <div id="tm-page-body">
+        <div id="tm-template-default-fullwidth" class="tm-container">
+            <div class="page-content">
+                <div class="page-content-inner tm-content">
+                    <div id="profileTabList" class="tm-wrap">
+                        <div class="tabs preview-tab">
+                            <a class="small-text one-fourth"  href="#smartPhone"
+                               data-interface="tooltip"
+                               data-position="top"
+                               data-content="Apple iPhone 5,Apple iPhone 4,Apple iPod Touch,Samsung Galaxy S series,Microsoft Lumia series, HTC 8x."
+                               data-shift="10"
+                               data-defineClass = "bord"
+                               data-radius = "0px"
+                                    ><img src="../../assets/bindu/img/divice/icon/iphone.png"><span style="display: block;">Smart Phone</span>
+                            </a>
+                            <a class="small-text one-fourth"  href="#phablet"
+                               data-interface="tooltip"
+                               data-position="top"
+                               data-content="Samsung Galaxy S & note series,Samsung Galaxy Nexus,LG Nexus 5,HTC One,Sony Xperia Z series"
+                               data-shift="10"
+                               data-defineClass = "bord"
+                               data-radius = "0px"
+                                    ><img src="../../assets/bindu/img/divice/icon/iphones.png"><span style="display: block;">Phablet</span>
+                            </a>
+                            <a class="small-text one-fourth	"  href="#tablet"
+                               data-interface="tooltip"
+                               data-position="top"
+                               data-content="Apple iPad,Samsung Galaxy Tab."
+                               data-shift="10"
+                               data-defineClass = "bord"
+                               data-radius = "0px"
+                                    ><img src="../../assets/bindu/img/divice/icon/tablets-ipad.png"><span style="display: block;">Tablet</span>
+                            </a>
+
+                            <a class="small-text one-fourth last"  href="#laptop"
+                               data-interface="tooltip"
+                               data-position="top"
+                               data-content="Laptop,Desktop & Others device"
+                               data-shift="10"
+                               data-defineClass = "bord"
+                               data-radius = "0px"
+                                    ><img src="../../assets/bindu/img/divice/icon/laptop.png"><span style="display: block;">Laptop & Desktop</span>
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <div class="tm-row" style="background: #ffffff">
+                        <div class="tm-double-line"></div>
+                        <div class="device_preview" id="profileTabData" >
+                            <div class="smartPhone_preview tab_content" id="smartPhone">
+                                <div class="mobile_wrap">
+                                    <iframe id="frame" frameborder="no" border="0" scrolling="no" width="309px" height="480px;" src="{{ url('mobile_home', {subdomain:entity.subDomain}) }}"></iframe>
+                                </div>
+                            </div>
+                           <div class="phablet_preview tab_content" id="phablet">
+                                <div class="mobile_wrap">
+                                    <iframe id="frame" frameborder="no" border="0" scrolling="no" width="360px" height="613px;" src="{{ url('mobile_home', {subdomain:entity.subDomain}) }}"></iframe>
+                                </div>
+                            </div>
+                            <div class="tablet_preview tab_content" id="tablet">
+                                <div class="mobile_wrap">
+                                    <iframe id="frame" frameborder="no" border="0" scrolling="no" width="769px" height="1002px;" src="{{ url('mobile_home', {subdomain:entity.subDomain}) }}"></iframe>
+                                </div>
+                            </div>
+                            <div class="laptop_preview tab_content" id="laptop">
+                                <div class="mobile_wrap">
+                                    <iframe id="frame" frameborder="no" border="0" scrolling="yes" width="634px" height="396px;" src="{{ url('ecommercesubdomain', {subdomain:entity.subDomain}) }}"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tm-double-line"></div>
+                    </div>
+
+                </div>
+            </div>
+            <!--page-content-->
+        </div>
+        <!--tm-container-->
+    </div>
+{% endblock %}
+
+{% block documentready %}
+
+  {#  $("#frame").attr("src", "http://bdeducation.dev/mobile/pis");#}
+    $(".iframe").click(function () {
+        var src = $(this).attr('id');
+        $("#frame").attr("src", src);
+    });
+
+
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Vendor Outstanding
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_purchase_business') }}">Vendor Outstanding</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Vendor Outstanding lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Vendor Outstanding</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('account_purchase_business_new') }}"><i class="icon-plus-sign"></i>&nbsp; Add Payment</a>
+                                <a class="btn black" href="{{ path('account_purchase_business') }}"><i class="icon-th-list"></i>&nbsp; Purchase</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <form class="search-form" action="" method="get" name="itemSearch">
+                            <div class="row-fluid">
+                                {% set modes = ['Receivable','Payable'] %}
+                                <div class="span3">
+                                    <select name="outstanding" id="outstanding" class="leftMargin span12 m-wrap">
+                                        <option value="" >--Outstanding Type--</option>
+                                        {% for mode in modes %}
+                                            <option {% if searchForm.outstanding is defined and searchForm.outstanding == mode %} selected="selected" {% endif %} value="{{ mode }}" >{{ mode }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="span6">
+                                    <input type="text" id="accountVendor" name="accountVendor"  class="leftMargin span12 select2AccountVendor m-wrap" value="{% if searchForm.accountVendor is defined %}{{ searchForm.accountVendor }}{% endif %}"  autocomplete="off" placeholder="Search vendor company">
+                                </div>
+                                <div class="span3">
+                                    <div class="controls">
+                                        <div class="input-append span11">
+                                            <input type="text" id="amount" name="amount"  class="leftMargin span10  m-wrap" value="{% if searchForm.amount is defined %}{{ searchForm.amount }}{% endif %}"  autocomplete="off" placeholder="Enter till amount">
+                                            <div class="btn-group">
+                                                <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Company Name</th>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Outstanding</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td class="numeric" >{{ entity.companyName }}</td>
+                                        <td class="numeric" >{{ entity.vendorName }}</td>
+                                        <td class="numeric" >{{ entity.vendorMobile }}</td>
+                                        <th class="numeric" >{{ entity.customerBalance|number_format }}</th>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .leftMargin {
+            margin-left: 0!important;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    AccountingApproveProcess();
+{% endblock %}
+
+

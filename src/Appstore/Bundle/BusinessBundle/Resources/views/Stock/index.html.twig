@@ -1,0 +1,224 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Stock
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('business_stock') }}">Manage Stock</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green ">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Stock</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                            {% if app.user.granted("ROLE_DOMAIN") %}
+                            <a  href="{{ path('business_purchase_opening') }}" id="btn-create-barcode" class="btn purple" >
+                                <i class="icon-shopping-cart"></i> Opening</a>
+                            {% endif %}
+                            {% if 'wearhouse' in config.stockFormat %}
+                                <a href="{{ path('business_stock_transfer') }}" class="btn red yellow" ><i class="icon-retweet"></i> Transfer</a>
+                            {% endif %}
+                            <a href="{{ path('business_stock_new') }}" class=" btn red"><i class="icon-plus"></i> Add Stock</a>
+                            <a target="_blank" href="{{ path('business_stock_excel') }}" class=" btn purple"><i class="icon-download"></i> Download Excel</a>
+                                {% if app.user.granted("ROLE_DOMAIN") %}
+                                    <a href="{{ path('business_allstock_delete') }}" class=" btn yellow"><i class="icon-refresh-ccw"></i> Delete</a>
+                                    <a href="{{ path('business_stock_reset') }}" class=" btn purple"><i class="icon-refresh-ccw"></i> Reset</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="row-fluid" >
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid" style="margin-bottom: 10px">
+                                    <div class="span3">
+                                        <input class="m-wrap span12" name="particularCode" id="particularCode" value="{% if searchForm.particularCode is defined %}{{ searchForm.particularCode }}{% endif %}"  autocomplete="off" placeholder="Search by barcode">
+                                    </div>
+                                     <div class="span3">
+                                        <input class="m-wrap span12 select2ParticularName" name="name" id="name" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Search particular name">
+                                    </div>
+
+                                    <div class="span3">
+                                        <select name="category" id="category" class="m-wrap span12">
+                                            <option value="" >--Category--</option>
+                                            {% for cat in categories %}
+                                                <option value="{{ cat.id }}" {% if searchForm.category is defined and searchForm.category == cat.id %} selected="selected" {% endif %} >{{ cat.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span12">
+                                                <select name="type" id="type" class="m-wrap span10">
+                                                    <option value="" >--Product mode--</option>
+                                                    {% for cat in types %}
+                                                        <option value="{{ cat.id }}" {% if searchForm.type is defined and searchForm.type == cat.id %} selected="selected" {% endif %} >{{ cat.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </form>
+
+                        </div>
+                        <!-- BEGIN FORM-->
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Barcode</th>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Category</th>
+                                    <th class="numeric" >Brand</th>
+                                    <th class="numeric" >PP</th>
+                                    <th class="numeric" >Price</th>
+                                    <th class="numeric" >Opening QTY</th>
+                                    <th class="numeric" >Pur. QTY</th>
+                                    <th class="numeric" >Sales QTY</th>
+                                    <th class="numeric" >Bonus QTY</th>
+                                    <th class="numeric" >PP Ret QTY</th>
+                                    <th class="numeric" >Sales Ret QTY</th>
+                                    <th class="numeric" >Damage QTY</th>
+                                    {% for house in wearhouses %}
+                                    <th class="numeric" >{{ house.name }}</th>
+                                    {% endfor %}
+                                    <th class="numeric" >Remain QTY</th>
+                                    <th class="numeric" >Min. QTY</th>
+                                    <th class="numeric" >Unit</th>
+                                    <th class="numeric" >Product Mode</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in pagination %}
+                                    <tr>
+                                        <td>
+                                            <a  class="editable" data-name="particularCode" href="#"  data-url="{{ path('business_stock_inline') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change SKU/Barcode">{{ entity.particularCode }}</a>
+                                        </td>
+                                        <td><a class="editable" data-name="name" data-url="{{ path('business_stock_inline') }}" data-pk="{{ entity.id }}" data-original-title="Change product name" href="{{ path('business_stock_edit',{'id': entity.id })}}">{{ entity.name }}</a></td>
+                                        <td class="numeric" >{% if entity.category is not empty %}{{ entity.category.name }}{% endif %}</td>
+                                       <td class="numeric" >{% if entity.brand is not empty %}{{ entity.brand.name }}{% endif %}</td>
+                                        <td class="numeric"> <a  class="editable" data-name="purchasePrice" href="#"  data-url="{{ path('business_stock_inline') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change purcahse price">{{ entity.purchasePrice }}</a>
+                                        </td>
+                                        <td class="numeric"><a  class="editable" data-name="salesPrice" href="#"  data-url="{{ path('business_stock_inline') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change sales price">{{ entity.salesPrice }}</a>
+                                        </td>
+                                        <td>
+                                        {% if ( (app.user.granted("ROLE_BUSINESS_MANAGER") and  entity.openingApprove != 1) or (app.user.granted("ROLE_DOMAIN") and entity.openingApprove != 1)) %}
+                                            <a  class="editable" data-name="openingQuantity" href="#"  data-url="{{ path('business_stock_inline') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change opening quantity">{{ entity.openingQuantity }}</a>
+                                        {% else %}
+                                            {{ entity.openingQuantity }}
+                                        {% endif %}
+                                        </td>
+                                        <td class="numeric" >{{ entity.purchaseQuantity|number_format }}</td>
+                                        <td class="numeric" >{{ entity.salesQuantity|number_format }}</td>
+                                        <td class="numeric" >{{ entity.bonusQuantity|number_format }}</td>
+                                        <td class="numeric" >{{ entity.purchaseReturnQuantity|number_format }}</td>
+                                        <td class="numeric" >{{ entity.salesReturnQuantity|number_format }}</td>
+                                        <td class="numeric" >{{ entity.damageQuantity|number_format }}</td>
+                                        {% for house in wearhouses %}
+                                            {% set wearId = entity.id~'-'~house.id %}
+                                        <th class="numeric" >{{ wearHouseStock[wearId] is defined and wearHouseStock[wearId] is not empty ? wearHouseStock[wearId]['quantity']:0 }}</th>
+                                        {% endfor %}
+                                        <td class="numeric" >
+                                            {% if entity.businessConfig.bonusFromStock == 1 %}
+                                                {{ (entity.remainingQuantity) }}
+                                            {% else %}
+                                                {{ (entity.remainingQuantity + entity.bonusQuantity) }}
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric">
+                                          <a  class="editable" data-name="minQuantity" href="#"  data-url="{{ path('business_stock_inline') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change min Quantity">{{ entity.minQuantity }}</a>
+                                        </td>
+                                        <td class="numeric">{% if  entity.unit is defined and  entity.unit is not empty %}{{ entity.unit.name|default('---') }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.businessParticularType is not empty %}{{ entity.businessParticularType.name }}{% endif %}</td>
+                                        <td class="numeric" >
+                                            <div class="btn-group">
+                                                {% if( entity.status == 1) %}
+                                                    <a class="btn mini blue btn-action" href="{{ path('business_stock_status', { 'id': entity.id}) }}"><i class="icon-ok"></i></a>
+                                                {% else %}
+                                                    <a class="btn mini red btn-action" href="{{ path('business_stock_status', { 'id': entity.id}) }}">x</a>
+                                                {% endif %}
+                                                <a href="{{ path('business_stock_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+                                                {% if entity.purchaseQuantity is empty or entity.salesQuantity is empty or entity.remainingQuantity is empty %}
+                                                    <a  href="{{ path('business_stock_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                                {% endif %}
+                                                {% if entity.businessParticularType and entity.businessParticularType.slug == "post-production" %}
+                                                    <a href="{{ path('business_post_production', { 'id': entity.id }) }}" class="btn red yellow mini" ><i class="icon-plus"></i> Production</a>
+                                                {% endif %}
+                                                {% if entity.businessParticularType and entity.businessParticularType.slug == "pre-production" %}
+                                                    <a href="{{ path('business_pre_production', { 'id': entity.id }) }}" class="btn red yellow mini" ><i class="icon-plus"></i> Production</a>
+                                                {% endif %}
+
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BusinessBundle/Resources/public/js/editable.js'
+    '@BusinessBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $(document).on('change', '#particularCode', function() {
+        var barcode = $('#particularCode').val();
+        if(barcode == ''){
+            $('#wrongBarcode').html('Using wrong barcode, Please try again correct barcode.');
+            return false;
+        }
+        $( ".search-form" ).trigger("submit");
+    });
+    EditableWithOutReloadInit();
+{% endblock %}

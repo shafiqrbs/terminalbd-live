@@ -1,0 +1,135 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-left{
+        text-align: left!important;
+        display: block;
+        padding-right: 20px;
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+    ul.unstyled {
+        list-style: none;
+        float: left;
+        margin: 0;
+        padding: 0;
+    }
+    .clear{
+        clear: both;
+    }
+    .span12{
+        width: 100%
+    }
+    .span4{
+        width: 33.33%
+    }
+
+</style>
+<!-- BEGIN FORM-->
+<table class="table" style="width: 97.7%" >
+    <tr><td class="pull-center" colspan="3"><strong>Branch Name:{{ entity.branch.name }}</strong></td></tr>
+    <tr>
+        <td class="span4">
+            <div class="span12 pull-left">
+                <h4>Invoice Info:</h4>
+                <ul class="unstyled">
+                    <li><strong>Invoice:</strong>&nbsp;{{ entity.invoice }}</li>
+                    <li><strong>Total Item:</strong>&nbsp;{{ entity.totalItem }}</li>
+                    <li><strong>Total Quantity:</strong>&nbsp;{{ entity.totalQuantity }}</li>
+                    <li><strong>Total Amount:</strong>&nbsp;{{ entity.totalAmount }}</li>
+                    <li><strong>Process By:</strong>&nbsp;{% if entity.createdBy is defined and entity.createdBy is not empty %}{{ entity.createdBy }}{% endif %}</li>
+                </ul>
+            </div>
+        </td>
+        <td class="span4"></td>
+        <td class="span4">
+            <div class="span12 pull-left">
+                <h4>Delivered Process:</h4>
+                <ul class="unstyled">
+                    <li><strong>Delivered:</strong>&nbsp;{{ entity.updated|date('d-m-Y') }}</li>
+                    <li><strong>Address:</strong>&nbsp;{{ entity.branch.address }}</li>
+                    <li><strong>Location:</strong>&nbsp;{{ entity.branch.location.name }},{{ entity.branch.location.parent.name }}</li>
+                    <li><strong>Received By:</strong>&nbsp;{% if entity.approvedBy is defined and entity.approvedBy is not empty %}{{ entity.approvedBy }}{% endif %}</li>
+                </ul>
+                <div class="clear"></div>
+            </div>
+
+        </td>
+    </tr>
+</table>
+<br/>
+<table class="table">
+
+    <thead class="flip-content ">
+    <tr class="head-blue">
+        <th class="numeric" >S/N</th>
+        <th class="numeric">Barcode</th>
+        <th class="numeric">Name</th>
+        <th class="numeric">Quantity</th>
+        <th class="numeric">Sales Price</th>
+        <th class="numeric">Sub-Total</th>
+    </tr>
+    </thead>
+    <tbody id="deliveryItem">
+    {% for item in entity.deliveryItems %}
+        <tr>
+            <td class="numeric" >{{ loop.index }}</td>
+            <td class="numeric">{{ item.purchaseItem.barcode }}</td>
+            <td class="numeric">{{ item.item.name }}</td>
+            <td  class="numeric">{{ item.quantity }}</td>
+            <td class="numeric">{{ item.salesPrice }}</td>
+            <td class="numeric">{{ item.subTotal }}</td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="3"><span class="pull-right"><strong>Total Quantity</strong></span></td>
+        <td><span class="pull-left" id="totalQuantity">{{ entity.totalQuantity }}</span></td>
+        <td><span class="pull-right"><strong id="totalAmount">Total Amount</strong></span></td>
+        <td><span class="pull-left"><strong>{{ entity.totalAmount|number_format }}</strong></span></td>
+    </tr>
+    </tbody>
+</table>

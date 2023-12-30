@@ -1,0 +1,24 @@
+
+{% set total = 0 %}
+{% for entity in entities %}
+    {% set total = (total + (entity.remainingQnt * entity.purchaseAvgPrice))  %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <<td class="numeric" >{{ entity.name }}</td>
+        <td class="numeric" >{{ entity.unit }}</td>
+        <td class="numeric" >{{ entity.purchaseQuantity }}</td>
+        <td class="numeric" >{{ entity.purchaseQuantityReturn }}</td>
+        <td class="numeric" >{{ entity.salesQuantity }}</td>
+        <td class="numeric" >{{ entity.salesQuantityReturn }}</td>
+        <td class="numeric" >{{ entity.damageQuantity }}</td>
+        <td class="numeric" >{{ entity.remainingQnt }}</td>
+        <td class="numeric text-right" >{{ entity.salesPrice|number_format }}</td>
+        <td class="numeric text-right" >{{ entity.purchaseAvgPrice|number_format }}</td>
+        <td class="numeric text-right" >{{ (entity.salesPrice - entity.purchaseAvgPrice)|number_format }}</td>
+        <td class="numeric text-right" >{{ (entity.remainingQnt * entity.purchaseAvgPrice)|number_format(2) }}</td>
+    </tr>
+{% endfor %}
+<tr>
+    <td colspan="12" class="text-right"><strong>Grand Total Amount</strong></td>
+    <td class="text-right"><strong>{{ total|number_format(2) }}</strong></td>
+</tr>

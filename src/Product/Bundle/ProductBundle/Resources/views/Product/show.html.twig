@@ -1,0 +1,207 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    View Details
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('product') }}">Product</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Details</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="btn-group pull-right">
+                    {% if entity.id > 0  %}
+                        <a class="btn black" target="_blank" href="{{ path('product_print',{'id': entity.id}) }}">Print</a>
+                        <a class="btn yellow" target="_blank" href="{{ path('product_pdf',{'id': entity.id}) }}">PDF</a>
+                        <a class="btn blue" target="_blank" href="{{ path('product_export',{'id': entity.id}) }}">Export</a>
+                    {% else %}
+                        <a class="btn purple" href="{{ path('product_import') }}">Import</a>
+                    {% endif %}
+                </div>
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Product Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="tabbable portlet-tabs">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a  href="{{ path('product_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;View</a></li>
+                                <li class=""><a  href="{{ path('product') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                <li><a  href="{{ path('product_edit',{'id':entity.id}) }}"><i class="icon-edit"></i>&nbsp;Add/Edit</a></li>
+
+                            </ul>
+                            <div class="tab-content">
+                                <div class="portlet-body form form-horizontal">
+                                    {% include('flash-message.html.twig')  %}
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" ><strong>Product Information</strong></label>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Title</label>
+                                                <div class="controls control-custom">{{ entity.name }}</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Created/Updated date</label>
+                                                <div class="controls control-custom">{{ entity.created|date('d-m-Y') }} To {{ entity.updated|date('d-m-Y') }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Product Code</label>
+                                                <div class="controls control-custom">{{ entity.productCode }}</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Vendor Price & Regular Price</label>
+                                                <div class="controls control-custom">{{ entity.vendorPrice }}/{{ entity.price }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Sales Price/Shipping Charge</label>
+                                                <div class="controls control-custom">{{ entity.salesPrice }}, {{ entity.shipping }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Quantity/Unit</label>
+                                                <div class="controls control-custom">{{ entity.quantity }}, {{ entity.unit }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Feature/Availability</label>
+                                                <div class="controls control-custom">{{ entity.isFeature }}, {{ entity.availability }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Deal/Offer Feature</label>
+                                                <div class="controls control-custom">{{ entity.dealType }}, {{ entity.collection.name|default('NULL') }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Size/Color</label>
+                                                <div class="controls control-custom">{{ entity.size }}/{{ entity.color }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Brand name/Made in</label>
+                                                <div class="controls control-custom">{{ entity.brand.name|default('NULL') }}/{{ entity.madeIn }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Weight/Dimension</label>
+                                                <div class="controls control-custom">{{ entity.weight }}/{{ entity.dimension }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span11">
+                                            <div class="control-group">
+                                                <label class="control-label" >Content</label>
+                                                <div class="controls control-custom">{{ entity.content|raw }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Status</label>
+                                                <div class="controls control-custom">{% if entity.status == 1 %} Publish {% elseif entity.status == 2 %} Pending {% elseif entity.status == 3 %} Expired {% endif %}</div>
+                                            </div>
+                                        </div>
+                                        {% if(entity.webPath) %}
+                                            <div class="span11">
+                                                <div class="control-group">
+                                                    <div class="controls control-custom">
+                                                        <div class="fileupload-new thumbnail">
+                                                            {% if(entity.webPath) %}
+                                                                <img class="fileupload-preview thumbnail" alt="" src="{{ image(entity.webPath).resize(100,100) }}">
+                                                            {% else %}
+                                                                <img alt="" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-actions portlet box green disabled">
+                                            <div class="portlet-title">
+                                                <div class="caption"><i class="icon-reorder"></i>Additional Field & Value </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix">&nbsp;</div>
+                                        {% if(entity.productCustomAttributes|length > 0) %}
+                                        {% for attribute in entity.productCustomAttributes %}
+                                            <div class="span11">
+                                                <div class="control-group">
+                                                    <label class="control-label" >{{ attribute.name }}</label>
+                                                    <div class="controls control-custom">{{ attribute.content }}</div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                        {% endif %}
+                                        <div class="form-actions portlet box green disabled">
+                                            <div class="portlet-title">
+                                                <div class="caption"><i class="icon-reorder"></i>Product Gallery</div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix">&nbsp;</div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" ></label>
+                                                {% if(entity.productGalleries) %}
+                                                    {% for photo in entity.productGalleries %}
+                                                        <div class="span2">
+                                                            <a href="{{ image(photo.webPath) }}" target="_blank"> <img src="{{ image(photo.webPath).resize(100,100) }}" /></a>
+                                                        </div>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

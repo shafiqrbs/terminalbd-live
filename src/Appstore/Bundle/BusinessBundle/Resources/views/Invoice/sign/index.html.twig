@@ -1,0 +1,163 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Customer Invoice
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('business_invoice') }}"> Invoice</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i> {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Customer Invoice</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn yellow" href="{{ path('business_invoice_empty_delete') }}"><i class="icon-trash"></i> Empty Delete</a>
+                                <a class="btn red" href="{{ path('business_invoice_new') }}"><i class="icon-plus-sign"></i> New Invoice</a>
+                                {% if (app.user.granted("ROLE_DOMAIN_ACCOUNTING_SALES"))  %}
+                                    <a href="{{ path('account_sales_new') }}" class="btn blue"><i class="icon-money"></i> Due Receive</a>
+                                    <a href="{{ path('report_customer_outstanding') }}" class="btn purple"><i class="icon-th-list"></i> Outstanding</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid" >
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid" style="margin-bottom: 10px">
+                                        <div class="span3">
+                                            <input class="m-wrap span12 select2Customer search-input" name="mobile" id="mobile" value="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% else %}Customer mobile{% endif %}">
+                                        </div>
+                                        <div class="span3">
+                                            <div class="input-icon left">
+                                                <i class="icon-calendar"></i>
+                                                <input class="m-wrap span12 search-input date-picker" name="createdStart" id="createdStart" value="{% if searchForm.createdStart is defined %}{{ searchForm.createdStart }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.createdStart is defined %}{{ searchForm.createdStart }}{% else %}Start date{% endif %}" >
+                                            </div>
+                                        </div>
+
+                                        <div class="span3">
+                                            <div class="input-icon left">
+                                                <i class="icon-calendar"></i>
+                                                <input class="m-wrap span12 search-input date-picker" name="createdEnd" id="createdEnd" value="{% if searchForm.createdEnd is defined %}{{ searchForm.createdEnd }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.createdEnd is defined %}{{ searchForm.createdEnd }}{% else %}End date{% endif %}">
+                                            </div>
+                                        </div>
+                                        <div class="span3">
+                                            <div class="controls">
+                                                <div class="input-append span12">
+                                                    <select name="process" id="process" class="m-wrap span5">
+                                                        <option value="" >--Process--</option>
+                                                        {% set processes =['Created','Hold','Delivered','Done','Quotation','Canceled'] %}
+                                                        {% for pro in processes %}
+                                                            <option value="{{ pro }}" {% if searchForm.process is defined and searchForm.process == pro %} selected="selected" {% endif %} >{{ pro }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <input type="text" id="invoice" name="invoice"  class="m-wrap span5" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% else %}Invoice no{% endif %} ">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Invoice</th>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Due</th>
+                                    <th class="numeric" >Process</th>
+                                    <th class="numeric" >Revised</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in entities %}
+                                    <tr id="delete-{{ entity.id }}">
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.invoice }}</td>
+                                        <td class="numeric" >{% if entity.customer is defined and entity.customer is not empty %}{{ entity.customer.name }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.customer is defined and entity.customer is not empty %}{{ entity.customer.mobile }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.total }}</td>
+                                        <td class="numeric" >{{ entity.received }}</td>
+                                        <td class="numeric" >{{ entity.due }}</td>
+                                        <td class="numeric" > {{ entity.process }}</td>
+                                        <td class="numeric" >
+                                            {% if entity.isReversed == 1 %}
+                                                <a href="{{ path('business_reverse_show', { 'id': entity.id }) }}" class="btn black mini"><i class="icon-retweet"></i> Revised</a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric" >
+                                            <div class="btn-group">
+                                                {% set processIntArr = ['Hold','Created','Revised','Quotation','In-progress'] %}
+                                                {% set processDone = ['Done','Delivered','Chalan','Quotation'] %}
+                                                {% if entity.process in  processIntArr %}
+                                                <a href="{{ path('business_invoice_edit', { 'id': entity.id }) }}" class="btn purple mini" ><i class="icon-pencil"></i> Edit</a>
+                                                <a  data-id="{{ entity.id }}" data-url="{{ path('business_invoice_delete', { 'id': entity.id }) }}" href="javascript:" class="btn red mini delete tooltips" data-trigger = "hover" data-original-title = "Delete" ><i class="icon-trash"></i> Delete</a>
+                                                {% endif %}
+                                                {% if entity.process in  processDone %}
+                                                <a target="_blank"  href="{{ path('business_invoice_print',{'id':entity.id}) }}"  class="btn green mini"><i class="icon-print"></i> Print</a>
+                                                <a href="{{ path('business_invoice_show', { 'id': entity.id }) }}" class="btn blue mini"><i class="icon-eye-open"></i> View</a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BusinessBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

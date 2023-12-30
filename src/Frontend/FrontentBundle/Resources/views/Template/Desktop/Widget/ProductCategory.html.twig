@@ -1,0 +1,51 @@
+<div class="menu">
+    <div class="cd-dropdown-wrapper">
+        <a class="cd-dropdown-trigger" href="#0">Store Categories</a>
+        <nav class="cd-dropdown">
+            <a href="#0" class="cd-close">Close</a>
+            <ul class="cd-dropdown-content js-equal-height">
+                <li><a href="offers.html">Today's Offers</a></li>
+                {% if globalOption.inventoryConfig.itemTypeGrouping is defined and globalOption.inventoryConfig.itemTypeGrouping is not empty  %}
+                {% for category in globalOption.inventoryConfig.itemTypeGrouping.categories %}
+                <li class="has-children">
+                    <a href="#">{{ category.name }}</a>
+                    {% if category.children is defined and  category.children is not empty %}
+                    <ul class="cd-secondary-dropdown is-hidden js-equal-height"  style="background-color: #ffffff; overflow: hidden" >
+                        <li class="go-back"><a href="#">Menu</a></li>
+                        <li class="see-all"><a href="{{ path('webservice_product',{'subdomain': globalOption.subDomain,'category':category.slug }) }}">All {{ category.name }}</a></li>
+                        {% if category.children is defined and  category.children is not empty %}
+                        {% for one in  category.children %}
+                        <li {% if one.children is defined and one.children is not empty %} class="has-children" {% endif %} >
+                            <a href="{{ path('webservice_product',{'subdomain': globalOption.subDomain,'category':one.slug }) }}">{{ one.name }}</a>
+                            {% if one.children is defined and one.children is not empty %}
+                            <ul class="is-hidden">
+                                <li class="go-back"><a href="javascript:">All {{ category.name }}</a></li>
+                                {% for two in one.children %}
+
+                                <li {% if two.children is defined and two.children is not empty %} class="has-children" {% endif %}>
+                                    <a href="{{ path('webservice_product',{'subdomain': globalOption.subDomain,'category':two.slug }) }}">{{ two.name }}</a>
+                                    {% if two.children is defined and two.children is not empty %}
+                                    <ul class="is-hidden">
+                                        <li class="go-back"><a href="javascript:"> </a></li>
+                                        {% for three in two.children %}
+                                        <li><a href="{{ path('webservice_product',{'subdomain': globalOption.subDomain,'category':three.slug }) }}">{{ three.name }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                        {% endif %}
+                    </ul> <!-- .cd-secondary-dropdown -->
+                    {% endif %}
+                </li> <!-- .has-children -->
+                {% endfor %}
+                {% endif %}
+                <li><a href="sitemap.html">Full Site Directory </a></li>
+            </ul> <!-- .cd-dropdown-content -->
+        </nav> <!-- .cd-dropdown -->
+    </div> <!-- .cd-dropdown-wrapper -->
+</div>

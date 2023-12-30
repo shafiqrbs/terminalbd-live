@@ -1,0 +1,86 @@
+<div class="row print-header">
+    <div class="col-md-4"></div>
+    <div class="col-md-4 text-center">
+        <p><strong style="font-size:18px">{{ option.name }}</strong></p>
+        <p><strong>Name of Report: Invoice & Collection with Commission</strong></p>
+        <p><strong>Start/End Date: {% if searchForm.startDate is defined %}{{ searchForm.startDate|date('d-m-Y') }}{% endif %} To {% if searchForm.endDate is defined %}{{ searchForm.endDate|date('d-m-Y') }}{% endif %}</strong></p>
+    </div>
+    <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}</div>
+</div>
+<div class="row">
+    <table class="table">
+        <thead class="flip-content ">
+        <tr class="head-green">
+            <th class="numeric" >Created</th>
+            <th class="numeric" >Close Date</th>
+            <th class="numeric" >Invoice No</th>
+            <th class="numeric" >Name</th>
+            <th class="numeric" >Referred</th>
+            <th class="numeric" >Doctor</th>
+            <th class="numeric" >Sub-Total</th>
+            <th class="numeric" >Discount</th>
+            <th class="numeric" >Total</th>
+            {% for com in commissionSummary %}
+                <th class="numeric" colspan="2" >{{ com.commissionName }}</th>
+            {% endfor %}
+            <th class="numeric" >Commission</th>
+            <th class="numeric" >Balance</th>
+            <th class="numeric" >Report</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set grandSubTotal = 0 %}
+        {% set grandTotal = 0 %}
+        {% set grandCommission = 0 %}
+        {% set grandDiscount = 0 %}
+        {% for entity in entities %}
+            {% set  grandSubTotal = grandSubTotal + entity.subTotal %}
+            {% set  grandTotal = grandTotal + entity.total %}
+            {% set  grandDiscount = grandDiscount + entity.discount %}
+            {% set  grandCommission = grandCommission + entity.commission %}
+            <tr id="delete-{{ entity.id }}">
+                <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                <td class="numeric" >{{ entity.invoice }}</td>
+                <td class="numeric" >{% if entity.customer is defined and entity.customer is not empty %}{{ entity.customer.name }}{% endif %}</td>
+                <td class="numeric" >{% if entity.referredDoctor is not empty %}{{ entity.referredDoctor.name }}{% endif %}</td>
+                <td class="numeric" >{% if entity.assignDoctor is not empty %}{{ entity.assignDoctor.name }}{% endif %}</td>
+                <td class="numeric" >{{ entity.subTotal }}</td>
+                <td class="numeric" >{{ entity.discount }}</td>
+                <td class="numeric" >{{ entity.total }}</td>
+                {% for com in commissionSummary %}
+                    {% set commissionId = entity.id~'-'~com.comId %}
+                    <td class="numeric" >
+                        {% if commissions[commissionId] is defined and commissions[commissionId] is not empty  %}
+                            {{ commissions[commissionId].referredName }}
+                        {% endif %}
+                    </td>
+                    <td class="numeric" >
+                        {% if commissions[commissionId] is defined and commissions[commissionId] is not empty  %}
+                            {{ commissions[commissionId].payment }}
+                        {% endif %}
+                    </td>
+                {% endfor %}
+                <td class="numeric" >{{ entity.commission }}</td>
+                <td class="numeric" >{{ (entity.total - entity.commission)|number_format }}</td>
+                <td class="numeric" > {{ entity.process }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="6"><span class="pull-right">Grand Total</span></th>
+            <td>{{ grandSubTotal }}</td>
+            <td>{{ grandDiscount }}</td>
+            <td>{{ grandTotal }}</td>
+            {% for com in commissionSummary %}
+                <th>{{ com.commissionName }}</th>
+                <th>{{ com.payment }}</th>
+            {% endfor %}
+            <td>{{ grandCommission }}</td>
+            <td>{{ grandTotal - grandCommission }}</td>
+            <td></td>
+        </tr>
+        </tfoot>
+    </table>
+</div>

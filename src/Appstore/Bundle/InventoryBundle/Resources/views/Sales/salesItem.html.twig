@@ -1,0 +1,145 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Sales Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_sales') }}">Sales</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Sales Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                 <div class="portlet box green tabbable">
+
+                        <div class="portlet-title">
+                            <div class="caption"><i class="icon-reorder"></i>Sales lists</div>
+                            <div class="actions">
+                                <div class="btn-group">
+                                    <a class="btn blue" id="searchToggole" href="javascript:"><i class="icon-search"></i>&nbsp;Product Search</a>
+                                    <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                        Tools&nbsp;<i class="icon-tasks"></i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a href="{{ path('inventory_sales_new') }}"><i class="icon-plus-sign"></i>&nbsp;POS</a></li>
+                                        <li><a href="{{ path('inventory_sales') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                        <li><a href="{{ path('inventory_sales_empty_delete') }}"><i class="icon-th-list"></i>&nbsp;Delete Empty Invoice</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="portlet-body">
+                            <div class="portlet-body flip-scroll">
+                                {% include('flash-message.html.twig')  %}
+                                <div id="search-product">
+                                    <div class="row-fluid" style="margin-bottom: 5px">
+                                        <form class="search-form" >
+                                            <input type="text" id="item" name="item"  class="span12 select2Product" value="{% if searchForm.item is defined %}{{ searchForm.item }}{% endif %}"  autocomplete="off" placeholder="Enter item name ">
+                                        </form>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <table class="table table-bordered table-striped table-condensed flip-conten" id="stockItemDetails">
+                                            <thead class="flip-content ">
+                                            <tr class="head-green">
+                                                <th class="numeric" ><span class="btn black mini"><i class="icon-barcode"></i></span></th>
+                                                <th class="numeric" >SKU/SKU Slug</th>
+                                                <th class="numeric" >Received/Memo</th>
+                                                <th class="numeric" >P. Qnt</th>
+                                                <th class="numeric" >R. Qnt</th>
+                                                <th class="numeric" >Purchase price</th>
+                                                <th class="numeric" >Sales price</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="itemDetails"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <form class="search-form" action="" method="get" name="itemSearch">
+
+                                    <div class="row-fluid">
+                                        <div class="span10">
+                                            <input type="text" id="item" name="item"  class="span12 m-wrap select2Item" value="{% if searchForm.toUser is defined %}{{ searchForm.toUser }}{% endif %}"  autocomplete="off" placeholder="Enter item name">
+                                        </div>
+                                        <div class="span2">
+                                            <div class="controls">
+                                                <div class="input-append span10">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+                                    <thead class="flip-content ">
+                                    <tr class="head-green">
+                                        <td>&nbsp;&nbsp;<i class="icon-reorder"></i></td>
+                                        <th class="numeric" >Item</th>
+                                        <th class="numeric" >SKU</th>
+                                        <th class="numeric" >Purchase</th>
+                                        <th class="numeric" >Remaining</th>
+                                        <th class="numeric" >Ongoing</th>
+                                        <th class="numeric" >Actual</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for entity in entities %}
+                                        <tr>
+                                            <td class="numeric" >{{ loop.index }}</td>
+                                            <td class="numeric" >{{ entity.product }}</td>
+                                            <td class="numeric" >{{ entity.sku }}</td>
+                                            <td class="numeric" >{{ entity.purchaseQuantity }}</td>
+                                            <td class="numeric" >{{ (entity.purchaseQuantity + entity.salesQuantityReturn + entity.onlineOrderQuantityReturn)  - ( entity.purchaseQuantityReturn + entity.salesQuantity + entity.damageQuantity + entity.onlineOrderQuantity) }}</td>
+                                            <td class="numeric" >{{ entity.salesOngoingQuantity }}</td>
+                                            <td class="numeric" >{{ ((entity.purchaseQuantity + entity.salesQuantityReturn + entity.onlineOrderQuantityReturn)  - ( entity.purchaseQuantityReturn + entity.salesQuantity + entity.damageQuantity + entity.onlineOrderQuantity) - entity.salesOngoingQuantity) }}</td>
+                                         </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <div class="pagination pull-center"  >
+                                    {{ knp_pagination_render(entities) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $( "#search-product" ).hide();
+    $( "#searchToggole" ).click(function() {
+    $( "#search-product" ).slideToggle( "slow" );
+    });
+    ApproveProcess();
+{% endblock %}

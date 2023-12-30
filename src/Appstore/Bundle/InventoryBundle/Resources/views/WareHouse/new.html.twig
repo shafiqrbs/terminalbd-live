@@ -1,0 +1,137 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN inventory_warehouse HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="inventory_warehouse-title">
+                    Warehouse Components
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_warehouse') }}">Warehouse</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Warehouse Components</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END inventory_warehouse HEADER-->
+        <!-- BEGIN inventory_warehouse CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Warehouse Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('inventory_warehouse_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('inventory_warehouse') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                    {% if(entity.id > 0 ) %}
+                                        <li><a href="{{ path('inventory_warehouse_edit',{'id':entity.id}) }}"><i class="icon-edit"></i>&nbsp;Edit</a></li>
+                                        <li><a href="{{ path('inventory_warehouse_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;Show</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+
+                            <div class="row-fluid">
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Parent</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.parent) }}
+                                            {{ form_errors(form.parent) }}
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Name</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.name) }}
+                                                {{ form_errors(form.name) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                Is warehouse
+                                                {{ form_widget(form.isWareHouse) }}
+                                                {{ form_errors(form.isWareHouse) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                Status
+                                                {{ form_widget(form.status) }}
+                                                {{ form_errors(form.status) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="clearfix"><br/></div>
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-center">
+                                    <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                    <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                                    {% if(entity.id > 0 ) %}
+                                        <a href="{{ path('inventory_warehouse_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

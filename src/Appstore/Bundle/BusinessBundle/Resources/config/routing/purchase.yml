@@ -1,0 +1,109 @@
+business_purchase:
+    path:     /
+    defaults: { _controller: "BusinessBundle:Purchase:index" }
+
+business_purchase_item:
+    path:     /purchase-item
+    defaults: { _controller: "BusinessBundle:Purchase:purchaseItem" }
+
+business_purchase_opening:
+    path:     /opening
+    defaults: { _controller: "BusinessBundle:Purchase:vendorOpening" }
+
+business_purchase_opening_create:
+    path:     /opening/create
+    defaults: { _controller: "BusinessBundle:Purchase:openingCreate" }
+    methods:  [POST, PUT]
+
+business_purchase_particular_barcode:
+    path:     /purchase-particular-barcode
+    defaults: { _controller: "BusinessBundle:Purchase:addBarcodeProduct" }
+    options:
+        expose: true
+
+business_purchase_show:
+    path:     /{id}/show
+    defaults: { _controller: "BusinessBundle:Purchase:show" }
+
+business_purchase_new:
+    path:     /new
+    defaults: { _controller: "BusinessBundle:Purchase:new" }
+
+business_purchase_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "BusinessBundle:Purchase:edit" }
+
+business_purchase_update:
+    path:     /{id}/update
+    defaults: { _controller: "BusinessBundle:Purchase:update" }
+    methods:  [POST, PUT]
+
+business_purchase_status:
+    path:     /{id}/status
+    defaults: { _controller: "BusinessBundle:Purchase:edit" }
+
+business_purchase_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "BusinessBundle:Purchase:delete" }
+
+business_purchase_particular_search:
+    path:     /{id}/particular-search
+    defaults: { _controller: "BusinessBundle:Purchase:particularSearch" }
+
+business_purchase_particular_add:
+    path:     /{invoice}/particular-add
+    defaults: { _controller: "BusinessBundle:Purchase:addParticular" }
+    methods:  POST
+    options:
+            expose: true
+
+business_purchase_item_update:
+    path:     /purchase-item-update
+    defaults: { _controller: "BusinessBundle:Purchase:updateItem" }
+    methods:  POST
+    options:
+            expose: true
+
+business_purchase_particular_distribution:
+    path:     /{invoice}/particular-distribution
+    defaults: { _controller: "BusinessBundle:Purchase:insertPurchaseDistributionItems" }
+    methods:  POST
+    options:
+            expose: true
+
+business_purchase_particular_sawmill:
+    path:     /{invoice}/particular-sawmill
+    defaults: { _controller: "BusinessBundle:Purchase:sawmillParticular" }
+    methods:  POST
+    options:
+            expose: true
+
+business_purchase_particular_sign:
+    path:     /{invoice}/particular-digital-sign
+    defaults: { _controller: "BusinessBundle:Purchase:signParticular" }
+    methods:  POST
+    options:
+            expose: true
+
+business_purchase_discount_update:
+    path:     /purchase/dicount-update
+    defaults: { _controller: "BusinessBundle:Purchase:invoiceDiscountUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+business_purchase_approved:
+    path:     /{id}/invoice-approved
+    defaults: { _controller: "BusinessBundle:Purchase:approved" }
+
+business_purchase_item_approve:
+    path:     /{id}/item-approve
+    defaults: { _controller: "BusinessBundle:Purchase:itemApprove" }
+
+business_purchase_particular_delete:
+    path:     /{invoice}/{id}/particular-delete
+    defaults: { _controller: "BusinessBundle:Purchase:invoiceParticularDelete" }
+
+business_purchase_print_invoice:
+    path:     /{id}/print
+    defaults: { _controller: "BusinessBundle:Purchase:print" }

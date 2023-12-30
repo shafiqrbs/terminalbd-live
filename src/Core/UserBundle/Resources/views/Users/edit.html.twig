@@ -1,0 +1,191 @@
+{% extends "base.html.twig" %}
+{% block title %}{{ parent() }} : Edit User{% endblock %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+
+    {% stylesheets  filter='cssrewrite'
+    'assets/plugins/select2/select2_metro.css'
+    'assets/plugins/bootstrap-fileupload/bootstrap-fileupload.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+
+{% endblock stylesheets %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Users
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-user"></i>
+                    <a href="/users" style="color: #333 !important;">Users</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li><a href="#" style="color: #333 !important;">Form</a></li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="modal-dialog bodyWidth">
+    <div class="modal-content backgroundWhite">
+        <div class="modal-header backGroundLightGrey">
+            <h4 class="modal-title bold text-center"> User Edit Form</h4>
+        </div>
+
+        {{ form_start(form, {'method': 'POST', 'attr': {'id': 'form-create-user', 'class': 'form-horizontal'}}) }}
+        <div class="alert alert-error {% if not form.vars.errors|length %} hide {% endif %}">
+            <button class="close" data-dismiss="alert"></button>
+            You have some form errors. Please check below.
+            {{ form_errors(form) }}
+        </div>
+
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="{{ form.name.vars.id }}" class="col-md-4 control-label {{ form.name.vars.required ? 'required' : '' }}">
+                            Full Name <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6">
+                            <div class="input-icon right">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.name, {'attr': {'class': 'form-control span6 m-wrap', 'data-required': '1' }}) }}
+                                <span class="help-inline">{{ form_errors(form.name) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.email.vars.id }}" class="col-md-4 control-label {{ form.email.vars.required ? 'required' : '' }}">
+                            Email Address <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6">
+                            <div class="input-icon right">
+                                <span class="input-group-btn"></span>
+                                <i class="icon-envelope"></i>
+                                {{ form_widget(form.email, {'attr': {'class': 'form-control span6 m-wrap', 'data-required': '1' }}) }}
+                                <span class="help-inline">{{ form_errors(form.email) }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.profile.mobile.vars.id }}" class="col-md-4 control-label">
+                            Mobile
+                        </label>
+                        <div class="col-md-6">
+                            <div class="input-icon right">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.profile.mobile, {'attr': { 'class': 'form-control span6 m-wrap' } }) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.profile.designation.vars.id }}" class="col-md-4 control-label">
+                            designation
+                        </label>
+                        <div class="col-md-6">
+                            <div class="input-icon right">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.profile.designation, {'attr': { 'class': 'form-control span6 m-wrap' } }) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Picture</label>
+                        <div class="col-md-7">
+                            <div class="fileupload fileupload-new" data-provides="fileupload">
+                                <div class="input-group">
+													<span class="input-group-btn">
+													<span class="uneditable-input">
+													<i class="fa fa-file fileupload-exists"></i>
+													<span class="fileupload-preview"></span>
+													</span>
+													</span>
+													<span class="btn default btn-file">
+													<span class="fileupload-new"><i class="fa fa-paper-clip"></i> Select file</span>
+													<span class="fileupload-exists"><i class="fa fa-undo"></i> Change</span>
+                                                        {{ form_widget(form.profile.file, { 'attr': {'class': 'default'} }) }}
+													</span>
+                                    <a href="form_component.html#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.groups.vars.id }}" class="col-md-4 control-label required">
+                            User Group <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6">
+                            <div class="input-icon right">
+                                <div class="controls">
+                                    {{ form_widget(form.groups, {'attr': {
+                                    'class': 'form-control span6 m-wrap',
+                                    'data-placeholder': 'Select User Group',
+                                    'data-required': '1' }}) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" style="background: lightgrey;">
+            <div class="btn-group">
+                <a href="/users" class="btn" style="width: 100px;background: #0353D6; color: white !important;">
+                    <i class="fa fa-ban"> Cancel</i>
+                </a>
+            </div>
+            <div class="btn-group">
+                <div class="btn-group">
+                    <input type="hidden" id="user_id" name="user_id" value="{{ user_id }}">
+                    <button type="submit" class="btn" style="width: 100px;background: #0353D6; color: white !important;">Update</button>
+                </div>
+            </div>
+        </div>
+
+        {{ form_end(form) }}
+        <!-- END FORM-->
+    </div>
+    </div>
+{% endblock body %}
+
+{% block javascripts %}
+{{ parent() }}
+{% javascripts
+    'assets/plugins/select2/select2.min.js'
+    'assets/plugins/bootstrap-fileupload/bootstrap-fileupload.js'
+    'assets/plugins/jquery-validation/dist/jquery.validate.min.js'
+    'assets/plugins/jquery-validation/dist/additional-methods.min.js'
+    "assets/plugins/jquery-multi-select/js/jquery.multi-select.js"
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endblock javascripts %}
+
+{% block documentReady %}
+    {{ parent() }}
+    FormValidation.init();
+    $("select[multiple=multiple]").multiSelect();
+{% endblock documentReady %}

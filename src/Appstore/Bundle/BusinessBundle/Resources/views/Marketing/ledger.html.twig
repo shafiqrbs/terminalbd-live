@@ -1,0 +1,132 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Business Store Ledger
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                     <li><a href="#">Business Store Ledger</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Business Store Ledger</div>
+                        <div class="actions">
+                            <a href="{{ path('business_store_new') }}" class=" btn red"><i class="icon-plus"></i> Add Store</a>
+                            <a  href="{{ path('business_store_ledger_new') }}" class=" btn blue"><i class="icon-money"></i> Receive</a>
+                            <a  href="{{ path('business_store_ledger') }}" class=" btn purple"><i class="icon-list-alt"></i> Ledger</a>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="clearfix"><br/></div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid box green">
+                            <div class="span12" id="particular-table">
+                                <div class="row-fluid" >
+                                    <form class="search-form" action="" method="get" name="itemSearch">
+                                        <div class="row-fluid" style="margin-bottom: 10px">
+                                            <div class="span3">
+                                                <select name="marketing" id="marketing" class="m-wrap span12 select2">
+                                                    <option value="" >--Marketing SR--</option>
+                                                    {% for store in marketings %}
+                                                        <option value="{{ store.id }}" {% if searchForm.store is defined and searchForm.store == store.id %} selected="selected" {% endif %} >{{ store.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="span3">
+                                                <div class="input-icon left">
+                                                    <i class="icon-calendar"></i>
+                                                    <input class="m-wrap span12 search-input date-picker" name="createdStart" id="createdStart" value="{% if searchForm.createdStart is defined %}{{ searchForm.createdStart }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.createdStart is defined %}{{ searchForm.createdStart }}{% else %}Start date{% endif %}" >
+                                                </div>
+                                            </div>
+                                            <div class="span3">
+                                                <div class="controls">
+                                                    <div class="input-append span12">
+                                                        <input class="m-wrap span8 search-input date-picker" name="createdEnd" id="createdEnd" value="{% if searchForm.createdEnd is defined %}{{ searchForm.createdEnd }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.createdEnd is defined %}{{ searchForm.createdEnd }}{% else %}End date{% endif %}">
+                                                        <div class="btn-group">
+                                                            <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </form>
+                                </div>
+                                <table class="table table-bordered table-striped table-condensed table-fixed">
+                                    <thead class="flip-content ">
+                                    <tr class="head-blue">
+                                        <th>Created</th>
+                                        <th>Store Name</th>
+                                        <th>DSR</th>
+                                        <th>Area</th>
+                                        <th>Invoice</th>
+                                        <th>Mode</th>
+                                        <th>Debit</th>
+                                        <th>Credit</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="invoiceParticulars">
+                                    {% for entity in entities %}
+                                        <tr id="remove-{{ entity.id }}">
+                                            <td class="">{{ entity.created|date('d-m-Y h:i A') }}</td>
+                                            <td class="">{% if entity.store is defined and entity.store is not empty %}{{ entity.store.name }}{% endif %}</td>
+                                            <td class="">{% if entity.store.customer is defined and entity.store.customer is not empty %}{{ entity.store.customer.name }}{% endif %}</td>
+                                            <td class="">{% if entity.store.area is defined and entity.store.area is not empty %}{{ entity.store.area.name }}{% endif %}</td>
+                                            <td class="">{% if entity.invoice is not empty %}{{ entity.invoice.invoice }}{% endif %}</td>
+                                            <td class="">{{ entity.transactionType }}</td>
+                                            <td class="">{{ entity.debit|number_format(2) }}</td>
+                                            <td class="">{{ entity.credit|number_format(2) }}</td>
+                                            <td class="">
+                                                {% if( entity.status == 0 and entity.invoice is empty) %}
+                                                    <a class="btn mini blue btn-action confirm" href="javascript:" data-url="{{ path('business_store_ledger_status', { 'id': entity.id}) }}"><i class="icon-ok"></i> Approve</a>
+                                                    <a  href="javascript:" data-url="{{ path('business_store_ledger_delete', { 'id': entity.id }) }}" class="btn red mini delete" ><i class="icon-trash"></i></a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+        '@BusinessBundle/Resources/public/js/approveProcess.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

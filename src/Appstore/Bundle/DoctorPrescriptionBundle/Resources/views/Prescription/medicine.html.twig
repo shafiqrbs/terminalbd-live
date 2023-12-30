@@ -1,0 +1,17 @@
+{% set date ='' %}
+{% for medicine in entity.medicineDoctorPrescribes %}
+    {% if medicine.created|date('d-m-Y') != date %}
+        {% set date = medicine.created|date('d-m-Y') %}
+        <tr><th colspan="6">{{ medicine.created|date('d-m-Y') }}</th></tr>
+    {% endif %}
+    <tr id="medicine-{{ medicine.id }}">
+        <td  class="numeric">{{ loop.index }}.</td>
+        <td  class="numeric">{% if medicine.medicine is not empty %}{{ medicine.medicine.medicineForm }}. {{ medicine.medicine.name }} {{ medicine.medicine.strength }}{% else %} {{ medicine.medicineName }}{% endif %}</td>
+        <td class="numeric">{{ medicine.medicineQuantity }}</td>
+        <td class="numeric">{{ medicine.medicineDose }} - {{ medicine.medicineDoseTime }}</td>
+        <td class="numeric">{{ medicine.medicineDuration }} {{ medicine.medicineDurationType }}</td>
+        <td class="numeric">
+            <a  href="javascript:" data-url="{{ path('dps_prescription_medicine_delete',{'id':medicine.id}) }}" data-id="{{ medicine.id }}" id="{{ medicine.id }}"  class="btn red mini deleteMedicine"> <i class="icon-trash"></i></a>
+        </td>
+    </tr>
+{% endfor %}

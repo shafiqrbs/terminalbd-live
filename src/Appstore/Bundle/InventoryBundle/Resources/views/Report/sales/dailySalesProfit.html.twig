@@ -1,0 +1,142 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Daily  Base Sales & Profit/Loss Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> Daily  Base Sales & Profit/Loss Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i> Daily  Base Sales & Profit/Loss Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% set month = searchForm.month is defined ? searchForm.month :"now"|date("F") %}
+                                {% set year = searchForm.year is defined ? searchForm.year :"now"|date("Y") %}
+                                <a class="btn purple" target="_blank" href="{{ path('inventory_report_daily_sales_profit',{'download':'pdf','month':month,year:year}) }}" >
+                                    <i class=" icon-download"></i>&nbsp;Download PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span4"></div>
+                                    <div class="span4">
+                                        {%  set months = ['January','February','March','April','May','June','July','August','September','October','November','December'] %}
+                                        <select class="span12 m-wrap" name="month" id="month">
+                                            <option value="">--- Select Month---</option>
+                                            {% for month in months %}
+                                                <option {% if searchForm.month is defined and searchForm.month == month %}selected="selected"{% endif %} value="{{ month }}">{{ month }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                {%  set years = ['2018','2019','2020','2021','2022','2023','2024','2025'] %}
+                                                <select class="span12 m-wrap" name="year" id="year">
+                                                    <option value="">--- Select Year---</option>
+                                                    {% for year in years %}
+                                                        <option {% if searchForm.year is defined and searchForm.year == year %}selected="selected"{% endif %} value="{{ year }}">{{ year }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th>Date</th>
+                                <th>Sub-Total</th>
+                                <th>Total</th>
+                                <th>Purchase Price</th>
+                                <th>Receive</th>
+                                <th>Expense</th>
+                                <th>Loss/Profit</th>
+                            </tr>
+
+                            </thead>
+                            <tbody id="sales">
+                            {% set fullDate =  date(year~'-'~month~'-1')|date('Y-m-d') %}
+                            {% set month =  date(year~'-'~month~'-1')|date('Y-m-') %}
+                            {% set max =  fullDate|date("t") %}
+                            {% set salesTotal       = 0 %}
+                            {% set purchaseTotal    = 0 %}
+                            {% set receiveTotal     = 0 %}
+                            {% set expenseTotal     = 0 %}
+                            {% set receiveTotal     = 0 %}
+                            {% set profitTotal      = 0 %}
+                            {% for i in 1..max %}
+                                {% set profit = 0 %}
+                                {% set blackO           = date(month~i)|date('d-m-Y') %}
+                                {% set salesPrice       = monthlySales[blackO] is defined and monthlySales[blackO] is not empty ? monthlySales[blackO].total : 0  %}
+                                {% set receive       = monthlySales[blackO] is defined and monthlySales[blackO] is not empty ? monthlySales[blackO].receive : 0  %}
+                                {% set purchasePrice    = monthlySalesPurchase[blackO] is defined and monthlySalesPurchase[blackO] is not empty ? monthlySalesPurchase[blackO].purchasePrice : 0  %}
+                                {% set expenditure      = expenses[blackO] is defined and expenses[blackO] is not empty ? expenses[blackO].payment : 0  %}
+                                {% set profit           = (salesPrice - expenditure - purchasePrice)|default(0)|number_format  %}
+                                {% set salesTotal       = (salesTotal + salesPrice)  %}
+                                {% set purchaseTotal    = (purchaseTotal + purchasePrice)  %}
+                                {% set expenseTotal     = (expenseTotal + expenditure)  %}
+                                {% set receiveTotal     = (receiveTotal + receive)  %}
+                                {% set profitTotal      = (profitTotal +  salesPrice - expenditure - purchasePrice) %}
+                                <tr>
+                                <td>{{ blackO }}</td>
+                                <td>{{ monthlySales[blackO] is defined and monthlySales[blackO] is not empty ? monthlySales[blackO].subTotal|number_format : '' }}</td>
+                                <td>{{ monthlySales[blackO] is defined and monthlySales[blackO] is not empty ? monthlySales[blackO].total|number_format : '' }}</td>
+                                <td>{{ monthlySalesPurchase[blackO] is defined and monthlySalesPurchase[blackO] is not empty ? monthlySalesPurchase[blackO].purchasePrice|number_format : '' }}</td>
+                                <td>{{ monthlySales[blackO] is defined and monthlySales[blackO] is not empty ? monthlySales[blackO].receive|number_format : '' }}</td>
+                                <td>{{ expenses[blackO] is defined and expenses[blackO] is not empty ? expenses[blackO].payment|number_format : '' }}</td>
+                                <td>{{ profit }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot><tr><th colspan="2">Grand Total</th><th>{{ salesTotal|number_format }}</th><th>{{ purchaseTotal|number_format }}</th><th>{{ receiveTotal|number_format }}</th><th>{{ expenseTotal|number_format }}</th><th>{{ profitTotal|number_format }}</th></tr></tfoot>
+                         </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}

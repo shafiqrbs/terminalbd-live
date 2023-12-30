@@ -1,0 +1,228 @@
+<div class="payment-info">
+    <div class="clearfix"></div>
+    <table class="table table-bordered">
+        <thead class="flip-content ">
+        <tr class="head-royal-blue">
+            <th class="numeric">&nbsp;</th>
+            <th class="numeric span8 product-title-name">Product</th>
+            <th class="numeric product-title">Price</th>
+            <td class="numeric span2">&nbsp;</td>
+            <th class="numeric product-title">Total</th>
+            <th class="numeric"></th>
+        </tr>
+        </thead>
+        <tbody id="invoiceParticulars">
+        {% if entity.invoiceItems is not empty  %}
+            {% for item in entity.invoiceItems %}
+                <tr id="remove-{{ item.id }}">
+                    <td><input type="checkbox" class="checkbox"  id="isPrint-{{ item.id }}" name="isPrint[]" value="{{ item.id }}" {% if item.isPrint == 1 %} checked="checked" {% endif %}></td>
+                    <td class="numeric product-title">{{ item.particular.name }}</td>
+                    <td class="numeric">{{ item.salesPrice }}</td>
+                    <td class="">
+                        <div class="input-append" style="margin-bottom: 0!important;">
+                                                                <span class="input-group-btn">
+              <a href="javascript:" data-action="{{ path('restaurant_tableinvoice_product_update',{'product':item.id}) }}" class="btn green btn-number-pos mini" data-type="minus" data-id="{{ item.id }}"  data-text="{{ item.id }}" data-title="{{ item.salesPrice }}"  data-field="quantity"> <span class="fa fa-minus"></span> </a>
+                                                                   <input type="text" class="form-control inline-m-wrap updateProduct btn-qnt-particular" data-id="{{ item.id }}"  id="quantity-{{ item.id }}" name="quantity-{{ item.id }}" data-title="{{ item.salesPrice }}" value="{{ item.quantity }}" data-action="{{ path('restaurant_tableinvoice_product_update',{'product':item.particular.id}) }}" min="1" max="100">
+                                                                  <a href="javascript:" data-action="{{ path('restaurant_tableinvoice_product_update',{'product':item.id}) }}" class="btn green btn-number-pos mini"  data-type="plus" data-id="{{ item.id }}" data-title="{{ item.salesPrice }}"  data-text="{{ item.id }}" data-field="quantity"> <span class="fa fa-plus"></span></a></span>
+                        </div>
+                    </td>
+                    <td class="numeric product-title"><strong id="subTotal-{{ item.id }}">{{ item.subTotal|number_format(2) }}</strong></td>
+                    <td class="numeric">
+                        <a id="{{ item.id }}" data-id="{{ item.id }}" data-url="{{ path('restaurant_tableinvoice_particular_delete',{'invoice':entity.id,'id':item.id}) }}" href="javascript:" class="btn red mini particularDelete"><i class="icon-trash"></i></a>
+                    </td>
+                </tr>
+                {% if item.serial is not empty %}
+                    <tr><td></td><td colspan="3">Serial No:
+                            {% for imc in item.serial %}
+                                {{ imc }} {{ not loop.last ? ',' }}
+                            {% endfor %}
+                        </td><td></td><td></td></tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        </tbody>
+        <tfoot>
+        <tr><td colspan="6" style="border-bottom: 2px solid #004de0">&nbsp;</td></tr>
+        <tr>
+            <th colspan="4" class="product-title text-right">Sub-Total</th>
+            <th id="subTotal" class="product-title">{{ entity.subTotal|number_format(2) }}</th>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="3">{{ form_widget(form.salesBy) }}</td>
+            <td colspan="3">
+                                                            <span class="">
+                                                        <button type="button" class="btn span12 royal-blue big receiveBtn" {% if entity.subTotal is empty %} disabled="disabled" {% endif %} data-action="{{ path('restaurant_tableinvoice_kitchen_print',{'id':entity.id}) }}" id="posKitchen" style="width:100%!important;" >
+                                                            <i class="icon-print"></i> KITCHEN</button>
+                                                            </span>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+    <div class="clearfix"></div>
+    <div id="accordion" class="accordion-container hide-payment {% if entity.process == 'Payment' %} process-payment {% endif %}">
+        {% if config.additionalTable == 1 %}
+            <h4 class="accordion-title js-accordion-title">Select Additional Table</h4>
+            <div class="accordion-content">
+                <div style="display:flow-root">
+                    {% for table in tables  %}
+                        <label class="table-list" for="{{ table.id }}"> <input  class="checkbox" id="{{ table.id }}" type="checkbox" value="{{ table.id }}" name="tableNos[]" > <span>{{ table.name }}</span></label>
+                    {% endfor %}
+                </div>
+            </div><!--/.accordion-content-->
+        {% endif %}
+        {% if config.additionalServe == 1 %}
+            <h4 class="accordion-title js-accordion-title">Select Serve By</h4>
+            <div class="accordion-content">
+                <div style="display: flow-root">
+                    {% for serving in servings  %}
+                        <label class="user-list"  for="{{ serving.id }}"> <input  class="checkbox" id="{{ serving.id }}" type="checkbox" value="{{ serving.id }}" name="servingIds[]" ><span> {{ serving.profile.name }}</span></label>
+                    {% endfor %}
+                </div>
+
+            </div><!--/.accordion-content-->
+        {% endif %}
+    </div>
+    <div class="transaction-box">
+        <div class="row-fluid" style="border-bottom: 1px solid #fff; padding-bottom: 15px; margin-bottom: 15px" >
+            <div class="span4">
+                {{ form_widget(form.discountType) }}
+            </div>
+            <div class="span4">
+                {{ form_widget(form.discountCalculation) }}
+            </div>
+            <div class="span4">
+                {{ form_widget(form.discountCoupon) }}
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span6">
+                <div class="row-fluid">
+                    <div class="span6"><span>Discount</span></div>
+                    <div class="span6"><strong class="discount">{{ entity.discount|number_format(2) }}</strong></div>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="row-fluid">
+                    <div class="span6"><span>Vat</span></div>
+                    <div class="span6"><strong class="vat">{{ entity.vat|number_format(2) }}</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span6">
+                <div class="row-fluid">
+                    <div class="span6"><span>SD</span></div>
+                    <div class="span6"><strong class="sd">{{ entity.sd|number_format(2) }}</strong></div>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="row-fluid">
+                    <div class="span6"><span>Total</span></div>
+                    <div class="span6"><strong class="total">{{ entity.total|number_format(2) }}</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="switch-method">
+                {% set methods = ['Cash','Mobile','Bank'] %}
+                {% for method in methods %}
+                    <input {% if entity.transactionMethod is not empty and entity.transactionMethod.name == method %} checked="checked" {% endif %} type="radio" id="{{ method }}" class="method-process" name="method" value="{{ method }}"/>
+                    <label  for="{{ method }}">{{ method }}</label>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <div id="cartMethod" class="bankHide">
+        <div class="payment-box">
+            <div class="row-fluid">
+                <div class="span6">{{ form_widget(form.accountBank) }}</div>
+                <div class="span3">{{ form_widget(form.paymentCard) }}</div>
+                <div class="span3">{{ form_widget(form.cardNo) }}</div>
+            </div>
+        </div>
+    </div>
+    <div id="bkashMethod" class="mobileBankHide">
+        <div class="payment-box">
+            <div class="row-fluid">
+                <div class="span6">{{ form_widget(form.accountMobileBank) }}</div>
+                <div class="span3">{{ form_widget(form.paymentMobile) }}</div>
+                <div class="span3">{{ form_widget(form.transactionId) }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    {% if config.isCustomer == 1 %}
+        <div class="row-fluid">
+            <div class="span12">
+                <input type="text" style="margin-left:0!important;" id="mobile" name="mobile"  class="span10 m-wrap select2Customer" value=""  autocomplete="off" placeholder="Customer mobile no">
+                <button type="button" class="pull-right btn btn-large blue addCustomer"><i class="icon-user"></i></button>
+            </div>
+        </div>
+        <div class="row-fluid customer" id="">
+            <div class="span12 input-append-border">
+                <div class="row-fluid">
+                    <div class="input-icon left input-height">
+                        <i class="icon-user"></i>
+                        <input type="text" id="customerName" name="customerName" class="m-wrap span12 customer-input" autocomplete="off" placeholder="Customer name" value="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid customer">
+            <div class="span12 input-append-border">
+                <div class="row-fluid">
+                    <div class="input-icon left input-height">
+                        <i class="icon-phone"></i>
+                        <input type="text" id="customerMobile" name="customerMobile" class="m-wrap span12 mobile customer-input" autocomplete="off" placeholder="Customer mobile no" value="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid customer">
+            <div class="span12 input-append-border">
+                <div class="row-fluid">
+                    <textarea id="customerAddress" name="customerAddress" class="m-wrap span12 customer-input" rows="2" placeholder="Enter customer address"></textarea>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="clearfix"></div>
+    <div class="row-fluid">
+        <div class="buttons">
+            <div class="row-fluid">
+                <div class="span12">
+
+                    <input type="button" class="btn cal-button" name="b1" value="1" onClick="calcNumbers(b1.value)">
+                    <input type="button" class="btn cal-button" name="b2" value="2" onClick="calcNumbers(b2.value)">
+                    <input type="button" class="btn cal-button" name="b3" value="3" onClick="calcNumbers(b3.value)">
+                    <input type="button" class="btn cal-button" name="b4" value="4" onClick="calcNumbers(b4.value)">
+                    <input type="button" class="btn cal-button" name="b5" value="5" onClick="calcNumbers(b5.value)">
+                    <input type="button" class="btn cal-button" name="b6" value="6" onClick="calcNumbers(b6.value)">
+                    <input type="button" class="btn cal-button" name="b7" value="7" onClick="calcNumbers(b7.value)">
+                    <input type="button" class="btn cal-button" name="b8" value="8" onClick="calcNumbers(b8.value)">
+                    <input type="button" class="btn cal-button" name="b9" value="9" onClick="calcNumbers(b9.value)">
+                    <input type="button" class="btn cal-button" name="b0" value="0" onClick="calcNumbers(b0.value)">
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <input type="button" class="btn cal-button-lg" name="b1000" value="1000" onClick="calcGroupNumbers(b1000.value)">
+                    <input type="button" class="btn cal-button-lg" name="b500" value="500" onClick="calcGroupNumbers(b500.value)">
+                    <input type="button" class="btn cal-button-lg" name="b300" value="300" onClick="calcGroupNumbers(b300.value)">
+                    <input type="button" class="btn cal-button-lg" name="b200" value="200" onClick="calcGroupNumbers(b200.value)">
+                    <input type="button" class="btn cal-button-lg" name="b100" value="100" onClick="calcGroupNumbers(b100.value)">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+</div>

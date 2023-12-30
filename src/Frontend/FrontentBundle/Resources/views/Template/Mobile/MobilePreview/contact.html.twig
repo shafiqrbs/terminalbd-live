@@ -1,0 +1,112 @@
+{% extends ':frontend/template/mobile:base.html.twig' %}
+{% block body %}
+    <section class="">
+        {% if globalOption.contactPage.latitude is not empty and globalOption.contactPage.longitude is not empty %}
+            <div id="gmap_canvas" class="gmap">
+                <div class="Lat">{{ globalOption.contactPage.latitude }}</div>
+                <div class="Lng">{{ globalOption.contactPage.longitude }}</div>
+                <div class="imgMap">{{ asset('assets/img/placeholder.png') }}</div>
+                <address>Address Here</address>
+                <div class="infoWindow">
+                    <p>{% if globalOption.contactPage.address1 is not empty %}
+                            <i class="fa fa-home"></i>&nbsp;{{ globalOption.contactPage.address1 }}&nbsp;
+                            {% if globalOption.contactPage.thana is defined and globalOption.contactPage.thana %}
+                                {{ globalOption.contactPage.thana.name }},
+                            {% endif %}
+                            {% if globalOption.contactPage.district is defined and globalOption.contactPage.district %}
+                                {{ globalOption.contactPage.district.name }} {% endif %}-{{ globalOption.contactPage.postalCode }}
+                        {% endif %}
+                        {% if globalOption.contactPage.startHour %}
+                            <br><i class="fa fa-clock-o"></i>&nbsp;<strong>{{ globalOption.contactPage.startHour }} To {{ globalOption.contactPage.endHour }}</strong>
+                        {% endif %}
+                        <br>
+                        <i class="fa fa-mobile-phone"></i>&nbsp;+ 088&nbsp;<a href="tel:+ 088 {{ globalOption.mobile }}" class="contact-call">{{ globalOption.mobile }}</a>
+                        <i class="fa fa-map-pin"></i>&nbsp;<a target="_blank" href="https://maps.google.com?saddr=Current+Location&daddr=23.801422,90.352599">Direction</a>
+
+                </div>
+            </div>
+        {% elseif globalOption.contactPage.googleMap is not empty %}
+            {{ globalOption.contactPage.googleMap|raw }}
+        {% endif %}
+        <div class="w3agile">
+            <div class="">
+                <p>
+                    <strong><i class="fa fa-home"></i>&nbsp;</strong>{{ globalOption.contactPage.address1 }}<br>
+                    {% if globalOption.contactPage.thana is defined and globalOption.contactPage.thana %}
+                        {{ globalOption.contactPage.thana.name }},
+                    {% endif %}
+                    {% if globalOption.contactPage.district is defined and globalOption.contactPage.district %}
+                        {{ globalOption.contactPage.district.name }} {% endif %}-{{ globalOption.contactPage.postalCode }}.
+                </p>
+                {% if globalOption.contactPage.startHour %}
+                    <p>
+                        <strong><i class="fa fa-power-off"></i>&nbsp;</strong>{{ globalOption.contactPage.startHour }} To {{ globalOption.contactPage.endHour }}
+                    </p>
+                {% endif %}
+                {% if globalOption.contactPage.weeklyOffDay %}
+                    <p><strong><i class="fa fa-clock-o"></i>&nbsp;</strong>{{ globalOption.contactPage.weeklyOffDay }}</p>
+                {% endif %}
+                <p><i class="fa fa-user"></i><strong>&nbsp;Contact Information</strong><br>
+                <p>{{ globalOption.contactPage.contactPerson|raw }}</p>
+                {% if globalOption.contactPage.designation %}<p>{{ globalOption.contactPage.designation|raw }}</p>{% endif %}
+                <p><i class="fa fa-mobile-phone"></i>&nbsp;+ 088&nbsp;<a href="tel:+ 088 {{ globalOption.mobile }}" class="contact-call">{{ globalOption.mobile }}</a></p>
+                {% if  globalOption.email is not empty %}<p><i class="fa fa-envelope"></i>&nbsp;<a href="mailto:{{ globalOption.email }}" class="contact-email">{{ globalOption.email }}</a></p>{% endif %}
+                {% if(globalOption.contactPage.additionalPhone) %}<p><i class="fa fa-phone-square"></i>&nbsp;+02 {{ globalOption.contactPage.additionalPhone|raw }}</p>{% endif %}
+                {% if(globalOption.contactPage.fax) %}<p><i class="fa fa-fax"></i>&nbsp;+ 02{{ globalOption.contactPage.fax|raw }}</p>{% endif %}
+                {% if(globalOption.contactPage.additionalEmail) %}<p><i class="fa fa-envelope"></i>&nbsp;<a href="mailto:{{ globalOption.contactPage.additionalEmail|raw }}">{{ globalOption.contactPage.additionalEmail|raw }}</a></p>{% endif %}
+
+                </p>
+            </div>
+            {% if branches is not empty and branches is defined %}
+                <br/>
+                <h3><strong>Our Branches</strong></h3>
+                <br/>
+                {% for  details in branches %}
+                    <article>
+                        <div class="">
+                            <h4>{{ details.name }}</h4>
+                            <dl>
+                                <dd><i class="fa fa-home"></i>&nbsp;{{ details.address|raw }}</dd>
+                                <dd><i class="fa fa-user"></i>&nbsp;<strong>{{ details.contactPerson }}</strong>, {{ details.designation }}</dd>
+                                <dd><i class="fa fa-mobile"></i>&nbsp;<a href="tel:+ 088 {{ details.mobile|raw }}" class="contact-call">+ 088 {{ details.mobile|raw }}</a></dd>
+                                {% if(details.phone) %}<dd><i class="fa fa-phone-square"></i></i>&nbsp;<a href="javascript:" class="contact-call">+ {{ details.phone|raw }}</a></dd>{% endif %}
+                                {% if(details.fax) %}<dd><i class="fa fa-fax"></i>&nbsp;{{ details.fax|raw }}</a></dd>{% endif %}
+                                {% if(details.email) %}<dd><i class="fa fa-envelope-o"></i>&nbsp;{{ details.email|raw }}</dd>{% endif %}
+
+                                <dt><a href="#" class="but_download"><i class="fa fa-map-marker"></i> Direction</a></dt>
+                            </dl>
+                        </div>
+                    </article>
+                    <hr>
+                    <article>
+                        <div class="">
+                            <h4>{{ details.name }}</h4>
+                            <dl>
+                                <dd><i class="fa fa-home"></i>&nbsp;{{ details.address|raw }}</dd>
+                                <dd><i class="fa fa-user"></i>&nbsp;<strong>{{ details.contactPerson }}</strong>, {{ details.designation }}</dd>
+                                <dd><i class="fa fa-mobile"></i>&nbsp;<a href="tel:+ 088 {{ details.mobile|raw }}" class="contact-call">+ 088 {{ details.mobile|raw }}</a></dd>
+                                {% if(details.phone) %}<dd><i class="fa fa-phone-square"></i></i>&nbsp;<a href="javascript:" class="contact-call">+ {{ details.phone|raw }}</a></dd>{% endif %}
+                                {% if(details.fax) %}<dd><i class="fa fa-fax"></i>&nbsp;{{ details.fax|raw }}</a></dd>{% endif %}
+                                {% if(details.email) %}<dd><i class="fa fa-envelope-o"></i>&nbsp;{{ details.email|raw }}</dd>{% endif %}
+                                <dt><a href="#" class="but_download"><i class="fa fa-map-marker"></i> Direction</a></dt>
+                            </dl>
+                        </div>
+                    </article>
+                    <hr>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@FrontendBundle/Resources/public/js/kmaps.min.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $('#gmap_canvas').kmaps();
+{% endblock %}

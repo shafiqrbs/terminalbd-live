@@ -1,0 +1,133 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Issue Invoice
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('hms_stockout') }}">Medicine Issue</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Issue Invoice</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('hms_stockout_new') }}"><i class="icon-plus-sign"></i> Item Issue</a>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid">
+                                        <div class="span4">
+                                            <div class="controls">
+
+                                            </div>
+                                        </div>
+                                        <div class="span4">
+                                            <div class="controls">
+
+                                            </div>
+                                        </div>
+                                        <div class="span4">
+                                            <div class="controls">
+                                                <div class="input-append span11">
+                                                    <input type="text" id="name" name="name"  class="span11 m-wrap" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Enter invoice no ">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Invoice</th>
+                                    <th class="numeric" >Ref. Invoice</th>
+                                    <th class="numeric" >Invoice</th>
+                                    <th class="numeric" >Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Due</th>
+                                    <th class="numeric" >Created By</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in entities %}
+                                    <tr id="delete-{{ entity.id }}">
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.invoice }}</td>
+                                        <td class="numeric" >{% if entity.hmsInvoice is not empty %}{{ entity.hmsInvoice.invoice }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.customer is not empty %}{{ entity.customer.name }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.netTotal|number_format }}</td>
+                                        <td class="numeric" >{{ (entity.netTotal - entity.payment)|number_format }}</td>
+                                        <td class="numeric" >{{ entity.payment|number_format }}</td>
+                                        <td class="numeric" >{{ entity.createdBy }}</td>
+                                        <td class="numeric" >
+                                            <div class="btn-group">
+                                            {% if entity.process == 'created' or entity.process == 'pending' %}
+                                            <a href="{{ path('hms_stockout_edit', { 'id': entity.id }) }}" class="btn yellow mini" ><i class="icon-pencil"></i></a>
+                                            <a id="{{ entity.id }}" data-id="{{ entity.id }}" data-url="{{ path('hms_stockout_delete', { 'id': entity.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a>
+                                            {% endif %}
+                                            <a href="{{ path('hms_stockout_show', { 'id': entity.id }) }}" class="btn purple mini" ><i class="icon-eye-open"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+

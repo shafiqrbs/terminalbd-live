@@ -1,0 +1,23 @@
+<div id="carousel-hedear" class="carousel slide" data-ride="carousel" >
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        {% for key,slide in globalOption.homeSliders %}
+        <li data-target="#carousel-hedear" data-slide-to="{{ key }}" class=" {% if  loop.index == 1 %} active {% endif %}"></li>
+        {% endfor %}
+    </ol>
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner" role="listbox" style="min-height: 650px!important">
+        {% for slide in globalOption.homeSliders %}
+        <div  class="item {% if  loop.index == 1 %} active {% endif %} " >
+            <img class="img-responsive" style="animation-delay: 30s; width: 100%!important;" src="{{ image(slide.webPath).resize() }}" alt="{{ slide.name }}">
+            <div class="container">
+                <div class="carousel-caption">
+                    <h3>{{ slide.name }}</h3>
+                    <p>{{ slide.content|truncate(100)|raw }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>

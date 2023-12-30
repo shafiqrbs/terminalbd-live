@@ -1,0 +1,299 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN category HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="category-title">
+                   <strong> Manage Payment</strong>
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('customerweb_invoice',{'shop':globalOption.slug}) }}">Member Invoice</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Payment</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END category HEADER-->
+        <!-- BEGIN category CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Invoice Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn black" href="{{ path('customerweb_invoice',{'shop':globalOption.slug}) }}"><i class="icon-th-list"></i> Invoice</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            <div class="clearfix"></div>
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="row-fluid">
+                                <div class="span8">
+                                    <div class="span12" id="particular-table">
+                                        <table class="table table-bordered table-striped table-condensed table-fixed">
+                                            <tbody>
+                                            <tr>
+                                                <th class="span8"> Last Month</th>
+                                                <th class="span4" colspan="2">{{ lastInvoice.endDate|date('F,y') }}</th>
+                                            </tr>
+                                            <tr>
+                                                <th class="span8">Monthly Fee</th>
+                                                <th class="span4" colspan="2">200</th>
+                                            </tr>
+                                            <tr>
+                                                <th class="span1"> No of  Month</th>
+                                                <th class="span2">
+                                                    <input type="hidden" name="itemId[]" value="Monthly Fee" >
+                                                    <input type="number" class=" td-inline-input" name="quantity[]" data-fee="200"  id="quantity" > <input type="hidden" class="td-inline-input" name="salesPrice[]"  id="" value="200" > <input type="hidden" class="monthlyFee amount td-inline-input" name=""  id="" value="0" >
+                                                </th>
+                                                <th class="span2 monthlyFee"></th>
+                                            </tr>
+                                            <tr>
+                                                <th class="span8"> Donation</th>
+                                                <th class="span2">
+                                                    <input type="hidden" name="itemId[]" value="Donation" >
+                                                    <input type="hidden" name="quantity[]" value="1" >
+                                                    <input type="number" class="td-inline-input amount" data-id="4" autocomplete = "off"  id="salesPrice" name="salesPrice[]" value="" ></th>
+                                                <th class="span2" id=""></th>
+                                            </tr>
+                                            <tr>
+                                                <th class="span8"> Sponsor</th>
+                                                <th class="span2">
+                                                    <input type="hidden" name="itemId[]" value="Sponsor" >
+                                                    <input type="hidden" name="quantity[]" value="1"  >
+                                                    <input type="number" class="td-inline-input amount" data-id="4" autocomplete = "off"  id="salesPrice" name="salesPrice[]" value="" ></th>
+                                                <th class="span2" id=""></th>
+                                            </tr>
+                                             <tr>
+                                                <th class="span8"> Total Amount</th>
+                                                 <th class="span2">&nbsp;</th>
+                                                 {% set subTotal =0 %}
+                                                <th class="span2 subTotal">{{ subTotal }}</th>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="clearfix">&nbsp;</div>
+                                    </div>
+                                </div>
+                                <div class="span4 payment-info">
+                                    <div class="clearfix"></div>
+                                    {% if outstanding > 0 %}
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" style="background: #26a69a" for="firstName"><span class="label" style="color:#fff">Previous Due TK.</span> <span class="pull-right sales-right" id="outstanding" style="text-align:left;width:110px;color:#fff" ></span></label>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    {% endif %}
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" style="background: #222222" for="firstName"><span id="balance" class="label" style="color:red">Total TK.</span> <span class="pull-right sales-right due" style="text-align:left;width:110px;color:red" >{{ subTotal|number_format }}</span></label>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="row-fluid">
+                                        <div class="span12 input-append-border">
+                                            {{ form_widget(form.transactionMethod) }}
+                                            {{ form_errors(form.transactionMethod) }}
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div id="cartMethod">
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="input-prepend input-append input-append-border span12">
+                                                    {{ form_widget(form.cardNo) }}
+                                                    {{ form_errors(form.cardNo) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12 input-append-border">
+                                                {{ form_widget(form.paymentCard) }}
+                                                {{ form_errors(form.paymentCard) }}
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12 input-append-border">
+                                                {{ form_widget(form.accountBank) }}
+                                                {{ form_errors(form.accountBank) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="bkashMethod">
+                                        <div class="row-fluid">
+                                            <div class="span12 input-append-border">
+                                                {{ form_widget(form.accountMobileBank) }}
+                                                {{ form_errors(form.accountMobileBank) }}
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="input-prepend input-append input-append-border span12">
+                                                    {{ form_widget(form.paymentMobile) }}
+                                                    {{ form_errors(form.paymentMobile) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="input-prepend input-append input-append-border span12">
+                                                    {{ form_widget(form.transactionId) }}
+                                                    {{ form_errors(form.transactionId) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+
+                                    <div class="clearfix"></div>
+                                    <div class="row-fluid">
+                                        <div class="span12 input-append-border">
+                                            <div class="row-fluid">
+                                                {{ form_widget(form.comment) }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="clearfix"></div>
+
+                            </div>
+
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="form-actions portlet box yellow">
+                                <div class="pull-right">
+                                    <div class="action">
+                                        <div class="btn-group">
+                                            <input type="hidden" id="paymentTotal" name="paymentTotal" value="{{ subTotal }}">
+                                            <input type="hidden" id="lastInvoice" name="lastInvoice" value="{{ lastInvoice.id }}">
+                                            <button type="button" class="btn blue" id="receiveBtn" ><i class="icon-save"></i>&nbsp; Payment</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <div class="clearfix"></div>
+                       </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<style>
+    .td-inline-input{
+        height: 15px!important;
+        line-height: 13px!important;
+        font-size: 13px!important;
+        border: 2px solid #4d90fe!important;
+        width: 100px;
+        margin-bottom:0!important;
+    }
+    .td-inline-input-qnt{
+        height: 15px!important;
+        line-height: 13px!important;
+        font-size: 13px!important;
+        border: 2px solid #4d90fe!important;
+        width: 40px;
+        margin-bottom:0!important;
+    }
+
+</style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@BusinessBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@CustomerBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+    $('#quantity').focus();
+    $(document).on('change', '.transactionMethod', function() {
+
+        var paymentMethod = $(this).val();
+
+        if( paymentMethod == 2){
+        $('#cartMethod').css({ 'display': "block" });
+        $('#bkashMethod').hide();
+        }else if( paymentMethod == 3){
+        $('#bkashMethod').css({ 'display': "block" });
+        $('#cartMethod').hide();
+        }else{
+        $('#cartMethod').hide();
+        $('#bkashMethod').hide();
+        }
+
+    });
+    $(document).on('keyup', '#quantity', function() {
+        var quantity = $(this).attr("data-fee");
+        var fee = $(this).val();
+        var totalFee = (fee * quantity);
+        $('.monthlyFee').val(totalFee);
+        $('.monthlyFee').html(totalFee);
+        $(".subTotal").html(totalFee);
+        $("#paymentTotal").val(totalFee);
+        $(".due").html(totalFee);
+
+    });
+
+   $(document).on('keyup', ".amount", function() {
+        $('#donationAmount').html($(this).val());
+        var sum = 0;
+        $(".amount").each(function(){
+            sum += +parseFloat($(this).val());
+        });
+        $(".subTotal").html(sum);
+        $("#paymentTotal").val(sum);
+        $(".due").html(sum);
+    });
+
+    $(document).on("click", "#receiveBtn", function() {
+
+    $('#confirm-content').confirmModal({
+    topOffset: 0,
+    top: '25%',
+    onOkBut: function(event, el) {
+    $('form#invoiceForm').submit();
+    }
+    });
+    });
+
+
+{% endblock %}

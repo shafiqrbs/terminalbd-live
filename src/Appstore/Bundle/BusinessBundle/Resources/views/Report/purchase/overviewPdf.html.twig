@@ -1,0 +1,174 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h2 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    h3 {
+        font-size: 20px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-left{
+        text-align: left!important;
+        display: block;
+        padding-right: 20px;
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+    .numeric{
+        width: 80%;
+    }
+
+</style>
+{% set startDate = searchForm.month is defined ? searchForm.month :"now"|date("d-m-Y") %}
+{% set endDate = searchForm.year is defined ? searchForm.year :"now"|date("d-m-Y") %}
+
+<table class="table">
+    <thead>
+    <tr>
+        <td class="pull-center"><h2>{{ globalOption.name }}</h2></td>
+    </tr>
+    <tr>
+        <th class="pull-center"><h3><strong>DATE RANGE SALES SUMMARY STATEMENT: {{ startDate }} To {{ endDate }}</strong></h3></th>
+    </tr>
+    </thead>
+</table>
+<table class="table table-bordered table-striped table-condensed flip-content ">
+    <tr><th colspan="2">Purchase Cash Overview</th></tr>
+    <tr>
+        <th class="numeric" >Total Amount</th>
+        <td class="numeric" >{{ purchaseCashOverview.total|number_format }}</td>
+    </tr>
+    <tr>
+        <th class="numeric" >Payment</th>
+        <td class="numeric" >{{ purchaseCashOverview.totalPayment|number_format }}</td>
+    </tr>
+    <tr>
+        {% set due = (purchaseCashOverview.total - purchaseCashOverview.totalPayment) %}
+        <th class="numeric" >{% if due > 0 %}Payable {% else %}Receivable{% endif %}</th>
+        <th class="numeric" >{{ due|number_format }}</th>
+    </tr>
+</table>
+<table class="table">
+    <tr><th colspan="4">Transaction Method wise Purchase</th></tr>
+    <tr>
+        <th class="numeric" >Transaction Method</th>
+        <th class="numeric" >Net Total</th>
+        <th class="numeric" >Payment</th>
+        <th class="numeric" >Payable/Receivable</th>
+    </tr>
+    {% for transaction in transactionCash %}
+        <tr>
+            {% set due = (transaction.total - transaction.totalPayment) %}
+            <td class="numeric" >{{ transaction.transactionName|default }}</td>
+            <td class="numeric" >{{ transaction.total|default|number_format }}</td>
+            <td class="numeric" >{{ transaction.totalPayment|default|number_format }}</td>
+            <td class="numeric" >{{ due|number_format }}</td>
+        </tr>
+    {% endfor %}
+</table>
+<div class="clearfix">&nbsp;</div>
+<table class="table">
+    <tr><th colspan="4">Vendor/Supplier Purchase Summaryt</th></tr>
+    <tr>
+        <th class="numeric" >Purchase Mode</th>
+        <th class="numeric" >Net Total</th>
+        <th class="numeric" >Payment</th>
+        <th class="numeric" >Payable/Receivable</th>
+    </tr>
+    {% for process in purchaseMode %}
+        <tr>
+            <td class="numeric" >{{ process.name|capitalize|default }}</td>
+            <td class="numeric" >{{ process.total|default|number_format }}</td>
+            <td class="numeric" >{{ process.totalPayment|default|number_format }}</td>
+            <td class="numeric" >{{ process.totalDue|default|number_format }}</td>
+        </tr>
+    {% endfor %}
+</table>
+<div class="clearfix">&nbsp;</div>
+<table class="table">
+    <tr><th colspan="7">Vendor/Supplier Purchase Summary</th></tr>
+    <tr>
+        <th class="numeric" >Customer</th>
+        <th class="numeric" >Mobile</th>
+        <th class="numeric" >Sub-total</th>
+        <th class="numeric" >Discount</th>
+        <th class="numeric" >Net Total</th>
+        <th class="numeric" >Payment</th>
+        <th class="numeric" >Due</th>
+    </tr>
+    {% set totalSubTotal = 0 %}
+    {% set totalDiscount = 0 %}
+    {% set totalTotal = 0 %}
+    {% set totalreceive = 0 %}
+    {% set totalDue = 0 %}
+    {% for transaction in vendors %}
+        {% set totalSubTotal = totalSubTotal + transaction.subTotal  %}
+        {% set totalTotal = totalTotal + transaction.total  %}
+        {% set totalDiscount = totalDiscount + transaction.discount %}
+        {% set totalreceive = totalreceive + transaction.receive %}
+        {% set totalDue = totalDue + transaction.due  %}
+        <tr>
+            <td class="numeric" >{{ transaction.customerName|default }}</td>
+            <td class="numeric" >{{ transaction.customerMobile|default }}</td>
+            <td class="numeric" >{{ transaction.subTotal|default|number_format }}</td>
+            <td class="numeric" >{{ transaction.discount|default|number_format }}</td>
+            <td class="numeric" >{{ transaction.total|default|number_format }}</td>
+            <td class="numeric" >{{ transaction.receive|default|number_format }}</td>
+            <td class="numeric" >{{ transaction.due|default|number_format }}</td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <th colspan="2">Grand Total</th>
+        <th>{{ totalSubTotal|number_format(2) }}</th>
+        <th>{{ totalDiscount|number_format(2) }}</th>
+        <th>{{ totalTotal|number_format(2) }}</th>
+        <th>{{ totalreceive|number_format(2) }}</th>
+        <th>{{ totalDue|number_format(2) }}</th>
+    </tr>
+</table>

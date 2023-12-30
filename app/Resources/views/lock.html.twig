@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+
+<head>
+    <meta charset="utf-8"/>
+    <title>BDEDUCATIONS | Admin Panel</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <meta name="MobileOptimized" content="320">
+
+    {% stylesheets
+    'assets/plugins/select2/select2_metro.css'
+    'assets/plugins/font-awesome/css/font-awesome.min.css'
+    'assets/plugins/bootstrap/css/bootstrap.min.css'
+    'assets/plugins/uniform/css/uniform.default.css'
+    'assets/css/style-metronic.css'
+    'assets/css/style.css'
+    'assets/css/style-responsive.css'
+    'assets/css/plugins.css'
+    'assets/css/themes/default.css'
+    'assets/css/pages/login-soft.css'
+    'assets/plugins/uniform/css/uniform.default.css'
+    'assets/css/custom.css'
+
+    filter='cssrewrite' %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+    <link rel="shortcut icon" href="favicon.ico"/>
+
+</head>
+<body class="login {{ app.request.locale }}{% block bodyClass %}{% endblock bodyClass %}">
+
+{% block logincenter %}
+    <div class="logo">
+<img src="../../assets/frontend/img/bdeducations.png" height="80" />
+    </div>
+
+    {% block body %}{% endblock %}
+
+    <div class="copyright">
+        {{ "now"|date('Y') }} &copy; Business Booster Ltd.
+    </div>
+{% endblock logincenter %}
+
+{% javascripts
+'assets/plugins/respond.min.js'
+'assets/plugins/excanvas.min.js'
+
+'assets/plugins/jquery-1.10.2.min.js'
+'assets/plugins/jquery-migrate-1.2.1.min.js'
+'assets/plugins/bootstrap/js/bootstrap.min.js'
+'assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js'
+'assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js'
+'assets/plugins/jquery.blockui.min.js'
+'assets/plugins/jquery.cookie.min.js'
+'assets/plugins/uniform/jquery.uniform.min.js'
+'assets/plugins/jquery-validation/dist/jquery.validate.min.js'
+'assets/plugins/select2/select2.min.js'
+'assets/scripts/app.js'
+'assets/scripts/login-soft.js'
+'assets/scripts/lock.js'
+
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+
+<script>
+    jQuery(document).ready(function () {
+        App.init();
+        lock.init();
+    });
+</script>
+
+</body>
+
+</html>

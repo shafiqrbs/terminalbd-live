@@ -1,0 +1,23 @@
+<div id="catlist">
+    {% if pagination is not empty %}
+        {% for list in pagination %}
+            <div class="col-md-6 col-xs-12">
+                <dl>
+                <p><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'blog','slug':list.slug }) }}"><img class="img-thumbnail" src="{{ image(list.webPath).resize(380,266) }}" alt="{{ list.name }}"  /></a></p>
+                <dd><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'blog','slug':list.slug }) }}"><h4>{{ list.name }}</h4></a></dd>
+                <dd><i class="fa fa-user"></i>&nbsp;{{ list.authorName }} <i class="fa fa-calendar"></i> {{ list.updated|date('d F, Y') }} </dd>
+                <dd><p>{{ list.content|truncate(280)|raw }}&nbsp;&nbsp;<a class="more-link" href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'blog','slug':list.slug }) }}">Read more <i class="fa fa-angle-double-right"></i></a></p>
+                <span><i class="fa fa-tags"></i>
+                    {% for cat in list.moduleCategory %}
+                        <a href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'module':module.slug ,'slug':cat.slug }) }}">{{ cat.name }}</a>
+                    {% endfor %}
+                </span>
+                </dd>
+            </dl>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+<div class="pagination pull-center"  >
+    {{ knp_pagination_render(pagination) }}
+</div>

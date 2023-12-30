@@ -1,0 +1,193 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Surgery
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('hms_surgery') }}">Surgery</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Surgery</div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body flip-scroll">
+                            <div class="portlet-body form">
+                                {% include('flash-message.html.twig')  %}
+                                <!-- BEGIN FORM-->
+                                {{ form_start(form) }}
+                                {{ form_row(form._token) }}
+                                <div class="row-fluid">
+                                    <!--/span-->
+                                    <div class="span4">
+                                        <div class="control-group">
+                                            <label class="control-label" for="name">Surgery Departmment <span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.surgeryDepartment) }}
+                                                {{ form_errors(form.surgeryDepartment) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="control-group">
+                                            <label class="control-label" for="room">Account Head</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.accountHead) }}
+                                                {{ form_errors(form.accountHead) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="control-group">
+                                            <label class="control-label" for="name">Surgery <span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.name) }}
+                                                {{ form_errors(form.name) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <!--/span-->
+                                    <div class="span8">
+                                        <div class="control-group">
+                                            <label class="control-label" for="name">Details</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.content) }}
+                                                {{ form_errors(form.content) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="price">Price<span class="required">*</span></label>
+                                                    <div class="controls">
+                                                        {{ form_widget(form.price) }}
+                                                        {{ form_errors(form.price) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="name">Minimum Price</label>
+                                                    <div class="controls">
+                                                        <div class="input-icon left">
+                                                            <i class="icon-font"></i>
+                                                            {{ form_widget(form.minimumPrice) }}
+                                                            {{ form_errors(form.minimumPrice) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="name">Doctor Charge</label>
+                                                    <div class="controls">
+                                                        <div class="input-icon left">
+                                                            <i class="icon-font"></i>
+                                                            {{ form_widget(form.commission) }}
+                                                            {{ form_errors(form.commission) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="room">Room no</label>
+                                                    <div class="controls">
+                                                        {{ form_widget(form.room) }}
+                                                        {{ form_errors(form.room) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions portlet box grey">
+                                    <div class="pull-right">
+                                        <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                    </div>
+                                </div>
+                                {{ form_end(form) }}
+                                <!-- END FORM-->
+                            </div>
+                            <div class="clearfix"><br/></div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Code</th>
+                                    <th class="numeric" >Surgery Department</th>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Price</th>
+                                    <th class="numeric" >Min Price</th>
+                                    <th class="numeric" >Dr. Charge</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in pagination %}
+                                    <tr>
+                                        <td class="numeric" >{{ entity.particularCode }}</td>
+                                        <td class="numeric" >{% if entity.surgeryDepartment %}{{ entity.surgeryDepartment.name }}{% endif %}</td>
+                                        <td class="numeric" ><a href="{{ path('hms_surgery_edit',{'id': entity.id })}}">{{ entity.name }}</a></td>
+                                        <td class="numeric" >{{ entity.price|number_format }}</td>
+                                        <td class="numeric" >{{ entity.minimumPrice|number_format }}</td>
+                                        <td class="numeric" >{{ entity.commission|number_format }}</td>
+                                        <td class="numeric" >
+                                            {% if( entity.status == 1) %}
+                                                <a class="btn mini blue btn-action" href="{{ path('hms_surgery_status', { 'id': entity.id}) }}"><i class="icon-ok"></i></a>
+                                            {% else %}
+                                                <a class="btn mini red btn-action" href="{{ path('hms_surgery_status', { 'id': entity.id}) }}">x</a>
+                                            {% endif %}
+                                            <a href="{{ path('hms_surgery_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+                                            <a title="Are you sure went to delete ?" href="{{ path('hms_surgery_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

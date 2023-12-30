@@ -1,0 +1,61 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>AdsTool list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Googleserviceid</th>
+                <th>Slotid</th>
+                <th>Sitename</th>
+                <th>Keyword</th>
+                <th>Metadescription</th>
+                <th>Googleverificationcode</th>
+                <th>Redirectlang</th>
+                <th>Redirectcode</th>
+                <th>Statcounterid</th>
+                <th>Statcountersecuritycode</th>
+                <th>Statcountervisible</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('adstool_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.googleServiceID }}</td>
+                <td>{{ entity.slotID }}</td>
+                <td>{{ entity.siteName }}</td>
+                <td>{{ entity.keyword }}</td>
+                <td>{{ entity.metaDescription }}</td>
+                <td>{{ entity.googleVerificationCode }}</td>
+                <td>{{ entity.redirectLang }}</td>
+                <td>{{ entity.redirectCode }}</td>
+                <td>{{ entity.statCounterID }}</td>
+                <td>{{ entity.statCounterSecurityCode }}</td>
+                <td>{{ entity.statCounterVisible }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('adstool_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('adstool_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('adstool_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+    {% endblock %}

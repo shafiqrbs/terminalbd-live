@@ -1,0 +1,83 @@
+inventory_salesmanual:
+    path:     /
+    defaults: { _controller: "InventoryBundle:SalesManual:index" }
+
+inventory_salesmanual_customer:
+    path:     /customer
+    defaults: { _controller: "InventoryBundle:SalesManual:customer" }
+
+inventory_salesmanual_show:
+    path:     /{id}/show
+    defaults: { _controller: "InventoryBundle:SalesManual:show" }
+
+
+inventory_salesmanual_insert_item:
+    path:    /{sales}/insert-sales-item
+    defaults: { _controller: "InventoryBundle:SalesManual:insertManualSalesItem" }
+    methods:  [POST]
+
+
+inventory_salesmanual_new:
+    path:     /new
+    defaults: { _controller: "InventoryBundle:SalesManual:new" }
+
+inventory_salesmanual_item_barcode_search:
+    path:     /add-barcode-item
+    defaults: { _controller: "InventoryBundle:SalesManual:searchBarcode" }
+    methods:  POST
+    options:
+            expose: true
+
+inventory_salesmanual_item_search:
+    path:     /search
+    defaults: { _controller: "InventoryBundle:SalesManual:search" }
+    methods:  POST
+    options:
+            expose: true
+
+inventory_salesmanual_discount_update:
+    path:     /sales/discount-update
+    defaults: { _controller: "InventoryBundle:SalesManual:salesDiscountUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+inventory_salesmanual_edit:
+    path:     /{code}/manual-sales
+    defaults: { _controller: "InventoryBundle:SalesManual:edit" }
+
+inventory_salesmanual_update:
+    path:     /{id}/update
+    defaults: { _controller: "InventoryBundle:SalesManual:update" }
+    methods:  [POST, PUT]
+
+inventory_salesmanual_salesitem_delete:
+    path:     /{sales}/{salesItem}/manual-item-delete
+    defaults: { _controller: "InventoryBundle:SalesManual:itemDelete" }
+
+inventory_salesmanual_print_invoice:
+    path:     /{invoice}/invoice
+    defaults: { _controller: "InventoryBundle:SalesManual:invoicePrint" }
+
+inventory_salesmanual_empty_delete:
+    path:     /delete/empty-manual-invoice
+    defaults: { _controller: "InventoryBundle:SalesManual:deleteEmptyInvoice" }
+
+inventory_salesmanual_item_update:
+    path:     /manual-sales/item/update
+    defaults: { _controller: "InventoryBundle:SalesManual:salesItemUpdate" }
+    options:
+           expose: true
+
+inventory_salesmanual_inline_process_update:
+    path:     /manual-sales/inline-process-update
+    defaults: { _controller: "InventoryBundle:SalesManual:salesInlineProcessUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+inventory_salesmanual_inline_status_select:
+    path:     /manual-sales/inline-status-select
+    defaults: { _controller: "InventoryBundle:SalesManual:salesSelect" }
+    options:
+           expose: true

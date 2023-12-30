@@ -1,0 +1,32 @@
+{% set subTotalSales = 0 %}
+{% set totalSales = 0 %}
+{% set totalDiscount = 0 %}
+{% set totalPayment = 0 %}
+{% for entity in entities %}
+    {% set subTotalSales = (subTotalSales + entity.subTotal) %}
+    {% set totalSales = (totalSales + entity.total) %}
+    {% set totalDiscount = (totalDiscount + entity.discount) %}
+    {% set totalPayment = (totalPayment + entity.amount) %}
+    <tr>
+        <td class="numeric">{{ loop.index }}</td>
+        <td class="numeric">{{ entity.name }}</td>
+        <td class="text-right" >{{ entity.subTotal|number_format  }}</td>
+        <td class="text-right" >{{ entity.discount|number_format  }}</td>
+        <td class="text-right" >{{ entity.total|number_format  }}</td>
+        <td class="text-right" >{{ entity.amount|number_format }}</td>
+        <td class="text-right" >{{ (entity.total - entity.amount)|number_format }}</td>
+        <td>
+            <a target="_blank" class="btn mini green" href="{{ path('miss_customer_invoice_report',{'marketing':entity.id,'startDate':data['startDate'],'endDate':data['endDate']}) }}"><i class="icon-print"></i> Details</a>
+            <a target="_blank" class="btn mini yellow" href="{{ path('miss_business_product_report',{'marketing':entity.id,'startDate':data['startDate'],'endDate':data['endDate']}) }}"><i class="icon-print"></i> Product</a>
+        </td>
+    </tr>
+{% endfor %}
+<tr>
+    <td colspan="2" class="text-right"><strong>Grand Total</strong></td>
+    <th class="text-right"><strong>{{ subTotalSales|number_format(2) }}</strong></th>
+    <th class="text-right"><strong>{{ totalDiscount|number_format(2) }}</strong></th>
+    <th class="text-right"><strong>{{ totalSales|number_format(2) }}</strong></th>
+    <th class="text-right"><strong>{{ totalPayment|number_format(2) }}</strong></th>
+    <th class="text-right"><strong>{{ (totalSales-totalPayment)|number_format(2) }}</strong></th>
+    <th></th>
+</tr>

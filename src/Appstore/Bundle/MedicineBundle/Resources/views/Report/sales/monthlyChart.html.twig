@@ -1,0 +1,176 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Monthly Sales & Purchase Chart Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Monthly Sales & Purchase Chart Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Monthly Sales & Purchase Chart Report</div>
+                    </div>
+                </div>
+                <div class="portlet box blue">
+
+                    <div class="portlet-body">
+                        <div class="row-fluid" >
+                            <div class="span12">
+                                <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="portlet box yellow">
+                    <div class="portlet-body">
+                        <div class="row-fluid" >
+                            <div class="span12">
+                                <div id="optionsYearlyMonthlySales" style="height: 330px; width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet box green">
+                    <div class="portlet-body">
+                        <div class="row-fluid" >
+                            <div class="span12">
+                                <div id="optionsYearlyMonthlyPurchase" style="height: 330px; width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+        '@MedicineBundle/Resources/public/css/dashboard.css'
+        '@MedicineBundle/Resources/public/css/invoice.css'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+        '@MedicineBundle/Resources/public/js/temporary-sales.js'
+        '@MedicineBundle/Resources/public/js/approveProcess.js'
+        '@MedicineBundle/Resources/public/js/jquery-canvas.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    jqueryTemporaryLoad();
+    jqueryInstantTemporaryLoad();
+    $('#salesTemporaryItem_stockName').focus();
+
+    window.onload = function () {
+
+    var optionsUserSales = {
+    animationEnabled: true,
+    title: {
+    text: "User Monthly Sales - {{ "now"|date("F,Y") }}"
+    },
+    axisY: {
+    title: "Growth Rate (in %)",
+    suffix: "%",
+    includeZero: false
+    },
+    axisX: {
+    title: "User Monthly Sales - {{ "now"|date("F,Y") }}"
+    },
+    data: [{
+    type: "column",
+    yValueFormatString: "#,##0.0#"%"",
+    dataPoints: [
+    {% set month = "now"|date("m") %}
+    {% for employee in employees %}
+        {% set monthSales =  employee.id~month|number_format %}
+        {% if employee.monthlySales > 0 %}
+            { label: "{{ employee.username|capitalize }}", y: {% if userSalesAmount[monthSales] is defined and userSalesAmount[monthSales] is not empty %} {{ ((userSalesAmount[monthSales]*100)/employee.monthlySales)|number_format }}{% else %}0{% endif %},indexLabel: "BDT {% if  userSalesAmount[monthSales] is defined and userSalesAmount[monthSales] is not empty %} {{ userSalesAmount[monthSales]|number_format }}{% else %}0{% endif %}" },
+        {% endif %}
+    {% endfor %}
+    ]
+    }]
+    };
+    $("#chartContainer").CanvasJSChart(optionsUserSales);
+    var optionsYearlyMonthlySales = {
+    animationEnabled: true,
+    title: {
+    text: "Monthly Sales - {{ "now"|date("Y") }}"
+    },
+    axisY: {
+    title: "",
+    suffix: "",
+    includeZero: false
+    },
+    axisX: {
+    title: "Monthly Sales - {{ "now"|date("Y") }}"
+    },
+    data: [{
+    type: "column",
+    yValueFormatString: "#,##0.0#",
+    dataPoints: [
+    {%  set months = {1:'January',2:'February',3:'March',4:'April',5:'May',6:'June',7:'July',8:'August',9:'September',10:'October',11:'November',12:'December'} %}
+    {% for key,month in months %}
+        { label: "{{ month }}, {{ "now"|date("y") }}", y: {% if key in medicineSalesMonthly|keys %}{{ medicineSalesMonthly[key] }}{% else %}0{% endif %},indexLabel: "BDT {% if key in medicineSalesMonthly|keys %}{{ medicineSalesMonthly[key]|number_format }}{% endif %}" },
+    {% endfor %}
+    ]
+    }]
+    };
+
+    $("#optionsYearlyMonthlySales").CanvasJSChart(optionsYearlyMonthlySales);
+
+    var optionsYearlyMonthlyPurchase = {
+    animationEnabled: true,
+    title: {
+    text: "Monthly Purchase - {{ "now"|date("Y") }}"
+    },
+    axisY: {
+    title: "",
+    suffix: "",
+    includeZero: false
+    },
+    axisX: {
+    title: "Monthly Purchase - {{ "now"|date("Y") }} "
+    },
+    data: [{
+    type: "column",
+    yValueFormatString: "#,##0.0#",
+    dataPoints: [
+    {%  set months = {1:'January',2:'February',3:'March',4:'April',5:'May',6:'June',7:'July',8:'August',9:'September',10:'October',11:'November',12:'December'} %}
+    {% for key,month in months %}
+        { label: "{{ month }}, {{ "now"|date("y") }}", y: {% if key in medicinePurchaseMonthly|keys %}{{ medicinePurchaseMonthly[key] }}{% else %}0{% endif %},indexLabel: "BDT {% if key in medicinePurchaseMonthly|keys %}{{ medicinePurchaseMonthly[key]|number_format }}{% endif %}" },
+    {% endfor %}
+    ]
+    }]
+    };
+    $("#optionsYearlyMonthlyPurchase").CanvasJSChart(optionsYearlyMonthlyPurchase);
+
+    }
+
+{% endblock %}
+

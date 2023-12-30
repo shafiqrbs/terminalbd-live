@@ -1,0 +1,222 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN account_loan HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="account_loan-title">
+                    Account of Loan
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_loan') }}">Account of Loan</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Account of Loan New</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END account_loan HEADER-->
+        <!-- BEGIN account_loan CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account of Loan Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('account_loan') }}"><i class="icon-th-list"></i>&nbsp;Account Loan</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Created Date</label>
+                                            <div class="controls">
+                                                <input type="date" class="m-wrap span12 customer-input"  name="created" id="created"  value="" ></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12 ">
+                                        <div class="control-group">
+                                            <label class="control-label" for="Customer">Loan User</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.employee) }}
+                                                {{ form_errors(form.employee) }}
+                                                {#<a href="javascript:" class="pull-right btn green addCustomer inputs"><i class="icon-user"></i></a>#}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {#<div class="row-fluid customer" id="">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="Customer">Loan User</label>
+                                            <div class="controls">
+                                                <input type="text" id="customerName" name="customerName" class="m-wrap span12 customer-input" autocomplete="off" placeholder="Customer name/company" value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid customer">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="Customer">Mobile</label>
+                                            <div class="controls">
+                                                <input type="text" id="customerMobile" name="customerMobile" class="m-wrap span12 mobile customer-input" autocomplete="off" placeholder="Customer mobile no" value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid customer">
+                                    <div class="control-group">
+                                        <label class="control-label" for="Customer">Address</label>
+                                        <div class="controls">
+                                            <textarea id="customerAddress" name="customerAddress" class="m-wrap span12 customer-input" rows="2" placeholder="Enter customer details"></textarea>
+                                        </div>
+                                    </div>
+                                </div>#}
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="control-group">
+                                    <label class="control-label" for="Customer">Transaction</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.transactionType) }}
+                                        {{ form_errors(form.transactionType) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="paymentMethod">Transaction Method</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.transactionMethod) }}
+                                                {{ form_errors(form.transactionMethod) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bankHide"  {% if entity.transactionMethod is defined and entity.transactionMethod is not empty and entity.transactionMethod.slug == 'bank'  %} id="bankMethod" {% endif %}>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="paymentMethod">Account Bank</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.accountBank) }}
+                                                    {{ form_errors(form.accountBank) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                </div>
+                                <div class="mobileHide" {% if entity.transactionMethod is defined and entity.transactionMethod is not empty and  entity.transactionMethod.slug == 'mobile'  %} id="mobileMethod" {% endif %}  >
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="paymentMethod">Account Mobile</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.accountMobileBank) }}
+                                                    {{ form_errors(form.accountMobileBank) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <div class="control-group">
+                                    <label class="control-label" for="amount">Amount</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.amount) }}
+                                        {{ form_errors(form.amount) }}
+                                        {#<p><strong>Balance</strong> : <strong id="outstanding"></strong></p>#}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Remark</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.remark) }}
+                                        {{ form_errors(form.remark) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-right">
+                                <button type="submit" class="btn green"><i class="icon-save"></i>&nbsp;Save</button>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                        <!-- END FORM-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        #hide{
+            display: none;
+        }
+        .customer{
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/common.js'
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+  //  $('.select2Customer').select2('open');
+    CommonJs();
+    AccountingApproveProcess();
+{% endblock %}

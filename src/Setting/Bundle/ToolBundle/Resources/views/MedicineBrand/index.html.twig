@@ -1,0 +1,157 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Stock
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('medicine_stock') }}">Manage Stock</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green ">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Medicine</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                            <a target="_blank"  href="{{ path('medicine_file_upload') }}" id="btn-create-barcode" class="btn yellow" > Upload Image <i class="icon-barcode"></i></a>
+                            <a   href="{{ path('medicinebrand') }}"  class="btn green" > Add Medicine</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <input type="text" id="name" name="name"  class="span12 m-wrap" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Enter medicine & others name ">
+                                    </div>
+                                    <div class="span6">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="company"  name="company"  class="span12 m-wrap " value="{% if searchForm.company is defined %}{{ searchForm.company }}{% endif %}"  autocomplete="off"  placeholder="Product company name">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- BEGIN FORM-->
+                         <!-- END FORM-->
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    {%  set sort = app.request.query.get('sort') %}
+                                    {%  set direction = app.request.query.get('direction') %}
+                                    <th class="numeric" ></th>
+                                    <th {% if pagination.isSorted('e.medicineForm') %} class="sorted" {% endif %} >{{ knp_pagination_sortable(pagination, 'Medicinne Form', 'e.medicineForm') }}{% if( direction == 'desc' and sort == 'e.medicineForm') %}<i class="icon-sort-by-alphabet-alt"></i> {% else %}<i class="icon-sort-by-alphabet"></i> {% endif %}</th>
+                                     <th {% if pagination.isSorted('e.name') %} class="sorted" {% endif %} >{{ knp_pagination_sortable(pagination, 'Name', 'e.name') }}{% if( direction == 'desc' and sort == 'e.name') %}<i class="icon-sort-by-alphabet-alt"></i> {% else %}<i class="icon-sort-by-alphabet"></i> {% endif %}</th>
+                                    <th class="numeric" >Strength</th>
+                                    <th {% if pagination.isSorted('c.name') %} class="sorted" {% endif %} >{{ knp_pagination_sortable(pagination, 'Company', 'c.name') }}{% if( direction == 'desc' and sort == 'c.name') %}<i class="icon-sort-by-alphabet-alt"></i> {% else %}<i class="icon-sort-by-alphabet"></i> {% endif %}</th>
+                                    <th class="numeric" >DAR</th>
+                                    <th class="numeric" >Pack</th>
+                                    <th class="numeric" >Price</th>
+                                    <th class="numeric" >Image</th>
+                                    <th class="numeric" >Action</th>
+      </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in pagination %}
+                                    <tr>
+                                        <td><input type="checkbox" class="checkbox stockId" id=""  value="{{ entity.id }}"></td>
+                                        <td class="numeric" ><a  data-type="select" class="editable" id="MedicineForm" data-name="MedicineForm" href="#" data-source="{{ path('medicinebrand_select_medicine_form') }}"  data-url="{{ path('medicinebrand_item_inline_update') }}" data-pk="{{ entity.id }}" data-value="{% if entity.medicineForm is defined and entity.medicineForm is not empty %}{{ entity.id }}{% endif %}" data-original-title="Enter Medicine Form">{% if entity.medicineForm is defined and entity.medicineForm is not empty %}{{ entity.medicineForm }}{% endif %}</a></td>
+                                        <td class="numeric" >{{ entity.name }}</td>
+                                        <td class="numeric" ><a  data-type="select" class="editable" id="Strength" data-name="Strength" href="#" data-source="{{ path('medicinebrand_select_strength') }}"  data-url="{{ path('medicinebrand_item_inline_update') }}" data-pk="{{ entity.id }}" data-value="{% if entity.strength is defined and entity.strength is not empty %}{{ entity.id }}{% endif %}" data-original-title="Enter Medicine Strength">{% if entity.strength is defined and entity.strength is not empty %}{{ entity.strength }}{% endif %}</a></td>
+                                        <td class="numeric" >{{ entity.medicineCompany }}</td>
+                                        <td>
+                                            <a  data-type="text" class="editable" id="{{ entity.id }}" data-name="Dar" href="#"   data-url="{{ path('medicinebrand_item_inline_update') }}" data-pk="{{ entity.id }}" data-value="{{ entity.dar }}" data-original-title="Enter DAR">{{ entity.dar }}</a>
+                                        </td>
+                                        <td class="numeric" >{{ entity.pack }}</td>
+                                        <td class="numeric" >
+                                            <a  data-type="text" class="editable" id="{{ entity.id }}" data-name="Price" href="#"   data-url="{{ path('medicinebrand_item_inline_update') }}" data-pk="{{ entity.id }}" data-value="{{ entity.price }}" data-original-title="Enter Price">{{ entity.price }}</a>
+
+                                          </td>
+                                        <td class="numeric" >{% if entity.path %} <a target="_blank" href="/uploads/medicine/{{ entity.path }}">Yes</a> {% endif %}</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                {% if( entity.status == 1) %}
+                                                    <a class="btn mini blue btn-action" href="{{ path('medicinebrand_status', { 'id': entity.id}) }}"><i class="icon-ok"></i></a>
+                                                {% else %}
+                                                    <a class="btn mini yellow btn-action" href="{{ path('medicinebrand_status', { 'id': entity.id}) }}"><i class="icon-remove"></i></a>
+                                                {% endif %}
+
+                                                <a  href="{{ path('medicinebrand_edit',{'id':entity.id}) }}"  class="btn green mini" > <i class="icon-edit"></i> Edit</a>
+                                                    <a href="{{ path('medicinebrand_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@SettingToolBundle/Resources/public/js/editable.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    var itemArr = $.cookie('stockIds') ? $.cookie('stockIds').split(',') : [];
+    $('body').on('change', 'input.stockId', function(el) {
+    console.log(itemArr);
+    var val = $(this).val();
+    if($(this).prop('checked')) {
+    itemArr.push(val);
+    }else{
+    var index = itemArr.indexOf(val);
+    if (index > -1) {
+    itemArr.splice(index, 1);
+    }
+    }
+    $.cookie('barcodes', itemArr, {path: '/'});
+    });
+
+{% endblock %}

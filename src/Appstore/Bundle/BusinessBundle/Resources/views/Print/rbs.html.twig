@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ entity.customer.name }}-{{ entity.invoice }}</title>
+    {% block stylesheets %}
+
+    {% endblock %}
+    <style>
+        body , body#body{
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            position: relative;
+        }
+        #body{
+            height:303.50mm;
+            width:215mm;
+            background-image: url("{{ asset('assets/domain/rbs/background.png') }}");
+            background-repeat: no-repeat;
+            margin: 0 auto;
+            background-size: 215mm 303.50mm;
+        }
+
+        #main{
+            padding-top: 165px;
+            padding-left: 45px;
+            padding-right: 45px;
+        }
+
+        .clearfix:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+
+        header {
+            padding: 10px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #AAAAAA;
+        }
+
+        footer {
+            color: #777777;
+            position: absolute;
+            bottom: 70px;
+            padding: 8px 0;
+            text-align: center;
+            width:215mm;
+        }
+
+        #logo {
+            float: left;
+            margin-top: 8px;
+        }
+
+        #logo img {
+            height: 70px;
+        }
+
+        #company {
+            float: right;
+            text-align: right;
+        }
+
+
+        #details {
+            margin-bottom: 50px;
+        }
+
+        #client {
+            padding-left: 6px;
+            border-left: 6px solid #0c6dfd;
+            float: left;
+        }
+
+        #client .to {
+            color: #777777;
+        }
+
+        h2.name {
+            font-size: 1.4em;
+            font-weight: normal;
+            margin: 0;
+        }
+
+        #invoice {
+            float: right;
+            text-align: right;
+        }
+
+        #invoice h1 {
+            color: #0c6dfd;
+            font-size: 2em;
+            line-height: 1em;
+            font-weight: normal;
+            margin: 0  0 10px 0;
+        }
+
+        #invoice .date {
+            font-size: 1.1em;
+            color: #777777;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-bottom: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 8px;
+            background: #EEEEEE;
+            text-align: center;
+            border-bottom: 1px solid #FFFFFF;
+        }
+
+        table th {
+            white-space: nowrap;
+            font-weight: normal;
+        }
+
+        table td {
+            text-align: right;
+        }
+
+        table td h3{
+            color: #0c6dfd;
+            font-size: 14px;
+            font-weight: normal;
+            margin: 0 0 0.2em 0;
+        }
+
+        table .no {
+            color: #FFFFFF;
+            font-size: 1.6em;
+            background: #0c6dfd;
+            text-align: center;
+        }
+
+        table .desc {
+            text-align: left;
+        }
+
+        table .unit {
+            background: #DDDDDD;
+            text-align: center;
+        }
+
+        table .qty {
+            text-align: center;
+        }
+
+        table .total {
+            background: #bdc5d1;
+            text-align: right;
+        }
+
+        table td.unit,
+        table td.qty,
+        table td.total {
+            font-size: 1.2em;
+        }
+
+        table tbody tr:last-child td {
+            border: none;
+        }
+
+        table tfoot td {
+            padding: 10px 20px;
+            background: #FFFFFF;
+            border-bottom: none;
+            font-size: 1.2em;
+            white-space: nowrap;
+            border-top: 1px solid #AAAAAA;
+        }
+
+        table tfoot tr:first-child td {
+            border-top: none;
+        }
+
+        table tfoot tr:last-child td {
+            color: #0c6dfd;
+            font-size: 1.4em;
+            border-top: 1px solid #0c6dfd;
+
+        }
+
+        table tfoot tr td:first-child {
+            border: none;
+        }
+
+        #thanks{
+            font-size: 2em;
+            margin-bottom: 50px;
+        }
+
+        #notices{
+            padding-left: 6px;
+            border-left: 6px solid #0c6dfd;
+        }
+
+        #notices .notice {
+            font-size: 1.2em;
+        }
+
+
+        .total-border{
+            border-bottom: 5px solid #000!important;
+            padding-top: 0!important;
+            padding-bottom: 0!important;
+            line-height: 0!important;
+        }
+
+        .grid-container {
+            width: 100%;
+            display: grid;
+            grid-gap: 0;
+            font-size: 14px;
+        }
+        .grid-container {
+            grid-template-columns: repeat(3, calc(100%/3));
+            text-align: center;
+        }
+
+        .grid-item {
+            background-color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .grid-item img{
+            height: 90px;
+        }
+    </style>
+</head>
+<body style="margin: 0!important; padding: 0!important;">
+<div id="body">
+    <main id="main">
+        <div id="details" class="clearfix">
+            <div id="client">
+                <div class="to">BILL TO:</div>
+                <h2 class="name">{{ entity.customer.name }}</h2>
+                <div class="address">{{ entity.customer.address|raw }}</div>
+            </div>
+            <div id="invoice">
+                <h1>INVOICE : {{ entity.invoice }}</h1>
+                <div class="date">Date of Invoice: {{ entity.updated|date('d-m-Y') }}</div>
+            </div>
+        </div>
+        {% if entity.businessInvoiceParticulars is defined and  entity.businessInvoiceParticulars is not empty  %}
+            <table border="0" cellspacing="0" cellpadding="0">
+                <thead>
+                <tr>
+                    <th class="no">#</th>
+                    <th class="desc"><strong>DESCRIPTION</strong></th>
+                    <th class="qty">QUANTITY</th>
+                    <th class="unit">UNIT PRICE</th>
+                    <th class="total"><strong>TOTAL</strong></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for index,item in entity.businessInvoiceParticulars %}
+                    <tr>
+                        <td>{{ loop.index }}.</td>
+                        <td class="desc">{{ item.particular }}<br/><sub>{{ item.description|raw }}</sub></td>
+                        <td class="qty">{{ item.totalQuantity|number_format() }} {% if item.unit is not empty %}{{ item.unit }}{% endif %}</td>
+                        <td class="unit">{{ item.price|number_format(2) }}</td>
+                        <td class="total">{{ item.subTotal|number_format() }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr><td colspan="5" style="border-bottom:1px solid #000!important"></td></tr>
+                <tr><td colspan="3" style="font-size: 13px;text-align:left">Taka In word: {{ entity.total|in_words }}</td><td><strong class="pull-right" >TOTAL DUE</strong></td><td><strong>{{ entity.total|number_format(2) }}</strong></td></tr>
+                <tr><td colspan="5" style="text-align: left!important;"><p style="font-size: 13px"><strong>Notes: </strong>{{ entity.businessConfig.invoiceComment|raw }}</p></td></tr>
+                </tfoot>
+            </table>
+        {% endif %}
+    </main>
+    <footer>
+        <div class="grid-container">
+            <div class="grid-item">
+                Created By<br/>
+                {% if entity.salesBy %}
+                {% if(entity.salesBy and entity.salesBy.profile.webSignaturePath) %}
+                    <span><img alt="" src="{{ image(entity.salesBy.profile.webSignaturePath).resize(120,90) }}"></span><br/>
+                {% endif %}
+                <strong> {{ entity.salesBy.profile.name }}</strong><br/>
+                <span> {{ entity.salesBy.profile.designation.name }}</span><br/>
+                {% endif %}
+            </div>
+            <div class="grid-item">&nbsp;</div>
+            <div class="grid-item">
+                Approved By<br/>
+                <span> <img height="90" src="{{ asset('assets/domain/terminalbd/signature.png') }}"></span><br/>
+                <strong>Md Shafiqul Islam</strong><br/>
+                <span>Executive Director</span><br/>
+            </div>
+        </div>
+        Invoice was created on a computer and is valid without seal.
+    </footer>
+</div>
+
+<script>
+    window.print();
+    setTimeout(function () {
+        window.open('', '_self', '');
+        window.close();
+    }, 2000);
+</script>
+</body>
+</html>
+

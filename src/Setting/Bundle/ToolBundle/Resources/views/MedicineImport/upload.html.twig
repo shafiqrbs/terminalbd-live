@@ -1,0 +1,136 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN inventory_excelimproter HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="title">
+                    Medicine Import
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('medicine_import') }}">Medicine Import</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END inventory_excelimproter HEADER-->
+        <!-- BEGIN inventory_excelimproter CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Medicine Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a href="{{ path('medicine_import') }}"><i class="icon-th-list"></i>&nbsp;Medicine</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            <form class="" method="post" action="{{ path('medicine_upload_create') }}" name="upload" id="upload" enctype="multipart/form-data">
+                            <div class="row-fluid">
+                                <div class="span8">
+                                    <table class="table table-bordered">
+                                        <thead class="flip-content ">
+                                        <tr class="head-blue">
+                                            <th class="numeric" >Form</th>
+                                            <th class="numeric" >Name</th>
+                                            <th class="numeric" >Pack</th>
+                                            <th class="numeric" >DAR</th>
+                                            <th class="numeric" >Unit</th>
+                                            <th class="numeric" >Company</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for entity in medicines %}
+                                            <tr>
+                                                <td><input type="checkbox" class="checkbox stockId" id=""  value="{{ entity.id }}"></td>
+                                                <td class="numeric" >{{ entity.medicineForm }}</td>
+                                                <td class="numeric" >{{ entity.name }}</td>
+                                                <td class="numeric" >{{ entity.packSize }}</td>
+                                                <td>{{ entity.dar }}</td>
+                                                <td class="numeric" >{{ entity.medicineCompany.name }}</td>
+
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="span4">
+                                    <div class="control-group">
+                                        <label class="control-label" >Product image</label>
+                                        <div class="controls">
+                                            <div data-provides="fileupload" class="fileupload fileupload-new">
+                                                <div  class="fileupload-new thumbnail"><img alt="" src="http://www.placehold.it/250x200/EFEFEF/AAAAAA&amp;text=no+image">
+                                                </div>
+                                                <div  class="fileupload-preview fileupload-exists thumbnail"></div>
+                                                <div>
+                                                        <span class="btn btn-file">
+                                                            <span class="fileupload-new">Select image</span>
+                                                            <span class="fileupload-exists">Change</span>
+                                                            <input type="file" name="file" id="file">
+                                                        </span>
+                                                    <div class="clearfix"><br/></div>
+
+                                                    <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"><br/></div>
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-center">
+                                    <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                </div>
+                            </div>
+                            </form>
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    var itemArr = $.cookie('stockIds') ? $.cookie('stockIds').split(',') : [];
+    $('body').on('change', 'input.stockId', function(el) {
+    console.log(itemArr);
+    var val = $(this).val();
+    if($(this).prop('checked')) {
+    itemArr.push(val);
+    }else{
+    var index = itemArr.indexOf(val);
+    if (index > -1) {
+    itemArr.splice(index, 1);
+    }
+    }
+    $.cookie('barcodes', itemArr, {path: '/'});
+    });
+
+{% endblock %}

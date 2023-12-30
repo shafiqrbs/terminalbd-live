@@ -1,0 +1,144 @@
+{% extends ':bindu/mobile:base.html.twig' %}
+{% block body %}
+<style>
+
+    a.p-link-back {
+        position: fixed !important;
+        left: 24px;
+        top: 24px;
+        color: #0A0302;
+    }
+
+    a.login {
+        position: fixed !important;
+        right: 24px;
+        top: 24px;
+        color: #0A0302;
+    }
+    #div-center{
+        vertical-align: middle;
+        display: inline-flex;
+        align-items: center;
+        width: 100%;
+        text-align: left;
+    }
+    #signin {
+        width: 100%;
+        overflow: hidden!important;
+    }
+    #signin input[type="password"] {
+        background-color: #FFF;
+        padding: 3px 25px;
+        height: 35px;
+        color: #555;
+        outline: none;
+        font-size: 14px;
+        box-shadow: none;
+        margin-bottom: 5px;
+    }
+    #signin input[type="text"],.signupForm input[type="password"] {
+        height: 48px!important;
+        border: 3px solid #D7D9DB!important;
+    }
+    #remember{
+        width: 36px!important;
+        height: 36px!important;
+    }
+    .tm-btn, input[type="submit"] {
+        color: #ffffff;
+        background-image: none;
+        background-color: #ff0800;
+        padding: 0 50px;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        height: 48px;
+        line-height: 48px;
+    }
+    label{
+        text-align: left;
+        font-weight: bold;
+    }
+    h3{
+        height: 80px;
+        background: #fff;
+        margin-bottom: 30px;
+        line-height: 80px;
+        font-size: 30px;
+        text-transform: uppercase;
+        font-weight: bold;
+        text-align: center;
+    }
+</style>
+    <div id="content" style="background:#ffffff; height: 100%; margin-top:0px!important; display: flex" >
+        <div id="div-center">
+            <form class="registration signupForm" id="signin" action="{{ path("fos_user_security_check") }}" method="post" novalidate="novalidate">
+                <div>
+                    <img style="background-color: #FFFFff" src="{{ asset('assets/frontend/img/logo.png') }}" height="auto" width="100%" alt="">
+                </div>
+                <h3>SIGN IN</h3>
+                <div class="clear"></div>
+                <div>
+                    {% if(error) %}
+                        <p class="error" style="color: red; text-align: center">{{ error }}</p>
+                    {% endif  %}
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+                </div>
+                <div>
+                    <label>Username</label>
+                    <div><input type="text" id="_username" name="_username" required="required" class="" placeholder="Enter your user name">
+                    </div>
+                </div>
+                <div class="clear"></div>
+                <div>
+                    <label>Password</label>
+                    <p>
+                        <input type="password" id="_password" name="_password" required="required" class="" placeholder="Enter your password">
+                    </p>
+                </div>
+                <div>
+                    <div style="float: left"><input type="checkbox" id="remember" name="_remember_me" value="on"/></div>
+                    <div style="width: auto; line-height:48px; float: left;">&nbsp;&nbsp;Remember me</div>
+                    <div style="float: right"><input id="signup" class="tm-btn dark small" type="submit" value="Sign in" name="submit"></div>
+                </div>
+            </form>
+        </div>
+        <div class="clear"></div>
+    </div>
+{% endblock %}
+
+{% block documentready %}
+
+    $('#signin').validate({
+
+        rules: {
+        _username: {
+        required: true
+        },
+        _password: {
+        required: true
+        },
+        },
+        messages:{
+
+        },
+        submitHandler: function(form) {
+        form.submit();
+        }
+
+    });
+    $('.checkbox :checkbox').rcSwitcher({
+
+            // reverse: true,
+            inputs:false,
+            // width: 70,
+            // height: 24,
+            // blobOffset: 2,
+            onText: 'Yes',
+            offText: 'No',
+            theme: 'modern',
+            // autoFontSize: true,
+
+        });
+
+{% endblock %}

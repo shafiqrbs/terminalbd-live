@@ -1,0 +1,123 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    View Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('admission') }}">Admission</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="btn-group pull-right">
+
+                    <a class="btn black" target="_blank" href="{{ path('admission_print_list') }}">Print</a>
+                    <a class="btn yellow" target="_blank" href="{{ path('admission_pdf_list') }}">PDF</a>
+                    <a class="btn blue" target="_blank" href="{{ path('admission_export_list') }}">Export</a>
+                    <a class="btn purple" href="{{ path('admission_import') }}">Import</a>
+
+                    <span class="btn-group">
+                        {%  set keyword = app.request.query.get('keyword') %}
+                        {%  set direction = app.request.query.get('direction') %}
+                        {%  set sort = app.request.query.get('sort') %}
+                        <form name="search" class="search" method="get" action="">
+                            <input type="text" name="keyword" id="search" class="search-input" value="{{ keyword }}"><button type="submit" class="btn black icn-only" ><i class="halflings-icon white search"></i></button>
+                        </form>
+                    </span>
+                </div>
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Basic Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="tabbable portlet-tabs">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a  href="{{ path('news') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                <li class=""><a  href="{{ path('admission_new') }}"><i class="icon-plus"></i>&nbsp;Add</a></li>
+
+                            </ul>
+                            <div class="tab-content">
+                                <div class="portlet-body flip-scroll">
+                                    {% include('flash-message.html.twig')  %}
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                        <thead class="flip-content ">
+                                        <tr class="head-grey">
+                                            <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                            <th class="numeric" >Name</th>
+                                            <th class="numeric" >Mobile</th>
+                                            <th class="numeric" >Email</th>
+                                            <th class="numeric" >Date</th>
+                                            <th class="numeric" >Action</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% for entity in entities %}
+                                            <tr>
+                                                <td><span class="badge badge-warning toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+
+                                                <td class="numeric" ><a href="{{ path('admission_edit',{'id': entity.id })}}">{{ entity.name }}</a></td>
+                                                <td class="numeric"><a href="tel:+88 {{ entity.mobile }}"> {{ entity.mobile }}</a></td>
+                                                <td class="numeric"><a href="mailto:{{ entity.email }}"> {{ entity.email }}</a></td>
+                                                <td class="numeric" >{{ entity.startDate|date('d-m-Y') }} To {{ entity.endDate|date('d-m-Y') }}</td>
+                                                <td class="numeric" >
+                                                    {% if( entity.status == 1) %}
+                                                        <a class="btn mini green-stripe btn-action" href="{{ path('admission_status', { 'id': entity.id}) }}"><span class="badge badge-success">x</span></a>
+                                                    {% else %}
+                                                        <a class="btn mini green-stripe btn-action" href="{{ path('admission_status', { 'id': entity.id}) }}"><span class="badge badge-important">a</span>    </a>
+                                                    {% endif %}
+                                                    <a class="btn mini green-stripe btn-action" href="{{ path('admission_edit', { 'id': entity.id }) }}">Edit</a>
+                                                    <a class="btn mini blue-stripe btn-action" href="{{ path('admission_show', { 'id': entity.id }) }}">View</a>
+                                                    <a class="btn mini red-stripe btn-action confirm" title="Are you sure went to delete ?" href="{{ path('admission_delete', { 'id': entity.id }) }}" >Delete</a>
+                                                </td>
+                                            </tr>
+                                            <tr id="show-{{ entity.id }}" class="showing-overview">
+                                                <td colspan="6">
+                                                    <table class="inner-table">
+                                                        <tr><td>Contact Person</td><td>{{ entity.contactPerson }}</td></tr>
+                                                        <tr><td>Phone</td><td>{{ entity.phone }}</td></tr>
+                                                        <tr><td>Address</td><td>{{ entity.address|raw }}</td></tr>
+                                                        <tr><td>Content</td><td>{{ entity.content|raw }}</td></tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

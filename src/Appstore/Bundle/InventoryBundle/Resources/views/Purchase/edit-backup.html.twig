@@ -1,0 +1,457 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Purchase
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('purchase') }}">Purchase</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Add/Edit purchase</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid" style="position: relative">
+            <div class="span12">
+                <div id="dataProces"></div>
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Purchase Information</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('purchase_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('purchase') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                    {% if(entity.id > 0 ) %}
+                                        <li><a href="{{ path('purchase_edit',{'id':entity.id}) }}"><i class="icon-edit"></i>&nbsp;Edit</a></li>
+                                        <li><a href="{{ path('purchase_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;Show</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <h4>Vendor:</h4>
+                                    <ul class="unstyled">
+                                        <li>{{ entity.vendor.companyName }}</li>
+                                        <li>{{ entity.vendor.name }}</li>
+                                        <li>{{ entity.vendor.mobile }}</li>
+                                        <li>{{ entity.vendor.address }}</li>
+                                        {% if entity.vendor.country %}
+                                            <li>{{ entity.vendor.country.name }}</li>
+                                        {% endif %}
+
+                                    </ul>
+                                </div>
+                                <div class="span4">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Memo/Invoice #:</strong>{{ entity.memo }} {% if  entity.invoice  %}/{{ entity.invoice }}{% endif %}</li>
+                                        <li><strong>Item/Qnt:</strong> {{ entity.totalItem }}/{{ entity.totalQnt }}</li>
+                                        {#<li><strong>Created:</strong> {{ entity.created }}</li>#}
+                                        <li><strong>Received:</strong> {{ entity.receiveDate|date('d-m-Y') }}</li>
+                                        <li><strong>Created:</strong> {{ entity.created|date('d-m-Y') }}</li>
+                                        <li><strong>Created By:</strong> {% if entity.createdBy is defined and entity.createdBy is not empty %}{{ entity.createdBy.username }}{% endif %}</li>
+                                    </ul>
+                                </div>
+                                <div class="span4 invoice-payment">
+                                    <h4>Payment Details:</h4>
+                                    <ul class="unstyled">
+
+                                        <li><strong>Total BDT:</strong> {{ entity.totalAmount|number_format(2, '.', ',') }}</li>
+                                        <li><strong>Payment BDT:</strong> {{ entity.paymentAmount|number_format(2, '.', ',') }}</li>
+                                        <li><strong>Due BDT:</strong> {{ entity.dueAmount|number_format(2, '.', ',') }}</li>
+                                        <li><strong>Commission BDT:</strong> {{ entity.commissionAmount|number_format(2, '.', ',') }}</li>
+
+
+                                    </ul>
+                                </div>
+                                <div class="span3 image-preview"></div>
+                            </div>
+                            {% include('flash-message.html.twig')  %}
+
+                            <div class="form-actions portlet box blue">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Verdor receive item list</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="row-fluid box green">
+
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                    <thead class="flip-content ">
+                                    <tr class="head-grey">
+                                        <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                        <th class="numeric" >Vendor item name</th>
+                                        <th class="numeric" >Qnt</th>
+                                        <th class="numeric" >Purchase price</th>
+                                        <th class="numeric" >Sub total</th>
+                                        <th class="numeric" >Sales price</th>
+                                        <th class="numeric" >Sub total</th>
+                                        <th class="numeric" >Web price</th>
+                                        <th class="numeric" >Sub total</th>
+                                        <th class="numeric pull-center" ></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="purchaseItem" >
+                                    {% for vendorItem in entity.purchaseVendorItems %}
+                                        <tr class="remove-vendor-item-{{ vendorItem.id }}">
+                                            <td> {% if entity.purchaseItems is defined and  entity.purchaseItems is not empty  %}<span class="badge badge-warning toggle badge-custom" id="{{ vendorItem.id  }}" ><span>[+]</span></span>{% endif %}</td>
+                                            <td class="numeric" >{{ vendorItem.name }}</td>
+                                            <td class="numeric" >{{ vendorItem.quantity }}</td>
+                                            <td class="numeric" >{{ vendorItem.purchasePrice |number_format() }}</td>
+                                            <td class="numeric" >{{ (vendorItem.purchasePrice*vendorItem.quantity)|number_format() }}</td>
+                                            <td class="numeric" >{{ vendorItem.salesPrice|number_format() }}</td>
+                                            <td class="numeric" >{{ (vendorItem.salesPrice*vendorItem.quantity)|number_format() }}</td>
+                                            <td class="numeric" >{{ vendorItem.webPrice|number_format() }}</td>
+                                            <td class="numeric" >{{ (vendorItem.webPrice*vendorItem.quantity) |number_format() }}</td>
+                                            <td class="numeric pull-center" ><a title="Are you sure went to delete ?" href="javascript:" rel="{{ path('purchase_vendor_item_delete', { 'id': vendorItem.id }) }}" id="{{ vendorItem.id  }}" class="btn red mini removeVendorItem" ><i class="icon-trash"></i></a>
+                                            </td>
+                                        </tr>
+
+                                        <tr id="show-{{ vendorItem.id }}" class="showing-overview remove-vendor-item-{{ vendorItem.id }}">
+                                            <td colspan="10">
+                                                {% if vendorItem.purchaseItems is defined and  vendorItem.purchaseItems is not empty  %}
+                                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                                        <thead class="flip-content ">
+                                                        <tr class="head-green">
+                                                            <th class="numeric" >Vendor item</th>
+                                                            <th class="numeric" >Item</th>
+                                                            <th class="numeric" >Qnt</th>
+                                                            <th class="numeric" >Purchase price</th>
+                                                            <th class="numeric" >Sub total</th>
+                                                            <th class="numeric" >Sales price</th>
+                                                            <th class="numeric" >Sub total</th>
+                                                            <th class="numeric" >Web price</th>
+                                                            <th class="numeric" >Sub total</th>
+                                                            <th class="numeric" ></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {% for purchaseItem in vendorItem.purchaseItems %}
+
+                                                            <tr id="remove-purchase-item-{{ purchaseItem.id }}">
+                                                                <td class="numeric" >{{ purchaseItem.purchaseVendorItem.name }}</td>
+                                                                <td class="numeric" >{{ purchaseItem.item.masterItem.name }}-{{ purchaseItem.item.color.name }}-{{ purchaseItem.item.size.name }}-{{ purchaseItem.item.vendor.vendorCode }}</td>
+                                                                <td class="numeric" >{{ purchaseItem.quantity }}</td>
+                                                                <td class="numeric" >{{ purchaseItem.purchasePrice |number_format() }}</td>
+                                                                <td class="numeric" >{{ (purchaseItem.purchasePrice * purchaseItem.quantity)|number_format() }}</td>
+                                                                <td class="numeric" >{{ purchaseItem.salesPrice|number_format() }}</td>
+                                                                <td class="numeric" >{{ (purchaseItem.salesPrice * purchaseItem.quantity) |number_format() }}</td>
+                                                                <td class="numeric" >{{ purchaseItem.webPrice|number_format() }}</td>
+                                                                <td class="numeric" >{{ (purchaseItem.webPrice * purchaseItem.quantity)|number_format() }}</td>
+                                                                <td class="numeric pull-center" ><a title="Are you sure went to delete ?" rel="{{ path('purchase_item_delete', { 'id': purchaseItem.id }) }}" id="{{  purchaseItem.id }}" href="javascript:" class="btn red mini removePurchaseItem" ><i class="icon-trash"></i></a>
+                                                            </tr>
+                                                        {% endfor %}
+                                                        </tbody>
+                                                        <tfoot><tr><td colspan="9"></td></tr></tfoot>
+                                                    </table>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr class="remove-vendor-item-{{ vendorItem.id }}">
+                                            <td colspan="10">
+                                                <div class="row-fluid" style="background: #c1cbd0; min-height: 27px!important; padding-top: 9px">
+                                                    <div class="span11">
+                                                        <div class="label label-success">
+                                                            <i class="icon-reorder"></i>  Add vendor item
+                                                        </div>
+                                                    </div>
+                                                    <div class="span1 pull-center"><button type="button" data-ref-id="{{ entity.id }}" class="btn purple mini addmore"><i class="icon-plus m-icon-white"></i></button></div>
+                                                </div>
+                                                <div class="clearfix">&nbsp;</div>
+                                                <div class="clone-block" id="clone-block-{{ entity.id }}">
+                                                    <div class="row-fluid clone  box green">
+                                                        <div class="span5">
+                                                            <select class="span12" name="item[]" style="height: 32px">
+                                                                {% for item in items %}
+                                                                    <option value="{{ item.id }}">{{ item.masterItem.name }}-{{ item.color.name }}-{{ item.size.name }}-{{ item.vendor.vendorCode }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                        <div class="span6">
+                                                            <div class="span4"><input type="hidden" id="" name="purchaseVendorItem[]" class="" value=""  >
+                                                                <input type="text" id="" name="quantity[]" class="m-wrap span12 tooltips" required="required" value="" placeholder="no of quantity" , data-original-title ="no of quantity" , data-trigger = "hover" >
+                                                            </div>
+                                                            <div class="span4">
+                                                                <input type="text" id="" name="salesPrice[]" class="m-wrap span12 tooltips"  placeholder="sales price" value="" , data-original-title ="Please add sales price" , data-trigger = "hover" >
+                                                            </div>
+                                                            <div class="span4">
+                                                                <input type="text" id="" name="webPrice[]" class="m-wrap span12 tooltips"  placeholder="web price" value="" , data-original-title ="Please add web price" , data-trigger = "hover">
+                                                            </div>
+                                                        </div>
+                                                        <div class="span1 pull-center"><button type="button" class="btn red  remove hidden" ><i class="icon-trash m-icon-white"></i></button></div>
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix">&nbsp;</div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="form-actions portlet box green">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Add vendor item</div>
+                                    <div class="tools">
+                                        <div class="span1"><button type="button" data-ref-id="1"  class="btn purple mini addmore" ><i class="icon-plus m-icon-white"></i></button></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="clone-block" id="clone-block-1">
+                                <div class="row-fluid clone  box blue" >
+                                    <div class="span5">
+                                        <input type="text" id="vendorItemName" name="vendorItemName[]" class="m-wrap span12" placeholder="item">
+                                    </div>
+                                    <div class="span6">
+                                        <input type="text" id="" name="quantity[]" required="required" class="m-wrap span3" placeholder="no of quantity">
+                                        <input type="text" id="" name="purchasePrice[]" required="required" class="m-wrap span3" placeholder="purchase price">
+                                        <input type="text" id="" name="salesPrice[]" class="m-wrap span3" placeholder="sales price">
+                                        <input type="text" id="" name="webPrice[]" class="m-wrap span3" placeholder="web price">
+                                    </div>
+                                    <div class="span1 pull-center"><button type="button" class="btn red  remove hidden" ><i class="icon-trash m-icon-white"></i></button></div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="form-actions portlet box grey">
+                                <div class="span8" id="message"></div>
+                                <div class="pull-right">
+
+                                    <button type="reset" class="btn purple action-button"><i class="icon-refresh"></i> Reset</button>
+                                    <button type="submit" class="btn green action-button"><i class="icon-ok"></i>&nbsp;Submit</button>
+
+                                </div>
+                            </div>
+
+                            <div class="clearfix">&nbsp;</div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block documentready %}
+{#<script>#}
+{{ parent() }}
+$('#appstore_bundle_inventorybundle_purchase_memo').attr("required", true);
+$('#appstore_bundle_inventorybundle_purchase_dueAmount').attr("disabled", true);
+
+$('#purchaseItem').on("click", ".removeVendorItem", function() {
+
+    var url = $(this).attr("rel");
+    var id = $(this).attr("id");
+    $.ajax({
+        url: url,
+        type: 'GET',
+        beforeSend: function() {
+            $('#dataProces').show().addClass('ajax-loading').fadeIn(3000);
+        },
+        success: function (response) {
+            $('#dataProces').fadeOut(3000);
+            if ('success' == response) {
+                $('.remove-vendor-item-' + id).hide();
+            }
+        },
+    })
+})
+
+$('#purchaseItem').on("click", ".removePurchaseItem", function() {
+
+    var url = $(this).attr("rel");
+    var id = $(this).attr("id");
+    $.ajax({
+        url: url,
+        type: 'GET',
+        beforeSend: function() {
+            $('#dataProces').show().addClass('ajax-loading').fadeIn(3000);
+        },
+        success: function (response) {
+            $('#dataProces').fadeOut(3000);
+            if ('success' == response) {
+                $('#remove-purchase-item-' + id).hide();
+            }
+        },
+    })
+})
+
+$('#action-button').click( function( e ) {
+
+    var name_regex = /^[a-zA-Z]+$/;
+    var number_regex = /^[0-9]+$/;
+
+    var vendor =  $('#appstore_bundle_inventorybundle_purchase_vendor').val();
+    var totalAmount =  $('#appstore_bundle_inventorybundle_purchase_totalAmount').val();
+    var paymentAmount =  $('#appstore_bundle_inventorybundle_purchase_paymentAmount').val();
+    var memo =  $('#appstore_bundle_inventorybundle_purchase_memo').val();
+    var totalItem =  $('#appstore_bundle_inventorybundle_purchase_totalItem').val();
+    var totalQnt =  $('#appstore_bundle_inventorybundle_purchase_totalQnt').val();
+    var itemName =  $('#vendorItemName').val();
+
+    var purchaseItemAmount = 0;
+    $("input[name='purchasePrice[]']").each(function (index, element) {
+        purchaseItemAmount = purchaseItemAmount + parseFloat(($(element).val() != '') ?  parseFloat($(element).val()) : 0);
+
+    });
+
+    var itemPurchase = [];
+    $("input[name='purchasePrice[]']").each(function() {
+        var value = $(this).val();
+        if (value) {
+            itemPurchase.push(value);
+        }
+    });
+
+    var quantity = 0;
+    $("input[name='quantity[]']").each(function (index, element) {
+        quantity = quantity + parseFloat(($(element).val() != '') ?  parseFloat($(element).val()) : 0);
+    });
+
+    var itemquantity = [];
+    $("input[name='quantity[]']").each(function() {
+        var value = $(this).val();
+        if (value) {
+            itemquantity.push(value);
+        }
+    });
+
+    var salesItemPrice = 0;
+    $("input[name='salesPrice[]']").each(function (index, element) {
+        salesItemPrice = salesItemPrice + parseFloat(($(element).val() != '') ?  parseFloat($(element).val()) : 0);
+    });
+    var itemSalesPrice = [];
+    $("input[name='salesPrice[]']").each(function() {
+        var value = $(this).val();
+        if (value) {
+            itemSalesPrice.push(value);
+        }
+    });
+
+    var vendorItem = ($('input[name="vendorItemName[]"]').length);
+
+    var vendorItemName = [];
+
+    $("input[name='vendorItemName[]']").each(function() {
+        var value = $(this).val();
+        if (value) {
+            vendorItemName.push(value);
+        }
+    });
+    if(vendor == ""){
+        $('#error-msg').text("Please add your vendor name"); //this segment displays the validation rule for selection
+        $("#appstore_bundle_inventorybundle_purchase_vendor").focus();
+        return false;
+    }else if(!totalAmount.match(number_regex) || totalAmount.length == 0){
+        $('#error-msg').text("Please add purchase total amount"); //this segment displays the validation rule for selection
+        $("#appstore_bundle_inventorybundle_purchase_totalAmount").focus();
+        return false;
+    }else if(!paymentAmount.match(number_regex) || paymentAmount.length == 0){
+        $('#error-msg').text("Please add payment amount"); //this segment displays the validation rule for selection
+        $("#appstore_bundle_inventorybundle_purchase_paymentAmount").focus();
+        return false;
+    }else if(memo ==""){
+        $('#error-msg').text("Please add purchase memo no"); //this segment displays the validation rule for selection
+        $("#appstore_bundle_inventorybundle_purchase_memo").focus();
+        return false;
+    }else if(!totalItem.match(number_regex)){
+        $('#error-msg').text("Please add purchase total item");
+        $("#appstore_bundle_inventorybundle_purchase_totalItem").focus();
+        return false;
+    }else if(!totalQnt.match(number_regex) || totalQnt.length == 0){
+        $('#error-msg').text("Please add purchase total quantity"); //this segment displays the validation rule for selection
+        $("#appstore_bundle_inventorybundle_purchase_totalQnt").focus();
+        return false;
+    }else if(totalItem != vendorItem ){
+        $('#error-msg').text('Not equal total item & purchase item');
+        $('input[name="vendorItemName[]"').focus();
+        return false;
+    }else if (totalItem != vendorItemName.length ) {
+        $('#error-msg').html("Item name field values are blank");
+        $('input[name="vendorItemName[]"').focus();
+        return false;
+    }else if(quantity != totalQnt ){
+        $('#error-msg').text('Not equal total quantity & item base total quantity');
+        $('.quantity').focus();
+        return false;
+    }else if(itemquantity.length === 0 ){
+        $('#error-msg').text('Item quantity field values are blank');
+        $('.quantity').focus();
+        return false;
+    }else if(totalAmount != purchaseItemAmount ){
+        $('#error-msg').text('Not equal total amount & item base purchase price '+ totalAmount+' & '+ purchaseItemAmount);
+        $(".purchasePrice").focus();
+        return false;
+    }else if(itemPurchase  === 0 ){
+        $('#error-msg').text('Item purchase price field values are blank');
+        $(".itemPurchase").focus();
+        return false;
+    }else if(totalAmount >= salesItemPrice ){
+        $('#error-msg').text('Not more then total amount & item base sales price '+ totalAmount+' & '+salesItemPrice);
+        $(".salesPrice").focus();
+        return false;
+    }else if(itemSalesPrice  === 0 ){
+        $('#error-msg').text('Item sales price field values are blank ');
+        $(".salesPrice").focus();
+        return false;
+    }else{
+        $('.purchase').submit();
+    }
+    e.preventDefault();
+
+});
+var count = 0;
+$('.addmore').click(function(){
+    var $el = $(this);
+    $vendor_id = $el.data('ref-id');
+    var $cloneBlock = $('#clone-block-'+ $vendor_id);
+
+    var $clone = $cloneBlock.find('.clone:eq(0)').clone();
+    $clone.find('[id]').each(function(){this.id+='someotherpart'});
+    $clone.find(':text,textarea' ).val("");
+    $clone.attr('id', "added"+(++count));
+    $clone.find('.remove').removeClass('hidden');
+    $cloneBlock.append($clone);
+});
+
+$('form.purchase').on('click', '.remove', function(){
+    $(this).closest('.clone').remove();
+});
+
+{% endblock %}

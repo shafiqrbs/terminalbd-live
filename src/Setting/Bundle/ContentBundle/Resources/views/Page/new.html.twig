@@ -1,0 +1,308 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Create/Edit Page
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('page') }}">Page</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Create/Edit Page Components</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green">
+                   <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Page Content Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn black" href="{{ path('page') }}"><i class="icon-th-list"></i>&nbsp;Pages</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+                        <div class="row-fluid">
+                            <div class="span8">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Title <span class="required">*</span></label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-font"></i>
+                                                    {{ form_widget(form.name) }}
+                                                    {{ form_errors(form.name) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span6 ">
+                                        <div class="control-group">
+                                            <label class="control-label" >Menu</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-font"></i>
+                                                    {{ form_widget(form.menu) }}
+                                                    {{ form_errors(form.menu) }}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" >Parent</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.parent) }}
+                                                {{ form_errors(form.parent) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" >Photo Gallery</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.photo_gallery) }}
+                                                {{ form_errors(form.photo_gallery) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span3">
+                                        <div class="control-group">
+                                            <label class="control-label" >Gallery Position</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    {{ form_widget(form.galleryPosition) }}
+                                                    {{ form_errors(form.galleryPosition) }}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span3">
+                                        <div class="control-group">
+                                            <label class="control-label" >Gallery Type</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    {{ form_widget(form.galleryType) }}
+                                                    {{ form_errors(form.galleryType) }}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" >Icon</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    {{ form_widget(form.icon) }}
+                                                    {{ form_errors(form.icon) }}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span3">
+                                        <div class="control-group">
+                                            <label class="control-label" >Status</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    {{ form_widget(form.status) }}
+                                                    {{ form_errors(form.status) }}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="row-fluid">
+                                    <div class="control-group">
+                                        <label class="control-label" >Feature image</label>
+                                        <div class="controls">
+                                            <div data-provides="fileupload" class="fileupload fileupload-new">
+                                                <div  class="fileupload-new thumbnail">
+                                                    {% if(entity.webPath) %}
+                                                        <img class="fileupload-preview fileupload-exists" alt="" src="{{ image(entity.webPath).resize(250,150) }}">
+                                                    {% else %}
+                                                        <img alt="" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
+                                                    {% endif %}
+                                                </div>
+                                                <div  class="fileupload-preview fileupload-exists thumbnail"></div>
+                                                <div>
+                                            <span class="btn btn-file">
+                                                <span class="fileupload-new blue btn">Select image</span>
+                                                <span class="fileupload-exists">Change</span>
+                                                {{ form_widget(form.file) }}
+                                                {{ form_errors(form.file) }}
+                                            </span>
+                                                    <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" ></label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    Remove Image {{ form_widget(form.removeImage) }}
+                                                    {{ form_errors(form.removeImage) }}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span12 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Short Description</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.shortDescription) }}
+                                        {{ form_errors(form.shortDescription) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span12 ">
+                                <div class="control-group">
+                                    <label class="control-label" >Content</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.content) }}
+                                        {{ form_errors(form.content) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                        <div class="span12 pull-right">
+                        <a target="_blank" href="{{ path('gallery') }}" class="pull-right"><i class="fa fa-picture-o"></i>&nbsp;<strong>Click here for Image Source</strong></a>
+                        </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Additional Field & Value</div>
+                                <a href="javascript:" class="btn green pull-right mini addmore"><i class="icon-plus"></i></a>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid clone-block" id="clone-block">
+                            <div class="clone">
+                                <div class="span3 ">
+                                    <div class="control-group">
+                                        <input type="hidden" name="metaId[]" value="" >
+                                        <input type="text" name="metaKey[]" class="m-wrap span12" placeholder="Label name" value="">
+                                    </div>
+                                </div>
+                                <div class="span8">
+                                    <div class="control-group">
+                                        <input type="text" name="metaValue[]" class="m-wrap span12" placeholder="Label value" value="">
+                                    </div>
+                                </div>
+                                <div class="span1">
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <a href="javascript:"  class="btn red  remove hidden mini"><i class="icon-trash"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if  entity.pageMetas is defined and entity.pageMetas is not empty %}
+                            {% for meta in entity.pageMetas %}
+                                <div class="row-fluid trash" id="remove-{{ meta.id }}"  >
+                                    <div class="span3 ">
+                                        <div class="control-group">
+                                            <input type="hidden" name="metaId[]" value="{{ meta.id }}" >
+                                            <input type="text" name="metaKey[]" class="m-wrap span12" placeholder="Label name" value="{{ meta.metaKey }}">
+                                        </div>
+                                    </div>
+                                    <div class="span8">
+                                        <div class="control-group">
+                                            <input type="text" name="metaValue[]" class="m-wrap span12" placeholder="Label value" value="{{ meta.metaValue }}">
+                                        </div>
+                                    </div>
+                                    <div class="span1">
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                <a href="javascript:" id="{{ meta.id }}"  data-url="{{ path('page_meta_delete',{'id':meta.id}) }}" class="btn red  remove mini"><i class="icon-trash"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-center">
+                                <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                {% if(entity.id > 0 ) %}
+                                    <a href="{{ path('page_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        {{ form_end(form) }}
+                        <!-- END FORM-->
+                    </div>
+                    <div class="clearfix">&nbsp;</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@SettingContentBundle/Resources/public/js/editable.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+{% endblock %}

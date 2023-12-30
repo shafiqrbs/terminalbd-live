@@ -1,0 +1,28 @@
+{% if widget.jsFeature is not empty and widget.jsFeature.slug == 'slider' %}
+    <div id="main-carousel"  class="carousel slide carousel-fade" data-ride="carousel" data-match-height="slider-height">
+        <!-- Indicators -->
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" style="height: 320px!important;" >
+            <a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}" id="mobile-logo">
+                {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+            </a>
+            {% for slide in widget.featureWidgetItems %}
+                {% set path ='' %}
+                 {% if slide.feature.targetTo == 'Page' and slide.feature.menu is not empty %}
+                    {% set path =  path(globalOption.subDomain ~ '_webservice_module',{'module':slide.feature.menu.slug})  %}
+                 {% endif %}
+                <div class="item carousel-cover {% if loop.index-1 == 0 %} active {% endif %}" style="background-image: url('{{ image(slide.feature.webPath) }}')!important;">
+                    <div class="carousel-caption" >
+                        {% if slide.feature.targetTo == 'Page' and slide.feature.menu is not empty %}
+                        <a class=""  href="{{ path(globalOption.subDomain ~ '_webservice_module',{'module':slide.feature.menu.slug}) }}">{{ slide.feature.name }} <i class="fa fa-angle-double-right"></i></a>
+                    {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <a class="carousel-main-control carousel-left" href="#main-carousel" data-slide="prev">‹</a>
+        <a class="carousel-main-control carousel-right" href="#main-carousel" data-slide="next">›</a>
+    </div>
+    <div class="clearfix"></div>
+{% endif %}
+

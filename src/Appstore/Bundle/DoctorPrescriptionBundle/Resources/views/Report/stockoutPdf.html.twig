@@ -1,0 +1,114 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print-dms.css') }}"/>
+<style>
+
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+
+    .report-title-box{
+        height: 40px;
+        line-height: 40px;
+        background-color: #f1f4f8;
+    }
+
+    .report-title{
+        font-size: 20px;
+    }
+
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-left{
+        text-align: left!important;
+        display: block;
+        padding-left: 20px;
+        float: left;
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+        float: right;
+    }
+
+</style>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box green">
+                <div class="portlet-body form">
+                    <div class="report-title-box">
+                        <div class="pull-left report-title">Report for Stock out: {% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %} To {% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}</div><div class="pull-right">Print:{{ ("now")|date('d-F-Y') }}</div>
+                    </div>
+                    <div class="clearfix">&nbsp;</div>
+                    <div class="portlet-body form">
+                        <div class="clearfix">&nbsp;</div>
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                            <thead class="flip-content ">
+                            <tr class="head-green">
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Quantity</th>
+                                <th class="numeric" >Sub-Total</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% set subTotal = 0 %}
+                            {% set quantity = 0 %}
+                            {% for entity in entities %}
+                                {%  set quantity = quantity + entity.quantity  %}
+                                {%  set subTotal = subTotal + entity.subTotal  %}
+                                <tr id="delete-{{ entity.id }}">
+                                    <td class="numeric" >{{ entity.particularName }}</td>
+                                    <td class="numeric" >{{ entity.quantity }}</td>
+                                    <td class="numeric" >{{ entity.subTotal|number_format }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr><th><span class="pull-right">Total Stock out</span></th><th>{{ quantity }}</th><th>{{ subTotal|number_format }}</th></tr>
+                            </tfoot>
+                        </table>
+                        <div class="clearfix">&nbsp;</div>
+                    </div>
+                    <div class="clearfix">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

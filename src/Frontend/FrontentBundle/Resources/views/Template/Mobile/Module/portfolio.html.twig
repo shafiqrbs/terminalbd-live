@@ -1,0 +1,19 @@
+<div class="clearfixTopMargin" ></div>
+    {% for key,portfolio in pagination  %}
+        <div class="col-xs-12 col-md-6 grid">
+            <div class="our-portfolio">
+                <img class="img-thumbnail" src="{{ image(portfolio.webPath).scaleResize(380,266) }}" alt="">
+                <div class="team-content">
+                    <h3 class="team-prof">
+                        <a href="http://{{ portfolio.website }}">{{ portfolio.name }}</a>
+                        {% if portfolio.category is not empty %}<small>{{ portfolio.category.name }}</small>{% endif %}
+                    </h3>
+                </div>
+                <br/>
+                <p class="text-center" ><a target="_blank" href="http://{{ portfolio.website }}"><b>{{ portfolio.name }}</b></a></p>
+            </div>
+        </div>
+    {% endfor %}
+<div class="pagination pull-center"  >
+    {{ knp_pagination_render(pagination) }}
+</div>

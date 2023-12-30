@@ -1,0 +1,72 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>AdsTool</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Googleserviceid</th>
+                <td>{{ entity.googleServiceID }}</td>
+            </tr>
+            <tr>
+                <th>Slotid</th>
+                <td>{{ entity.slotID }}</td>
+            </tr>
+            <tr>
+                <th>Sitename</th>
+                <td>{{ entity.siteName }}</td>
+            </tr>
+            <tr>
+                <th>Keyword</th>
+                <td>{{ entity.keyword }}</td>
+            </tr>
+            <tr>
+                <th>Metadescription</th>
+                <td>{{ entity.metaDescription }}</td>
+            </tr>
+            <tr>
+                <th>Googleverificationcode</th>
+                <td>{{ entity.googleVerificationCode }}</td>
+            </tr>
+            <tr>
+                <th>Redirectlang</th>
+                <td>{{ entity.redirectLang }}</td>
+            </tr>
+            <tr>
+                <th>Redirectcode</th>
+                <td>{{ entity.redirectCode }}</td>
+            </tr>
+            <tr>
+                <th>Statcounterid</th>
+                <td>{{ entity.statCounterID }}</td>
+            </tr>
+            <tr>
+                <th>Statcountersecuritycode</th>
+                <td>{{ entity.statCounterSecurityCode }}</td>
+            </tr>
+            <tr>
+                <th>Statcountervisible</th>
+                <td>{{ entity.statCounterVisible }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('adstool') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('adstool_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

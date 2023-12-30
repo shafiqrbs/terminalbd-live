@@ -1,0 +1,109 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 print-bar">
+            <form action="" method="get">
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <label>Customer</label><br/>
+                        <select class="search-input col-md-12 m-wrap select2" name="customer" id="customer">
+                            {% if customers is not empty %}
+                                {% for customer in customers %}
+                                    <option {% if searchForm.customer is defined and searchForm.customer is not empty and customer.customerId == searchForm.customer %} selected="selected" {% endif %} value="{{ customer.customerId }}">{{ customer.customerMobile }} - {{ customer.customerName }} Balance: ({{ customer.customerBalance|number_format() }}) </option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                     <div class="grid-item">
+                        <label>Start Date</label><br/>
+                        <input type="date" class="m-wrap datepicker" required="required"  id="startDate" name="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}">
+                    </div>
+                    <div class="grid-item">
+                        <label>End Date</label><br/>
+                        <input type="date" class="m-wrap datepicker span8 m-wrap" required="required"  id="endDate" name="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}">
+                    </div>
+                    <div class="grid-item">
+                        <div class="col-md-4 margin-top-15" >
+                            <button type="submit" class='btn btn-download btn-margin-left' value="search" name="submit" ><i class='fa fa-search'></i></button>
+                            <button class="btn purple" onclick="exportExcel()" type="button"><i class="fa fa-file"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="print-area">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size: 16px">{{ option.name }}</strong></p>
+                {% if customer %}
+                <p>Customer Name : {{ customer.name }}</p>
+                {% endif %}
+                <p>Name of Report: User base Sales & Collection</p>
+            </div>
+            <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}
+                <p><strong>Start Date:&nbsp;</strong><strong>{% if searchForm['startDate'] is defined and searchForm['startDate'] is not empty %}{{ searchForm['startDate']|date('d-m-Y') }}{% endif %}</strong>
+                    <strong>End Date:&nbsp;<strong>{% if searchForm['endDate'] is defined and searchForm['endDate'] is not empty %}{{ searchForm['endDate']|date('d-m-Y') }}{% endif %}</strong></strong>
+                </p>
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table even" border="1" id="downloadExcel">
+                    <colgroup>
+                        <col class="w">
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <tbody><tr>
+                        <th>SI.</th>
+                        <th>Created</th>
+                        <th>Mode</th>
+                        <th>Invoice/Ref No</th>
+                        <th class="" >Method</th>
+                        <th class="text-right">Sales</th>
+                        <th class="text-right">Receive</th>
+                    </tr>
+                    <tbody>
+                    {% set balance = 0 %}
+                    {% set sales = 0 %}
+                    {% set receive = 0 %}
+                    {% for entity in entities %}
+                        {% set sales = sales + entity.debit %}
+                        {% set receive = receive + entity.credit %}
+                        {% set balance = balance + entity.balance %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                            <td class="numeric" >{{ entity.processType }}</td>
+                            <td class="numeric" >{{ (entity.invoiceNo) ? entity.invoiceNo : entity.accountRefNo }}</td>
+                            <td class="numeric" >{{ entity.methodName }}</td>
+                            <td class="text-right" >{{ entity.debit|number_format(2) }}</td>
+                            <td class="text-right" >{{ entity.credit|number_format(2) }}</td>
+                         </tr
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th class="text-right" colspan="5">Grand Balance</th>
+                        <th class="text-right">{{ sales|number_format(2) }}</th>
+                        <th class="text-right">{{ receive|number_format(2) }}</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        function exportExcel() {
+            var table = document.querySelector('#downloadExcel');
+            TableToExcel.convert(table);
+        }
+    </script>
+{% endblock %}

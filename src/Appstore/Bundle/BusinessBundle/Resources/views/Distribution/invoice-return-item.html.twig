@@ -1,0 +1,30 @@
+{% if entity.invoiceReturnItems is not empty %}
+    {% set subTotal = 0 %}
+    {% for item in entity.invoiceReturnItems %}
+        {% set subTotal = subTotal + item.subTotal %}
+        <tr id="remove-{{ item.id }}">
+            <td  class="">{{ loop.index }}.
+                <input type="hidden" id="price-{{ item.id }}" name="price" value="{{ item.price }}">
+            </td>
+            <td class="">{{ item.particular.name }}</td>
+            <td>{% if item.particular.unit is not empty %}{{ item.particular.unit.name }}{% endif %}</td>
+            <td class="">{{ item.price }}</td>
+            <td class="">{{ item.quantity }}</td>
+            <td class="salesReturnSubTotal-{{ item.id }}">{{ (item.quantity * item.price) }}</td>
+            <td>{{ item.itemProcess }}</td>
+            <td>
+                {% if item.status != 1 %}
+                    <a id="{{ item.id }}" data-id="{{ item.id }}"  data-url="{{ path('business_invoice_distribution_return_item_delete',{'invoice': entity.id ,'id': item.id }) }}" href="javascript:" class="btn red mini returnItemDelete" ><i class="icon-trash"></i></a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="7" class="" style="border: 1px double #000"></td>
+    </tr>
+    <tr>
+        <td colspan="5" class=""><span class="pull-right"><strong>Total Amount TK.</strong> =</span></td>
+        <td class=""><strong>{{ entity.salesReturn|number_format(2) }}</strong></td>
+        <td class=""></td>
+    </tr>
+{% endif %}

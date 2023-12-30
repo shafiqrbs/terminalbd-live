@@ -1,0 +1,58 @@
+<div class="header-grid">
+    {% if globalOption.templateCustomize.mobileShowLogo == 1 %}
+        <a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}" id="mobile-logo">
+            {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+        </a>
+    {% endif %}
+</div>
+<hr>
+<div class="container">
+    {% set commentID = globalOption.id~'-'~menu.module.slug~'-'~page.id %}
+    <div class="row"><div class="col-md-12"><h4>{{ page.name }}</h4></div></div>
+    <div class="clearfix"></div>
+    <div id="catlist">
+        <dl class="entity-list">
+            <dd>
+                <i class="fa fa-user"></i>&nbsp;{{ page.authorName }} <i class="fa fa-calendar"></i> {{ page.updated|date('d F, Y') }}  {% if page.webPath is not empty %}<i class="fa fa-cloud-download"></i>  <a target="_blank" href="{{ page.webPath }}">Download</a>{% endif %}
+            </dd>
+        </dl>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="text-content">{{ page.content|raw }}</div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="" >
+        <ul class="mbm_social" style="margin-top: 8px">
+            <li><a class="social-facebook" target="_blank" href="https://www.facebook.com/share.php?u={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}&picture={{ app.request.getSchemeAndHttpHost() }}/{{ page.webPath }}&title={{ page.name }}&description={{ page.content|striptags|truncate(250)|raw }}">
+                    <i class="fa fa-facebook"></i>
+                    <div class="tooltip"><span>facebook</span></div>
+                </a>
+            </li>
+            <li><a class="social-linkedin" target="_blank" href="//www.linkedin.com/shareArticle?mini=true&url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                    <i class="fa  fa-linkedin"></i>
+                    <div class="tooltip"><span>LinkedIn</span></div>
+                </a>
+            </li>
+            <li><a class="social-google-plus" target="_blank" href="//plus.google.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                    <i class="fa fa-google-plus"></i>
+                    <div class="tooltip"><span>Google</span></div>
+                </a>
+            </li>
+            <li><a class="social-twitter" target="_blank" href="//twitter.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                    <i class="fa fa-twitter"></i>
+                    <div class="tooltip"><span>Twitter</span></div>
+                </a>
+            </li>
+            <li><a class="social-instagram" target="_blank" href="//instagram.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                    <i class="fa  fa-instagram"></i>
+                    <div class="tooltip"><span>Instagram</span></div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="clearfix"></div>
+</div>
+

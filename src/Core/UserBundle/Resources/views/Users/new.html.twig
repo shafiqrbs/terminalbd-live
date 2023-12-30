@@ -1,0 +1,104 @@
+{% extends "base.html.twig" %}
+{% block body %}
+
+    <div class="content">
+
+        {{ form_start(form, {'method': 'POST', 'attr': {'id': 'form-create-user', 'class': 'form-horizontal'}}) }}
+
+        <div class="alert alert-error {% if not form.vars.errors|length %} hide {% endif %}">
+            <button class="close" data-dismiss="alert"></button>
+            You have some form errors. Please check below.
+            {{ form_errors(form) }}
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <label class="fa">Name<span class="required">*</span></label>
+                            {{ form_widget(form.name)}}
+                            {{ form_errors(form.name) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <label class="fa">Syndicate<span class="required">*</span></label>
+                            {{ form_widget(form.globalOption.syndicate)}}
+                            {{ form_errors(form.globalOption.syndicate) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <label class="fa">User Name<span class="required">*</span></label>
+                            {{ form_widget(form.username)}}
+                            {{ form_errors(form.username) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <label class="fa">Email<span class="required">*</span></label>
+                            {{ form_widget(form.email)}}
+                            {{ form_errors(form.email) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <label class="fa">Mobile<span class="required">*</span></label>
+                            {{ form_widget(form.profile.mobile)}}
+                            {{ form_errors(form.profile.mobile) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <label class="fa">Password<span class="required">*</span></label>
+                            {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control input-sm', 'placeholder' : 'Confirm Password' } } ) }}
+                            {{ form_errors(form.plainPassword.first) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <label class="fa">Re-password<span class="required">*</span></label>
+                            {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control input-sm', 'placeholder' : 'Confirm Password' } } ) }}
+                            {{ form_errors(form.plainPassword.second) }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" style="background: lightgrey;">
+            <div class="btn-group">
+                <a href="/users" class="btn" style="width: 100px;background: #0353D6; color: white !important;">
+                    <i class="fa fa-ban"> Cancel</i>
+                </a>
+            </div>
+            <div class="btn-group">
+                <div class="btn-group">
+                    <button type="submit" class="btn" style="width: 100px;background: #0353D6; color: white !important;">Create User</button>
+                </div>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+<style>
+
+    .input-icon .fa{
+        font-size: 16px;;
+    }
+    .input-icon .fa .required{
+        color: #e34e47!important;
+    }
+    .input-icon ul{
+        padding-left:0!important;
+    }
+    .input-icon ul li{
+        color: #e34e47!important;
+    }
+</style>
+{% endblock body %}
+{% block documentReady %}
+
+    FormValidation.init();
+
+{% endblock documentReady %}
+

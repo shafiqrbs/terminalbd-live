@@ -1,0 +1,189 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    View Purchase Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('purchase') }}">Purchase</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Food product Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Food product Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('purchase_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('purchase') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <style>
+                        .search-input{
+                            height: 34px!important;
+                        }
+                    </style>
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="portlet search-portlet box grey">
+                                <div class="row-fluid" >
+                                    <form class="search-form" action="" method="get" name="itemSearch">
+                                        <div class="span7">
+                                            <div class="controls">
+                                                <input type="text" id="updated" name="updated"  class="span4 search-input m-ctrl-medium date-picker" value="{% if searchForm.updated is defined %}{{ searchForm.updated }}{% endif %}"  autocomplete="off" placeholder="Ptoduct created date">
+                                                <input type="text" id="name" name="name"  class="span8 search-input" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Search by product name">
+                                            </div>
+                                        </div>
+                                        <div class="span4 left-margin">
+                                            <input type="text" id="category" name="category"  class="span11 select2Category" value="{% if searchForm.category is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Enter category name ">
+                                        </div>
+                                        <div class="span1">
+                                            <div class="btn-group">
+                                                <button class="btn" type="submit" >
+                                                    <i class="icon-search"></i>&nbsp;Go</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Product name</th>
+                                    <th class="numeric" >Category</th>
+                                    <th class="numeric" >Qnt</th>
+                                    <th class="numeric" >Sales price</th>
+                                    <th class="numeric" >Web price</th>
+                                    <th class="numeric" >Is web</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="purchaseentity" >
+                                {% for entity in entities %}
+                                    <tr class="remove-vendor-item-{{ entity.id }}">
+                                        <td> {% if entity.subProducts is defined and  entity.subProducts is not empty  %}<span class="badge badge-success toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span>{% endif %}</td>
+                                        <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.name }}</td>
+                                        <td class="numeric" >{% if entity.category is not empty %}{{ entity.category.name }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.quantity }}</td>
+                                        <td class="numeric" >{{ entity.salesPrice|number_format() }}</td>
+                                        <td class="numeric" >
+                                            <a class="editable" href="#" data-name="WebPrice" data-type="text" data-url="{{ path('inventory_item_web_price') }}" data-pk="{{ entity.id }}" data-original-title="Enter web price">{{entity.webPrice}}</a>
+                                        </td>
+                                        <td class="numeric" >
+                                            {% if( entity.isWeb == 1) %}
+                                                <a href="{{ path('inventory_vendoritem_status', { 'id': entity.id}) }}" class="btn blue mini"><i class="icon-check"></i></a>
+                                            {% else %}
+                                                <a  href="{{ path('inventory_vendoritem_status', { 'id': entity.id}) }}" class="btn blue mini" ><i class="icon-check-empty"></i></a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric" >
+                                            <a href="{{ path('inventory_foodproduct_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i>&nbsp;Edit</a>
+                                            <a href="{{ path('inventory_foodproduct_show',{'id':entity.id}) }}" class="btn purple mini" ><i class="icon-eye-open"></i></a>
+                                        </td>
+                                    </tr>
+
+                                    <tr id="show-{{ entity.id }}" class="showing-overview remove-vendor-item-{{ entity.id }}">
+                                        <td colspan="11">
+                                            {% if entity.purchaseItems is defined and  entity.purchaseItems is not empty  %}
+                                                <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                                    <thead class="flip-content ">
+                                                    <tr class="head-green">
+                                                        <th class="numeric" >Item</th>
+                                                        <th class="numeric" >Qnt</th>
+                                                        <th class="numeric" >Sales</th>
+                                                        <th class="numeric" >Sub-total</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="purchaseItem" >
+                                                    {% for purchaseItem in entity.purchaseItems %}
+                                                        <tr id="remove-purchase-item-{{ entity.id }}">
+                                                            <td class="numeric" >{{ purchaseItem.item.name }}/{{ purchaseItem.item.sku }}</td>
+                                                            <td class="numeric" >{{ purchaseItem.quantity }}</td>
+                                                            <td class="numeric" >
+
+                                                                    {{purchaseItem.salesPrice}}
+
+                                                            </td>
+                                                            <td class="numeric" >{{  purchaseItem.salesPrice * purchaseItem.quantity|number_format() }}</td>
+
+                                                        </tr>
+                                                    {% endfor %}
+
+                                                    </tbody>
+
+                                                </table>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/editable.js'
+    '@InventoryBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    ApproveProcess();
+{% endblock %}
+

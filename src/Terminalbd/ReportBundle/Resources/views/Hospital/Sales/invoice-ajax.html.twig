@@ -1,0 +1,104 @@
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4 text-center">
+        <p><strong style="font-size: 16px">{{ option.name }}</strong></p>
+        <p>Name of Report: All Invoices</p>
+    </div>
+    <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}
+        <p><strong>Start Date:&nbsp;</strong><strong>{% if searchForm['startDate'] is defined and searchForm['startDate'] is not empty %}{{ searchForm['startDate']|date('d-m-Y h:i A') }}{% endif %}</strong>
+            <strong>End Date:&nbsp;<strong>{% if searchForm['endDate'] is defined and searchForm['endDate'] is not empty %}{{ searchForm['endDate']|date('d-m-Y h:i A') }}{% endif %}</strong></strong>
+        </p>
+        <p></p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table even" border="1" id="downloadExcel">
+            <colgroup>
+                <col class="w">
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+            </colgroup>
+            <tbody>
+            <tr class="head-green">
+                <th>SI.</th>
+                <th>Date</th>
+                <th>Created By</th>
+                <th>Mode</th>
+                <th>Invoice</th>
+                <th>Name</th>
+                <th>Mobile</th>
+                <th>Doctor</th>
+                <th>Anesthesia</th>
+                <th>Marketing</th>
+                <th>Referred</th>
+                <th class="text-right">SubTotal</th>
+                <th class="text-right">Discount</th>
+                <th class="text-right">Total</th>
+                <th class="text-right">Receive</th>
+                <th class="text-right">Commission</th>
+                <th class="text-right">Balance</th>
+                <th class="text-right">Discounted By</th>
+            </tr>
+            <tbody>
+            {% set subTotal = 0 %}
+            {% set discount = 0 %}
+            {% set balance = 0 %}
+            {% set sales = 0 %}
+            {% set receive = 0 %}
+            {% set commission = 0 %}
+            {% for entity in entities %}
+                {% set subTotal = subTotal + entity.subTotal %}
+                {% set discount = discount + entity.discount %}
+                {% set sales = sales + entity.total %}
+                {% set receive = receive + entity.receive %}
+                {% set commission = commission + entity.commission %}
+                {% set balance = (sales + entity.total) - (receive + entity.receive) %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td class="numeric" >{{ entity.created|date('d-m-Y h:i A') }}</td>
+                    <td class="numeric" >{{ entity.createdUser }}</td>
+                    <td class="numeric" >{{ entity.invoiceMode|capitalize }}</td>
+                    <td>
+                        {% if entity.invoiceMode == "admission" %}
+                            <a target="_blank" href="{{ path('hms_invoice_admission_show', { 'id': entity.id }) }}">{{ entity.invoice }}</a>
+                        {% elseif(entity.invoiceMode == "diagnostic") %}
+                            <a target="_blank" href="{{ path('hms_invoice_show', { 'id': entity.id }) }}">{{ entity.invoice }}</a>
+                        {% else %}
+                            <a target="_blank" href="{{ path('hms_prescription_show', { 'id': entity.id }) }}">{{ entity.invoice }}</a>
+                        {% endif %}
+                    </td>
+                    <td class="numeric" >{{ entity.name }}</td>
+                    <td class="numeric" >{{ entity.mobile }}</td>
+                    <td class="numeric" >{{ entity.assignDoctor }}</td>
+                    <td class="numeric" >{{ entity.anesthesiaDoctor }}</td>
+                    <td class="numeric" >{{ entity.marketing }}</td>
+                    <td class="numeric" >{{ entity.referred }}</td>
+                    <td class="text-right" >{{ entity.subTotal|number_format(2) }}</td>
+                    <td class="text-right" >{{ entity.discount|number_format(2) }}</td>
+                    <td class="text-right" >{{ entity.total|number_format(2) }}</td>
+                    <td class="text-right" >{{ entity.receive|number_format(2) }}</td>
+                    <td class="text-right" >{{ entity.commission|number_format(2) }}</td>
+                    <td class="text-right" >{{ (entity.total - entity.receive)|number_format(2) }}</td>
+                    <td class="text-right" >{{ entity.discountRequestedBy }}</td>
+                </tr
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <th class="text-right" colspan="11">Grand Balance</th>
+                <th class="text-right">{{ subTotal|number_format(2) }}</th>
+                <th class="text-right">{{ discount|number_format(2) }}</th>
+                <th class="text-right">{{ sales|number_format(2) }}</th>
+                <th class="text-right">{{ receive|number_format(2) }}</th>
+                <th class="text-right">{{ commission|number_format(2) }}</th>
+                <th class="text-right">{{ balance|number_format(2) }}</th>
+                <th class="text-right"></th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

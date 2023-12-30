@@ -1,0 +1,207 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Account Sales Customer Ledger
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Account Sales Ledger</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account Sales Customer Ledger</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn yellow" href="{{ path('report_customer_outstanding') }}"><i class="icon-th-list"></i>&nbsp; Customer Outstanding</a>
+                                {% set mobile = searchForm.mobile is defined ? searchForm.mobile :'' %}
+                                {% set startDate = searchForm.startDate is defined ? searchForm.startDate : "now"|date("d-m-Y") %}
+                                {% set endDate = searchForm.endDate is defined ? searchForm.endDate :"now"|date("d-m-Y") %}
+                                <a target="_blank" href="{{ path('report_customer_ledger',{'pdf':'pdf','startDate':startDate,'endDate':endDate,'mobile':mobile}) }}" class="btn purple"><i class="icon icon-download"></i> Download</a>
+                                <a  data-action="{{ path('report_customer_ledger_print',{'startDate':startDate,'endDate':endDate,'mobile':mobile}) }}" href="javascript:" class="btn blue ledger-print"><i class="icon icon-print"></i> Print</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <form class="search-form" action="" method="get" name="itemSearch" id="itemSearch">
+                            <div class="row-fluid">
+                                <div class="span4"></div>
+                                <div class="span4">
+                                    <input type="text" id="mobile" name="mobile" required="required"  class="leftMargin span12 select2Customer" value="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% endif %}"  autocomplete="off" placeholder="Search customer name/mobile no">
+                                </div>
+                                <div class="span2">
+                                    <input type="text" id="startDate" name="startDate"  class="span12 m-wrap search-input  dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                </div>
+                                <div class="span2">
+                                    <div class="controls">
+                                        <div class="input-append span10">
+                                            <input type="text" id="endDate" name="endDate"  class="span10 m-wrap search-input  m-ctrl-medium dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %} ">
+                                            <div class="btn-group">
+                                                <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="clearfix">&nbsp;</div>
+
+                    <div class="portlet-body flip-scroll" id="DivIdToPrint">
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <h4>About:</h4>
+                                <ul class="unstyled">
+                                    {% if customer is not empty %}<li><strong>Customer #:</strong>&nbsp;{{ customer.name }}</li>{% endif %}
+                                    {% if customer is not empty %}<li><strong>Mobile #:</strong>&nbsp;{{ customer.mobile }}</li>{% endif %}
+                                    {% if customer is not empty %}<li><strong>Address #:</strong>&nbsp;{{ customer.address }}</li>{% endif %}
+                                    {% if customer is not empty and customer.location is not empty   %}<li><strong>Location #:</strong>&nbsp;{{ customer.location.name }}, {{ customer.location.parent.name }}</li>{% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <table  class="table table-bordered table-striped table-condensed flip-content " style="width: 100%">
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric" >S/N</th>
+                                <th class="numeric" >Created</th>
+                                <th class="numeric" >Invoice</th>
+                                <th class="numeric" >
+                                    {% if globalOption.mainApp.slug == 'business' %}
+                                <table class="table table-bordered table-striped table-condensed">
+                                    <thead class="flip-content ">
+                                        <tr class="head-blue">
+                                            <th class="span4">Particular</th>
+                                            <th class="span2">Size</th>
+                                            <th class="span1">Qnt</th>
+                                            <th class="span1">Unit</th>
+                                            <th class="span1">Price</th>
+                                            <th class="span2">Sub-Total</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                    {% else %}
+                                        Particulars
+                                    {% endif %}
+                                </th>
+                                <th class="numeric" >Method</th>
+                                <th class="numeric" >Mode</th>
+                                <th class="numeric" >Total</th>
+                                <th class="numeric" >Received</th>
+                                <th class="numeric" >Due</th>
+                                <th class="numeric" >Created</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for entity in entities %}
+                                <tr id="remove-{{ entity.id }}">
+                                    <td class="numeric" >{{ loop.index }}</td>
+                                    <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                    <td class="numeric" >
+                                        {{ entity.sourceInvoice }}
+                                    </td>
+                                    <td class="numeric" >
+                                        {% if entity.businessInvoice is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'business' %}
+                                            <table>
+                                                {% for item in entity.businessInvoice.businessInvoiceParticulars  %}
+                                                <tr>
+                                                    <td class="span4">{{ loop.index }}. {{ item.particular }}</td>{% if entity.businessInvoice.businessConfig.businessModel == 'sign' %}
+                                                    <td class="span2">
+                                                        {% if item.height is not empty and item.width is not empty %}
+                                                            {{ item.height }} x {{ item.width }} = {{ item.subQuantity }}
+                                                        {% endif %}
+                                                    </td>
+                                                    {% endif %}
+                                                    <td class="span1">{{ item.quantity }}</td>
+                                                    <td class="span1">{{ item.unit }}</td>
+                                                    <td class="span1">{{ item.price }}</td>
+                                                    <td class="span2" id="subTotal-{{ item.id }}">{{ item.subTotal|number_format }}</td></tr>
+                                            {% endfor %}
+                                            </table>
+
+                                        {% elseif entity.sales is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'inventory' %}
+                                            {% for item in entity.sales.salesItems  %}
+                                                <p>{{ loop.index }}. {{ item.item.name }}</p>
+                                            {% endfor %}
+                                        {% elseif entity.hmsInvoices is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'hms' %}
+                                            {% for item in entity.hmsInvoices.invoiceParticulars  %}
+                                                <p>{{ loop.index }}. {{ item.particular.name }}</p>
+                                            {% endfor %}
+                                        {% elseif entity.restaurantInvoice is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'restaurant' %}
+                                            {% for item in entity.restaurantInvoice.invoiceParticulars  %}
+                                                <p>{{ loop.index }}. {{ item.particular.name }}</p>
+                                            {% endfor %}
+                                        {% elseif entity.medicineSales is not empty and customer is not empty and customer.globalOption.mainApp.slug == 'miss' %}
+                                            {% for item in entity.medicineSales.medicineSalesItems  %}
+                                                <p>{{ loop.index }}. {{ item.medicineStock.name }} ({{ item.quantity }}x{{ item.salesPrice }} = {{  item.subTotal }} Tk) </p>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </td>
+                                    <td class="numeric" >
+                                        {% if entity.transactionMethod is defined and entity.transactionMethod is not empty %}{{ entity.transactionMethod.name }}{% endif %}
+                                    </td>
+                                    <td class="numeric" >{{ entity.processHead }}</td>
+                                    <td class="numeric" >{{ entity.totalAmount|number_format }}</td>
+                                    <td class="numeric" >
+                                        {% if entity.process == 'approved'  %}
+                                            {{ entity.amount|number_format }}
+                                        {% else %}
+                                            <a data-mode="inline" class="editable" data-name="amount" href="#"  data-url="{{ path('account_sales_inline') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change your amount">{{ entity.amount }}</a>
+                                        {% endif %}
+                                    </td>
+                                    <td class="numeric" >{{ entity.balance|number_format }}</td>
+                                    <td class="numeric" >{{ entity.createdBy }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            {% if searchForm['mobile'] is defined and searchForm['mobile'] is not empty  %}
+                                <tfoot>
+                                <tr>
+                                    <td class="numeric" colspan="6" ></td>
+                                    <td class="numeric" ><strong>{{ overview.totalAmount|number_format }}</strong></td>
+                                    <td class="numeric" ><strong>{{ overview.receiveAmount|number_format }}</strong></td>
+                                    <td class="numeric" ><strong>{{ (overview.totalAmount - overview.receiveAmount)|number_format }}</strong></td>
+                                    <td></td>
+                                </tr>
+                                </tfoot>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    AccountingApproveProcess();
+{% endblock %}
+
+

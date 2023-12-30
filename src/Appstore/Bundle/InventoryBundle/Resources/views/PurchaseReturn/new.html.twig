@@ -1,0 +1,191 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Purchase Return
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_purchasereturn') }}">Purchase Return</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Purchase Return details</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+         <div class="clearfix">&nbsp;</div>
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Purchase Return Information</div>
+                        <div id="message" class="span5"></div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('inventory_purchasereturn_new') }}"><i class="icon-plus-sign"></i>&nbsp;Create</a></li>
+                                    <li><a href="{{ path('inventory_purchasereturn') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                            <div class="portlet-body form">
+
+                                <div class="row-fluid">
+                                    <div class="span12 ">
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                <div class="input-prepend input-append span12">
+                                                    <span class="add-on add-on-height"><i class="icon-barcode"></i></span>
+                                                    <input type="text" id="barcode" name="barcode" required="required" class="m-wrap span5" placeholder="enter correct barcode " autocomplete="off">
+                                                    <span class="add-on add-on-height"><i class="icon-search"></i></span>
+                                                    <input type="text" id="barcodeNo" name="barcodeNo" required="required" placeholder="enter correct barcode" class="m-wrap span6"  autocomplete="off">
+                                                    <button type="submit" class="btn blue" id="barcodeSearch"><span class="icon-search"></span></button>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <div class="row-fluid">
+                                    <div class="span12 ">
+                                        <hr/>
+                                    </div>
+                                </div>
+                                {{ form_start(form) }}
+                                {{ form_row(form._token) }}
+                                <div class="row-fluid">
+                                    <div class="span8">
+
+                                        <div class="row-fluid">
+                                            <div class="span12">
+
+                                                <table class="table table-bordered ">
+
+                                                    <thead class="">
+                                                    <tr class="head-blue">
+                                                        <th class="numeric" >Sl</th>
+                                                        <th class="numeric span3">Item name</th>
+                                                        <th class="numeric span3">Barcode</th>
+                                                        <th  class="numeric span2">Qnt</th>
+                                                        <th class="numeric span2">Price</th>
+                                                        <th>Total</th>
+                                                        <th><i class="icon-trash"></i></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="subItems" class="purchase" >
+                                                        {% for pitem in entity.purchaseReturnItems %}
+                                                            <tr id="subItem-{{ pitem.id }}">
+                                                                <td class="numeric" > {{ loop.index }}</td>
+                                                                <td class="numeric" >{{ pitem.purchaseItem.purchaseVendorItem.name }}</td>
+                                                                <td class="numeric" >{{ pitem.purchaseItem.barcode }}</td>
+                                                                <td class="numeric" ><input class="m-wrap span10 numeric quantity" type="text" id="quantity-{{ pitem.id }}" rel="{{ pitem.id }}" name="quantity[]"  value="{{ pitem.quantity }}"  placeholder="{{ pitem.quantity }}"></td>
+                                                                <td class="numeric" ><input class="m-wrap span12 numeric price"  rel="{{ pitem.id }}" id="price-{{ pitem.id }}" type="text" name="price[]" value="{{ pitem.price }}" placeholder="{{ pitem.purchaseItem.purchasePrice }}"></td>
+                                                                <td><span id="subTotalShow-{{ pitem.id }}" >{{ pitem.subTotal }}</span></td>
+                                                                <td>
+                                                                    <a title="Are you sure went to delete ?" id="{{ pitem.id }}" rel="{{ path('inventory_purchasereturnitem_delete',{'purchaseReturn':entity.id,'purchaseReturnItem':pitem.id}) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="clearfix">&nbsp;</div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="row-fluid">
+                                       <div class="row-fluid">
+                                            <div class="span12 responsive" data-tablet="span6" data-desktop="span3">
+                                                <div class="dashboard-stat green">
+                                                    <div class="details">
+                                                        <div class="number">BDT <span class="total">{{ entity.total }}</span></div>
+                                                        <div class="desc">Order no. {{ entity.code }}</div>
+                                                        <div class="clearfix">&nbsp;</div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12 ">
+                                                <div class="portlet box grey">
+                                                    <div class="pull-right">
+                                                        <button id="paymentBtn" type="submit" class="btn green"><i class="m-icon-swapright m-icon-white"></i>&nbsp;Submit</button>
+                                                        <a href="{{ path('inventory_purchasereturn') }}"  class="btn yellow"><i class="m-icon-swapleft m-icon-white"></i>&nbsp;Back</a>
+                                                   </div>
+                                                    <div class="clearfix">&nbsp;</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                {{ form_end(form) }}
+                            <!-- BEGIN FORM-->
+
+                            <div class="clearfix">&nbsp;</div>
+                            <!--/span-->
+
+                            <!-- END FORM-->
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+<script>
+    var purchaseReturn = {{ entity.id }}
+</script>
+{% endblock %}
+
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/*'
+    '@InventoryBundle/Resources/public/js/puschaseReturn.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    InventoryPurchaseReturnPage(purchaseReturn);
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+    <!-- BEGIN gallery HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="gallery-title">
+                Form Components
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li>
+                    <a href="{{ path('galleryimage') }}">Gallery Images</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li><a href="#">Form Components</a></li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END gallery HEADER-->
+    <!-- BEGIN gallery CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+            
+            <div class="portlet box green tabbable">
+
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-reorder"></i>Add Gallery Image</div>
+                    <div class="actions">
+                        <div class="btn-group">
+                            <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <i class="icon-cogs"></i>&nbsp;Tools
+                                <i class="icon-tasks"></i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                {% if entity.id > 0  %}
+                                    <li><a  href="{{ path('gallery_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;View</a></li>
+                                {% endif %}
+                                <li><a href="{{ path('gallery') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+                        <div class="row-fluid">
+                            <div class="span12 ">
+                                <div class="control-group">
+                                    <div id="pluploadUploader">
+                                        <p>You browser doesn't have Flash, Silverlight, Gears, BrowserPlus or HTML5 support.</p>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <label for="item_itemName"  class="control-label col-md-5 required"></label>
+                                        <div class="col-md-3">
+                                            {%  set galleryId = app.request.query.get('galleryId') %}
+                                            <input type="hidden" name="galleryId" value="{{ galleryId }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-center">
+                                <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                        <!-- END FORM-->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block documentready %}
+
+    $("#pluploadUploader").pluploadQueue({
+
+        // General settings
+        runtimes : 'gears,browserplus,html5',
+        url :'{{ path('galleryimage_upload',{'id':entity.id}) }}',
+        max_file_size : '20mb',
+        chunk_size : '2mb',
+        unique_names : true,
+        sortable: true,
+        // Resize images on clientside if we can
+        resize : {width :1024, height : 1024, quality : 90},
+        // Specify what files to browse for
+        filters : [
+        {title : "Image files", extensions : "jpg,gif,png,jpeg"},
+        {title : "Zip files", extensions : "zip"}
+        ],
+
+        // Flash settings
+        flash_swf_url : 'theme/scripts/plupload/js/plupload.flash.swf',
+
+        // Silverlight settings
+        silverlight_xap_url : 'theme/scripts/plupload/js/plupload.silverlight.xap'
+
+    });
+
+
+{% endblock %}

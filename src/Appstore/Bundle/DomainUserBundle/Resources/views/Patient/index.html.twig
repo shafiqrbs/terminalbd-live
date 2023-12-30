@@ -1,0 +1,136 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Patient list
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('domain') }}">Patient list</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Patient list</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('hms_customer_new') }}"><i class="icon-th-list"></i>&nbsp;New Patient</a>
+                                <a class="btn black" href="{{ path('hms_customer') }}"><i class="icon-th-list"></i>&nbsp;List</a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="mobile" name="mobile"  class="span12 m-wrap select2Patient" value="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% endif %}"  autocomplete="off" placeholder="Patient mobile">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="location" name="location"  class="span12 m-wrap select2Location" value="{% if searchForm.location is defined %}{{ searchForm.location }}{% endif %}"  autocomplete="off" placeholder="Patient location">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="name" name="name"  class="m-wrap span12 search-input" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.name is defined %}{{ searchForm.name }}{% else %}Enter Patient name{% endif %} ">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span9">
+                                                <input type="text" id="customerId" name="customerId"  class="m-wrap span12 search-input" value="{% if searchForm.customerId is defined %}{{ searchForm.customerId }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.customerId is defined %}{{ searchForm.customerId }}{% else %}Enter Patient ID {% endif %} ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric">Patient ID</th>
+                                    <th class="numeric">Name</th>
+                                    <th class="numeric">Mobile</th>
+                                    <th class="numeric">Gender</th>
+                                    <th class="numeric">Age</th>
+                                    <th class="numeric">Location</th>
+                                    <th class="numeric">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ entity.customerId }}</td>
+                                        <td>{{ entity.name }}</td>
+                                        <td class="numeric"><a href="tel:+88 {{ entity.mobile }}"> {{ entity.mobile }}</a></td>
+                                        <td>{{ entity.gender }}</td>
+                                        <td>{{ entity.age }}{{ entity.ageType }}</td>
+                                        <td class="numeric">{% if entity.location is not empty %}{{ entity.location.name }},{{ entity.location.parent.name }}{% endif %}</td>
+
+                                        <td class="numeric">
+                                            <a class="btn mini green" href="{{ path('hms_customer_edit', { 'id': entity.id }) }}"><i class="icon-pencil"></i></a>
+                                            <a class="btn mini purple" href="{{ path('hms_customer_show', { 'id': entity.id }) }}"><i class="fa fa-eye"></i> Invoice</a>
+                                            {% if entity.sales is empty %}
+                                            <a class="btn mini blue" target="_blank" href="{{ path('hms_invoice_new', {'patient':entity.id }) }}" rel="" >&nbsp;<i class="icon-plus"></i> New Invoice</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <link href="{{ asset('assets/css/pages/timeline.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/editable.js'
+    '@InventoryBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $( "#search-product" ).hide();
+    $( "#searchToggole" ).click(function() {
+    $( "#search-product" ).slideToggle( "slow" );
+    });
+    EditableInit();
+    ApproveProcess();
+{% endblock %}

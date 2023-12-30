@@ -1,0 +1,97 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 print-bar">
+            <form name="searchForm" id="searchForm" action="{{ path('inv_salesitem_profit_loss_ajax_load') }}" method="post">
+                <div class="row">
+                    <div class="col-md-3 margin-top">
+                        <label>Customer</label>
+                        <select class="search-input span12 select2 m-wrap" id="customerId" name="customerId">
+                            <option value="">--Select Customer--</option>
+                            {% for row in customers %}
+                                <option {% if searchForm.customerId is defined and searchForm.customerId == row.id %} selected="selected" {% endif %} value="{{ row.id }}">{{ row.mobile }}-{{ row.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>User</label>
+                        <select class="search-input span12 m-wrap" id="user" name="user">
+                            <option value="">--Select System User--</option>
+                            {% for row in users %}
+                                <option {% if searchForm.user is defined and searchForm.user == row.id %} selected="selected" {% endif %} value="{{ row.id }}">{{ row.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>Method</label>
+                        <select class="search-input span12 m-wrap" id="method" name="method">
+                            <option value="">--Select Method--</option>
+                            {% for row in transactionMethods %}
+                                <option {% if searchForm.method is defined and searchForm.method == row.id %} selected="selected" {% endif %} value="{{ row.id }}">{{ row.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>Invoice</label>
+                        <input type="text" class="m-wrap" id="invoice" name="invoice" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}">
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 margin-top"></div>
+
+                    <div class="col-md-3 margin-top">
+                        <label>Start Date</label>
+                        <input type="date" class="m-wrap" id="startDate" name="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-2 margin-top">
+                        <label>End Date</label>
+                        <input type="date" class="m-wrap" id="endDate" name="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-1 margin-top">
+                        <label>&nbsp;</label>
+                        <button type="button" class='btn btn-download btn-margin-left ajax-btn' value="search" name="submit" ><i class='fa fa-search'></i> Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="loader loader-double" ></div>
+    <div id="print-area">
+        <div class="row print-header">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size:18px">{{ option.name }}</strong></p>
+                <p><strong>Name of Report: Sales Item Reports</strong></p>
+            </div>
+            <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table even" border="1">
+                    <thead class="flip-content ">
+                    <tr class="head-green">
+                        <th>S/N</th>
+                        <th>Created</th>
+                        <th>Invoice</th>
+                        <th>Customer</th>
+                        <th>Sales by</th>
+                        <th>Item Name</th>
+                        <th>Qnt</th>
+                        <th class="text-right">Price</th>
+                        <th class="text-right">Purchase Price</th>
+                        <th class="text-right">Sales SubTotal</th>
+                        <th class="text-right">Purchase SubTotal</th>
+                        <th class="text-right">Profit/Loss</th>
+                    </tr>
+                    </thead>
+                    <tbody id="data-load"></tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+

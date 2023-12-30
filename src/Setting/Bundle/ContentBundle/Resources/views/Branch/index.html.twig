@@ -1,0 +1,120 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN branch HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="branch-title">
+                    View Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('branch') }}">Branches</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END branch HEADER-->
+        <!-- BEGIN branch CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="btn-group pull-right">
+{#
+
+                    <a class="btn black" target="_blank" href="{{ path('branch_print_list') }}">Print</a>
+                    <a class="btn yellow" target="_blank" href="{{ path('branch_pdf_list') }}">PDF</a>
+                    <a class="btn blue" target="_blank" href="{{ path('branch_export_list') }}">Export</a>
+                    <a class="btn purple" href="{{ path('branch_import') }}">Import</a>
+#}
+
+                    <span class="btn-group">
+                        {%  set keyword = app.request.query.get('keyword') %}
+                        {%  set direction = app.request.query.get('direction') %}
+                        {%  set sort = app.request.query.get('sort') %}
+          {#              <form name="search" class="search" method="get" action="">
+                            <input type="text" name="keyword" id="search" class="search-input" value="{{ keyword }}"><button type="submit" class="btn black icn-only" ><i class="halflings-icon white search"></i></button>
+                        </form>#}
+                    </span>
+                </div>
+                <div class="portlet box green">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Basic Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('branch_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('branch') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th>Location</th>
+                                    <th>Contact person</th>
+                                    <th>Mobile no </th>
+                                    <th>Email </th>
+                                    <th>Address</th>
+                                    <th class="numeric" >Action</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in pagination %}
+                                    <tr>
+                                        <td class="numeric">{{ loop.index }}</td>
+                                        <td class="numeric" ><a href="{{ path('branch_edit',{'id': entity.id })}}">{{ entity.name }}</a></td>
+                                        <td class="numeric" >{{ entity.contactPerson }}</td>
+                                        <td class="numeric"><a href="tel:+88 {{ entity.mobile }}"> {{ entity.mobile }}</a></td>
+                                        <td class="numeric"><a href="mailto:{{ entity.email }}"> {{ entity.email }}</a></td>
+                                        <td class="numeric" >{{ entity.address }}</td>
+
+                                        <td class="numeric" >
+                                            {% if( entity.status == 1) %}
+                                                <a class="btn mini green-stripe btn-action" href="{{ path('branch_status', { 'id': entity.id}) }}"><span class="badge badge-success">x</span></a>
+                                            {% else %}
+                                                <a class="btn mini green-stripe btn-action" href="{{ path('branch_status', { 'id': entity.id}) }}"><span class="badge badge-important">a</span>    </a>
+                                            {% endif %}
+                                            <a class="btn mini green-stripe btn-action" href="{{ path('branch_edit', { 'id': entity.id }) }}">Edit</a>
+                                            <a class="btn mini blue-stripe btn-action" href="{{ path('branch_show', { 'id': entity.id }) }}">View</a>
+                                            <a class="btn mini red-stripe btn-action confirm" title="Are you sure went to delete ?" href="{{ path('branch_delete', { 'id': entity.id }) }}" >Delete</a>
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,70 @@
+services:
+#    medicine.example:
+#        class: Appstore\Bundle\MedicineBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+    appstore.medicine.stock.event.listener:
+        class: Appstore\Bundle\MedicineBundle\EventListener\MedicineStockListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.medicine.purchase.event.listener:
+        class: Appstore\Bundle\MedicineBundle\EventListener\MedicinePurchaseListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.medicine.prepurchase.event.listener:
+        class: Appstore\Bundle\MedicineBundle\EventListener\MedicinePrepurchaseListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.medicine.purchase.item.event.listener:
+        class: Appstore\Bundle\MedicineBundle\EventListener\MedicinePurchaseItemListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.medicine.purchase.return.event.listener:
+        class: Appstore\Bundle\MedicineBundle\EventListener\MedicinePurchaseReturnListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.medicine.sales.return.event.listener:
+        class: Appstore\Bundle\MedicineBundle\EventListener\MedicineSalesReturnListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.medicine.sales.return.invoice.event.listener:
+        class: Appstore\Bundle\MedicineBundle\EventListener\MedicineSalesReturnInvoiceListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.medicine.particular.item.event.listener:
+        class: Appstore\Bundle\MedicineBundle\EventListener\MedicineParticularListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.medicine.sales.event.listener:
+            class: Appstore\Bundle\MedicineBundle\EventListener\MedicineSalesListener
+            tags:
+                - { name: doctrine.event_listener, event: prePersist }
+
+    medicine_name_importer_excel:
+        class: Appstore\Bundle\MedicineBundle\Importer\Excel
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    medicine_name.importer.excel_data_reader:
+        class: Appstore\Bundle\MedicineBundle\Importer\ExcelDataReader
+        arguments: [ @phpexcel ]
+
+
+    medicine_stock_update_importer_excel:
+        class: Appstore\Bundle\MedicineBundle\Importer\MedicineStockImport
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    medicine_stock_update.importer.excel_data_reader:
+        class: Appstore\Bundle\MedicineBundle\Importer\MedicineStockDataReader
+        arguments: [ @phpexcel ]
+
+

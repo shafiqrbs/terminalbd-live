@@ -1,0 +1,250 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN inventory_warehouse HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="inventory_warehouse-title">
+                    Configuration
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Configuration </a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END inventory_warehouse HEADER-->
+        <!-- BEGIN inventory_warehouse CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Configuration Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% if app.user.granted("ROLE_DOMAIN") %}
+                                <a class="btn red" href="{{ path('account_config_reset') }}">Reset</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="clearfix"><br/></div>
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+                        <div class="row-fluid box green">
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label " for="vatPercentage">{{ form_widget(form.accountClose) }} Account Close </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label " for="vatPercentage">{{ form_widget(form.purchase) }} Purchase</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label " for="capitalInvestor">Set Default Capital Investor</label>
+                                            <div class="control">
+                                                {{ form_widget(form.capitalInvestor) }}
+                                                {{ form_errors(form.capitalInvestor) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label " for="capitalInvestor">Business Mode</label>
+                                            <div class="control">
+                                                {{ form_widget(form.businessMode) }}
+                                                {{ form_errors(form.businessMode) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label " for="capitalInvestor">Business Mode</label>
+                                            <div class="control">
+                                                {{ form_widget(form.businessMode) }}
+                                                {{ form_errors(form.businessMode) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label " for="capitalInvestor">Sales Receive Sms</label>
+                                            <div class="control">
+                                                {{ form_widget(form.salesReceiveSms) }}
+                                                {{ form_errors(form.salesReceiveSms) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="span4">
+                                {{ form_widget(form.address) }}
+                            </div>
+
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box purple">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Print</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        {{ form_widget(form.customPrint) }} Custom Print
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        {{ form_widget(form.isPrintHeader) }} Print Header
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        {{ form_widget(form.isPrintFooter) }} Print Footer
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        {{ form_widget(form.isPowered) }} Print Powered
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="row-fluid">
+                                    <div class="span12"><h4>Invoice Format</h4></div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label " for="vatPercentage">Invoice Width(cm)</label>
+                                            <div class="control">
+                                                {{ form_widget(form.invoiceWidth) }}
+                                                {{ form_errors(form.invoiceWidth) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label " for="vatPercentage">Invoice Height(cm)</label>
+                                            <div class="control">
+                                                {{ form_widget(form.invoiceHeight) }}
+                                                {{ form_errors(form.invoiceHeight) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label " for="vatPercentage">Body Font Size</label>
+                                            <div class="control">
+                                                {{ form_widget(form.bodyFontSize) }}
+                                                {{ form_errors(form.bodyFontSize) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="span4">
+                                <div class="row-fluid">
+                                    <div class="span12"><h4>Invoice Format</h4></div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label " for="vatPercentage">Body Border Color</label>
+                                            <div class="control">
+                                                {{ form_widget(form.borderColor) }}
+                                                {{ form_errors(form.borderColor) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label " for="vatPercentage">Body Border Width</label>
+                                            <div class="control">
+                                                {{ form_widget(form.borderWidth) }}
+                                                {{ form_errors(form.borderWidth) }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label " for="vatPercentage">Margin Left(cm)</label>
+                                            <div class="control">
+                                                {{ form_widget(form.printLeftMargin) }}
+                                                {{ form_errors(form.printLeftMargin) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label " for="vatPercentage">Margin Top(cm)</label>
+                                            <div class="control">
+                                                {{ form_widget(form.printTopMargin) }}
+                                                {{ form_errors(form.printTopMargin) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/span-->
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-right">
+                                <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                        <!-- END FORM-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

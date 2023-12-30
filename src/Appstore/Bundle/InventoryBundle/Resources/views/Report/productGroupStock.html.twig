@@ -1,0 +1,163 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                     Group Stock Items
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Group Stock Item Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Group Stock Item Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                {#<ul class="dropdown-menu pull-right">
+                                    <li><a href=""><i class="icon-print"></i>&nbsp; Print</a></li>
+                                    <li><a href=""><i class=" icon-download"></i>&nbsp;Pdf</a></li>
+                                    <li><a href=""><i class=" icon-download-alt"></i>&nbsp;Excel</a></li>
+                                </ul>#}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span4">
+                                        <select id="group" name="group"  class="span12 select2" >
+                                            <option>Select Group</option>
+                                            <option value="product" {% if searchForm.group is defined and searchForm.group == 'product' %} selected="selected" {% endif %} >Item Name</option>
+                                            <option value="size" {% if searchForm.group is defined and searchForm.group == 'size' %} selected="selected" {% endif %} >Size</option>
+                                            <option value="color" {% if searchForm.group is defined and searchForm.group == 'color' %} selected="selected" {% endif %} >Color</option>
+                                            <option value="brand" {% if searchForm.group is defined and searchForm.group == 'brand' %} selected="selected" {% endif %} >Brand</option>
+                                            <option value="vendor" {% if searchForm.group is defined and searchForm.group == 'vendor' %} selected="selected" {% endif %}>Vendor</option>
+                                        </select>
+                                    </div>
+                                    <div class="span4">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 m-wrap date-picker" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}{{ "now"|date("m/d/Y") }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}{{ "now"|date("m/d/Y") }}{% endif %} ">
+                                    </div>
+                                    <div class="span4">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="endDate" name="endDate"  class="span12 m-wrap date-picker" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}{{ "now"|date("m/d/Y") }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}{{ "now"|date("m/d/Y") }}{% endif %}  ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                            <thead class="flip-content ">
+                            <tr class="head-grey">
+                                <th class="numeric" ><i class="icon-reorder"></i></th>
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Previous</th>
+                                <th class="numeric" >(+)Purchase</th>
+                                <th class="numeric" >(-)P.Return</th>
+                                <th class="numeric" >(-)Sales</th>
+                                <th class="numeric" >(+)S.Return</th>
+                                <th class="numeric" >(-)Damage</th>
+                                <th class="numeric" >Remaining</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for entity in entities %}
+
+                                {% if previousQuantity[entity.itemId] is defined %}
+                                    {% set totalPrevious = previousQuantity[entity.itemId] %}
+                                {% else %}
+                                    {%  set totalPrevious = 0 %}
+                                {% endif %}
+                                {% if purchase[entity.itemId] is defined %}
+                                    {% set purchase =  purchase[entity.itemId]  %}
+                                {% else %}
+                                    {%  set purchase = 0 %}
+                                {% endif %}
+                                {% if purchaseReturn[entity.itemId] is defined %}
+                                    {% set purchaseReturn =  purchaseReturn[entity.itemId]  %}
+                                {% else %}
+                                    {%  set purchaseReturn = 0 %}
+                                {% endif %}
+
+                                {% if sales[entity.itemId] is defined and sales[entity.itemId] is not empty %}
+                                    {% set sales = sales[entity.itemId] %}
+                                {% else %}
+                                    {%  set sales = 0 %}
+                                {% endif %}
+
+                                {% if salesReturn[entity.itemId] is defined and salesReturn[entity.itemId] is not empty %}
+                                    {% set salesReturn = salesReturn[entity.itemId] %}
+                                {% else %}
+                                    {%  set salesReturn = 0 %}
+                                {% endif %}
+                                {% if damage[entity.itemId] is defined and damage[entity.itemId] is not empty %}
+                                    {% set damage = damage[entity.itemId] %}
+                                {% else %}
+                                    {%  set damage = 0 %}
+                                {% endif %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td class="numeric" >{{ entity.name }}</td>
+                                    <td class="numeric" >{% if previousQuantity[entity.itemId] is defined %}{{ previousQuantity[entity.itemId] }}{% endif %}</td>
+                                     <td class="numeric" >{% if purchase[entity.itemId] is defined %}{{  purchase[entity.itemId]  }}{% endif %}</td>
+                                      <td class="numeric" >{% if purchaseReturn[entity.itemId] is defined %}{{  purchaseReturn[entity.itemId]|trim('-')  }}{% endif %}</td>
+                                      <td class="numeric" >{% if sale[entity.itemId] is defined %}{{ sales|trim('-') }}{% endif %}</td>
+                                      <td class="numeric" >{% if salesReturn[entity.itemId] is defined %}{{ salesReturn[entity.itemId] }}{% endif %}</td>
+                                      <td class="numeric" >{% if damage[entity.itemId] is defined %}{{ damage[entity.itemId]|trim('-') }}{% endif %}</td>
+                                      <td class="numeric" >{{ totalPrevious + purchase + purchaseReturn + sales + salesReturn + damage }}</td>
+                                 </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="pagination pull-center"  >
+                            {{ knp_pagination_render(entities) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}

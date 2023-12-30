@@ -1,0 +1,115 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Feature Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('appearancefeature') }}">Feature List</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Feature Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('appearancefeature_new') }}"><i class="icon-plus-sign"></i>&nbsp;Add Feature</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric" >Title</th>
+                                    <th class="numeric" >Position</th>
+                                    <th class="numeric" >Feature</th>
+                                    <th class="numeric" >Target to</th>
+                                    <th class="numeric" >Action</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td><span class="badge badge-warning toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+                                        <td class="numeric" ><a href="{{ path('appearancefeature_edit',{'id': entity.id })}}">{{ entity.name }}</a></td>
+                                        <td class="numeric" >{{ entity.captionPosition }}</td>
+                                        <td class="numeric" >
+                                            {% if(entity.featureFor is not empty) %}
+                                                <ul>
+                                                    {% for feature in entity.featureFor %}
+                                                        <li>{{ feature }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric" >
+                                            {% if(entity.targetTo) %}{{ entity.targetTo }}{% endif %} -
+                                            {% if entity.targetTo == 'Category' and entity.category is not empty %}{{ entity.category.name }}{% endif %}
+                                            {% if entity.targetTo == 'Brand' and entity.brand is not empty %}{{ entity.brand.name }}{% endif %}
+                                            {% if entity.targetTo == 'Promotion' and entity.promotion is not empty %}{{ entity.promotion.name }}{% endif %}
+                                            {% if entity.targetTo == 'Tag' and entity.tag is not empty %}{{ entity.tag.name }}{% endif %}
+                                            {% if entity.targetTo == 'Discount' and entity.discount is not empty %}{{ entity.discount.name }}{% endif %}
+                                            {% if entity.targetTo == 'Page' and entity.menu is not empty %}{{ entity.menu.menu }}{% endif %}
+                                        </td>
+                                        <td class="numeric" >
+                                            {% if( entity.status == 1) %}
+                                                <a class="btn mini green-stripe btn-action" href="{{ path('appearancefeature_status', { 'id': entity.id}) }}"><span class="badge badge-success">x</span></a>
+                                            {% else %}
+                                                <a class="btn mini green-stripe btn-action" href="{{ path('appearancefeature_status', { 'id': entity.id}) }}"><span class="badge badge-important">a</span>    </a>
+                                            {% endif %}
+                                            <a class="btn mini green-stripe btn-action" href="{{ path('appearancefeature_edit', { 'id': entity.id }) }}">Edit</a>
+                                            <a class="btn mini blue-stripe btn-action" href="{{ path('appearancefeature_show', { 'id': entity.id }) }}">View</a>
+                                            <a class="btn mini red-stripe btn-action confirm" title="Are you sure went to delete ?" href="{{ path('appearancefeature_delete', { 'id': entity.id }) }}" >Delete</a>
+                                        </td>
+                                    </tr>
+                                    <tr id="show-{{ entity.id }}" class="showing-overview">
+                                        <td colspan="6">
+                                            <table class="inner-table">
+                                                <tr><td>Content</td><td>{{ entity.content|raw }}</td></tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

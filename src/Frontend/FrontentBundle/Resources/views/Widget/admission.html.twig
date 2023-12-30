@@ -1,0 +1,10 @@
+<ul>
+    {% for admission in admissions %}
+        <li>
+            <h4><a href="{{ path('frontend_subdomain_module_content',{'subdomain':admission.user.globalOption.slug,'module':'admission','slug':admission.slug|default('')}) }}">
+                    {{ admission.name }}
+                </a></h4>
+            <i>{{ admission.startDate|date('j M ') }}</i> To <i>{{ admission.endDate|date('j M, Y') }}</i>
+        </li>
+    {% endfor  %}
+</ul>

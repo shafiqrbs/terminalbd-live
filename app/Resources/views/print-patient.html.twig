@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>{% if app.user.globaloption is not empty and app.user.globaloption is defined %}{{ app.user.globaloption.name }}{% endif %} | ADMIN PANEL</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}">
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+    {% stylesheets filter='cssrewrite'
+        'assets/plugins/font-awesome/css/font-awesome.min.css'
+        'assets/css/print.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+    {% block cssBlock %}
+    {% endblock %}
+    <link rel="shortcut icon" href="favicon.ico"/>
+</head>
+<body>
+<div class="page-container row-fluid">
+    <div class="page-content">
+        {% block body %}{% endblock %}
+    </div>
+</div>
+
+{#'http://bp.yahooapis.com/2.4.21/browserplus-min.js'#}
+{% javascripts
+'assets/plugins/jquery-1.10.2.min.js'
+'assets/template/plugin/matchHeight/height-match.js'
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% block javascriptBlock %}
+{% endblock %}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        {% block documentready %}
+        {% endblock %}
+    });
+</script>
+</body>
+</html>

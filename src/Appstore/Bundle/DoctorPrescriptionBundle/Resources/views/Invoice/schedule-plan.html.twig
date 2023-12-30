@@ -1,0 +1,127 @@
+<div class="row-fluid">
+    <form class="search-form" action="{{ path('dps_treatment_date_wise_schedule') }}" method="post" id="appointmentForm" name="appointmentForm">
+        <div class="row-fluid" style="margin-bottom: 10px">
+            <div class="span3">
+                <select name="treatment" id="treatment" class="m-wrap span12">
+                    <option value="" >--Treatment Plan--</option>
+                    {% for treatment in treatments %}
+                        <option {% if searchForm.treatment is defined and searchForm.treatment == treatment.id %} selected="selected" {% endif %} value="{{ treatment.id }}" >{{ treatment.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="span3">
+                <select name="doctor" id="doctor" class="m-wrap span12">
+                    <option value="" >--Assign Doctor--</option>
+                    {% for doctor in assignDoctors %}
+                        <option {% if searchForm.doctor is defined and searchForm.doctor == doctor.id %} selected="selected" {% endif %} value="{{ doctor.id }}" >{{ doctor.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+            <div class="span3">
+                <div class="input-icon left">
+                    <i class="icon-calendar"></i>
+                    <input type="date" class="m-wrap span12 search-input" name="startDate" id="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Appointment start date{% endif %}" >
+                </div>
+            </div>
+
+            <div class="span3">
+                <div class="input-icon left">
+                    <i class="icon-calendar"></i>
+                    <input type="date" class="m-wrap span12 search-input" name="endDate" id="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}Appointment end date{% endif %}">
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">
+            <div class="span3">
+                <select name="status" id="status" class="m-wrap span12">
+                    <option value="" >--Status--</option>
+                    {% set statuses ={'pending':'Pending','done':'Done'} %}
+                    {% for key,value in statuses %}
+                        <option value="{{ key }}" {% if searchForm.status is defined and searchForm.status == key %} selected="selected" {% endif %} >{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="span3">
+                <div class="input-icon left">
+                    <i class="icon-user"></i>
+                    <input class="m-wrap span12 search-input" name="name" id="name" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.name is defined %}{{ searchForm.name }}{% else %}Patient name{% endif %}">
+                </div>
+            </div>
+            <div class="span3">
+                <div class="input-icon left">
+                    <i class="icon-phone"></i>
+                    <input class="m-wrap span12 search-input" name="mobile" id="mobile" value="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% else %}Patient mobile{% endif %}">
+                </div>
+            </div>
+            <div class="span3">
+                <div class="controls">
+                    <div class="input-append span12">
+                        <input type="text" id="invoice" name="invoice"  class="m-wrap span10" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% else %}Patient ID{% endif %} ">
+                        <div class="btn-group">
+                            <button class="btn blue" id="searchAppointment" type="button"><i class="icon-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="row-fluid">
+    <table class="table table-bordered table-striped table-condensed flip-content ">
+        <thead class="flip-content ">
+        <tr class="head-green">
+            <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+            <th class="numeric">Patient ID</th>
+            <th class="numeric">Patient Name</th>
+            <th class="numeric">Assign Doctor</th>
+            <th class="numeric">Treatment Particular</th>
+            <th class="numeric">Date</th>
+            <th class="numeric">Time</th>
+            <th class="numeric">Process</th>
+            <th class="numeric">Status</th>
+            <th class="numeric">Sms</th>
+            <th class="numeric">Send</th>
+        </tr>
+        </thead>
+        <tbody id="appointmentSchedule">
+        {% for plan in treatmentSchedule %}
+            <tr>
+                <td  class="numeric">{{ loop.index }}</td>
+                <td  class="numeric">{{ plan.patientId }}</td>
+                <td  class="numeric">{{ plan.customerName }}</td>
+                <td  class="numeric">{{ plan.doctorName }}</td>
+                <td  class="numeric">{{ plan.particularCode }}-{{ plan.particularName }}</td>
+                <td  class="numeric">
+                    {% if plan.appointmentStatus ==1 %}
+                        {{ plan.appointmentDate|date('d-m-Y') }}
+                    {% else %}
+                        <a  class="btn mini blue-stripe btn-action editable" data-name="AppointmentDate" href="javascript:"  data-url="{{ path('dps_treatment_inline_update') }}" data-value="{{ plan.appointmentDate|date('d-m-Y') }}" data-format="YYYY-MM-DD" data-viewformat="DD-MM-YYYY" data-template="DD-MM-YYYY" data-type="text" data-pk="{{ plan.id }}" data-original-title="Change appointment date">{{ plan.appointmentDate|date('d-m-Y') }}</a>
+                    {% endif %}
+                <td  class="numeric">
+                    {% if plan.appointmentStatus ==1 %}
+                        {{ plan.appointmentTime }}
+                    {% else %}
+                        <a  data-type="select" class="btn mini purple-stripe btn-action editable" id="process" data-name="AppointmentTime" href="#" data-source="{{ path('dps_invoice_appointment_datetime_select') }}"  data-url="{{ path('dps_treatment_inline_update') }}" data-pk="{{ plan.id }}" data-value="{{ plan.appointmentTime }}" data-original-title="Change appointment time">{{ plan.appointmentTime }}</a>
+                    {% endif %}
+                </td>
+                <td  class="numeric">{{ plan.process }}</td>
+                <td  class="numeric">{% if  plan.appointmentStatus == 1 %}Done{% else %}Pending{% endif %}</td>
+                <td  class="numeric">{% if  plan.sendSms == 1 %}Yes{% else %}No{% endif %}</td>
+                <td  class="numeric">
+                    {% set processIntArr = ['Appointment','Created','Done','Visit'] %}
+                    {% if plan.process in  processIntArr %}
+                        <a href="{{ path('dps_invoice_edit', { 'id': plan.invoiceId }) }}" class="btn purple mini" ><i class="icon-user"></i> Manage Patient</a>
+                    {% endif %}
+                    {% if plan.appointmentStatus != 1 %}
+                        <a class="btn blue sms-confirm mini" href="javascript:" data-url="{{ path('dps_treatment_plan_sms',{'patient':plan.patientId,'id':plan.id}) }}"><i class="icon-phone"></i> Send SMS</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

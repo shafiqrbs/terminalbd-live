@@ -1,0 +1,109 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+
+    h1 , h2 , h3 , h4 , h5 , h6,p{
+        display: block;
+        padding: 0;
+        margin: 0;
+    }
+    h2 {
+        font-size: 24px;
+        line-height: 45px;
+        height: 45px;
+    }
+
+    h3 {
+        font-size: 20px;
+        line-height: 45px;
+        height: 45px;
+    }
+
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+    .table th{
+        line-height: 30px;
+        height: 30px;
+        font-weight: bold!important;
+    }
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 5px;
+    }
+    .table td ul,  .table td ul li{
+        padding-left: 0;
+        margin-left: 0;
+        list-style: none;
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+<table class="table">
+    <thead>
+    <tr><td class="pull-center" colspan="7"><h2>{{ globalOption.name }}</h2></td></tr>
+    {% set startDate = searchForm.startDate is defined ? searchForm.startDate :"now"|date("d-m-Y") %}
+    {% set endDate = searchForm.endDate is defined ? searchForm.endDate :"now"|date("d-m-Y") %}
+    <tr><th class="pull-center" colspan="7"><h3>EXPENDITURE DETAILS</h3></th></tr>
+    <tr><th class="pull-center" colspan="7">Date: {{ startDate }} To {{ endDate }}</th></tr>
+    <tr>
+        <th class="numeric" >Created</th>
+        <th class="numeric" >To Employee</th>
+        <th class="numeric" >Category</th>
+        <th class="numeric" >Ref No.</th>
+        <th class="numeric" >Trans. Method</th>
+        <th class="numeric" >Remark</th>
+        <th class="numeric" >Amount</th>
+    </tr>
+    <tbody>
+    {% if entities is not empty %}
+    {% set total = 0 %}
+    {% for entity in entities %}
+        {% set total = total+entity.amount %}
+        <tr>
+            <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+            <td class="numeric" >{% if entity.toUser is not empty %}{{ entity.toUser }}{% endif %}</td>
+            <td class="numeric" >{% if entity.categoryName is not empty %}{{ entity.categoryName }}{% endif %}</td>
+            <td class="numeric" >{{ entity.accountRefNo }}</td>
+            <td class="numeric" >{% if entity.methodName is not empty %}{{ entity.methodName }}{% endif %}</td>
+            <td class="numeric" >{{  entity.remark|raw }}</td>
+            <td class="numeric" >{{ entity.amount|number_format }}</td>
+        </tr>
+    {% endfor %}
+    <tfoot>
+    <tr><th colspan="6">Grand Total</th><th>{{ total|number_format }}</th></tr>
+    </tfoot>
+    {% endif %}
+</table>

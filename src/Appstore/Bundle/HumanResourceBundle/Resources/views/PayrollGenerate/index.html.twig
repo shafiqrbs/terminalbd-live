@@ -1,0 +1,92 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   {{ globalOption.name }} Employee Payroll Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('employee_payroll') }}">Employee Payroll</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Employee Payroll lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Employee Payroll Lists </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Name </th>
+                                    <th class="numeric" >Designation</th>
+                                    <th class="numeric" >Employee Type</th>
+                                    <th class="numeric" >Salary Type</th>
+                                    <th class="numeric" >Basic</th>
+                                    <th class="numeric" >Allowance</th>
+                                    <th class="numeric" >Deduction</th>
+                                    <th class="numeric" >Loan</th>
+                                    <th class="numeric" >Advance</th>
+                                    <th class="numeric" >Arear</th>
+                                    <th class="numeric" >Salary</th>
+                                    <th class="numeric" >Payable</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for user in employees %}
+                                    <tr>
+                                        <td class="numeric" >{{ user.name }}</td>
+                                        <td class="numeric" >{% if user.designationName is not empty %}{{ user.designationName }}{% endif %}</td>
+                                        <td class="numeric" >{{ user.employeeType }}</td>
+                                        <td class="numeric" >{{ user.salaryType|capitalize }}</td>
+                                        <td class="numeric" >{{ user.basicAmount }}</td>
+                                        <td class="numeric" >{{ user.allowance }}</td>
+                                        <td class="numeric" >{{ user.deduction }}</td>
+                                        <td class="numeric" >{{ user.loan }}</td>
+                                        <td class="numeric" >{{ user.advance }}</td>
+                                        <td class="numeric" >{{ user.arear }}</td>
+                                        <td class="numeric" >{{ user.total }}</td>
+                                        <td class="numeric" >{{ user.payable }}</td>
+                                        <td class="numeric" >
+                                            <a href="{{ path('employee_payroll_add',{'user':user.id}) }}" class="btn purple mini" ><i class="fa fa-sign-out"></i>&nbsp;Payroll</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+

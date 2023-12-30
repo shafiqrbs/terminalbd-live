@@ -1,0 +1,90 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Product
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                     <li><a href="{{ path('restaurant_product') }}">Manage Product</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Product</div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="clearfix"><br/></div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div style="position: relative" class="portlet-body flip-scroll dd" id="nestable_list_2">
+                                    <ul class="sortable grid dd-list">
+                                        <li class="dd-item dd3-item" >
+                                            <div class="dd3-content" style="background: #2398cc; color:#ffffff;">
+                                                <div  class="span4">Product Name</div>
+                                                <div  class="span2">Category</div>
+                                                <div  class="span2">Source</div>
+                                                <div  class="span2">Production/Purchase</div>
+                                                <div class="span2">Sales</div>
+                                            </div>
+                                        </li>
+                                        {% for entity in pagination %}
+                                            <li  data-id="{{ entity.id }}" id="item_{{ entity.id }}" class="dd-item dd3-item">
+                                                <span data-id="{{ entity.id }}" class="dd-handle dd3-handle"></span>
+                                                <div class="dd3-content">
+                                                    <div class="span4"><a href="{{ path('restaurant_product_edit',{'id': entity.id })}}">{{ entity.name }}</a></div>
+                                                    <div class="span2">{% if entity.category is not empty %}{{ entity.category.name }}{% endif %}</div>
+                                                    <div class="span2">{% if entity.service is not empty %}{{ entity.service.name }}{% endif %}</div>
+                                                    <div class="span2">{{ entity.purchasePrice|number_format }}</div>
+                                                    <div class="span2">{{ entity.price|number_format }}</div>
+
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $('.sortable').sortable({
+        handle: 'span'
+    });
+    $( ".sortable" ).on( "sortupdate", function( event, ui ) {
+        var serialized = $(".sortable").sortable("serialize");
+        $.ajax({
+            url: '{{ path('restaurant_product_sorted') }}',
+            type: "POST",
+            data: serialized
+        });
+    })
+
+{% endblock %}

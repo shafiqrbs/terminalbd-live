@@ -1,0 +1,135 @@
+{% extends ':bindu:base.html.twig' %}
+{% block body %}
+    <div id="tm-page-body" xmlns="http://www.w3.org/1999/html">
+        <div id="tm-template-default-fullwidth" class="tm-container">
+            <div class="page-content">
+                <div class="page-content-inner tm-content">
+
+                    <div class="tm-row">
+                        <div class="tm-wrap">
+
+
+                            <div class="clear"></div>
+                            <div class="tm-row" style="display: none">
+                                <div class="one-fourth listing-block ">
+                                    <div class="centered">
+                                         <div class="organization-title">Kinte Thako</div>
+                                            <ul class="social-networks">
+                                                <li>
+                                                    <a data-title="http://uipoka.com/kintethako" href="http://uipoka.com/kintethako" target="_blank">
+                                                        <i class="fa fa-home"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a data-title="+88" href="#">
+                                                        <i class="fa fa-phone"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a data-title="+88" href="#">
+                                                        <i class="fa fa-comment"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a data-title="" href="#">
+                                                        <i class="fa fa-envelope"></i>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a data-title="" href="#" class="last">
+                                                        <i class="fa fa-map-pin"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+                                <div class="clear"></div>
+                                <div class="tm-row">
+
+                                    <div id="tm-portfolio" class="tm-portfolio-classic">
+                                        <div class="tm-content tm-col-4">
+                                            {% for entity in entities %}
+                                                <article>
+
+                                                    {%  set image =  random([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20 ,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40]) %}
+                                                    <img alt="img" height="200" width="250" src="/assets/bindu/img/vendor-bg/{{ image }}.jpg">
+                                                    <div class="tm-mask">
+                                                        <div class="tm-mask-content">
+                                                            <h3><a href="{{ path('ecommercesubdomain',{'subdomain':entity.subDomain}) }}">{{ entity.name }}</a></h3>
+                                                            <span class="line"></span>
+                                                            <div class="incategory">
+                                                                <a href="{{ path('bindu_build_syndicate',{'syndicate':entity.syndicate.slug }) }}">{{ entity.syndicate.name }}</a>
+                                                            </div>
+                                                            <a class="tm-btn" href="{{ path('ecommercesubdomain',{'subdomain':entity.subDomain}) }}" >More</a>
+                                                        </div>
+                                                    </div>
+                                                    {% if(entity.templateCustomize.webPath('logo') is defined and entity.templateCustomize.webPath('logo') is not empty) %}
+                                                    <img class="img-ceneter" src="{{ image(entity.templateCustomize.webPath('logo')).resize() }}">
+                                                    {% endif %}
+                                                    <div>
+                                                    <div class="org-title" >{{ entity.name }}</div>
+                                                    <ul class="social-networks">
+                                                        <li>
+                                                            <a target="_blank" href="{% if entity.domain is not empty %}http://www.{{ entity.domain }}{% else %}{{ path('ecommercesubdomain',{'subdomain':entity.subDomain}) }}{% endif %}" data-title="{% if entity.domain is not empty %}http://www.{{ entity.domain }}{% endif %}">
+                                                                <i class="fa fa-home"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" data-title="+88{{ entity.mobile }}">
+                                                                <i class="fa fa-phone"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" data-title="+88{{ entity.mobile }}">
+                                                                <i class="fa fa-comment"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" data-title="{{ entity.email }}">
+                                                                <i class="fa fa-envelope"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="last" href="{{ path('webservice_contact',{'subdomain':entity.subDomain}) }}" data-title="{% if  entity.location is defined and entity.location is not null  %}{{ entity.location.name }},{{ entity.location.parent.name }}{% endif %}">
+                                                                <i class="fa fa-map-pin"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                    </div>
+
+                                                </article>
+                                            {% endfor %}
+
+                                        </div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <!--portfolio-->
+                                </div>
+                                <div class="clear"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <!--page-content-->
+        </div>
+        <!--tm-container-->
+    </div>
+    </div>
+<style>
+ul.social-networks {
+  /* fallback */
+  background-position: center center;
+  background-repeat: no-repeat;
+  background: linear-gradient(70deg, black, white);
+  padding-left: 23px!important;
+}
+.ul.social-networks li a::before{
+    width: 200px;
+}
+
+</style>
+{% endblock %}

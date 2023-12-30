@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>{{ entity.customer.name }}-{{ entity.invoice }}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}">
+    {% stylesheets filter='cssrewrite'
+        'assets/plugins/font-awesome/css/font-awesome.min.css'
+        'assets/css/print.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+    {% if entity.hospitalConfig.printOff != 1  %}
+        <script type="text/javascript">
+            window.print();
+            setTimeout(function () {
+                window.open('', '_self', '');
+                window.close();
+            }, 2000);
+        </script>
+    {% endif %}
+</head>
+<body style="margin: 0px!important;">
+    <div>
+        <div style="height:{{ entity.hospitalConfig.invoiceHeight }}cm!important; display: block">
+        {% if global.webPath('file') is not empty %}<img style="max-height:100px" src="/{{ global.webPath('file') }}">{% endif %}
+        <div style="margin-top:{{ entity.hospitalConfig.printTopMargin }}px; margin-left:{{ entity.hospitalConfig.printLeftMargin }}px;margin-right:{{ entity.hospitalConfig.printLeftMargin }}px;" >
+            <table class="table table-border" >
+                <tr>
+                    <td>
+                        <ul class="unstyled" style="min-height:80px">
+                            {% if entity.customer is not empty %}<li><strong>PT. ID:</strong>&nbsp;{{ entity.customer.customerId }}</li>{% endif %}
+                            {% if entity.customer is not empty %}<li><strong>Name:</strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                            {% if entity.customer is not empty %}<li><strong>Mobile No:</strong>&nbsp;{{ entity.customer.mobile }}</li>{% endif %}
+                            {% if entity.customer is not empty %}<li><strong>Gender:</strong>&nbsp;{{ entity.customer.gender }}, &nbsp;{{ entity.customer.age }}&nbsp;{{ entity.customer.ageType }}</li>{% endif %}
+                            {% if entity.customer is not empty and entity.customer.location is not empty   %}<li><strong>Location:</strong>&nbsp;{{ entity.customer.location.name }}, {{ entity.customer.location.parent.name }}</li>{% endif %}
+
+                        </ul>
+                    </td>
+                    <td class="pull-right">
+                        <ul class="unstyled">
+                            <li><strong>Invoice: </strong>&nbsp;<strong>{{ entity.invoice }}</strong></li>
+                            <li><strong>Created: </strong>&nbsp;<strong>{{ entity.created|date('d-m-Y h:i A') }}</strong></li>
+                            <li><strong>Report:</strong>&nbsp;{{  entity.process|capitalize }}</li>
+                            {% if entity.assignDoctor is not empty %}<li><strong>Referred By:</strong> {{ entity.assignDoctor.name }}</li>{% endif %}
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+            {% if entity.invoiceParticulars is defined and  entity.invoiceParticulars is not empty  %}
+                <table class="table table-bordered table-striped">
+                    <thead class="flip-content ">
+                    <tr class="head-black">
+                        <th class="span9">Investigation</th>
+                        <th class="span1">Room</th>
+                        <th class="span1">Qnt</th>
+                        <th class="span2">Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for key, serviceDetails in invoiceDetails %}
+                        {% for item in serviceDetails.items %}
+                            <tr>
+                               <td class="">{{ item.particular.particularCode }} - {{ item.particular.name }}</td>
+                               <td class="">{{ item.particular.room }}</td>
+                               <td class="">{% if serviceDetails.hasQuantity %}{{ item.quantity }} {% endif %}</td>
+                               <td class="" style="text-align: right!important;">{{ item.subTotal|number_format }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr><td colspan="3" class="span11"><strong class="pull-right">Sub-Total</strong></td><td class="span1" style="text-align: right!important;">{{ serviceDetails.total|number_format }}</td></tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr><td colspan="4">&nbsp;</td></tr>
+                    <tr><td colspan="4" style="padding: 0!important;">
+                            <table class="table-no-border">
+                                <tr>
+                                    <td class="span8" >
+                                        <div class="pull-center text-center">
+                                        <br/>
+                                            <h2>{{ entity.paymentStatus|capitalize }}</h2>
+                                            <h4>Delivery Date: {{ entity.deliveryDateTime }}</h4>
+                                        </div>
+                                    </td>
+                                    <td class="span4">
+                                        <table class="table table-bordered table-striped">
+                                            {% if entity.discount %}<tr><td class="span8"><strong class="pull-right" >Discount Tk.</strong></td><td class="span4 text-right" ><strong class="text-right">{{ entity.discount|number_format() }}</strong></td></tr>{% endif %}
+                                            {% if entity.vat %}<tr><td class="span8" ><strong class="pull-right" >Vat/Tax Tk.</strong></td><td class="span4 text-right" ><strong class="text-right" >{{ entity.vat|number_format() }}</strong></td></tr>{% endif %}
+                                            <tr><td class="span8" ><strong class="pull-right" >Grand Total Tk.</strong></td><td class="span4 text-right" ><strong class="text-right" >{{ entity.total|number_format() }}</strong></td></tr>
+                                            <tr><td class="span8" ><strong class="pull-right" >Paid Tk.</strong></td><td class="span4 text-right" ><strong class="text-right">{{ entity.payment|number_format() }}</strong></td></tr>
+                                            {% if entity.due %}<tr><td class="span8" ><strong class="pull-right" >Due Tk.</strong></td><td class="span4 text-right" ><strong class="text-right">{{ entity.due|number_format() }}</strong></td></tr>{% endif %}
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td></tr>
+                    {% if entity.payment > 0 %}<tr><td colspan="4" style="text-align:right"><strong>Paid In word TK. </strong>({{ inWords|raw }} only).</td></tr>{% endif %}
+                   </tfoot>
+                </table>
+                <table class="table">
+                        <tr>
+                            <td class="span4 text-center">
+                                <ul class="unstyled">
+                                    <li>Printed By</li>
+                                    <li>{{ entity.createdBy }}, {{ "now"|date("d-m-Y") }}</li>
+                                </ul>
+                            </td>
+                            <td class="span4 text-right">
+                                <ul class="unstyled">
+                                    <li>&nbsp;</li>
+                                    <li>Customer Copy</li>
+                                </ul>
+                            </td>
+                        </tr>
+                </table>
+            {% endif %}
+        </div>
+        </div>
+    </div>
+<style>
+    {% if entity.hospitalConfig.cssContent  %}
+    {{ entity.hospitalConfig.cssContent|raw }}
+    {% endif %}
+</style>
+</body>
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@HospitalBundle/Resources/public/css/print.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+</html>

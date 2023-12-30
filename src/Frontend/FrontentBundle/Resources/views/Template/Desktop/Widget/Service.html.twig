@@ -1,0 +1,27 @@
+{% if entities is defined and entities is not empty  %}
+<section id="services">
+    <div class="orangeback">
+        <div class="container">
+            <div class="text-center homeport2"><h2>{% if pageModule.name is not empty %}{{ pageModule.name }}{% else %}Services {% endif %}</h2></div>
+            <div class="row">
+                <div class="col-md-12">
+                    {% for key,service in entities  %}
+                    <div class="col-md-3 portfolio-item">
+                        <div class="text-center">
+                            <a href="javascript:void(0);">
+                                            <span class="fa-stack fa-lg">
+                                              <i class="fa fa-circle fa-stack-2x"></i>
+                                              <i class="fa fa-stack-1x {% if service.icon is defined and service.icon is not empty  %}{{ service.icon.className }} {% endif %}"></i>
+                                            </span>
+                            </a>
+                            <h3><a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'service','slug':service.slug }) }}">{{ service.name }}</a></h3>
+                            <p>{{ service.content|raw|truncate(200) }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}

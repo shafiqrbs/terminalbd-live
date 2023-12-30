@@ -1,0 +1,111 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Categories
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                     <li><a href="#">Categories</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Categories</div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="portlet-body ">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Category name<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.name) }}
+                                            {{ form_errors(form.name) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+                          <div style="position: relative" class="portlet-body flip-scroll dd" id="nestable_list_2">
+                                <ul class="sortable grid dd-list">
+                                    <li class="dd-item dd3-item" >
+                                        <div class="dd3-content" style="background: #2398cc; color:#ffffff;">
+                                            <div  class="span8">Category Name</div>
+                                            <div class="span4">Action</div>
+                                        </div>
+                                    </li>
+                                    {% for entity in entities %}
+                                        <li  data-id="{{ entity.id }}" id="item_{{ entity.id }}" class="dd-item dd3-item">
+                                            <span data-id="{{ entity.id }}" class="dd-handle dd3-handle"></span>
+                                            <div class="dd3-content">
+                                                <div class="span8"><a href="{{ path('business_category_edit',{'id': entity.id })}}">{{ entity.name }}</a></div>
+                                                <div class="span4">
+                                                    {% if( entity.status == 1) %}
+                                                        <a class="btn mini blue btn-action" href="{{ path('business_category_status', { 'id': entity.id}) }}"><i class="icon-ok"></i></a>
+                                                    {% else %}
+                                                        <a class="btn mini red btn-action" href="{{ path('business_category_status', { 'id': entity.id}) }}">x</a>
+                                                    {% endif %}
+                                                    <a href="{{ path('business_category_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+                                                    <a title="Are you sure went to delete ?" href="{{ path('business_category_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $('.sortable').sortable({
+    handle: 'span'
+    });
+    $( ".sortable" ).on( "sortupdate", function( event, ui ) {
+    var serialized = $(".sortable").sortable("serialize");
+    $.ajax({
+    url: '{{ path('business_category_sorted') }}',
+    type: "POST",
+    data: serialized
+    });
+    })
+
+{% endblock %}

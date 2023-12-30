@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Invoice : {{ entity.invoice }}</title>
+    {% block stylesheets %}
+        <link href="{{ asset('assets/css/print-invoice.css') }}" rel="stylesheet">
+    {% endblock %}
+<style>
+    #details {
+        margin-bottom: 5px;
+    }
+</style>
+</head>
+<body>
+<header class="clearfix">
+    <div id="logo">
+        {% if config.invoicePrintLogo == 1 %}
+            {% if config.webPath is not empty %}   <img style="max-width: 180px; max-height: 60px" src="{{ image(config.webPath).resize(180,60) }}">{% endif %}
+        {% endif %}
+    </div>
+    <div id="company">
+        <h2 class="name">{{ config.globalOption.name }}</h2>
+        <div>{{ config.address|raw }}</div>
+    </div>
+</header>
+<main>
+    <div id="details" class="clearfix">
+        <div id="client">
+            <div class="to">INVOICE TO:</div>
+            <h2 class="name">{{ entity.customer.name }}</h2>
+            <div class="address">{{ entity.customer.address|raw }}</div>
+            <div class="email">{{ entity.customer.mobile }}</div>
+        </div>
+        <div id="invoice">
+            <h1>INVOICE {{ entity.invoice }}</h1>
+            <div class="date">Date of Invoice: {{ entity.updated|date('d-m-Y') }}</div>
+            <div class="email">Payment Mode: </div>
+        </div>
+    </div>
+        {% if entity.businessInvoiceParticulars is defined and  entity.businessInvoiceParticulars is not empty  %}
+            <table border="0" cellspacing="0" cellpadding="0">
+                <thead>
+                <tr>
+                    <th class="no">#</th>
+                    <th class="desc">DESCRIPTION</th>
+                    <th class="qty">QUANTITY</th>
+                    <th class="unit">UNIT PRICE</th>
+                    <th class="total">TOTAL</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for index,item in entity.businessInvoiceParticulars %}
+                    <tr>
+                        <td>{{ loop.index }}.</td>
+                        <td class="desc">{{ item.particular }}<br/><sub>{{ item.description|raw }}</sub></td>
+                        <td class="qty">{{ item.quantity|number_format() }} {% if item.unit is not empty %}{{ item.unit }}{% endif %}</td>
+                        <td class="unit">{{ item.price|number_format() }}</td>
+                        <td class="total">{{ item.subTotal|number_format() }}</td>
+                    </tr>
+                {% endfor %}
+                <tr><td colspan="5" style="border-bottom:1px solid #000!important">&nbsp;</td></tr>
+                <tr><td colspan="3"></td><td><span class="pull-right" >SUB TOTAL</span></td><td><strong>{{ entity.subTotal|number_format() }}</strong></td></tr>
+                <tr><td colspan="3"></td><td><span class="pull-right" >DISCOUNT</span></td><td><strong>{{ entity.discount|number_format() }}</strong></td></tr>
+                <tr><td colspan="3"  class="desc">In words: {{ entity.paymentInWord }}</td><td><strong class="pull-right" >TOTAL</strong></td><td><strong>{{ entity.total|number_format() }}</strong></td></tr>
+                <tr><td colspan="5" class="total-border">&nbsp;</td></tr>
+                <tr><td colspan="3"></td><td><strong class="pull-right" >PAID</strong></td><td><strong>{{ entity.received|number_format() }}</strong></td></tr>
+                {% if  entity.due > 0 %}
+                    <tr><td colspan="3"></td><td><span class="pull-right" >DUE</span></td><td><strong>{{ entity.due|number_format() }}</strong></td></tr>
+                {% endif %}
+                </tbody>
+
+            </table>
+        {% endif %}
+</main>
+<script>
+    window.print();
+    setTimeout(function () {
+        window.open('', '_self', '');
+        window.close();
+    }, 2000);
+</script>
+</body>
+</html>
+

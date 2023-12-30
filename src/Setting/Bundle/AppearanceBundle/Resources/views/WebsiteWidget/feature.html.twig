@@ -1,0 +1,181 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Website Widget Image Resize
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('appearancewebsitewidget') }}">Website Widget Image Resize</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-reorder"></i> Website Widget Image Resize</div>
+                    <div class="actions">
+                        <div class="btn-group">
+                            <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                Tools
+                                <i class="icon-tasks"></i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li><a href="{{ path('appearancewebsitewidget') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div style="position: relative" class="portlet-body flip-scroll dd" id="nestable_list_2">
+                    <form id="sorting" action="" method="post">
+                        <ul class="sortable grid dd-list" style="width: 920px">
+                            {% for item in entity.featureWidgetItems %}
+                                {% if(item.feature.webPath) %}
+                                    <li style="overflow: hidden;height: {{ item.divHeight }}px; width: {{ item.divWidth }}%" data-id="{{ item.id }}" id="item_{{ item.id }}" class="ui-widget-content dd-item dd3-item">
+                                        <span data-id="{{ item.id }}" class="dd-handle dd3-handle"></span>
+                                        <img class="" alt="" src="/{{ item.feature.webPath }}">
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+<br/><br/>
+
+                                <div class="form-actions portlet box grey">
+                                    <div class="pull-center">
+                                        <button type="button" class="btn green" id="serialize" ><i class="icon-ok"></i>Save Sorting</button>
+                                    </div>
+                                </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<style>
+
+   .connected, .sortable, .exclude, .handles {
+        margin: auto;
+        padding: 0;
+        width: 310px;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    .sortable.grid {
+        overflow: hidden;
+    }
+    .connected li, .sortable li, .exclude li, .handles li {
+        list-style: none;
+        border: 1px solid #CCC;
+        background: #F6F6F6;
+        color: #1C94C4;
+        margin: 5px;
+        padding: 5px;
+        height: 22px;
+    }
+    .handles span {
+        cursor: move;
+    }
+    li.disabled {
+        opacity: 0.5;
+    }
+    .sortable.grid li {
+        line-height: 80px;
+        float: left;
+        width: 80px;
+        height: 80px;
+        text-align: center;
+    }
+    li.highlight {
+        background: #FEE25F;
+    }
+    #connected {
+        width: 440px;
+        overflow: hidden;
+        margin: auto;
+    }
+    .connected {
+        float: left;
+        width: 200px;
+    }
+    .connected.no2 {
+        float: right;
+    }
+    li.sortable-placeholder {
+        border: 1px dashed #CCC;
+        background: none;
+    }
+
+   .connected li, .sortable li, .exclude li, .handles li{
+       margin: 0!important;
+       padding: 0!important;
+   }
+
+</style>
+
+{% endblock %}
+{% block documentready %}
+
+    {{ parent() }}
+
+    $('.sortable').sortable({
+    handle: 'span'
+    });
+    $( ".grid li" ).resizable({
+
+        maxHeight: 750,
+        maxWidth: 920,
+        minHeight: 200,
+        minWidth: 250,
+
+        start : function(event,ui) {
+        startW = $(this).outerWidth();
+        startH = $(this).outerHeight();
+        },
+
+        stop : function(event,ui) {
+
+        var parentwidth = $(".sortable").width(),
+        endW = Math.round(($(this).outerWidth() / parentwidth) * 100);
+        endH = $(this).outerHeight();
+        id = $(this).attr('data-id');
+        $.ajax({
+        url: '{{ path('appearancefeaturewidget_resizing') }}',
+        type: "POST",
+        data: { id : id,height:endH,width:endW },
+        }).done(function(data){
+        });
+
+        }
+    });
+    $( "ol.sortable" ).on( "sortupdate", function( event, ui ) {
+
+        var serialized = $(".sortable").sortable("serialize");
+        $.ajax({
+        url: '{{ path('appearancefeaturewidget_sorted') }}',
+        type: "POST",
+        data: serialized
+        }).done(function(data){
+        });
+
+    })
+{% endblock %}

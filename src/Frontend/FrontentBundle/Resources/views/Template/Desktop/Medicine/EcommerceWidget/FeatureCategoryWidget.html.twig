@@ -1,0 +1,13 @@
+{% for category in  categories  %}
+    <div class="col-md-12">
+        <div class="thumbnail feature-category" data-match-height="feature-category">
+            <div class="product-preview group" >
+                <a  href="{{ path(globalOption.subDomain ~ '_webservice_product_category',{'subdomain': globalOption.subDomain,'id':category.id }) }}">
+                    <img class="img-responsive" src="{{ image(category.webPath).resize(250,200, 'white') }}" alt=""></a>
+            </div>
+        </div>
+        <div class="caption">
+            <a class="group inner category-name text-center" href="{{ path(globalOption.subDomain ~ '_webservice_product_category',{'subdomain': globalOption.subDomain,'id':category.id }) }}">{{ category.name }}</a>
+        </div>
+    </div>
+{% endfor %}

@@ -1,0 +1,114 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">Account Head Base Expenditure</h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Account Head Base Expenditure</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account Head Base Expenditure</div>
+                        <div class="spn5" id="message"></div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% set startDate = searchForm.startDate is defined ? searchForm.startDate :"now"|date('d-m-y') %}
+                                {% set endDate = searchForm.endDate is defined ? searchForm.endDate :"now"|date('d-m-y') %}
+                                <a class="btn blue" href="{{ path('report_expenditure_category') }}"><i class="icon-th-list"></i>&nbsp;Category</a>
+                                <a class="btn black" href="{{ path('report_expenditure_details') }}"><i class="icon-th-list"></i>&nbsp;Details</a>
+                                <a class="btn red" href="{{ path('report_expenditure_summary',{'pdf':'pdf','startDate':startDate,'endDate':endDate}) }}"><i class="icon-download-alt"></i>&nbsp;Download PDF</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body">
+                            {% include('flash-message.html.twig') %}
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span6"></div>
+                                    <div class="span3">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 search-input m-wrap  date-picker" value="{% if searchForm.startDate is defined and searchForm.startDate is not empty %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span11">
+                                                <input type="text" id="endDate" name="endDate"  class="span10 search-input m-wrap  m-ctrl-medium date-picker" value="{% if searchForm.endDate is defined and searchForm.endDate is not empty %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %} ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="portlet-body form">
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                {% if expenditureHead is not empty %}
+                                    {% set total = 0 %}
+                                    {% for expenditure in expenditureHead %}
+                                        {% set total = total+expenditure.amount %}
+                                        <tr>
+                                            <th class="numeric" >{{ expenditure.name }}</th>
+                                            <td class="numeric" >{{ expenditure.amount|number_format }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tfoot>
+                                    <tr><th>Grand Total</th><th>{{ total|number_format }}</th></tr>
+                                    </tfoot>
+                                {% endif %}
+                            </table>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/editable.js'
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    AccountingApproveProcess();
+{% endblock %}
+
+
+

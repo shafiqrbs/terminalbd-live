@@ -1,0 +1,67 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="portlet box grey">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-cogs"></i>Page
+
+            </div>
+            <div id="" class="date-tooltip" >
+                <i class="fa fa-calendar"></i>
+                {{ "now"|date("d-F-Y") }}
+            </div>
+        </div>
+        <div>
+
+            <ul class="page-breadcrumb breadcrumb">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" >Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+
+                    <a href="javascript:" >Contact us</a>
+
+                </li>
+
+            </ul>
+        </div>
+        {% include('flash-message.html.twig')  %}
+        <div class="form-group form-group-custom backgroundWhite ">
+
+            <div class="tabbable tabbable-custom" >
+                <table class="table table-striped table-bordered table-hover table-full-width dataTable" >
+                    <thead class="header">
+                    <tr>
+                        <th>Name </th>
+                        <th>User name </th>
+                        <th>Sub-domain </th>
+                        <th class="col-md-3">Action</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for entity in pagination %}
+
+                        <tr>
+
+                            <td>{{ entity.name }}</td>
+                            <td>{{ entity.user }}</td>
+                            <td>{{ entity.user.globalOption.subDomain }}</td>
+
+                            <td>
+                                <a class="btn mini green-stripe btn-action" href="{{ path('contactpage_edit', { 'id': entity.id }) }}">Edit</a>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

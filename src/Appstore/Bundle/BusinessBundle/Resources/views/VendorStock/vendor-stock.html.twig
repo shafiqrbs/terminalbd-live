@@ -1,0 +1,122 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Stock
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('business_stock') }}">Manage Stock</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green ">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Stock</div>
+                        <div class="actions">
+                            <a href="{{ path('business_vendor_stock') }}" class=" btn black"><i class="icon-th-list"></i> Vendor Stock</a>
+                            <a class="btn red" href="{{ path('business_vendor_stock_new') }}"><i class="icon-plus-sign"></i> Add Vendor Stock</a>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="row-fluid" >
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid" style="margin-bottom: 10px">
+                                    <div class="span4"></div>
+                                    <div class="span4">
+                                        <input class="m-wrap span12 select2ParticularName" name="name" id="name" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Search particular name">
+                                    </div>
+                                    <div class="span4">
+                                        <div class="controls">
+                                            <div class="input-append span12">
+                                                <select name="vendorId" id="vendorId" class="m-wrap span10">
+                                                    <option value="" >--Select Vendor--</option>
+                                                    {% for vendor in vendors %}
+                                                        <option value="{{ vendor.id }}" {% if searchForm.vendorId is defined and searchForm.vendorId == vendor.id %} selected="selected" {% endif %} >{{ vendor.companyName }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </form>
+
+                        </div>
+                        <!-- BEGIN FORM-->
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Stock In</th>
+                                    <th class="numeric" >Stock Out</th>
+                                    <th class="numeric" >Remaining Qnt</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% set purchase = 0 %}
+                                {% set sales = 0 %}
+                                {% for entity in pagination %}
+                                    <tr>
+                                        <td class="numeric" >{{ entity.name }}</td>
+                                        <td class="numeric" >{{ entity.quantity }}</td>
+                                        <td class="numeric" >{{ entity.salesQuantity }}</td>
+                                        <td class="numeric" >{{ (entity.remin)|default(0) }}</td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/editable.js'
+    '@BusinessBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    EditableWithOutReloadInit();
+{% endblock %}

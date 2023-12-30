@@ -1,0 +1,165 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Delivery Invoice Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_delivery') }}">Manage Delivery Invoice</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Delivery Invoice Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Delivery Invoice Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    {% if is_granted('ROLE_DOMAIN_INVENTORY_MANAGER') %}
+                                        {% for shop in shops %}
+                                        <li><a href="{{ path('inventory_delivery_new',{'shop':shop.id}) }}"><i class="icon-plus-sign"></i>&nbsp;Invoice for : {{ shop.name }}</a></li>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <li><a href="{{ path('inventory_delivery') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            {% if is_granted('ROLE_DOMAIN_INVENTORY_MANAGER') %}
+                            <div id="search-product">
+                                <div class="row-fluid" style="margin-bottom: 5px">
+                                    <form class="search-form" method="post" action="{{ path('inventory_delivery_grn') }}" >
+                                        <div class="row-fluid">
+                                            <div class="span8">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="">Branch Name</label>
+                                                    <div class="controls">
+                                                        <select name="shop" id="shop" class="m-wrap span12 select2 leftMargin">
+                                                        <option value="">---Select Branch---</option>
+                                                        {% for shop in shops %}
+                                                        <option value="{{ shop.id }}" >{{ shop.name }}</option>
+                                                        {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="span4">
+                                                <div class="controls">
+                                                    <label class="control-label" for="">GRN No</label>
+                                                    <div class="input-append span11">
+                                                        <input type="text" id="grn" name="grn" required="required"  class="m-wrap span9" >
+                                                        <div class="btn-group">
+                                                            <button class="btn blue" id="addDelivery" type="submit"><i class="icon-plus"></i>&nbsp;Delivery</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Invoice</th>
+                                    <th class="numeric" >Branch Name</th>
+                                    <th class="numeric" >Manager</th>
+                                    <th class="numeric" >Total Item</th>
+                                    <th class="numeric" >Total Quantity</th>
+                                    <th class="numeric" >Total Amount</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in entities %}
+                                    <tr id="show-{{ entity.id }}" class="showing-overview">
+                                        <td colspan="9">{{ entity.notes }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.invoice }}</td>
+                                        <td class="numeric" >{{ entity.branch.name }}</td>
+                                        <td class="numeric" >{{ entity.branch.branchManager }}</td>
+                                        <td class="numeric" >{{ entity.totalItem }}</td>
+                                        <td class="numeric" >{{ entity.totalQuantity }}</td>
+                                        <td class="numeric" >{{ entity.totalAmount|number_format }}</td>
+                                        <td class="numeric" >
+                                            {% if entity.approvedBy is empty %}
+                                                <a title="" href="{{ path('inventory_delivery_show', { 'id': entity.id }) }}" class="btn blue mini" ><i class="icon-eye-open"></i></a>
+                                            {% if ( app.user.granted("ROLE_DOMAIN")  or app.user.granted("ROLE_DOMAIN_MANAGER")  or app.user.granted("ROLE_DOMAIN_INVENTORY"))  %}
+                                                <a title="" href="{{ path('inventory_delivery_edit', { 'code': entity.invoice }) }}" class="btn green mini" ><i class="icon-pencil"></i></a>
+                                                <a title="Are you sure went to delete ?" href="{{ path('inventory_delivery_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                            {% endif %}
+                                            {% if entity.approvedBy is empty and entity.totalQuantity > 0 and app.user.granted("ROLE_DOMAIN_INVENTORY_BRANCH_MANAGER") %}
+                                                <a href="javascript:" id="action-{{ entity.id }}" data-id="{{ entity.id }}" class="btn blue mini approve "  data-url="{{ path('inventory_delivery_approve',{'id':entity.id}) }}"><i class="icon-check-empty"></i>&nbsp;Approve</a>
+                                            {% endif %}
+                                        {% else %}
+                                            <a title="" href="{{ path('inventory_delivery_show', { 'id': entity.id }) }}" class="btn blue mini" ><i class="icon-eye-open"></i></a>
+                                            <a href="{{ path('inventory_delivery_print',{'id':entity.id}) }}" target="_blank" class="btn purple mini " ><i class="icon-download"></i></a>
+                                            <a href="javascript:" class="btn green mini approve " ><i class="icon-check"></i></a>
+                                        {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}
+
+

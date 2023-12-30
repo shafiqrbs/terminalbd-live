@@ -1,0 +1,102 @@
+{% extends '::hms-print.html.twig' %}
+{% block body %}
+    <div style="margin-top:{{ entity.hospitalConfig.printTopMargin }}px;margin-left:{{ entity.hospitalConfig.printLeftMargin }}px;">
+        {%  if entity.hospitalConfig.isPrintHeader == 1 %}
+            <table class="table" style="margin-top:{{ entity.hospitalConfig.printTopMargin }}px;margin-left:{{ entity.hospitalConfig.printLeftMargin }}px;">
+                <tr>
+                    <td>
+                        <div class="span4  pull-left invoice-logo-space">
+                            {%  if entity.hospitalConfig.invoicePrintLogo == 1 %}
+                                {% if entity.hospitalConfig.globalOption.templateCustomize.webPath('logo') is not empty %}   <img style="max-width: 180px; max-height: 120px" src="/{{ entity.hospitalConfig.globalOption.templateCustomize.webPath('logo') }}">{% endif %}
+                            {%  endif %}
+                        </div>
+                    </td>
+                    <td class="pull-right">
+                        <div class="span4">
+                            <ul class="unstyled">
+                                <li><strong>{{ entity.hospitalConfig.globalOption.name }}</strong></li>
+                                <li><p>{{ entity.hospitalConfig.address|raw }}</p></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        {% endif %}
+        <table class="table table-border" >
+            <tr class="print-header">
+                <th colspan="2">
+                    <span class="barcode-left">{{ patientBarcode|raw }}</span>
+                    <span class="title-center text-center">Death Certificate</span>
+                    <span class="barcode-right">{{ invoiceBarcode|raw }}</span>
+                </th>
+            </tr>
+
+        </table>
+        <table class="table table-bordered table-striped">
+            <tbody>
+            <tr>
+                <td><strong>Admission Date</strong></td>
+                <td>{{ entity.created|date('d-m-Y') }}</td>
+                <td><strong>Patient ID</strong></td>
+                <td>{{ entity.invoice }}</td>
+                <td><strong>Cabin/Bed</strong></td>
+                <td>{% if entity.cabin is not empty %}{{ entity.cabin.name }}{% endif %}</td>
+            </tr>
+            <tr>
+                <td><strong>Name of Patient</strong></td>
+                <td>{{ entity.customer.name }}</td>
+                <td><strong>Name of Father/Husband</strong></td>
+                <td>{{ entity.customer.fatherName }}</td>
+                <td><strong>Guardian Name</strong></td>
+                <td>{{ entity.customer.alternativeContactPerson }}</td>
+            </tr>
+            <tr>
+                <td><strong>Age</strong></td>
+                <td>{{ entity.customer.age }} {{ entity.customer.ageType }}</td>
+                <td><strong>Date of Birth</strong></td>
+                <td>{% if entity.customer.dob is not empty %}{{ entity.customer.dob|date('d-m-Y') }}{% endif %}</td>
+                <td><strong>Gender</strong></td>
+                <td>{{ entity.customer.gender }}</td>
+            </tr>
+            <tr>
+                <td><strong>Disease Description</strong></td>
+                <td colspan="5">{{ entity.disease|raw }}</td></tr>
+            <tr>
+                <td><strong>Case of Death</strong></td>
+                <td colspan="5">{{ entity.caseOfDeath|raw }}</td>
+            </tr>
+            {% if entity.doctorComment %}
+            <tr>
+                <td colspan="6">{{ entity.doctorComment|raw }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="3">
+                    <ul class="unstyled">
+                        <li>Authorised By</li>
+                        {% if entity.assignDoctor is not empty %}
+                            <li>{{ entity.assignDoctor.name }}</li>
+                            <li><p>{{ entity.assignDoctor.doctorSignature|raw }}</p></li>
+                            <li>{{ entity.updated|date('d-m-Y') }}</li>
+                        {% endif %}
+                    </ul>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <style>
+        .table td{
+            line-height: 20px!important;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+        '@HospitalBundle/Resources/public/css/print.css'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}

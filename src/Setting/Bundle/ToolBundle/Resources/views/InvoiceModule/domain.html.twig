@@ -1,0 +1,152 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Invoice Module
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('invoicemodule') }}">Invoice Module</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> Invoice Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Invoice Module Information</div>
+
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric" >Invoice</th>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Bill Month</th>
+                                    <th class="numeric" >Total Amount</th>
+                                    <th class="numeric" >Paid Amount</th>
+                                    <th class="numeric" >Due Amount</th>
+                                    <th class="numeric" >Payment By</th>
+                                    <th class="numeric" >Process</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td> {% if entity.invoiceModuleItems is defined and  entity.invoiceModuleItems is not empty  %}<span class="badge badge-warning toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span>{% endif %}</td>
+                                        <td class="numeric" >{{ entity.invoice }}</td>
+                                        <td class="numeric" >{{ entity.globalOption.name }}</td>
+                                        <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.billMonth }}</td>
+                                        <td class="numeric" >{{ entity.totalAmount }}</td>
+                                        <td class="numeric" >{{ entity.paidAmount }}</td>
+                                        <td class="numeric" >{{ entity.dueAmount }}</td>
+                                        <td class="numeric" >{{ entity.createdBy }}</td>
+                                        <td class="numeric" >
+                                            {% if entity.process == 'Created' %}
+                                                <a href="{{ path('invoicemodule_generate',{invoice:entity.invoice}) }}"  title="Created" class="btn purple mini" ><i class="icon-pushpin"></i>&nbsp;Confirm Invoice</a>
+                                            {% elseif entity.process == 'Pending' %}
+                                                <span  title="In-progress" class="btn green mini" ><i class="icon-pushpin"></i>&nbsp;Pending</span>
+                                            {% elseif entity.process == 'In-progress' %}
+                                                <span  class="btn yellow mini approve" data-id="{{ entity.id }}" data-url="{{ path('invoicemodule_approve',{id:entity.id}) }}" ><i class="icon-retweet"></i>&nbsp;In-progress</span>
+                                            {% elseif entity.process == 'Done' %}
+                                                <span  title="Done" class="btn blue mini" ><i class="icon-ok-circle"></i>&nbsp;Done</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric" >
+                                            <a href="{{ path('invoicemodule_show', { 'invoice': entity.invoice }) }}" class="btn blue mini" ><i class=" icon-eye-open"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr id="show-{{ entity.id }}" class="showing-overview" >
+                                        <td colspan="11">
+                                        {% if entity.invoiceModuleItems is defined and  entity.invoiceModuleItems is not empty  %}
+                                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                                <thead class="flip-content ">
+                                                <tr class="head-grey">
+                                                    <th class="numeric"  >Name</th>
+                                                    <th class="numeric" >Total</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                {% for item in entity.invoiceModuleItems %}
+                                                    <tr id="remove-{{ item.id }}">
+                                                        <td class="numeric">
+                                                            {% if item.appModule is not empty %}
+                                                        {{ item.appModule.name }}
+                                                        {% elseif item.module is not empty %}
+                                                            {{ item.module.name }}
+                                                        {% elseif item.syndicateModule is not empty %}
+                                                        {{ item.syndicateModule.name }}
+                                                        {% endif %}</td>
+                                                        <td class="numeric" >{{ item.amount }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                                <tfoot>
+                                                <td><strong class="pull-right" >Total Amount</strong></td><td colspan="2">{{ entity.totalAmount }}</td>
+                                                </tfoot>
+                                            </table>
+                                        {% endif %}
+                                        </td>
+                                    </tr>
+
+
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@SettingToolBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcessInt();
+{% endblock %}
+
+

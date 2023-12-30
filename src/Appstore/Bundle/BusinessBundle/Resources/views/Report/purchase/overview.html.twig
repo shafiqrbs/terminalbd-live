@@ -1,0 +1,198 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Business Purchase Overview
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Business Purchase Overview</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box blue tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Business Purchase Overview</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% set startDate = searchForm.startDate is defined ? searchForm.startDate : "now"|date("d-m-Y") %}
+                                {% set endDate = searchForm.endDate is defined ? searchForm.endDate :"now"|date("d-m-Y") %}
+                                <a target="_blank" href="{{ path('business_report_purchase_summary',{'pdf':'pdf','startDate':startDate,'endDate':endDate}) }}" class="btn purple"><i class="icon icon-print"></i> Download</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+
+                            <div class="row-fluid">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid">
+                                        <div class="span6">
+                                            <input type="text" id="startDate" name="startDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                        </div>
+                                        <div class="span6">
+                                            <div class="controls">
+                                                <div class="input-append span10">
+                                                    <input type="text" id="endDate" name="endDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="form-actions portlet box green">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Business Purchase Cash Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Total Amount</th>
+                                    <td class="numeric" >{{ purchaseCashOverview.total|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Payment</th>
+                                    <td class="numeric" >{{ purchaseCashOverview.totalPayment|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    {% set due = (purchaseCashOverview.total - purchaseCashOverview.totalPayment) %}
+                                    <th class="numeric" >{% if due > 0 %}Payable {% else %}Receivable{% endif %}</th>
+                                    <th class="numeric" >{{ due|number_format }}</th>
+                                </tr>
+                            </table>
+                            <div class="form-actions portlet box purple">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Transaction wise cash Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Transaction Method</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Payable/Receivable</th>
+                                </tr>
+                                {% for transaction in transactionCash %}
+                                    <tr>
+                                        {% set due = (transaction.total - transaction.totalPayment) %}
+                                        <td class="numeric" >{{ transaction.transactionName|default }}</td>
+                                        <td class="numeric" >{{ transaction.total|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.totalPayment|default|number_format }}</td>
+                                        <td class="numeric" >{{ due|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                           <div class="form-actions portlet box yellow">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Purchase Mode</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Purchase Mode</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Payable/Receivable</th>
+                                </tr>
+                                {% for process in purchaseMode %}
+                                    <tr>
+                                        <td class="numeric" >{{ process.name|capitalize|default }}</td>
+                                        <td class="numeric" >{{ process.total|default|number_format }}</td>
+                                        <td class="numeric" >{{ process.totalPayment|default|number_format }}</td>
+                                        <td class="numeric" >{{ process.totalDue|default|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            <div class="form-actions portlet box purple">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Vendor Purchase Summary</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Vendor/Supplier</th>
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Sub-total</th>
+                                    <th class="numeric" >Discount</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Due</th>
+                                </tr>
+                                {% set totalSubTotal = 0 %}
+                                {% set totalDiscount = 0 %}
+                                {% set totalTotal = 0 %}
+                                {% set totalreceive = 0 %}
+                                {% set totalDue = 0 %}
+                                {% for transaction in vendors %}
+                                    {% set totalSubTotal = totalSubTotal + transaction.subTotal  %}
+                                    {% set totalTotal = totalTotal + transaction.total  %}
+                                    {% set totalDiscount = totalDiscount + transaction.discount %}
+                                    {% set totalreceive = totalreceive + transaction.receive %}
+                                    {% set totalDue = totalDue + transaction.due  %}
+                                    <tr>
+                                        <td class="numeric" >{{ transaction.customerName|default }}</td>
+                                        <td class="numeric" >{{ transaction.customerMobile|default }}</td>
+                                        <td class="numeric" >{{ transaction.subTotal|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.discount|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.total|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.receive|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.due|default|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <th colspan="2">Grand Total</th>
+                                    <th>{{ totalSubTotal|number_format(2) }}</th>
+                                    <th>{{ totalDiscount|number_format(2) }}</th>
+                                    <th>{{ totalTotal|number_format(2) }}</th>
+                                    <th>{{ totalreceive|number_format(2) }}</th>
+                                    <th>{{ totalDue|number_format(2) }}</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}
+
+
+
+
+

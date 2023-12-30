@@ -1,0 +1,206 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Account of Balance Sheet
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:"> Account of Balance Sheet</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Assets</div>
+                        <div class="actions">
+                            {#<div class="btn-group">
+                                   {% set month = searchForm.month is defined ? searchForm.month :'' %}
+                                   {% set year = searchForm.year is defined ? searchForm.year :'' %}
+                                  <a class="btn purple" target="_blank" href="{{ path('account_balance_sheet',{'month':month,'year':year}) }}" >
+                                      <i class="icon-print"></i>&nbsp;Download
+                                  </a>
+                            </div>#}
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <form class="search-form" action="" method="get" name="itemSearch">
+                            <div class="row-fluid">
+                                <div class="span6"></div>
+                                <div class="span3">
+                                    {% set currentMonth = "now"|date("m") %}
+                                    {% set currentYear = "now"|date("Y") %}
+                                    {% set months = {'01':'January','02':'February','03':'March','04':'April','05':'May','06':'June','07':'July','08':'August','09':'September','10':'October','11':'November','12':'December'} %}
+                                    <select class="span12 m-wrap" name="month" id='month'>
+                                        {% for key,month in months %}
+                                            <option value='{{ key }}' {% if (searchForm.month is defined and searchForm.month == key) %} selected="selected" {% endif %} >{{ month }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="span3">
+                                    <div class="controls">
+                                        {% set years = [2018,2019,2020,2021,2022,2023,2024,2025] %}
+                                        <div class="input-append span11">
+                                            <select class="span11 m-wrap" name="year" id='year'>
+                                                {% for year in years %}
+                                                    <option value='{{ year }}' {% if (searchForm.year is defined and searchForm.year == year) %} selected="selected" {% endif %} >{{ year }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <div class="btn-group">
+                                                <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            {% set totalDebit =  0   %}
+                            {% set totalCredit =  0   %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Parent Head</th>
+                                    <th class="numeric" >Account Head</th>
+                                    <th class="numeric" >Sub Head</th>
+                                    <th class="numeric" >Amount</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for key, entity in debitStatement %}
+                                  <tr><td colspan="4" class="span9 service-group"><strong>{{ key }}</strong></td></tr>
+                                    {% for val in  debitStatement[key] %}
+                                    {% if val.toIncrease == "Debit" %}
+                                        {% set totalDebit = totalDebit + val.amount|abs %}
+                                    {% endif %}
+                                         <tr><td>&nbsp;</td><td colspan="2">{{ val.code }} - {{ val.name }}</td><th>{{ val.amount|abs|number_format }}</th></tr>
+                                        {% if receiveables is defined and receiveables is not empty %}
+                                            {% for sub in receiveables %}
+                                                {% if sub.parentId == val.accountHeadId %}
+                                                        {% if sub.amount > 0 %}
+                                                            <tr><td></td><td></td><td>{{ sub.headName }}</td><td>{{ sub.amount|number_format }}</td></tr>
+                                                        {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                              </tbody>
+                                <tr><th colspan="3">Grand Total</th><th> {{ totalDebit|number_format }}</th></tr>
+                            </table>
+                            <div class="form-actions portlet box yellow">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Equity & Liabilities</div>
+                                </div>
+                            </div>
+                            <div class="clearfix"><br/></div>
+                            <table class="table table-bordered table-striped table-condensed flip-content">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Parent Head</th>
+                                    <th class="numeric" >Account Head</th>
+                                    <th class="numeric" >Sub Head</th>
+                                    <th class="numeric" >Amount</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for key, entity in creditStatement %}
+                                    <tr><td colspan="4" class="span9 service-group"><strong>{{ key }}</strong></td></tr>
+                                    {% for val in  creditStatement[key] %}
+                                    {% set totalCredit = totalCredit + val.amount %}
+                                        <tr><td>&nbsp;</td><td colspan="2"> {{ val.code }} - {{ val.name }}</td><th>
+                                              {% if val.amount > 0  %} ({{ val.amount|abs|number_format }}){% else %} {{ val.amount|abs|number_format }} {% endif %}</th></tr>
+                                        {% if payables is defined and payables is not empty %}
+                                            {% for sub in payables %}
+                                                {% if sub.parentId == val.accountHeadId %}
+                                                    <tr><td></td><td></td><td>{{ sub.headName }}</td><td>{{ sub.amount|abs|number_format }}</td></tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                                </tbody>
+                                <tr><th colspan="3">Grand Total</th><th> {{ totalCredit|abs|number_format }}</th></tr>
+                            </table>
+                            <div class="clearfix"></div>
+                            <div class="form-actions portlet box red">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i> Profit & Loss</div>
+                                </div>
+                            </div>
+                            <div class="clearfix"><br/></div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Parent Head</th>
+                                    <th class="numeric" >Account Head</th>
+                                    <th class="numeric" >Sub Head</th>
+                                    <th class="numeric" >Profit/Loss</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for key, entity in profitStatement %}
+                                    <tr><td colspan="4" class="span9 service-group"><strong>{{ key }}</strong></td></tr>
+                                    {% set totalDebit = 'total'~key  %}
+                                    {% set totalCredit = 'total'~key  %}
+                                    {% set totalDebit =  0   %}
+                                    {% set totalCredit =  0   %}
+                                    {% for val in  profitStatement[key] %}
+                                        {% set total = totalCredit + val.amount|abs %}
+                                        <tr><td>&nbsp;</td><td colspan="2"> {{ val.code }} - {{ val.name }}</td><th>{% if val.amount > 0  %}({{ val.amount|number_format }}) {% else %} {{ val.amount|abs|number_format }} {% endif %}</th></tr>
+                                        {% if subHeadProfits is defined and subHeadProfits is not empty %}
+                                            {% for sub in subHeadProfits %}
+                                                {% if sub.parentId == val.accountHeadId %}
+                                                    <tr><td></td><td></td><td>{{ sub.headName }}</td>
+                                                        <td>{% if sub.amount > 0  %}({{ sub.amount|number_format }}) {% else %} {{ sub.amount|abs|number_format }} {% endif %}</td>
+
+                                                    </tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+
+                                    {% endfor %}
+                                    <tr><th colspan="3">Total</th><th> {{ totalCredit|number_format }}</th></tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="clearfix"><br/></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    AccountingApproveProcess();
+{% endblock %}
+
+
+

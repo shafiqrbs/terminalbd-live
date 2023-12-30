@@ -1,0 +1,344 @@
+<div class="ruby-menu-demo-header ruby-menu-demo-color-2 ">
+    {% set apps = app.user.globalOption.siteSetting.appModules %}
+    <!-- ########################### -->
+    <!-- START: RUBY HORIZONTAL MENU -->
+    <div class="ruby-wrapper">
+        <button class="c-hamburger c-hamburger--htx visible-xs">
+            <span>toggle menu</span>
+        </button>
+        <ul class="ruby-menu">
+            <li class="ruby-active-menu-item"><a href="/backend"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+            <li class="ruby-menu-item"><a href="{{ path('report_dashboard') }}">Dashboard</a></li>
+            {% for app in apps %}
+                {% if app.moduleClass == "Accounting" %}
+                    <li class="ruby-menu-mega"><a href="#">Accounting</a>
+                        <div class="ruby-grid ruby-grid-lined">
+                            <div class="ruby-row">
+                                <div class="ruby-col-3 hidden-md">
+                                    <h3 class="ruby-list-heading">List of Sales Reports</h3>
+                                    <ul>
+                                       <li><a href="{{ path('accounting_report_sales_outstanding') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Outstanding</a></li>
+                                        <li><a href="{{ path('accounting_report_sales_summary') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Summary</a></li>
+                                        <li><a href="{{ path('accounting_report_sales_customer_ledger') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Customer Ledger</a></li>
+                                        <li><a href="{{ path('accounting_report_sales_user_summary') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> User Sales & Receive</a></li>
+                                        {#<li><a href="{{ path('accounting_report_sales_customer_summary') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Customer Sales & Receive</a></li>#}
+                                        <li><a href="{{ path('accounting_report_sales_details') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Sales & Receive Details</a></li>
+                                    </ul>
+                                </div>
+
+
+                                {#
+                                                              <div class="ruby-col-2 hidden-md">
+                                                                  <h3 class="ruby-list-heading">List of Sales Reports</h3>
+                                                                  <ul>
+                                                                      <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i>Menu Item #1</a></li>
+                                                                      <li><a href="#"><i class="fa fa-music" aria-hidden="true"></i>Menu Item #2</a></li>
+                                                                      <li><a href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Menu Item #3</a></li>
+                                                                      <li><a href="#"><i class="fa fa-sliders" aria-hidden="true"></i>Menu Item #4</a></li>
+                                                                      <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i>Menu Item #5</a></li>
+                                                                  </ul>
+                                                              </div>
+                                                              <div class="ruby-col-4">
+                                                                  <h3 class="ruby-list-heading">Multiple Lists with Icons</h3>
+                                                                  <div class="ruby-row">
+                                                                      <div class="ruby-col-6 ruby-col-6-md">
+                                                                          <ul>
+                                                                              <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i>Menu Item</a></li>
+                                                                              <li><a href="#"><i class="fa fa-signal" aria-hidden="true"></i>Menu Item</a></li>
+                                                                              <li><a href="#"><i class="fa fa-send" aria-hidden="true"></i>Menu Item</a></li>
+                                                                              <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i>Menu Item</a></li>
+                                                                              <li><a href="#"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>Menu Item</a></li>
+                                                                          </ul>
+                                                                      </div>
+                                                                      <div class="ruby-col-6 ruby-col-6-md" style="padding-left:10px">
+                                                                          <ul>
+                                                                              <li><a href="#"><i class="fa fa-rocket" aria-hidden="true"></i>Menu Item</a></li>
+                                                                              <li><a href="#"><i class="fa fa-warning" aria-hidden="true"></i>Menu Item</a></li>
+                                                                              <li><a href="#"><i class="fa fa-upload" aria-hidden="true"></i>Menu Item</a></li>
+                                                                              <li><a href="#"><i class="fa fa-umbrella" aria-hidden="true"></i>Menu Item</a></li>
+                                                                              <li><a href="#"><i class="fa fa-trophy" aria-hidden="true"></i>Menu Item</a></li>
+                                                                          </ul>
+                                                                      </div>
+
+                                                                  </div>
+                                                              </div>#}
+                                <div class="ruby-col-4">
+                                    <h3 class="ruby-list-heading">Cash & Transaction</h3>
+                                    <div class="ruby-row">
+                                        <div class="ruby-col-6 ruby-col-6-md">
+                                            <ul>
+                                                <li><a href="{{ path('accounting_report_monthly_statement') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Monthly Statement</a></li>
+                                                <li><a href="{{ path('accounting_report_cash_flow')}}"><i class="fa fa-star" aria-hidden="true"></i>Cash Flow</a></li>
+                                                {#<li><a href="#"><i class="fa fa-signal" aria-hidden="true"></i>Menu Item</a></li>
+                                                <li><a href="#"><i class="fa fa-send" aria-hidden="true"></i>Menu Item</a></li>
+                                                <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i>Menu Item</a></li>
+                                                <li><a href="#"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>Menu Item</a></li>#}
+                                            </ul>
+                                        </div>
+                                        {#<div class="ruby-col-6 ruby-col-6-md" style="padding-left:10px">
+                                            <ul>
+                                                <li><a href="#"><i class="fa fa-rocket" aria-hidden="true"></i>Menu Item</a></li>
+                                                <li><a href="#"><i class="fa fa-warning" aria-hidden="true"></i>Menu Item</a></li>
+                                                <li><a href="#"><i class="fa fa-upload" aria-hidden="true"></i>Menu Item</a></li>
+                                                <li><a href="#"><i class="fa fa-umbrella" aria-hidden="true"></i>Menu Item</a></li>
+                                                <li><a href="#"><i class="fa fa-trophy" aria-hidden="true"></i>Menu Item</a></li>
+                                            </ul>
+                                        </div>#}
+
+                                    </div>
+                                </div>
+                                <div class="ruby-col-4">
+                                    <h3 class="ruby-list-heading">Financial Reports</h3>
+                                    <div class="ruby-row">
+                                        <div class="ruby-col-6 ruby-col-6-md">
+                                            <ul>
+                                                <li><a href="{{ path('accounting_report_head')}}"><i class="fa fa-arrow-right" aria-hidden="true"></i>Account Head</a></li>
+                                                <li><a href="{{ path('accounting_report_subhead')}}"><i class="fa fa-arrow-right" aria-hidden="true"></i>Account Sub-Head</a></li>
+                                                <li><a href="{{ path('accounting_report_daily_profit')}}"><i class="fa fa-arrow-right" aria-hidden="true"></i>Daily Profit</a></li>
+                                                <li><a href="{{ path('accounting_report_monthly_profit')}}"><i class="fa fa-arrow-right" aria-hidden="true"></i>Monthly Profit</a></li>
+                                                <li><a href="{{ path('accounting_report_yearly_profit')}}"><i class="fa fa-arrow-right" aria-hidden="true"></i>Yearly Profit</a></li>
+                                                <li><a href="{{ path('accounting_report_stakeholder_profit')}}"><i class="fa fa-arrow-right" aria-hidden="true"></i>Stackholder Profit</a></li>
+                                            </ul>
+                                        </div>
+                                        {#
+                                        <div class="ruby-col-6 ruby-col-6-md" style="padding-left:10px">
+                                            <ul>
+                                                <li><a href="{{ path('accounting_report_balanch_sheet')}}"><i class="fa fa-signal" aria-hidden="true"></i>Blanch Sheet</a></li>
+                                                <li><a href="{{ path('accounting_report_trail_balanch')}}"><i class="fa fa-signal" aria-hidden="true"></i>Trail Blanch</a></li>
+                                                <li><a href="{{ path('accounting_report_head')}}"><i class="fa fa-signal" aria-hidden="true"></i>Account Head</a></li>
+                                                <li><a href="{{ path('accounting_report_subhead')}}"><i class="fa fa-signal" aria-hidden="true"></i>Account Sub-head</a></li>
+                                            </ul>
+                                        </div>#}
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                {% endif %}
+                {% if app.moduleClass == "Hospital" %}
+                    <li class="ruby-menu-mega"><a href="{{ path('hms_report_dashboard')}}">Hospital & Diagnostic</a>
+                        <div class="ruby-grid ruby-grid-lined">
+                            <div class="ruby-row">
+                                <div class="ruby-col-3">
+                                    <h3 class="ruby-list-heading">Sales Reports</h3>
+                                    <div class="ruby-row">
+                                        <div class="ruby-col-123 ruby-col-12-md">
+                                            <ul>
+                                                <li><a href="{{ path('hms_report_dashboard') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Dashboard</a></li>
+                                                <li><a href="{{ path('hms_report_daily_sales_collection') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Sales & Collection </a></li>
+                                                <li><a href="{{ path('hms_report_hospital_invoice') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Invoices</a></li>
+                                    {#            <li><a href="{{ path('hms_report_diagnostic_invoice') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Diagnostic Invoice</a></li>
+                                                <li><a href="{{ path('hms_report_visit_invoice') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Visit Invoice</a></li>
+                                                <li><a href="{{ path('hms_report_admission_invoice') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Admission Invoice</a></li>
+                                  #}           </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ruby-col-3 ruby-col-3-md" style="padding-left:10px">
+                                    <h3 class="ruby-list-heading">Admission Reports</h3>
+                                    <div class="ruby-row">
+                                        <div class="ruby-col-12 ruby-col-12-md">
+                                            <ul>
+                                                <li><a href="{{ path('hms_report_diseases') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Disease</a></li>
+                                                <li><a href="{{ path('hms_report_diseases_details') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Diseases Details</a></li>
+                                                <li><a href="{{ path('hms_report_admission_service') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Service & Procedure </a></li>
+                                                <li><a href="{{ path('hms_report_admission_surgery_department') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Surgery Department</a></li>
+                                                <li><a href="{{ path('hms_report_admission_surgery_department_details') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Department Details</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ruby-col-3 ruby-col-3-md" style="padding-left:10px">
+                                    <h3 class="ruby-list-heading">Monthly Reports</h3>
+                                    <div class="ruby-row">
+                                        <div class="ruby-col-12 ruby-col-12-md">
+                                            <ul>
+                                                <li><a href="{{ path('hms_report_sales_collection_commission') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Invoice base Commission </a></li>
+                                                <li><a href="{{ path('hms_report_collection_commission_group') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Group wise Commission </a></li>
+                                                <li><a href="{{ path('hms_report_collection_commission_details') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Commission Details </a></li>
+                                  {#              <li><a href="{{ path('hms_report_admission_surgery_department') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Discount</a></li>
+                                                <li><a href="{{ path('hms_report_admission_surgery_department') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Service wise Sales</a></li>
+                                  #}          </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                {#<div class="ruby-col-3 hidden-md">
+                                    <h3 class="ruby-list-heading">List of Sales Reports</h3>
+                                    <ul>
+                                        <li><a href="{{ path('hms_report_dashboard') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Dashboard</a></li>
+                                        <li><a href="{{ path('hms_report_diagnostic_invoice') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Diagnoestic Invoice</a></li>
+                                        <li><a href="{{ path('hms_report_visit_invoice') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Visit Invoice</a></li>
+                                        <li><a href="{{ path('hms_report_admission_invoice') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Admission Invoice</a></li>
+                                        <li><a href="{{ path('hms_report_dashboard') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Summary</a></li>
+                                    </ul>
+                                </div>
+                                <div class="ruby-col-3 hidden-md">
+                                    <h3 class="ruby-list-heading">List of Sales Reports</h3>
+                                    <ul>
+                                        <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i>Menu Item #1</a></li>
+                                        <li><a href="#"><i class="fa fa-music" aria-hidden="true"></i>Menu Item #2</a></li>
+                                        <li><a href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Menu Item #3</a></li>
+                                        <li><a href="#"><i class="fa fa-sliders" aria-hidden="true"></i>Menu Item #4</a></li>
+                                        <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i>Menu Item #5</a></li>
+                                    </ul>
+                                </div>
+                                <div class="ruby-col-2 hidden-md">
+                                    <h3 class="ruby-list-heading">List of Sales Reports</h3>
+                                    <ul>
+                                        <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i>Menu Item #1</a></li>
+                                        <li><a href="#"><i class="fa fa-music" aria-hidden="true"></i>Menu Item #2</a></li>
+                                        <li><a href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Menu Item #3</a></li>
+                                        <li><a href="#"><i class="fa fa-sliders" aria-hidden="true"></i>Menu Item #4</a></li>
+                                        <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i>Menu Item #5</a></li>
+                                    </ul>
+                                </div>
+#}
+                            </div>
+                        </div>
+                        <span class="ruby-dropdown-toggle"></span>
+                    </li>
+                {% endif %}
+                {% if app.moduleClass == "Inventory" %}
+                    <li class="ruby-menu-mega"><a href="{{ path('inv_system_overview')}}">Inventory</a>
+                        <div class="ruby-grid ruby-grid-lined">
+                            <div class="ruby-row">
+                                <div class="ruby-col-4">
+                                    <h3 class="ruby-list-heading">Sales Reports</h3>
+                                    <div class="ruby-row">
+                                        <div class="ruby-col-6 ruby-col-6-md">
+                                            <ul>
+                                                <li><a href="{{ path('inv_system_overview') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Dashboard</a></li>
+                                                <li><a href="{{ path('inv_sales_profit_loss') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Sales Details</a></li>
+                                                <li><a href="{{ path('inv_salesitem_profit_loss') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Sales Item Details</a></li>
+
+                                            </ul>
+                                        </div>
+                                        <div class="ruby-col-6 ruby-col-6-md" style="padding-left:10px">
+                                            <ul>
+                                                <li><a href="{{ path('inv_stock_item_price') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Stock with Price </a></li>
+                                                <li><a href="{{ path('inv_category_stock_item_price') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Category Stock Price </a></li>
+                                                <li><a href="{{ path('inv_brand_stock_item_price') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Brand Stock Price </a></li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                {#<div class="ruby-col-3 hidden-md">
+                                    <h3 class="ruby-list-heading">List of Sales Reports</h3>
+                                    <ul>
+                                        <li><a href="{{ path('hms_report_dashboard') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Dashboard</a></li>
+                                        <li><a href="{{ path('hms_report_diagnostic_invoice') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Diagnoestic Invoice</a></li>
+                                        <li><a href="{{ path('hms_report_visit_invoice') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Visit Invoice</a></li>
+                                        <li><a href="{{ path('hms_report_admission_invoice') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Admission Invoice</a></li>
+                                        <li><a href="{{ path('hms_report_dashboard') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Summary</a></li>
+                                    </ul>
+                                </div>
+                                <div class="ruby-col-3 hidden-md">
+                                    <h3 class="ruby-list-heading">List of Sales Reports</h3>
+                                    <ul>
+                                        <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i>Menu Item #1</a></li>
+                                        <li><a href="#"><i class="fa fa-music" aria-hidden="true"></i>Menu Item #2</a></li>
+                                        <li><a href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Menu Item #3</a></li>
+                                        <li><a href="#"><i class="fa fa-sliders" aria-hidden="true"></i>Menu Item #4</a></li>
+                                        <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i>Menu Item #5</a></li>
+                                    </ul>
+                                </div>
+                                <div class="ruby-col-2 hidden-md">
+                                    <h3 class="ruby-list-heading">List of Sales Reports</h3>
+                                    <ul>
+                                        <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i>Menu Item #1</a></li>
+                                        <li><a href="#"><i class="fa fa-music" aria-hidden="true"></i>Menu Item #2</a></li>
+                                        <li><a href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Menu Item #3</a></li>
+                                        <li><a href="#"><i class="fa fa-sliders" aria-hidden="true"></i>Menu Item #4</a></li>
+                                        <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i>Menu Item #5</a></li>
+                                    </ul>
+                                </div>
+#}
+                            </div>
+                        </div>
+                        <span class="ruby-dropdown-toggle"></span>
+                    </li>
+                {% endif %}
+                {% if app.moduleClass == "Miss" %}
+                    <li class="ruby-menu-mega"><a href="{{ path('miss_system_overview')}}">Medicine</a>
+                        <div class="ruby-grid ruby-grid-lined">
+                            <div class="ruby-row">
+                                <div class="ruby-col-4">
+                                    <h3 class="ruby-list-heading">Summary Reports</h3>
+                                    <div class="ruby-row">
+                                        <div class="ruby-col-6 ruby-col-6-md">
+                                            <ul>
+                                                <li><a href="{{ path('miss_system_overview') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Dashboard</a></li>
+                                                <li><a href="{{ path('miss_stock_report') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Stock Summary</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="ruby-dropdown-toggle"></span>
+                    </li>
+                {% endif %}
+                {% if app.moduleClass == "Business" %}
+                    <li class="ruby-menu-mega"><a href="{{ path('inv_system_overview')}}">Inventory</a>
+                        <div class="ruby-grid ruby-grid-lined">
+                            <div class="ruby-row">
+                                <div class="ruby-col-4">
+                                    <h3 class="ruby-list-heading">Sales Reports</h3>
+                                    <div class="ruby-row">
+                                        <div class="ruby-col-6 ruby-col-6-md">
+                                            <ul>
+                                                <li><a href="{{ path('inv_system_overview') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Dashboard</a></li>
+                                                <li><a href="{{ path('miss_marketing_executive_report') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Marketing by Sales</a></li>
+                                                <li><a href="{{ path('miss_customer_invoice_ledger_report') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Customer Ledgers</a></li>
+
+                                            </ul>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                                {#<div class="ruby-col-3 hidden-md">
+                                    <h3 class="ruby-list-heading">List of Sales Reports</h3>
+                                    <ul>
+                                        <li><a href="{{ path('hms_report_dashboard') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Dashboard</a></li>
+                                        <li><a href="{{ path('hms_report_diagnostic_invoice') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Diagnoestic Invoice</a></li>
+                                        <li><a href="{{ path('hms_report_visit_invoice') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Visit Invoice</a></li>
+                                        <li><a href="{{ path('hms_report_admission_invoice') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Admission Invoice</a></li>
+                                        <li><a href="{{ path('hms_report_dashboard') }}"><i class="fa fa-arrow-right" aria-hidden="true"></i> Summary</a></li>
+                                    </ul>
+                                </div>
+                                <div class="ruby-col-3 hidden-md">
+                                    <h3 class="ruby-list-heading">List of Sales Reports</h3>
+                                    <ul>
+                                        <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i>Menu Item #1</a></li>
+                                        <li><a href="#"><i class="fa fa-music" aria-hidden="true"></i>Menu Item #2</a></li>
+                                        <li><a href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Menu Item #3</a></li>
+                                        <li><a href="#"><i class="fa fa-sliders" aria-hidden="true"></i>Menu Item #4</a></li>
+                                        <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i>Menu Item #5</a></li>
+                                    </ul>
+                                </div>
+                                <div class="ruby-col-2 hidden-md">
+                                    <h3 class="ruby-list-heading">List of Sales Reports</h3>
+                                    <ul>
+                                        <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i>Menu Item #1</a></li>
+                                        <li><a href="#"><i class="fa fa-music" aria-hidden="true"></i>Menu Item #2</a></li>
+                                        <li><a href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Menu Item #3</a></li>
+                                        <li><a href="#"><i class="fa fa-sliders" aria-hidden="true"></i>Menu Item #4</a></li>
+                                        <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i>Menu Item #5</a></li>
+                                    </ul>
+                                </div>
+#}
+                            </div>
+                        </div>
+                        <span class="ruby-dropdown-toggle"></span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            <li class="ruby-menu-right">
+                <a class='btn-print print'><i class='fa fa-print'></i> Print</a>
+            </li>
+        </ul>
+    </div>
+</div>

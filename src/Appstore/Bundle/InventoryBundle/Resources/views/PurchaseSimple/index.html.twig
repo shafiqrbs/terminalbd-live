@@ -1,0 +1,164 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    View Purchase Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_purchasesimple') }}">Purchase</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Purchase Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Purchase Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('inventory_purchasesimple_new') }}"><i class="icon-plus-sign"></i>&nbsp; Add Purchase</a>
+                            </div>
+                        </div>
+                    </div>
+                    <style>
+                        .search-input{
+                            height: 34px!important;
+                        }
+                    </style>
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid " id="purchaseItemx">
+                                <div class="span4">
+                                    <ul class="unstyled">
+                                        <li><strong>Purchase BDT:</strong>&nbsp;{{ purchaseOverview.total|number_format(2) }}</li>
+                                        <li><strong>Payment BDT:</strong>&nbsp;{{ purchaseOverview.payment|number_format(2) }}</li>
+                                    </ul>
+                                </div>
+                                <div class="span4">
+                                    <ul class="unstyled">
+                                        <li><strong>Due BDT:</strong> &nbsp;{{ purchaseOverview.due|number_format(2) }}</li>
+                                        <li><strong>Discount BDT:</strong>&nbsp;{{ purchaseOverview.discount|number_format(2) }}</li>
+                                    </ul>
+                                </div>
+                               {# <div class="span3">
+                                    <ul class="unstyled">
+                                        <li><strong>Sales BDT:</strong> &nbsp;</li>
+                                        <li><strong>Sales Due BDT:</strong>&nbsp;</li>
+                                    </ul>
+                                </div>#}
+                                <div class="span4">
+                                    <ul class="unstyled">
+                                        <li><strong>Purchase Qnt:</strong> &nbsp;{{ purchaseOverview.quantity }}</li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="grn" name="grn"  class="span12 m-wrap" value="{% if searchForm.grn is defined %}{{ searchForm.grn }}{% endif %}"  autocomplete="off" placeholder="goods receive no">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="receiveDate" name="receiveDate"  class="span12 m-wrap date-picker" value="{% if searchForm.receiveDate is defined %}{{ searchForm.receiveDate }}{% endif %}"  autocomplete="off" placeholder="received date ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="vendor" name="vendor"  class="span12 m-wrap select2Vendor" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Enter vendor name ">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="input-append span10">
+                                            <div class="controls">
+                                                <input type="text" id="memo" name="memo"  class="span12 m-wrap" value="{% if searchForm.memo is defined %}{{ searchForm.memo }}{% endif %}"  autocomplete="off" placeholder="memo no">
+                                                <div class="btn-group">
+                                                <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <table class="table table-bordered table-striped table-condensed flip-content">
+
+                                <thead>
+                                <tr class="head-green">
+                                    <th class="numeric" >Received Date</th>
+                                    <th class="numeric" >GRN</th>
+                                    <th class="numeric" >Memo</th>
+                                    <th class="numeric" >Vendor</th>
+                                    <th class="numeric" >Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Due</th>
+                                    <th class="numeric" >Item/Quantity</th>
+                                    <th class="numeric pull-center" >Process</th>
+                                    <th class="numeric" >Revised</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody class="flip-content " id="purchase">
+
+                                {% for entity in entities %}
+                                    <tr id="delete-{{ entity.id }}">
+                                        <td class="numeric" >{{ entity.receiveDate|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.grn }}</td>
+                                        <td class="numeric" >{{ entity.memo }}</td>
+                                        <td class="numeric" >{% if entity.vendor is defined and entity.vendor is not null %}<a title="Approve" target="_blank" href="{{ path('inventory_vendor_show',{'id':entity.vendor.id}) }}" >{{ entity.vendor.companyName }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.totalAmount|number_format(2) }}</td>
+                                        <td class="numeric" >{{ entity.paymentAmount|number_format(2) }}</td>
+                                        <td class="numeric" >{{ entity.dueAmount|number_format(2) }}</td>
+                                        <td class="numeric" >{{ entity.totalItem }}/{{ entity.totalQnt }}</td>
+                                        <td class="numeric pull-center" ><a title="Approve" href="javascript:" class="btn {% if entity.process == 'created' %} red {% else %} blue {% endif %} disabled mini" >&nbsp;{{ entity.process|capitalize }}</a></td>
+                                        <td class="numeric pull-center" >{% if entity.revised == 1 %} <button class="btn yellow mini"><i class="icon-ok"></i></button> {% endif %}</td>
+                                        <td class="numeric" id="action-{{ entity.id }}"  >
+                                            {% include "@Inventory/PurchaseSimple/action.html.twig" %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/editable.js'
+    '@InventoryBundle/Resources/public/js/puschase.js'
+    '@InventoryBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    InventoryPurchasePage();
+    ApproveProcess();
+{% endblock %}
+

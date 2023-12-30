@@ -1,0 +1,109 @@
+<ul class="nav pull-right">
+    <!-- BEGIN USER LOGIN DROPDOWN -->
+
+    {# <!-- BEGIN NOTIFICATION DROPDOWN -->
+     <li class="dropdown" id="header_notification_bar">
+         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+             <i class="icon-phone"></i>
+             <span class="badge">6</span>
+         </a>
+         <ul class="dropdown-menu extended notification">
+             <li>
+                 <p>You have 14 new notifications</p>
+             </li>
+             <li>
+                 <ul class="dropdown-menu-list scroller" style="height:250px">
+                     <li>
+                         <a href="#">
+                             <span class="label label-success"><i class="icon-plus"></i></span>
+                             New user registered.
+                             <span class="time">Just now</span>
+                         </a>
+                     </li>
+
+                 </ul>
+             </li>
+             <li class="external">
+                 <a href="#">See all sms <i class="m-icon-swapright"></i></a>
+             </li>
+         </ul>
+     </li>
+     <!-- END NOTIFICATION DROPDOWN -->
+     <!-- BEGIN INBOX DROPDOWN -->
+     <li class="dropdown" id="header_inbox_bar">
+         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+             <i class="icon-envelope"></i>
+             <span class="badge">5</span>
+         </a>
+         <ul class="dropdown-menu extended inbox">
+             <li>
+                 <p>You have 12 new messages</p>
+             </li>
+             <li>
+                 <ul class="dropdown-menu-list scroller" style="height:250px">
+                     <li>
+                         <a href="inbox.html?a=view">
+                             <span class="photo"><img src="./assets/img/avatar2.jpg" alt="" /></span>
+                                         <span class="subject">
+                                         <span class="from">Lisa Wong</span>
+                                         <span class="time">Just Now</span>
+                                         </span>
+                                         <span class="message">
+                                         Vivamus sed auctor nibh congue nibh. auctor nibh
+                                         auctor nibh...
+                                         </span>
+                         </a>
+                     </li>
+
+                 </ul>
+             </li>
+             <li class="external">
+                 <a href="inbox.html">See all messages <i class="m-icon-swapright"></i></a>
+             </li>
+         </ul>
+     </li>
+ #} <!-- END INBOX DROPDOWN -->
+{#    <li class="">
+        <a href="javascript:" class=""><img id="show-messenger" src="{{ asset('assets/img/messenger.png') }}" title="Facebook Messenger" width="24" ></a>
+    </li>#}
+  {#  <li class="">
+        <a href="javascript:" class=""><img id="show-calculator" src="{{ asset('assets/img/calculator.png') }}" title="Calculator" width="24" ></a>
+    </li>#}
+    {% if is_granted('ROLE_DOMAIN_WEBSITE_SETTING') %}
+        <li class="" id="header_notification_bar">
+            <a href="{{ path('globaloption_modify') }}" class=""><i class="icon-cogs"></i></a>
+        </li>
+    {% endif %}
+    {% if(app.user and app.user.globaloption.webmail is not empty) %}
+        <li class="" id="header_notification_bar">
+            <a href="{{ app.user.globaloption.webmail }}" target="_blank" class=""><i class="icon-envelope-alt"></i>&nbsp;Webmail</a>
+        </li>
+    {% endif %}
+    <li class="dropdown user">
+        <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+           data-close-others="true">
+            {#{% image 'assets/img/avatar1.png'
+            filter='' output='/img/avatar1.png' %}
+            <img src="{{ asset('assets/admin/layout/img/avatar.png') }}"/>
+            {% endimage %}#}
+      {#      {% if app.user.profile.webPath is not empty %}
+                <img src="{{ image(app.user.profile.webPath).resize(29,29) }}"/>
+            {% else %}
+                <img src="{{ asset('assets/img/avatar1.png') }}"/>
+            {% endif %}#}
+            <span class="username">{{ app.user }}</span>
+            <i class="fa fa-angle-down"></i>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a href="{{ path('domain_edit_profile') }}"><i class="icon-user"></i> My Profile</a></li>
+           {# <li><a href="javascript:"><i class="icon-envelope"></i> My Inbox <span
+                            class="badge badge-important">3</span></a></li>
+            <li class="divider"></li>
+#}            {#<li><a href="javascript:;" id="trigger_fullscreen"><i class="icon-move"></i> Full Screen</a></li>
+            <li><a href="{{ path('user_lock') }}"><i class="icon-lock"></i> Lock Screen</a></li>
+#}
+            <li><a href="{{ path('fos_user_security_logout') }}"><i class="icon-key"></i> Logout</a></li>
+        </ul>
+    </li>
+    <!-- END USER LOGIN DROPDOWN -->
+</ul>

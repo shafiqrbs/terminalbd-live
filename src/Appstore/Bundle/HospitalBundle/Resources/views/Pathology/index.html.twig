@@ -1,0 +1,165 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Diagnostic Reports
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('hms_pathology') }}">Diagnostic Reports</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Diagnostic Reports</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('hms_pathology_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a>
+                                {% if 'ROLE_DOMAIN' in app.user.roles %}
+                                <a class="btn purple" href="{{ path('hms_pathology_reset_report') }}"><i class="icon-refresh"></i>&nbsp;Reset</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid">
+                                        <div class="span4">
+                                            <div class="controls">
+                                                <select name="category" id="category" class="select2 span12">
+                                                    <option value="">---Select category---</option>
+                                                    {% for cat in categories %}
+                                                        <option value="{{ cat.id }}" {% if searchForm.category is defined and cat.id == searchForm.category %} selected="selected" {% endif %}>{{ cat.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="span4">
+                                            <div class="controls">
+                                                <select name="department" id="department" class="select2 span12">
+                                                    <option value="">---Select department---</option>
+                                                    {% for dep in departments %}
+                                                        <option value="{{ dep.id }}" {% if searchForm.department is defined and dep.id == searchForm.department %} selected="selected" {% endif %}>{{ dep.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="span4">
+                                            <div class="controls">
+                                                <div class="input-append span11">
+                                                    <input type="text" id="name" name="name"  class="span11 m-wrap" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Enter item name ">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Code</th>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Category</th>
+                                    <th class="numeric" >Department</th>
+                                    <th class="numeric" >Over Head</th>
+                                    <th class="numeric" >Price</th>
+                                    <th class="numeric" >Min Price</th>
+                                    <th class="numeric" >Commission</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td class="numeric" >{{ entity.particularCode }}</td>
+                                        <td class="" >
+                                            {% if ( app.user.granted("ROLE_DOMAIN_HOSPITAL_ADMIN") or app.user.granted("ROLE_DOMAIN"))  %}
+                                                <a  class="editableText" data-name="Name" href="#"  data-url="{{ path('hms_pathology_inline_update') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change  name" value="{{ entity.name }}">{{ entity.name }}</a>
+                                            {% else %}
+                                                {{ entity.name }}
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric">{% if entity.category is not empty %}{{ entity.category.name|default('---') }}{% endif %}</td>
+                                        <td class="numeric">{% if entity.department is not empty %}{{ entity.department.name|default('---') }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.overHeadCost|number_format }}</td>
+                                        <td class="numeric" >
+                                            {% if ( app.user.granted("ROLE_DOMAIN_HOSPITAL_ADMIN") or app.user.granted("ROLE_DOMAIN"))  %}
+                                                <a  class="editableText" data-name="Price" href="#"  data-url="{{ path('hms_pathology_inline_update') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change  price">{{ entity.price }}</a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric" >{{ entity.minimumPrice|number_format }}</td>
+                                        <td class="numeric" >{{ entity.commission|number_format }}</td>
+                                        <td class="numeric" >
+                                            {% if( entity.status == 1) %}
+                                                <a class="btn mini blue btn-action" href="{{ path('hms_pathology_status', { 'id': entity.id}) }}"><i class="icon-ok"></i></a>
+                                            {% else %}
+                                                <a class="btn mini red btn-action" href="{{ path('hms_pathology_status', { 'id': entity.id}) }}">x</a>
+                                            {% endif %}
+                                            <a href="{{ path('hms_pathology_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+                                            <a  href="{{ path('hms_pathology_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                            <a  href="{{ path('hms_pathological_report', { 'pathology': entity.id }) }}" class="btn blue mini" ><i class="icon-plus"></i>&nbsp;Report Format</a>
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+        '@HospitalBundle/Resources/public/js/editable.js'
+    %}<script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $('.editableText').editable({
+    type: 'text',
+    inputclass: 'span12 m-wrap',
+    placement: 'right',
+    });
+{% endblock %}

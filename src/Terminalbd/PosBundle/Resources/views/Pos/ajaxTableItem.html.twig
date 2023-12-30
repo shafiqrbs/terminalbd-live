@@ -1,0 +1,31 @@
+{% if  cart.contents is not empty %}
+    {% for item in cart.contents %}
+        <tr id="remove-{{ item.rowid }}">
+            <td>{{ loop.index }}.</td>
+            <td class="numeric product-title">{{ item.name }}</td>
+            <td class="numeric product-price">
+                <input type="text" class="form-control inline-m-wrap updateProductPrice btn-qnt-particular" data-id="{{ item.rowid }}"  id="price-{{ item.rowid }}" name="price-{{ item.rowid }}"  value="{{ item.price }}" data-action="{{ path('pos_item_update',{'product':item.rowid}) }}" >
+            </td>
+            <td class="product-quantity">
+                <div class="input-append" style="margin-bottom: 0!important;">
+                    <span class="input-group-btn">
+                        <a href="javascript:" data-action="{{ path('pos_item_update',{'product':item.rowid}) }}" class="btn green btn-number-pos mini" data-type="minus" data-id="{{ item.rowid }}"  data-text="{{ item.rowid }}" data-title="{{ item.price }}"  data-field="quantity"> <span class="fa fa-minus"></span> </a>
+                        <input type="text" class="form-control inline-m-wrap updateProduct btn-qnt-particular" data-id="{{ item.rowid }}"  id="quantity-{{ item.rowid }}" name="quantity-{{ item.rowid }}" data-title="{{ item.price }}" value="{{ item.quantity }}" data-action="{{ path('pos_item_update',{'product':item.rowid}) }}" min="1" max="100">
+                        <a href="javascript:" data-action="{{ path('pos_item_update',{'product':item.rowid}) }}" class="btn green btn-number-pos mini"  data-type="plus" data-id="{{ item.rowid }}" data-title="{{ item.price }}"  data-text="{{ item.rowid }}" data-field="quantity"> <span class="fa fa-plus"></span></a>
+                    </span>
+                </div>
+            </td>
+            <td class="numeric product-price"><strong id="subTotal-{{ item.rowid }}">{{ (item.quantity * item.price)|number_format(2) }}</strong></td>
+            <td class="numeric">
+                <a id="{{ item.rowid }}" data-id="{{ item.rowid }}" data-url="{{ path('pos_item_remove',{'product':item.rowid}) }}" href="javascript:" class="btn red mini particularDelete"><i class="icon-trash"></i></a>
+            </td>
+        </tr>
+        {% if item.serial is not empty %}
+            <tr><td></td><td colspan="3">Serial No:
+                    {% for imc in item.serial %}
+                        {{ imc }} {{ not loop.last ? ',' }}
+                    {% endfor %}
+                </td><td></td><td></td></tr>
+        {% endif %}
+    {% endfor %}
+{% endif %}

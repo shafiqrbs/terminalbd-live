@@ -1,0 +1,146 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Purchase Stock Items
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Purchase Stock Items</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Purchase Stock Items</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="item" name="item"  class="span12 select2Product" value="{% if searchForm.item is defined %}{{ searchForm.item }}{% endif %}"  autocomplete="off" placeholder="Enter item name ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="unit" name="unit"  class="span12 select2Unit" value="{% if searchForm.unit is defined %}{{ searchForm.unit }}{% endif %}"  autocomplete="off" placeholder="Enter unit name ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="size" name="size"  class="span12 select2Size" value="{% if searchForm.size is defined %}{{ searchForm.size }}{% endif %}"  autocomplete="off" placeholder="Enter size name ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="color" name="color"  class="span12 select2Color" value="{% if searchForm.color is defined %}{{ searchForm.color }}{% endif %}"  autocomplete="off" placeholder="Enter color name ">
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="brand" name="brand"  class="span12 select2Brand" value="{% if searchForm.brand is defined %}{{ searchForm.brand }}{% endif %}"  autocomplete="off" placeholder="Enter brand name ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="" name="vendor"  class="span12 select2Vendor" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Enter vendor name">
+                                    </div>
+                                    <div class="span6">
+                                        <input type="text" id="category" name="category"  class="span12 select2Category" value="{% if searchForm.category is defined %}{{ searchForm.category }}{% endif %}"  autocomplete="off" placeholder="Enter category name">
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 m-wrap date-picker" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}{{ "now"|date("m/d/Y") }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}{{ "now"|date("m/d/Y") }}{% endif %} ">
+                                    </div>
+                                    <div class="span6">
+                                        <div class="controls">
+                                            <div class="input-append span11">
+                                                <input type="text" id="endDate" name="endDate"  class="span12 m-wrap date-picker" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}{{ "now"|date("m/d/Y") }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}{{ "now"|date("m/d/Y") }}{% endif %}  ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="numeric" ><i class="icon-reorder"></i></th>
+                                    <th class="numeric" >SKU</th>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Purchase Qnt.</th>
+                                    <th class="numeric" >Remaining Qnt</th>
+                                    <th class="numeric" >Purchase Price</th>
+                                    <th class="numeric" >Sales Price</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                {%  set totalQnt = 0 %}
+                                {%  set totalRemaining = 0 %}
+                                {%  set totalPurchase = 0 %}
+                                {%  set totalSales = 0 %}
+                                {% for entity in entities %}
+                                    {% set totalRemaining = totalRemaining + entity.remainingQuantity %}
+                                    {% set totalPurchase = totalPurchase + entity.purchasePrice %}
+                                    {% set totalSales = totalSales + entity.salesPrice %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td class="numeric" >{{ entity.sku }}</td>
+                                        <td class="numeric" >{{ entity.name }}</td>
+                                        <td class="numeric" >{% if purchaseQuantity[entity.itemId] is defined %}
+                                                {% set totalQnt = totalQnt + purchaseQuantity[entity.itemId] %}
+                                                {{ purchaseQuantity[entity.itemId] }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.remainingQuantity }}</td>
+                                        <td class="numeric" >{{ entity.purchasePrice }}</td>
+                                        <td class="numeric" >{{ entity.salesPrice }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tr><th colspan="3"><span class="pull-right">Grand Total</span></th><th>{{ totalQnt }}</th><th>{{ totalRemaining }}</th><th>{{ totalPurchase|number_format }}</th><th>{{ totalSales|number_format }}</th></tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}

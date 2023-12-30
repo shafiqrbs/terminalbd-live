@@ -1,0 +1,182 @@
+parameters:
+#    setting_tool.example.class: Setting\Bundle\ToolBundle\Example
+
+services:
+#    setting_tool.example:
+#        class: %setting_tool.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+  appstore_medicine_importer_excel:
+        class: Setting\Bundle\ToolBundle\Importer\Excel
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+  appstore_medicine.importer.excel_data_reader:
+        class: Setting\Bundle\ToolBundle\Importer\ExcelDataReader
+        arguments: [ @phpexcel ]
+
+  appstore_tax_importer_excel:
+        class: Setting\Bundle\ToolBundle\Importer\TariffExcel
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+  appstore_tax.importer.excel_data_reader:
+        class: Setting\Bundle\ToolBundle\Importer\TariffDataReader
+        arguments: [ @phpexcel ]
+
+  settong.toolManageRepo:
+        class: Setting\Bundle\ToolBundle\Service\ToolManager
+        arguments: [@doctrine]
+
+  settong_archive_db:
+        class: Setting\Bundle\ToolBundle\Service\DatabaseArchive
+        arguments: [@doctrine]
+
+  setting_tool.sms_gateWay:
+       class: Setting\Bundle\ToolBundle\Service\SmsGateWay
+       arguments: [%sms_username%, %sms_password%, @guzzle.client.api_crm]
+
+  setting_tool.easy_email:
+       class: Setting\Bundle\ToolBundle\Service\EasyMailer
+       arguments: [@mailer]
+
+
+  setting_tool.listener.sms:
+      class: Setting\Bundle\ToolBundle\EventListener\SmsListener
+      arguments: [@setting_tool.sms_gateWay]
+      tags:
+        - { name: kernel.event_listener, event: setting_tool.post.sms_message, method: sendSms }
+
+  setting_tool.listener.email:
+      class: Setting\Bundle\ToolBundle\EventListener\EmailListener
+      arguments: [@setting_tool.easy_email]
+      tags:
+        - { name: kernel.event_listener, event: setting_tool.post.email_message, method: sendSms }
+
+
+  setting_tool.listener.email.receive:
+      class: Setting\Bundle\ToolBundle\EventListener\ReceiveEmailListener
+      arguments: [@setting_tool.easy_email]
+      tags:
+        - { name: kernel.event_listener, event: setting_tool.post.email_receive, method: receiveEmail }
+
+  setting_tool.listener.sms_and_email:
+      class: Setting\Bundle\ToolBundle\EventListener\SmsEmailListener
+      arguments: [@setting_tool.sms_gateWay]
+      calls:
+        - [setMailer, [@setting_tool.easy_email]]
+      tags:
+        - { name: kernel.event_listener, event: setting_tool.post.sms_email_message, method: onSmsEmail }
+
+
+  setting_tool.listener.user_signup:
+      class: Setting\Bundle\ToolBundle\EventListener\UserSignupListener
+      arguments: [@setting_tool.sms_gateWay]
+      calls:
+        - [setMailer, [@setting_tool.easy_email]]
+      tags:
+        - { name: kernel.event_listener, event: setting_tool.post.user_signup_msg, method: onUserSignup }
+
+  setting_tool.listener.customer_signup:
+      class: Setting\Bundle\ToolBundle\EventListener\CustomerSignupListener
+      arguments: [@setting_tool.sms_gateWay]
+      calls:
+        - [setMailer, [@setting_tool.easy_email]]
+      tags:
+        - { name: kernel.event_listener, event: setting_tool.post.customer_signup_msg, method: onCustomerSignup }
+
+  setting_tool.listener.changepassword:
+      class: Setting\Bundle\ToolBundle\EventListener\PasswordChangeSmsListener
+      arguments: [@doctrine , @setting_tool.sms_gateWay]
+      tags:
+        - { name: kernel.event_listener, event: setting_tool.post.change_password, method: sendSms }
+
+  setting_tool.listener.otp:
+      class: Setting\Bundle\ToolBundle\EventListener\OtpSmsListener
+      arguments: [@doctrine , @setting_tool.sms_gateWay]
+      tags:
+        - { name: kernel.event_listener, event: setting_tool.post.otp, method: sendSms }
+
+  setting_tool.listener.association.invoice:
+      class: Setting\Bundle\ToolBundle\EventListener\AssociationInvoiceListener
+      arguments: [@doctrine , @setting_tool.sms_gateWay]
+      tags:
+        - { name: kernel.event_listener, event: setting_tool.post.association_invoice, method: sendSms }
+
+  setting_tool.listener.changepassword.domain:
+      class: Setting\Bundle\ToolBundle\EventListener\PasswordChangeDomainSmsListener
+      arguments: [@setting_tool.sms_gateWay]
+      tags:
+        - { name: kernel.event_listener, event: setting_tool.post.change_domain_password, method: sendSms }
+
+  setting_tool.listener.domain_notification:
+      class: Setting\Bundle\ToolBundle\EventListener\DomainNotificationListener
+      arguments: [@setting_tool.sms_gateWay]
+      tags:
+        - { name: kernel.event_listener, event: setting_tool.post.domain_notification, method: domainNotify }
+
+  setting_tool.invoicesmsemail.event.listener:
+      class: Setting\Bundle\ToolBundle\EventListener\InvoiceSmsEmailListener
+      tags:
+          - { name: doctrine.event_listener, event: prePersist }
+
+  setting_tool.invoicemodule.event.listener:
+      class: Setting\Bundle\ToolBundle\EventListener\InvoiceModuleListener
+      tags:
+          - { name: doctrine.event_listener, event: prePersist }
+
+  setting_tool.listener.pos_order_sms:
+        class: Setting\Bundle\ToolBundle\EventListener\PosOrderSmsListener
+        arguments: [@doctrine ,@setting_tool.sms_gateWay]
+        tags:
+          - { name: kernel.event_listener, event: setting_tool.post.posorder_sms , method: sendSms }
+
+  setting_tool.listener.process_order_sms:
+          class: Setting\Bundle\ToolBundle\EventListener\PosOrderSmsListener
+          arguments: [@doctrine ,@setting_tool.sms_gateWay]
+          tags:
+            - { name: kernel.event_listener, event: setting_tool.post.process_sms , method: sendSalesConfirmSms }
+
+  setting_tool.listener.courier_order_sms:
+          class: Setting\Bundle\ToolBundle\EventListener\PosOrderSmsListener
+          arguments: [@doctrine ,@setting_tool.sms_gateWay]
+          tags:
+            - { name: kernel.event_listener, event: setting_tool.post.courier_sms , method: sendSalesCourierSms }
+
+  setting_tool.listener.sms_bulk_sms:
+          class: Setting\Bundle\ToolBundle\EventListener\SmsBulkListener
+          arguments: [@doctrine ,@setting_tool.sms_gateWay]
+          tags:
+            - { name: kernel.event_listener, event: setting_tool.post.bulk_sms , method: sendSms }
+
+
+  setting_tool.listener.hms_invoice_sms:
+        class: Setting\Bundle\ToolBundle\EventListener\HmsInvoiceSmsListener
+        arguments: [@doctrine ,@setting_tool.sms_gateWay]
+        tags:
+          - { name: kernel.event_listener, event: setting_tool.post.hms_invoice_sms , method: sendSms }
+
+  setting_tool.listener.hms_invoice_delivered_sms:
+          class: Setting\Bundle\ToolBundle\EventListener\HmsInvoiceSmsListener
+          arguments: [@doctrine ,@setting_tool.sms_gateWay]
+          tags:
+            - { name: kernel.event_listener, event: setting_tool.post.hms_invoice_delivered_sms , method: sendSalesConfirmSms }
+
+  setting_tool.listener.dms_invoice_sms:
+          class: Setting\Bundle\ToolBundle\EventListener\DmsInvoiceSmsListener
+          arguments: [@doctrine ,@setting_tool.sms_gateWay]
+          tags:
+            - { name: kernel.event_listener, event: setting_tool.post.dms_invoice_sms , method: sendSms }
+
+  setting_tool.listener.dms_treatment_plan_sms:
+          class: Setting\Bundle\ToolBundle\EventListener\DmsInvoiceSmsListener
+          arguments: [@doctrine ,@setting_tool.sms_gateWay]
+          tags:
+            - { name: kernel.event_listener, event: setting_tool.post.dms_treatment_plan_sms , method: sendPlanConfirmSms }
+
+  setting_tool.listener.hotel_invoice_sms:
+          class: Setting\Bundle\ToolBundle\EventListener\HotelInvoiceSmsListener
+          arguments: [@doctrine ,@setting_tool.sms_gateWay]
+          tags:
+            - { name: kernel.event_listener, event: setting_tool.post.hotel_invoice_sms , method: sendSms }
+

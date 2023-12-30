@@ -1,0 +1,26 @@
+
+    <div class="content">
+        <div class="container" style="position: relative">
+            <h1>Admission </h1><button id="slidx_button" >Lists</button>
+
+            <div class="decoration"></div>
+            <div class="col-xs-12">
+                <ul>
+                    {% for row in pagination %}
+                        <li><div class="one-responsive">
+                                <div class="big-notification dark-notification">
+                                    <h4><strong>{{ row.name }}</strong><br/> From <em>{{ row.startDate|date('F j, Y') }}</em> to <em>{{ row.endDate|date('F j, Y') }}</em></h4>
+                                    <p><a href="{{ path('webservice_module_page',{'subdomain': entity.user.globalOption.subDomain,'module': moduleName|lower,'slug':row.slug }) }}">{{ row.content | truncate(100, true) }}</a></p>
+                                </div>
+                            </div></li>
+                    {% endfor %}
+
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <div class="pagination pull-center"  >
+        {{ knp_pagination_render(pagination) }}
+    </div>
+

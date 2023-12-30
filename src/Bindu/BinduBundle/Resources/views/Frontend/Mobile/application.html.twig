@@ -1,0 +1,72 @@
+{% extends ':bindu/mobile:base.html.twig' %}
+{% block body %}
+    <div class="bannerPane bannerPane-find-business" {% if app.webPath is not empty %} style="background-image: url('/{{ app.webPath }}')" {% endif %}>
+        <div class="overlay"></div>
+        <div class="s-banner-content">
+            <div><img width="100" src="{{ asset('assets/frontend/img/logo.png') }}" /></div>
+            <div class="page-title"> {{ app.name }}</div>
+        </div>
+    </div>
+    <style>
+        tm-column.tm4 {
+            width: 33.3333%;
+        }
+        .header-line-bottom h1, .header-line-bottom h2, .header-line-bottom h3, .header-line-bottom h4, .header-line-bottom h5, .header-line-bottom h6 {
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+            margin-bottom: 15px;
+            margin-top: 15px;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        ul li{
+            list-style: square !important;
+            display: inline-block!important;
+            margin-left: 1px!important;
+            width: 100%;
+        }
+
+    </style>
+    <div id="content">
+        {{ app.content|raw }}
+        <div class="clear"></div>
+        <style>
+            .p-blog article a p {
+                color: #333;
+            }
+            article h2 {
+                text-transform: uppercase;
+                font-weight: bold;
+            }
+
+        </style>
+        <br/>
+        <h3 class="title"><i class="fa fa-th-list"></i> CLIENT OPINIONS</h3>
+        {% if testimonials is defined and testimonials is not empty %}
+            {% for team in testimonials %}
+                <article>
+                    <div class="article-img-pane">
+                        <img src="{{ image(team.webPath).scaleResize(120,120) }}" alt="Thumb">
+                    </div>
+                    <h2><i class="fa fa-user"></i> {{ team.name }}</h2>
+                    <span> <i class="fa fa-cog"></i> {{ team.designation }}</span>
+                    <p>{{ team.content|raw }}</p>
+                </article>
+            {% endfor %}
+        {% endif %}
+        <div class="clear"></div>
+        {% for application in applications %}
+            <a href="{{ path('bindu_application',{'slug':application.slug}) }}">
+            <div class="bannerPane" id="VideoGallery" style="margin-top: 30px; background-image: url('/{{ application.webPath }}')">
+                <div class="overlay"></div>
+                <div class="s-banner-content">
+                    {{ application.name }}
+                </div>
+            </div>
+            </a>
+        {% endfor %}
+        <div class="clear"></div>
+    </div>
+{% endblock %}

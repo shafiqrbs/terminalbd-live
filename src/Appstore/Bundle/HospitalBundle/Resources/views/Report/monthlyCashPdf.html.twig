@@ -1,0 +1,142 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    h1 , h2 , h3 , h4 , h5 , h6,p{
+        display: block;
+        padding: 0;
+        margin: 0;
+    }
+    h3 {
+        font-size: 24px;
+        line-height: 45px;
+        height: 45px;
+    }
+
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+<table class="table">
+    <thead>
+    <tr><td class="pull-center" colspan="20">{{ globalOption.hospitalConfig.address|raw }}</td></tr>
+    {% set month = searchForm.month is defined ? searchForm.month :"now"|date("F") %}
+    {% set year = searchForm.year is defined ? searchForm.year :"now"|date("Y") %}
+    <tr>
+        <th class="pull-center" colspan="9"><h3><strong>MONTH STATEMENT SHEET: {{ month|capitalize }} , {{ year }}</strong></h3></th>
+    </tr>
+    <tr class="head-green">
+        <th>Date</th>
+        <th>Sales</th>
+        <th>Receive</th>
+        <th>Commission</th>
+        <th>Expenditure</th>
+        <th>Return</th>
+        <th>Balance</th>
+        <th>Due</th>
+        <th>Cash</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% set fullDate =  date(year~'-'~month~'-1')|date('Y-m-d') %}
+    {% set month =  date(year~'-'~month~'-1')|date('Y-m-') %}
+    {% set max =  fullDate|date("t") %}
+
+    {% set sales = 0 %}
+    {% set receive = 0 %}
+    {% set commission = 0 %}
+    {% set expenditure = 0 %}
+    {% set invoiceReturn = 0 %}
+    {% set due = 0 %}
+    {% set balance = 0 %}
+    {% set cash = 0 %}
+
+    {% set totalSales = 0 %}
+    {% set totalReceive = 0 %}
+    {% set totalCommission = 0 %}
+    {% set totalExpenditure = 0 %}
+    {% set totalInvoiceReturn = 0 %}
+    {% set totalDue = 0 %}
+    {% set totalBalance = 0 %}
+    {% set totalCash = 0 %}
+
+    {% for i in 1..max %}
+        {% set blackO               = date(month~i)|date('d-m-Y') %}
+        {% set sales                = monthlySales[blackO] is defined and monthlySales[blackO] is not empty ? monthlySales[blackO].total : 0  %}
+        {% set receive              = monthlySales[blackO] is defined and monthlySales[blackO] is not empty ? monthlySales[blackO].receive : 0  %}
+        {% set commission           = monthlyCommissionSales[blackO] is defined and monthlyCommissionSales[blackO] is not empty ? monthlyCommissionSales[blackO].payment : 0  %}
+        {% set expenditure          = monthlyExpenditures[blackO] is defined and monthlyExpenditures[blackO] is not empty ? monthlyExpenditures[blackO].payment : 0  %}
+        {% set invoiceReturn        = monthlySalesReturns[blackO] is defined and monthlySalesReturns[blackO] is not empty ? monthlySalesReturns[blackO].payment : 0  %}
+        {% set due                  = monthlySales[blackO] is defined and monthlySales[blackO] is not empty ? monthlySales[blackO].due : 0  %}
+
+        {% set balance              = (sales - expenditure - invoiceReturn)|default(0)|number_format  %}
+        {% set cash                 = sales - expenditure - invoiceReturn - due %}
+        {% set actualExpense        = expenditure - commission  %}
+
+        {% set totalSales           = totalSales + sales %}
+        {% set totalReceive         = totalReceive + receive %}
+        {% set totalCommission      = totalCommission + commission %}
+        {% set totalExpenditure     = totalExpenditure + actualExpense %}
+        {% set totalInvoiceReturn   = totalInvoiceReturn + invoiceReturn %}
+        {% set totalBalance         = totalBalance + (sales - expenditure - invoiceReturn)  %}
+        {% set totalDue             = totalDue + due %}
+        {% set totalCash            = totalCash + (sales - expenditure - invoiceReturn - due)  %}
+        <tr>
+            <td>{{ blackO }}</td>
+            <td>{% if monthlySales[blackO] is defined and monthlySales[blackO] is not empty %}{{ monthlySales[blackO].total }}{% endif %}</td>
+            <td>{% if monthlySales[blackO] is defined and monthlySales[blackO] is not empty %}{{ monthlySales[blackO].receive }}{% endif %}</td>
+            <td>{% if monthlyCommissionSales[blackO] is defined and monthlyCommissionSales[blackO] is not empty %}{{ monthlyCommissionSales[blackO].payment }}{% endif %}</td>
+            <td>{% if monthlyExpenditures[blackO] is defined and monthlyExpenditures[blackO] is not empty and actualExpense > 0  %}{{ actualExpense }}{% endif %}</td>
+            <td>{% if monthlySalesReturns[blackO] is defined and monthlySalesReturns[blackO] is not empty %}{{ monthlySalesReturns[blackO].payment }}{% endif %}</td>
+            <td>{%  if balance > 0  %}{{ balance }}{% endif %}</td>
+            <td>{% if monthlySales[blackO] is defined and monthlySales[blackO] is not empty %}{{ monthlySales[blackO].due }}{% endif %}</td>
+            <td>{%  if cash > 0  %}{{ cash }}{% endif %}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+    <tr><th>Grand Total</th><th>{{ totalSales }}</th><th>{{ totalReceive }}</th><th>{{ totalCommission }}</th><th>{{ totalExpenditure }}</th><th>{{ totalInvoiceReturn }}</th><th>{{ totalBalance }}</th><th>{{ totalDue }}</th><th>{{ totalCash }}</th></tr>
+    </tfoot>
+</table>

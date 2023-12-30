@@ -1,0 +1,106 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="portlet box grey">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-cogs"></i>Blackout
+
+            </div>
+            <div id="" class="date-tooltip" >
+                <i class="fa fa-calendar"></i>
+                {{ "now"|date("d-F-Y") }}
+            </div>
+        </div>
+        <div>
+
+            <ul class="page-breadcrumb breadcrumb">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" >Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+
+                    <a href="javascript:" >Blackout</a>
+
+                </li>
+            </ul>
+        </div>
+        {% include('flash-message.html.twig')  %}
+        <div class="form-group form-group-custom backgroundWhite ">
+            <div class="modal-dialog modal-dialog-form" >
+                <div class="modal-content" >
+
+                    <div class="modal-body ">
+                        <div class="portlet box">
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="form-group">
+                                <div id="blackout" class="box"></div>
+                                {{ form_widget(form.blackoutDate) }}
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Title :</label>
+                                <div class="col-md-9 form-group-error">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.name) }}
+                                        {{ form_errors(form.name) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="content"  class="control-label col-md-2 required">Content :</label>
+                                <div class="col-md-10">
+
+                                    {{ form_widget(form.content) }}
+                                    {{ form_errors(form.content) }}
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Status:</label>
+                                <div class="col-md-9">
+                                    <label class="checkbox line">
+                                        {{ form_widget(form.status) }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <label for="item_itemName"  class="control-label col-md-5"></label>
+                                <div class="col-md-5">
+                                    {{ form_widget(form.submit) }}<a href=""  class="btn btn-danger" name="setting_bundle_contentbundle_blackout[reset]" id="setting_bundle_contentbundle_blackout_reset" >Reset</a>
+                                </div>
+                            </div>
+
+
+                            {{ form_end(form) }}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+{% block documentready %}
+
+    $('#blackout').multiDatesPicker({
+        dateFormat: "dd/mm/yy",
+        altField: '#setting_bundle_contentbundle_blackout_blackoutDate'
+
+    });
+
+    $('.btn-dark').click(function(){
+
+        var blackout_date = $('#altField').val();
+        if(blackout_date ==""){
+        alert('Error. Please select date.');
+        return false;
+        }
+        $('#from').submit();
+
+    })
+
+{% endblock %}
+

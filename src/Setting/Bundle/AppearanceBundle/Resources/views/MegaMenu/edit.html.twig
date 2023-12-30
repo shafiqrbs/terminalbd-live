@@ -1,0 +1,120 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="portlet box grey">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-cogs"></i>Branding
+
+            </div>
+            <div id="" class="date-tooltip" >
+                <i class="fa fa-calendar"></i>
+                {{ "now"|date("d-F-Y") }}
+            </div>
+        </div>
+        <div>
+
+            <ul class="page-breadcrumb breadcrumb">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" >Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('branding') }}" >Manage Brand</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    Create
+                </li>
+
+                <li class="pull-right custom-pull-right" >
+                    <a class="btn green-stripe purple" href="{{ path('branding_new') }}"><i class="icon-plus"></i> New Create</a>
+                    <a class="btn purple-stripe blue" href="{{ path('branding') }}">Listing<i class="icon-headphones"></i></a>
+
+                </li>
+            </ul>
+        </div>
+        {% include('flash-message.html.twig')  %}
+        <div class="form-group form-group-custom backgroundWhite ">
+            <div class="modal-dialog modal-dialog-form" >
+                <div class="modal-content" >
+
+                    <div class="modal-body ">
+                        <div class="portlet box">
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Menu name:</label>
+                                <div class="col-md-9 form-group-error">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.name) }}
+                                        {{ form_errors(form.name) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.categories.vars.id }}" class="control-label col-md-2">
+                                    Categories:
+                                </label>
+                                <div class="col-md-9">
+                                    <div class="input-icon right">
+                                        <div class="controls">
+                                            {{ form_widget(form.categories, {'attr': {'class': 'form-control multi-select2 span6 m-wrap'}}) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Brand:</label>
+                                <div class="col-md-9 form-group-error">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.brands) }}
+                                        {{ form_errors(form.brands) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Collection:</label>
+                                <div class="col-md-9 form-group-error">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.collections) }}
+                                        {{ form_errors(form.collections) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Status:</label>
+                                <div class="col-md-9">
+                                    <label class="checkbox line">
+                                        {{ form_widget(form.status) }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <label for="item_itemName"  class="control-label col-md-2 required"></label>
+                                <div class="col-md-9">
+                                    {{ form_widget(form.submit) }}{{ form_widget(form.reset) }}
+                                </div>
+                            </div>
+
+
+                            {{ form_end(form) }}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+    </div>
+{% endblock %}
+
+{% block documentready %}
+
+    {{ parent() }}
+    $("select.multi-select2").multiSelect();
+
+{% endblock %}

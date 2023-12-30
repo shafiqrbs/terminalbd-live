@@ -1,0 +1,485 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+    <!-- BEGIN category HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="category-title">
+                Patient Admission #  <strong>{{ entity.invoice }}</strong>
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li>
+                    <a href="{{ path('hms_invoice_admission') }}">Patient Admission</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li><a href="#">Manage Patient Admission</a></li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END category HEADER-->
+    <!-- BEGIN category CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box green tabbable">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-reorder"></i>Patient Admission Information</div>
+                    <div class="actions">
+                        <div class="btn-group">
+                            <a class="btn red" href="{{ path('hms_invoice_admission_new') }}"><i class="icon-plus-sign"></i> New Admission</a>
+                            <a class="btn" href="{{ path('hms_invoice_admission') }}"><i class="icon-th-list"></i> Admission</a>
+                            <a class="btn black patientShow"><span class="fa fa-angle-double-up"></span>&nbsp;Show</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                <div class="portlet-body">
+                <div class="portlet-body form"  >
+                    {% include('flash-message.html.twig')  %}
+                    <!-- BEGIN FORM-->
+                    {{ form_start(form) }}
+                    {{ form_row(form._token) }}
+                    <div class="clearfix">&nbsp;</div>
+                    <div id="updatePatient" {% if entity.customer is defined and entity.customer is not empty and admissionForm !='show' %} style="display:none" {% else %} style="display:block" {% endif %}>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="control-group">
+                                <label class="control-label red" for="firstName"><span>Search Patient</span></label>
+                                <div class="controls">
+                                    <div class="input-append span11">
+                                        {{ form_widget(form.customer.customerId) }}
+                                        {{ form_errors(form.customer.customerId) }}
+                                        <div class="btn-group">
+                                            <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Personnel</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Patient Name</span><span class="required">*</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.name) }}
+                                        {{ form_errors(form.customer.name) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Mobile no</span><span class="required">*</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.mobile) }}
+                                        {{ form_errors(form.customer.mobile) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName">Age<span class="required">*</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.age) }}
+                                        {{ form_widget(form.customer.ageType) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Gender</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.gender) }}
+                                        {{ form_errors(form.customer.gender) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row-fluid">
+
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Father/Spouse Name</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.fatherName) }}
+                                        {{ form_errors(form.customer.fatherName) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Mother Name</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.motherName) }}
+                                        {{ form_errors(form.customer.motherName) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Date of Birth</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.dob) }}
+                                        {{ form_errors(form.customer.dob) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Marital Status</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.maritalStatus) }}
+                                        {{ form_errors(form.customer.maritalStatus) }}
+                                    </div>
+                                </div>
+                            </div>
+                       </div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Guardian Name</span><span class="required">*</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.alternativeContactPerson) }}
+                                        {{ form_errors(form.customer.alternativeContactPerson) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Relationship with the Patient</span><span class="required">*</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.alternativeRelation) }}
+                                        {{ form_errors(form.customer.alternativeRelation) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Guardian Mobile No</span><span class="required">*</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.alternativeContactMobile) }}
+                                        {{ form_errors(form.customer.alternativeContactMobile) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box green">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Admission</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Cabin/Ward/Bed<span class="required">*</span></span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.cabin) }}
+                                        {{ form_errors(form.cabin) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Blood Group</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.bloodGroup) }}
+                                        {{ form_errors(form.customer.bloodGroup) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Assign Doctor</span><span class="required">*</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.assignDoctor) }}
+                                        {{ form_errors(form.assignDoctor) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Department</span><span class="required">*</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.department) }}
+                                        {{ form_errors(form.department) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Weight</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.weight) }}
+                                        {{ form_errors(form.customer.weight) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Height</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.height) }}
+                                        {{ form_errors(form.customer.height) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Blood Pressure</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.bloodPressure) }}
+                                        {{ form_errors(form.customer.bloodPressure) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Diabetes</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.diabetes) }}
+                                        {{ form_errors(form.customer.diabetes) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label red" for=""><span>Disease<span class="required">*</span></span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.disease) }}
+                                        {{ form_errors(form.disease) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Address</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Location</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.location) }}
+                                        {{ form_errors(form.customer.location) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span9">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Address</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.address) }}
+                                        {{ form_errors(form.customer.address) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Profession</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.profession) }}
+                                        {{ form_errors(form.customer.profession) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Nationality</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.nationality) }}
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label red" for="firstName"><span>Religion</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.customer.religion) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid"><br/></div>
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-right">
+                                <button type="submit" class="btn green"><i class="icon-save"></i>  Save & Continue</button>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                    </div>
+                    </div>
+                    <div class="clearfix">&nbsp;</div>
+
+                    {{ form_end(form) }}
+                    <!-- END FORM-->
+                </div>
+            </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div id="cabinInvalid" style="display: none">This cabin already booked for another patient.</div>
+ <style>
+     .sales-right input[class*="span"].m-wrap {
+         font-weight: bold;
+         margin-top: -1px;
+         text-align: right;
+         border: 2px solid #4b8df8!important;
+         height: 23px!important;
+     }
+ </style>
+ <style>
+        .particular-info{
+            margin-left: -10px!important;
+            padding-left: 15px;
+        }
+        input.m-wrap , select.m-wrap , textarea.m-wrap{
+            border: 2px solid #1e7b85!important;
+        }
+        .label-custom{
+            background: #1e7b85;
+            padding: 0px;
+            width: 190px;
+            display: inline-block;
+            text-align: right;
+            padding-right: 15px;
+            color: #ffffff;
+        }
+        .sales-right input[class*="span"].payment{
+            border: 3px solid red!important;
+            height: 31px!important;
+            font-size: 20px
+        }
+        .address{
+            background: #ffffff!important;
+        }
+        .select2-container{
+            border: 2px solid #1e7b85!important;
+        }
+        .bankHide , .mobileBankHide , .customer{
+            display: none;
+        }
+        .dialogModal{
+            z-index: 9999!important;
+        }
+        #calBorder, .select2-drop , .select2-drop-mask{
+            z-index: 99999!important;
+        }
+        .select2-container .select2-choice {
+            height: 31px!important;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+{% stylesheets filter='cssrewrite'
+    '@HospitalBundle/Resources/public/css/admission.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/invoice.js'
+    '@HospitalBundle/Resources/public/js/approveProcess.js'
+    '@HospitalBundle/Resources/public/js/editable.js'
+    '@HospitalBundle/Resources/public/js/datetimepicker_css.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+
+    $(document).on('click', '#addPatient', function(e) {
+        var url = $('#addPatient').attr('data-url');
+        e.preventDefault();
+        $.ajax({
+            type: 'post',
+            url: url,
+            data: $('#invoiceForm').serialize(),
+            success: function (response) {
+                obj = JSON.parse(response);
+                location.reload();
+            }
+        });
+    });
+
+    $(document).on('change', '#appstore_bundle_hospitalbundle_invoice_printFor', function(e) {
+
+        var printFor = $(this).val();
+        var url = $('#invoice').attr('data-action');
+        e.preventDefault();
+        $.ajax({
+        type: 'post',
+        url: url,
+        data:'printFor='+printFor,
+        success: function (response) {}
+        });
+    });
+
+    $(document).on('change', '#appstore_bundle_hospitalbundle_invoice_cabin', function(e) {
+
+        var url ="{{ path('hms_invoice_admission_patint_cabin') }}";
+        var invoice = $('#invoiceId').val();
+        var cabin = $('#appstore_bundle_hospitalbundle_invoice_cabin').val();
+        if(cabin == ''){
+            return false;
+        }
+        $.post( url,{ invoice:invoice , cabin:cabin } )
+        .done(function( data ) {
+            if(data == 'invalid'){
+                $("#appstore_bundle_hospitalbundle_invoice_cabin").select2().select2("val","");
+                $('#cabinInvalid').notifyModal({
+                    duration : 5000,
+                    placement : 'center',
+                    overlay : true,
+                    type : 'notify',
+                    icon : false,
+                });
+            }
+        });
+
+    });
+
+    $('input[name=particular]').focus();
+    $( ".payment" ).val('');
+    $( ".discount" ).val('');
+    $( ".payment" ).attr( "placeholder", "{{ entity.payment }}" );
+    $( ".discount" ).attr( "placeholder", "{{ entity.discount }}" );
+
+{% endblock %}

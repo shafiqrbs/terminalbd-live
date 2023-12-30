@@ -1,0 +1,226 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Customer Base Sales Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_salesonline') }}">Customer Base Sales</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Customer Base Sales Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Customer Sales lists</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn  red" href="{{ path('inventory_salesonline_new') }}"><i class="icon-th-list"></i>&nbsp;Add Sales</a>
+                                <a class="btn" href="{{ path('inventory_salesonline_empty_delete') }}"><i class="icon-th-list"></i>&nbsp;Delete Empty Invoice</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="customer" name="customer"  class="span12 m-wrap select2Customer" value="{% if searchForm.customer is defined %}{{ searchForm.customer }}{% endif %}"  autocomplete="off" placeholder="Enter customer mobile no ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="toUser" name="toUser"  class="span12 m-wrap select2User" value="{% if searchForm.toUser is defined %}{{ searchForm.toUser }}{% endif %}"  autocomplete="off" placeholder="Enter sales user">
+                                    </div>
+                                    <div class="span3">
+                                        <select name="process" id="process" class="span12 m-wrap">
+                                            <option  value="">Select Process</option>
+                                            <option {% if searchForm.process is defined and searchForm.process == 'Done' %} selected="selected" {% endif %} value="Done">Done</option>
+                                            <option {% if searchForm.process is defined and searchForm.process == 'In-progress' %} selected="selected" {% endif %} value="In-progress">In-progress</option>
+                                            <option {% if searchForm.process is defined and searchForm.process == 'Courier' %} selected="selected" {% endif %} value="Courier">Courier</option>
+                                            <option {% if searchForm.process is defined and searchForm.process == 'Returned' %} selected="selected" {% endif %} value="Returned">Returned</option>
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <select name="transactionMethod" id="transactionMethod" class="span12 m-wrap">
+                                            <option value="">Transaction Method</option>
+                                            {% for method in transactionMethods %}
+                                                <option {% if searchForm.transactionMethod is defined and searchForm.transactionMethod == method.id %} selected="selected" {% endif %} value="{{ method.id }}" >{{ method.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="invoice" name="invoice"  class="span12 m-wrap" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}"  autocomplete="off" placeholder="Enter invoice no ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="courierInvoice" name="courierInvoice"  class="span12 m-wrap" value="{% if searchForm.courierInvoice is defined %}{{ searchForm.courierInvoice }}{% endif %}"  autocomplete="off" placeholder="Enter courier invoice no ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 m-wrap date-picker" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="endDate"  name="endDate"  class="span12 m-wrap date-picker" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off"  placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <th class="numeric" ><i class="icon-list"></i>&nbsp;Invoice</th>
+                                    <th class="numeric" >Date</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Customer</th>
+                                    {% if inventoryConfig.isBranch == 1 %}<td class="numeric">Branch</td>{% endif %}
+                                    <th class="numeric" >Process</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="sales">
+                                {% for entity in entities %}
+                                    <tr id="delete-{{ entity.id }}">
+                                        <td class="numeric" >{{ entity.invoice }}</td>
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                        <th class="numeric" >{{ entity.total|number_format  }}</th>
+                                        <th class="numeric" >{{ entity.payment|number_format }}</th>
+                                        <td class="numeric" >{% if entity.customer %}<a href="{{ path('inventory_customer_show',{'id':entity.customer.id}) }}" target="_blank"  class="btn mini blue">{{ entity.customer.mobile }}</a>{% endif %}</td>
+                                        {% if inventoryConfig.isBranch == 1 %}<td class="numeric">{% if entity.branches is not empty %}{{ entity.branches.name }} {% else %}Central{% endif %}</td>{% endif %}
+                                        <td class="numeric">
+                                            {% if entity.process == 'Done' %}
+                                                <a class="btn mini green" >{{entity.courierInvoice}}</a>
+                                             {% elseif entity.process == 'Returned' %}
+                                                {% if entity.courierInvoice %}<a class="btn mini green" >{{ entity.courierInvoice }}{% endif %}</a>
+                                                <a  class="btn mini red">{% if entity.process is not empty %}{{ entity.process }}{% endif %}</a>
+                                            {% elseif entity.total > 0 %}
+                                            {% if ( (inventoryConfig.isBranch == false and app.user.granted("ROLE_DOMAIN"))  or ( inventoryConfig.isBranch == false and app.user.granted("ROLE_DOMAIN_INVENTORY_MANAGER") ) or (inventoryConfig.isBranch == false and app.user.granted("ROLE_DOMAIN_INVENTORY")) )  %}
+                                                <a class="btn mini green-stripe btn-action editable"  href="#"  data-url="{{ path('inventory_sales_inline_update') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Enter courier invoice">{{ entity.courierInvoice }}</a>
+                                                <a  data-type="select" class="btn mini purple-stripe btn-action editable" id="process" data-name="process" href="#" data-source="{{ path('inventory_sales_inline_status_select') }}"  data-url="{{ path('inventory_sales_inline_process_update') }}" data-pk="{{ entity.id }}" data-value="{% if entity.process is not empty %}{{ entity.process }}{% endif %}" data-original-title="Enter invoice process">{% if entity.process is not empty %}{{ entity.process }}{% endif %}</a>
+                                            {% endif %}
+                                            {% if (inventoryConfig.isBranch == true and app.user.profile.branches is not empty and app.user.granted("ROLE_DOMAIN_INVENTORY_BRANCH_MANAGER") )  %}
+                                                <a class="btn mini green-stripe btn-action editable"  href="#"  data-url="{{ path('inventory_sales_inline_update') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Enter courier invoice">{{ entity.courierInvoice }}</a>
+                                                <a  data-type="select" class="btn mini purple-stripe btn-action editable" id="process" data-name="process" href="#" data-source="{{ path('inventory_sales_inline_status_select') }}"  data-url="{{ path('inventory_sales_inline_process_update') }}" data-pk="{{ entity.id }}" data-value="{% if entity.process is not empty %}{{ entity.process }}{% endif %}" data-original-title="Enter invoice process">{% if entity.process is not empty %}{{ entity.process }}{% endif %}</a>
+                                            {% endif %}
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric" >
+                                            {% if entity.salesItems is defined and  entity.salesItems is not empty  %}
+                                                <a href="{{ path('inventory_salesonline_show', { 'id': entity.id }) }}" class="btn purple mini" ><i class="icon-eye-open"></i></a>
+                                                {#<a data-toggle="modal" href="#responsive" rel="{{ path('inventory_salesonline_show_preview', { 'id': entity.id }) }}" class="btn purple mini sales-preview" ><i class="icon-eye-open"></i></a>#}
+                                                {% if inventoryConfig.onlineSalesPrinter == 'pos'  %}
+                                                    <a href="javascript:" data-url="{{ path('inventory_online_pos_print_individual',{'id':entity.id}) }}"  class="btn green mini onlinePosPrintIndividual" ><i class="icon-print"></i></a>
+                                                {% else %}
+                                                    <a href="{{ path('inventory_sales_print_invoice',{'invoice':entity.invoice}) }}" target="_blank" class="btn green mini" ><i class="icon-print"></i></a>
+                                                {% endif %}
+                                            {% endif %}
+
+                                            {% if entity.paymentStatus == "Pending" or entity.process == "In-progress" or entity.process == "Courier" %}
+                                                    <a href="{{ path('inventory_salesonline_edit', { 'code': entity.invoice }) }}" class="btn yellow mini" ><i class="icon-pencil"></i></a>
+                                                    <a title="Are you sure went to delete ?" data-id="{{ entity.id }}" data-url="{{ path('inventory_sales_delete', { 'id': entity.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a>
+                                            {% endif %}
+                                            {% if entity.paymentStatus == "Due" and entity.process != "Returned" %}
+                                                {% if ( app.user.granted("ROLE_DOMAIN")  or app.user.granted("ROLE_DOMAIN_MANAGER") or app.user.granted("ROLE_DOMAIN_INVENTORY"))  %}
+                                                    <a href="{{ path('account_sales_new') }}" class="btn mini blue" ><i class="icon-money"></i></a>
+                                                {% endif %}
+                                            {% endif %}
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="responsive" class="modal hide fade" tabindex="-1" data-width="950"  data-height="" style="background: #ffffff"  >
+    </div>
+    {% if inventoryConfig.onlineSalesPrinter == 'pos' %}
+        <script>
+
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "http://localhost.xiidea.net:9432/assets/easy-print-server.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, "script", "xiidea-epp-sdk"));
+
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/posprint.js'
+    '@InventoryBundle/Resources/public/js/editable.js'
+    '@InventoryBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    ApproveProcess();
+    $( ".sales-preview" ).click(function() {
+        var url = $(this).attr("rel");
+        $.ajax({
+            url: url,
+            type: 'GET',
+            beforeSend: function() {
+                $('#responsive').show().addClass('ajax-loading').fadeIn(5000);
+            },
+            success: function (response) {
+                $('#responsive').removeClass('ajax-loading');
+                $('#responsive').html(response);
+            }
+        })
+    });
+    $(document).on('click', '.itemBranchPreview', function() {
+        var url = $(this).attr("data-url");
+        var id = $(this).attr("id");
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (response) {
+                $('#branchDetails-'+id).html(response);
+            }
+        })
+    });
+{% endblock %}

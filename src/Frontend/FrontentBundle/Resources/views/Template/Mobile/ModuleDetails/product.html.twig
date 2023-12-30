@@ -1,0 +1,133 @@
+{% set commentID = globalOption.id~'-'~menu.module.slug~'-'~page.id %}
+{% if page.photoGallery is not empty %}
+    <div class="carousel-container">
+        <div id="carousel" class="carousel slide carousel-fade">
+            <div class="carousel-inner">
+                {% if globalOption.templateCustomize.mobileShowLogo == 1 %}
+                    <a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}" id="mobile-logo">
+                        {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+                    </a>
+                {% endif %}
+                {% if page.webPath is not empty %}
+                    <div class="carousel-cover item active" data-slide-no="0" style="background-image: url('{{ image(page.webPath) }}')!important;"></div>
+                {% endif %}
+                {% for slide in page.photoGallery.galleryImages %}
+                    <div  class="carousel-cover item {% if loop.index-1 == 0 and page.webPath is empty %} active  {% endif %}" style="background-image: url('{{ image(slide.getAbsolutePath(page.globalOption.id,page.photoGallery.id)) }}')!important;"  {% if loop.index-1 == 0 and page.webPath is empty %} data-slide-no="{{ loop.index-1 }}"  {% endif %} ></div>
+                {% endfor %}
+            </div>
+            <!-- Navigation -->
+            <a class="carousel-post-control left" href="#carousel" data-slide="prev">‹</a>
+            <a class="carousel-post-control right" href="#carousel" data-slide="next">›</a>
+        </div>
+    </div>
+<hr>
+{% else %}
+<div class="header-grid"  {% if page.webPath is not empty %} style="background-image:url('{{ image(page.webPath) }}')!important;" {% endif %} >
+    <a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}" id="mobile-logo">
+        {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+    </a>
+</div>
+<hr>
+{% endif %}
+<div class="clearfix"></div>
+<div class="container">
+    <div class="clearfix"></div>
+    {% if globalOption.templateCustomize.showSocialIcon == 1 %}
+    <div class="col-md-12 social-icon-bar" >
+        <ul class="mbm_social" style="margin-top: 8px">
+            <li><a class="social-facebook" target="_blank" href="https://www.facebook.com/share.php?u={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}&picture={{ app.request.getSchemeAndHttpHost() }}/{{ page.webPath }}&title={{ page.name }}&description={{ page.content|striptags|truncate(250)|raw }}">
+                    <i class="fa fa-facebook"></i>
+                    <div class="tooltip"><span>facebook</span></div>
+                </a>
+            </li>
+            <li><a class="social-linkedin" target="_blank" href="//www.linkedin.com/shareArticle?mini=true&url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                    <i class="fa  fa-linkedin"></i>
+                    <div class="tooltip"><span>LinkedIn</span></div>
+                </a>
+            </li>
+            <li><a class="social-google-plus" target="_blank" href="//plus.google.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                    <i class="fa fa-google-plus"></i>
+                    <div class="tooltip"><span>Google</span></div>
+                </a>
+            </li>
+            <li><a class="social-twitter" target="_blank" href="//twitter.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                    <i class="fa fa-twitter"></i>
+                    <div class="tooltip"><span>Twitter</span></div>
+                </a>
+            </li>
+            <li><a class="social-instagram" target="_blank" href="//instagram.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                    <i class="fa  fa-instagram"></i>
+                    <div class="tooltip"><span>Instagram</span></div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="clearfix"></div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-4">
+            <h4><strong>Description</strong></h4>
+            {% if page.content is not empty %}<p>{{ page.content|raw }}</p> <hr>{% endif %}
+            {% if page.price is not empty %}
+                <div class="row meta-label"><div class="col-xs-12 col-md-12">Price: {% if page.pricePrefix is not empty %}{{ page.pricePrefix.currency }}. {% endif %}<strong>{{ page.price }}</strong></div></div>
+            {% endif %}
+            {% if page.skuCode is not empty %}
+                <div class="row meta-label"><div class="col-xs-12 col-md-12">SKU: {{ page.skuCode }}</div></div>
+            {% endif %}
+            <hr>
+            {% if  page.pageMetas is defined and page.pageMetas is not empty %}
+                {% for meta in page.pageMetas %}
+                    {% if meta.metaKey is not empty and meta.metaValue is empty %}
+                        <div class="row meta-label"><div class="col-xs-12 col-md-12">{{ meta.metaKey|capitalize }}</div></div>
+                    {% elseif meta.metaKey is empty and meta.metaValue is not empty %}
+                        <div class="row meta-value"><div class="col-xs-12 col-md-12">{{ meta.metaValue }}</div></div>
+                    {% else %}
+                        <div class="row meta-key-value"><div class="col-xs-4 col-md-4">{{ meta.metaKey }}<span class="meta-key-clone">:</span></div><div class="col-xs-8 col-md-8 ">{{ meta.metaValue  }}</div></div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="page-title-bar">
+        <div class="btn-group pull-left">
+            <div class="page-title"><i class="fa fa-tags"></i>&nbsp;{{ page.moduleCategory[0].name }}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="mobile-carousel" >
+            <div id="product-mobile-slider">
+                {% for product in page.moduleCategory[0].pages|slice(0,12) %}
+                    <div class="col-md-12 wow fadeInDown" data-wow-delay="1s" >
+                        <div class="our-portfolio" data-match-height="pageFeature">
+                            <img style="width:100%!important" src="{{ image(product.webPath).forceResize(400,250) }}" alt="">
+                            <div class="team-content">
+                                <h3 class="team-prof">
+                                    <a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': product.module.slug,'slug':product.slug }) }}">{{ product.name }}</a>
+                                    {% if product.category is not empty %}<small>{{ product.category.name }}</small>{% endif %}
+                                </h3>
+                            </div>
+                        </div>
+                        <h5><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': product.module.slug,'slug':product.slug }) }}"><strong>{{ product.name }}</strong></a></h5>
+                        <span>{% for cat in product.moduleCategory  %}
+                                    <a class="" href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'module': product.module.slug,'slug':cat.slug }) }}"> {{ cat.name }}</a>
+                                {% if not loop.last %},{% endif %}
+                            {% endfor %}
+                            </span>
+                        {% if product.price is not empty and product.price > 0 %}
+                            <p class="text-left">{% if product.pricePrefix is not empty %}{{ product.pricePrefix.currency }}. {% endif %}<strong>{{ product.price }}</strong></p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{#
+<div class="blog_post" >
+    {% include 'FOSCommentBundle:Thread:async.html.twig' with {'id': commentID } %}
+    <br/>
+</div>
+#}
+

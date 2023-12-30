@@ -1,0 +1,107 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    {{ entity.createdBy }} Details
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_pettycash') }}">Petty Cash Payment</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">{{ entity.createdBy }} Details</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Petty Cash Payment</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+
+                                    <li><a href="{{ path('account_pettycash_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('account_pettycash') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                    <li><a href="{{ path('account_pettycash_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;Show</a></li>
+                                    <li><a href="{{ path('account_pettycash_edit',{'id':entity.id}) }}"><i class="icon-edit"></i>&nbsp;Edit</a></li>
+
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body form form-horizontal">
+
+                            <div class="row-fluid">
+                                <div class="span12">
+                                     {% include('flash-message.html.twig')  %}
+                                </div>
+
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" >From user</label>
+                                        <div class="controls control-custom">{{ entity.createdBy }}</div>
+                                    </div>
+                                </div>
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" >To user</label>
+                                        <div class="controls control-custom">{{ entity.toUser }}</div>
+                                    </div>
+                                </div>
+
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" >Method</label>
+                                        <div class="controls control-custom">{{ entity.paymentMethod }}</div>
+                                    </div>
+                                </div>
+
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" >Amount</label>
+                                        <div class="controls control-custom">{{ entity.amount }}</div>
+                                    </div>
+                                </div>
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" >Remark</label>
+                                        <div class="controls control-custom">{{ entity.remark }}</div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

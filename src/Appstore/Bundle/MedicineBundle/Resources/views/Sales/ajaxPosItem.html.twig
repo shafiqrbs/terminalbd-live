@@ -1,0 +1,75 @@
+{% if salesTemporary is not empty %}
+    {% set avgTotal = 0 %}
+    {% set totalQuantity = 0 %}
+    {% for item in salesTemporary %}
+        {% set avgTotal = avgTotal +(item.medicineStock.averagePurchasePrice * item.quantity) %}
+        {% set totalQuantity = totalQuantity + item.quantity %}
+        <tr id="remove-{{ item.id }}" {% if item.medicineStock.averagePurchasePrice >= item.medicineStock.salesPrice or item.medicineStock.averagePurchasePrice == 0 %} class="warning" {% endif %}>
+            {#<td  class="span1">{% if item.medicinePurchaseItem is not empty %}{{ item.medicinePurchaseItem.barcode }}{% endif %}</td>#}
+            <td class="span5">{{ loop.index }}.
+                <a data-type="text" class="editableText" data-url="{{ path('medicine_stock_inline') }}" data-type="text" data-pk="{{ item.medicineStock.id }}" data-name="itemName" data-trigger="hover" class="tooltips" data-original-title="" href="javascript:">{{ item.medicineStock.name }}</a>
+            </td>
+            <td><a  data-type="select" class="editableText" id="BrandName" data-name="BrandName" href="#" data-source="{{ path('medicine_stock_select_brand') }}"  data-url="{{ path('medicine_stock_inline') }}" data-pk="{{ item.medicineStock.id }}" data-value="{% if  item.medicineStock.brandName is not empty %}{{ item.medicineStock.brandName }}{% endif %}" data-original-title="Enter select brand name">{% if  item.medicineStock.brandName is not empty %}{{ item.medicineStock.brandName }}{% endif %}</a>
+            <td><a  data-type="select" class="editableText" id="rackNo" data-name="rackNo" href="#" data-source="{{ path('medicine_stock_rack') }}"  data-url="{{ path('medicine_stock_inline') }}" data-pk="{{ item.medicineStock.id }}" data-value="{% if  item.medicineStock.rackNo is not empty %}{{ item.medicineStock.rackNo.id }}{% endif %}" data-original-title="Enter select rack no">{% if  item.medicineStock.rackNo is not empty %}{{ item.medicineStock.rackNo.name }}{% endif %}</a>
+            <td class="span1">
+                {% if config.salesAvgHide != 1 %}
+                    {% if item.medicineStock.averagePurchasePrice >= item.medicineStock.salesPrice or item.medicineStock.averagePurchasePrice == 0 %}
+                        <a class="editableText" data-name="AveragePurchasePrice" href="#"  data-url="{{ path('medicine_stock_inline') }}" data-type="text" data-pk="{{ item.medicineStock.id }}" data-original-title="Change purchase avg price">{{ item.medicineStock.averagePurchasePrice }}</a>
+                    {% else %}
+                        {{ item.medicineStock.averagePurchasePrice|number_format(2) }}
+                    {% endif %}
+                {% endif %}
+            </td>
+            <td class="span1">{{ item.estimatePrice }}</td>
+            <td class="span1">
+                <input type="hidden" name="salesItem[]" value="{{ item.id }}" >
+                <input type="hidden" name="estimatePrice-{{ item.id }}" id="estimatePrice-{{ item.id }}" value="{{ item.estimatePrice }}" >
+                {% if item.itemPercent is defined and item.itemPercent > 0 %}
+                    {{ item.salesPrice|number_format(2) }}
+                    <input type="hidden" name="salesPrice-{{ item.id }}" id="salesPrice-{{ item.id }}" value="{{ item.salesPrice }}" >
+                {% else %}
+                    <input type="text" class=" numeric td-inline-input salesPrice" data-id="{{ item.id }}" autocomplete = "off"  id="salesPrice-{{ item.id }}" name="salesPrice-{{ item.id }}" value="{{ item.salesPrice|number_format(2) }}" >
+                {% endif %}
+            </td>
+            <td class="span1">{{ item.medicineStock.remainingQuantity }}</td>
+            <td class="span1">
+                <input type="text" class=" numeric td-inline-input quantity" data-id="{{ item.id }}" autocomplete = "off" min="1" max="{{ item.quantity }}"  id="quantity-{{ item.id }}" name="quantity[]" value="{{ item.quantity }}" placeholder="{{ item.quantity }}">
+            </td>
+            <td class="span1">
+                <input type="text" class=" numeric td-inline-input itemPercent" data-id="{{ item.id }}" autocomplete = "off"   id="itemPercent-{{ item.id }}" name="itemPercent-{{ item.id }}" value="{{ item.itemPercent }}" placeholder="{{ item.itemPercent }}">
+            </td>
+            <th class="" id="subTotal-{{ item.id }}">{{ item.subTotal|number_format(2) }}</th>
+            <td class="">
+                <div class="btn-group">
+                    <a data-id="{{ item.id }}" title="" data-url="{{ path('medicine_sales_temporary_item_update') }}" href="javascript:" class="btn blue mini itemUpdate" ><i class="icon-save"></i></a>
+                    <a id="{{ item.id }}"  data-url="{{ path('medicine_sales_temporary_item_delete',{'id': item.id }) }}" href="javascript:" class="btn red mini temporaryDelete" ><i class="icon-trash"></i></a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+{% endif %}
+<tr>
+    <td colspan="11" class="span12" style="border: 1px double #000"></td>
+</tr>
+<tr>
+    <td colspan="7"><span class="pull-right">QTY</span></td>
+    <td>{{ totalQuantity }}</td>
+    <td><span class="pull-right"><strong>Total TK.</strong> =</span></td>
+    <td class=""><strong id="subTotal">{{ result.subTotal|number_format(2) }}</strong></td>
+    <td class="span1"></td>
+</tr>
+<tr>
+    <td colspan="9" class="span9"><span class="pull-right"><strong>Discount TK.</strong> =</span></td>
+    <td class=""><strong class="discount"></strong></td>
+    <td class="span1"></td>
+</tr>
+<tr>
+    <td colspan="9" class="span9"><span class="pull-right"><strong>Grand-Total TK.</strong> =</span></td>
+    <td class=""><strong id="grandTotal">{{ result.subTotal|number_format(2) }}</strong></td>
+    <td class="span1"></td>
+</tr>
+<tr>
+    <td colspan="9" class="span9"></td>
+    <td class=""><strong id="profit">{{ (result.subTotal - avgTotal)|number_format(2) }}</strong></td>
+    <td class="span1"><a href="javascript:" class="btn mini blue profitBtn"><i class="icon-eye-open"></i> Show</a></td>
+</tr>

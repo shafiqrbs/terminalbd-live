@@ -1,0 +1,96 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN testimonial HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="testimonial-title">
+                    View Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('testimonial') }}">Testimoniales</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END testimonial HEADER-->
+        <!-- BEGIN testimonial CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Basic Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('testimonial_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('testimonial') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric">Designation</th>
+                                    <th class="numeric" >Organization</th>
+                                    <th class="numeric">Created</th>
+                                    <th class="numeric">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td class="numeric" >{{ entity.name }}</td>
+                                        <td class="numeric" >{{ entity.designation }}</td>
+                                        <td class="numeric" >{{ entity.organization }}</td>
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                        <td>
+                                            {% if( entity.status == 1) %}
+                                                <a class="btn mini green-stripe btn-action" href="{{ path('testimonial_status', { 'id': entity.id}) }}"><span class="badge badge-success">x</span></a>
+                                            {% else %}
+                                                <a class="btn mini green-stripe btn-action" href="{{ path('testimonial_status', { 'id': entity.id}) }}"><span class="badge badge-important">a</span>    </a>
+                                            {% endif %}
+                                            <a class="btn mini green-stripe btn-action" href="{{ path('testimonial_edit', { 'id': entity.id }) }}">Edit</a>
+                                            <a class="btn mini blue-stripe btn-action" href="{{ path('testimonial_show', { 'id': entity.id }) }}">View</a>
+                                            <a class="btn mini red-stripe btn-action delete" href="{{ path('testimonial_delete', { 'id': entity.id }) }}" rel="" >Delete</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

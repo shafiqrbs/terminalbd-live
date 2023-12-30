@@ -1,0 +1,90 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Current Stock Overview
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Current Stock</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box blue tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Current Stock & Price</div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+
+                            {#<table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Current Stock</th>
+                                    <td class="numeric" >{{ overview.quantity }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Purchase Price</th>
+                                    <td class="numeric" >{{ overview.purchasePrice}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Sales Price</th>
+                                    <td class="numeric" >{{ priceOverview.salesPrice }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Approximately Profit</th>
+                                    <th class="numeric" >{{ (priceOverview.salesPrice - priceOverview.purchasePrice) }}</th>
+                                </tr>
+                            </table>
+#}
+                            <div class="form-actions portlet box green">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Current Stock Quantity</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Received Stock</th>
+                                    <td class="numeric" >{{ stockOverview.stock }}</td>
+                                    <th class="numeric" >Sales</th>
+                                    <td class="numeric" >{{ stockOverview.sales }}</td>
+                                    <th class="numeric" >Sales Return</th>
+                                    <td class="numeric" >{{ stockOverview.salesReturn }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >On Going</th>
+                                    <td class="numeric" >{{ stockOverview.ongoing }}</td>
+                                    <th class="numeric" >Received Return</th>
+                                    <td class="numeric" >{{ stockOverview.return }}</td>
+                                    <th class="numeric" >&nbsp;</th>
+                                    <td class="numeric" >&nbsp;</td>
+                                </tr>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

@@ -1,0 +1,25 @@
+<div class="btn-group" style="text-align: left">
+    <a class="btn green mini" href="#" data-toggle="dropdown">
+        <i class="icon-user"></i> User Action
+        <i class="icon-angle-down"></i>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a href="{{ path('docudex_user_manager_edit',{'id':item}) }}"><i class="icon-pencil"></i> Edit</a></li>
+
+        {% if isLocalUser %}
+        <li>
+            <a class="button-change-password" data-toggle="modal" href="#modal-change-password" data-csrf="{{ csrf_token("password_change_" ~ item) }}" data-id="{{ item }}">
+                <i class="icon-key"></i>Password
+            </a>
+        </li>
+        {% endif %}
+
+        <li>
+            <form action="{{ path('docudex_user_manager_delete',{'id':item}) }}" method="post" style="">
+                <input type="hidden" name="_token" value="{{ csrf_token("delete_action_" ~ item) }}">
+                <input type="hidden" name="id" value="{{ item }}">
+            <a class="button-delete" type="submit" href="#"><i class="icon-trash"></i> Delete</a>
+            </form>
+        </li>
+    </ul>
+</div>

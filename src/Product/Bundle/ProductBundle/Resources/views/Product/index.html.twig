@@ -1,0 +1,302 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    View Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('blog') }}">Product</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="btn-group pull-right">
+
+                    <a class="btn black" target="_blank" href="{{ path('blog_print_list') }}">Print</a>
+                    <a class="btn yellow" target="_blank" href="{{ path('blog_pdf_list') }}">PDF</a>
+                    <a class="btn blue" target="_blank" href="{{ path('blog_export_list') }}">Export</a>
+                    <a class="btn purple" href="{{ path('blog_import') }}">Import</a>
+
+                </div>
+                <div class="portlet yellow" style="margin-bottom:0; padding-bottom:0; padding-left: 10px">
+
+                        {%  set keyword = app.request.query.get('keyword') %}
+                        {%  set searchCategory = app.request.query.get('searchCategory') %}
+                        {%  set searchAvailability = app.request.query.get('searchAvailability') %}
+                        {%  set searchCollection = app.request.query.get('searchCollection') %}
+                        {%  set direction = app.request.query.get('direction') %}
+                        {%  set sort = app.request.query.get('sort') %}
+                        <form name="search" class="search" method="get" action="">
+                            <select class="selectbox select-box-td"  name="searchCategory">
+                                <option value=""  >--Select category--</option>
+                                {% for category in categories %}
+                                    <option {% if searchCategory == category.category_id %} selected="selected" {% endif %} value="{{ category.category_id }}"  >{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <select id="collection1" name="searchCollection" class="selectbox select-box-td" >
+                                <option value="0">--Select collection--</option>
+                                {% for collection in collections %}
+                                    <optgroup label="{{ collection.name }}">
+                                        {% for child in collection.children %}
+                                            <option {% if searchCollection == child.id %} selected="selected" {% endif %}  value="{{ child.id }}">{{ child.name }}|{{ child.discountPercentage|default(0) }}%</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endfor %}
+                            </select>
+                            <select class="selectbox select-box-td"  name="searchAvailability">
+                                <option value=""  >--Select availability--</option>
+                                <option {% if(searchAvailability =='In stock') %} selected="selected" {% endif %} value="In stock"  >In stock</option>
+                                <option {% if(searchAvailability =='Pre-order') %} selected="selected" {% endif %} value="Pre-order">Pre-order</option>
+                                <option {% if(searchAvailability =='Confirm sms') %} selected="selected" {% endif %} value="Confirm sms">Confirm sms</option>
+                                <option {% if(searchAvailability =='Out of stock') %} selected="selected" {% endif %} value="Out of stock">Out of stock</option>
+                            </select>
+                            <input type="text" name="keyword" id="search" class="search-input search-input-product" value="{{ keyword }}">
+                            <button type="submit" class="btn black icn-only" ><i class="halflings-icon white search"></i></button>
+                        </form>
+
+                </div>
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Basic Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                            <div class="tabbable portlet-tabs">
+                                <form class="" method="post">
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a  href="{{ path('product') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                    <li class=""><a  href="{{ path('product_new') }}"><i class="icon-plus"></i>&nbsp;Add</a></li>
+                                    <li class=""><a href="javascript:"><i class="icon-pencil serialize"></i>&nbsp;Update</a></li>
+                                </ul>
+
+                                <div class="tab-content">
+                                    <div class="portlet-body flip-scroll">
+                                        {% include('flash-message.html.twig')  %}
+                                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                            <thead class="flip-content ">
+                                            <tr class="head-grey">
+                                                <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                                <th class="numeric">Code#</th>
+                                                <th class="numeric">Vendor</th>
+                                                <th class="numeric">Regular</th>
+                                                <th class="numeric">Sales</th>
+                                                <th class="numeric">Quantity</th>
+                                                <th class="numeric">Created/Updated</th>
+                                                <th class="numeric">Availability</th>
+                                                <th class="numeric">Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            {% for entity in pagination %}
+                                                <tr>
+                                                    <td><span class="badge badge-warning toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+                                                    <td class="numeric" >
+                                                        <input type="hidden" name="productId[]" class="form-control input-sm-td" value="{{ entity.id }}">
+                                                        <a class="popovers" data-trigger="hover" data-original-title="{{ entity.name }}"
+                                                           data-content="{% if(entity.size) %}Size: {{ entity.size }}, {% endif %} {% if(entity.madeIn) %}Made in: {{ entity.madeIn }},{% endif %} {% if(entity.color) %}Color:{{ entity.color }}{% endif %}"
+                                                           href="{{ path('product_edit', { 'id': entity.id }) }}">{{ entity.productCode }}</a>
+                                                    </td>
+                                                    <td class="numeric" >{{ entity.vendorPrice }}</td>
+                                                    <td class="numeric" >{{ entity.price }}</td>
+                                                    <td class="numeric" >{{ entity.salesPrice|default(0) }}</td>
+                                                    <td class="numeric" >{{ entity.quantity }}</td>
+                                                    <td class="numeric" >{{ entity.created|date('d-m-Y') }}/{{ entity.updated|date('m/d/y') }}</td>
+                                                    <td class="numeric" >{{ entity.availability }}</td>
+                                                    <td class="numeric" >
+                                                        {% if( entity.status == 1) %}
+                                                            <a class="btn mini green-stripe btn-action" href="{{ path('product_status', { 'id': entity.id}) }}"><span class="badge badge-success">x</span></a>
+                                                        {% else %}
+                                                            <a class="btn mini green-stripe btn-action" href="{{ path('product_status', { 'id': entity.id}) }}"><span class="badge badge-important">a</span></a>
+                                                        {% endif %}
+                                                        <a data-href="{{ path('product_duplicate', { 'id': entity.id }) }}"  data-toggle="confirmation" data-title="Are you sure duplicate this product?" class="btn mini purple-stripe btn-action confirm"  >Copy</a>
+                                                        <a class="btn mini blue-stripe btn-action" href="{{ path('product_show', { 'id': entity.id }) }}">View</a>
+                                                        <a class="btn mini red-stripe btn-action delete" href="javascript:" rel="{{ path('product_delete', { 'id': entity.id }) }}" >Remove</a>
+                                                    </td>
+                                                </tr>
+                                                <tr id="show-{{ entity.id }}" class="showing-overview">
+                                                    <td colspan="9">
+                                                        <table class="inner-table">
+                                                            <tr>
+                                                                <td class="span2 td-label">Name</td><td>{{ entity.name }}</td>
+                                                                <td class="span2 td-label">Is Feature</td>
+                                                                <td><input type="checkbox" name="isFeature[]" class="m-wrap" value="1" {% if(entity.isFeature == 1) %} checked="checked" {% endif %} ></td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td class="span2 td-label" >Vendor Price</td><td>
+                                                                    <div class="controls">
+                                                                        <div class="input-prepend input-append input-append-inner-table  input-prepend-inner-table ">
+                                                                            <span class="add-on">BDT</span>
+                                                                            <input type="text" name="vendorPrice[]" class="m-wrap" value="{{ entity.vendorPrice }}">
+                                                                            <span class="add-on">.00</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="span2 td-label" >Regular Price</td><td>
+                                                                    <div class="controls">
+                                                                        <div class="input-prepend input-append input-append-inner-table  input-prepend-inner-table ">
+                                                                            <span class="add-on">BDT</span>
+                                                                            <input type="text" name="price[]" class="m-wrap" value="{{ entity.price }}">
+                                                                            <span class="add-on">.00</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="span2 td-label" >Shipping Charge</td><td>
+                                                                    <div class="controls">
+                                                                        <div class="input-prepend input-append input-append-inner-table  input-prepend-inner-table ">
+                                                                            <span class="add-on">BDT</span>
+                                                                            <input type="text" name="shipping[]" class="m-wrap" value="{{ entity.shipping }}">
+                                                                            <span class="add-on">.00</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    </td>
+                                                                <td class="span2 td-label" >Quantity</td><td>
+                                                                    <div class="input-prepend input-append input-append-inner-table  input-prepend-inner-table ">
+                                                                        <span class="add-on">Qnt</span>
+                                                                        <input type="text" name="quantity[]" class="m-wrap" value="{{ entity.quantity }}">
+
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="span2 td-label" >Categories</td>
+                                                                <td>
+                                                                    <select class="selectbox select-box-td"  name="categories[]">
+                                                                        {% for category in categories %}
+                                                                        <option {% if(entity.parentCategory.id == category.category_id  ) %} selected="selected" {% endif %} value="{{ category.category_id }}"  >{{ category.name }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </td>
+                                                            <td class="span2 td-label" >Availability</td>
+                                                                <td>
+                                                                    <select class="selectbox select-box-td"  name="availability[]">
+
+                                                                        <option {% if(entity.availability =='In stock') %} selected="selected" {% endif %} value="In stock"  >In stock</option>
+                                                                        <option {% if(entity.availability =='Pre-order') %} selected="selected" {% endif %} value="Pre-order">Pre-order</option>
+                                                                        <option {% if(entity.availability =='Confirm sms') %} selected="selected" {% endif %} value="Confirm sms">Confirm sms</option>
+                                                                        <option {% if(entity.availability =='Out of stock') %} selected="selected" {% endif %} value="Out of stock">Out of stock</option>
+                                                                    </select>
+                                                            </td>
+                                                            </tr>
+
+                                                            <tr><td class="span2 td-label" >Deal</td>
+                                                                <td>
+                                                                    <select class="selectbox select-box-td" name="dealType[]">
+                                                                        <option  value="" >Select Deal</option>
+                                                                        <option {% if(entity.dealType =='Daily') %} selected="selected" {% endif %} value="Daily"  >Daily</option>
+                                                                        <option {% if(entity.dealType =='Weekly') %} selected="selected" {% endif %} value="Weekly">Weekly</option>
+                                                                        <option {% if(entity.dealType =='Monthly') %} selected="selected" {% endif %} value="Monthly">Monthly</option>
+                                                                    </select>
+                                                            </td>
+                                                                <td class="span2 td-label" >Collection</td><td>
+                                                                    <select id="collection1" name="collection[]" class="selectbox select-box-td" >
+                                                                        <option value="0">Select collection</option>
+                                                                        {% for collection in collections %}
+                                                                            <optgroup label="{{ collection.name }}">
+                                                                                {% for child in collection.children %}
+                                                                                    <option {% if entity.collection.id|default(0) == child.id %} selected="selected" {% endif %} value="{{ child.id }}">{{ child.name }}|{{ child.discountPercentage|default(0) }}%</option>
+                                                                                {% endfor %}
+                                                                            </optgroup>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="span2 td-label" >Brand</td><td>
+
+                                                                    <select class="selectbox select-box-td"  name="brand[]">
+                                                                        <option  value="" >Select brand</option>
+                                                                        {% for brand in brands %}
+                                                                            <option  value="{{ brand.id }}"  >{{ brand.name }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </td>
+                                                                <td class="span2 td-label" >Updated</td><td>
+                                                                    <div class="input-prepend input-append input-append-inner-table  input-prepend-inner-table ">
+                                                                        <input type="text" name="updated[]" class="input-sm-td m-wrap input-append date date-picker" value="{{ entity.updated|date('m/d/y') }}">
+                                                                        <span class="add-on"><i class="icon-calendar"></i></span>
+                                                                    </div>
+
+                                                            </tr>
+                                                            <tr><td class="span2 td-label" >Content</td><td colspan="3">{{ entity.content|raw }}</td></tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                        <div class="form-actions portlet box grey">
+                                            <div class="pull-center">
+                                                <button class="btn green serialize" type="button"><i class="icon-ok"></i> Update</button>
+                                                <button class="btn purple" type="submit"><i class="icon-refresh"></i> Reset</button>
+                                            </div>
+                                        </div>
+                                        <div class="pagination" >
+                                            {{ knp_pagination_render(pagination) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                </form>
+                            </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+
+    $('.serialize').click(function(){
+
+        serialized = $('form').serialize();
+        console.log(serialized);
+
+        $.ajax({
+            url: '{{ path('product_discount',{user:app.user}) }}',
+            type: "POST",
+            data: serialized
+        }).done(function(data){
+            console.log(data);
+            //$('#featureCategory').submit();
+        });
+    })
+
+    $('.confirm').click(function(){
+
+        $('[data-toggle="confirmation"]').confirmation()
+    })
+
+
+
+{% endblock %}

@@ -1,0 +1,168 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Customer Name : {{ entity.customer.name }},{{ entity.customer.mobile }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="{{ path('business_invoice_return') }}">Manage Invoice Return</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Product Invoice Return Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('business_invoice_return') }}"><i class="icon-th-list"></i> Purchase Return</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            <form class="" id="purchaseReturn" name="purchaseReturn" method="post" action="{{ path('business_invoice_return_update',{'id':entity.id}) }}"  >
+                                {% if particulars is not empty %}
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+                                    <thead class="flip-content ">
+                                    <tr class="head-blue">
+                                        <th class="numeric" >Product Name </th>
+                                        <th class="numeric" >Price</th>
+                                        <th class="numeric" >Wearhouse</th>
+                                        <th class="numeric" >QTY</th>
+                                        <th class="numeric" >Bonus QTY</th>
+                                        <th class="numeric" >Total QTY</th>
+                                        <th class="numeric" >Return QTY</th>
+                                        <th class="numeric" >Return Bonus QTY</th>
+                                        <th class="numeric" >Remain QTY</th>
+                                        <th class="numeric" >Clim QTY</th>
+                                        <th class="numeric" >Clim Bonus QTY</th>
+                                        <th class="numeric" >Return price</th>
+                                        <th class="numeric" >SubTotal</th>
+                                        <th class="numeric" >Mode</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for particular in particulars %}
+                                        <tr>
+                                            <th class="numeric" >{{ loop.index }}. {{ particular.itemName }}
+                                                <input type="hidden" name="subTotal[]" id="sub-{{  particular.itemId }}" class="subTotal" value="0">
+                                                <input type="hidden" name="itemId[]" value="{{ particular.itemId }}">
+                                            </th>
+                                            <td class="numeric" > {{ particular.salesPrice }}</td>
+                                            <td class="numeric" >
+                                                {% if ("wearhouse" in config.stockFormat) %}
+                                                    <select id="wearhouse" name="wearhouse[]" class="m-wrap span12 form-control">
+                                                        <option value="">-Select wearhouse -</option>
+                                                        {% for wearhouse in wearhouses %}
+                                                            <option value="{{ wearhouse.id }}">{{ wearhouse.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                {% endif %}
+                                            </td>
+                                            <td class="numeric" > {{ particular.quantity }}</td>
+                                            <td class="numeric" > {{ particular.bonusQuantity }}</td>
+                                            <td class="numeric" > {{ particular.quantity+particular.bonusQuantity }}</td>
+                                            <td class="numeric" > {% if returnItems[particular.itemId] is defined and returnItems[particular.itemId] is not empty  %} {{ returnItems[particular.itemId].quantity }}{% endif %}</td>
+                                            <td class="numeric" > {% if returnItems[particular.itemId] is defined and returnItems[particular.itemId] is not empty  %} {{ returnItems[particular.itemId].bonusQuantity }}{% endif %}</td>
+
+
+                                            <td class="numeric" >
+                                                {% if returnItems[particular.itemId] is defined and returnItems[particular.itemId] is not empty  %}
+                                                    {% set remain  = particular.quantity - returnItems[particular.itemId].quantity %}
+                                                    {% set remainBonus  = particular.bonusQuantity - returnItems[particular.itemId].bonusQuantity %}
+                                                {% else %}
+                                                    {% set remain  = particular.quantity %}
+                                                    {% set remainBonus  = particular.quantity %}
+                                                {% endif %}
+                                                {{ remain }}
+                                            </td>
+                                            <td class="numeric" ><input class="m-wrap span12 form-control input-number" data-content="{{ remain }}" type="text" name="quantity[]" data-id="{{ particular.itemId }}"  id="quantity-{{  particular.itemId }}" value="" placeholder="Return quantity"></td>
+                                            <td class="numeric" ><input class="m-wrap span12 form-control input-number" data-value="{{ remainBonus }}" type="text" name="bonusQuantity[]" data-id="{{ particular.itemId }}"  id="bonusQuantity-{{  particular.itemId }}" value="" placeholder="Bouns quantity"></td>
+                                            <td class="numeric" ><input class="m-wrap span12 form-control input-number" type="text" name="price[]" data-id="{{ particular.itemId }}"  id="price-{{  particular.itemId }}" value="{{ particular.salesPrice }}" placeholder="{{ particular.salesPrice }}"></td>
+                                            <td class="numeric" id="subTotal-{{  particular.itemId }}" ></td>
+                                            <td class="numeric">
+                                                <select class="span12 m-wrap input" name="itemProcess[]" id="itemProcess">
+                                                    {% set itemProcesses = ['Stock-Return','Damage-Return','Damage'] %}
+                                                    {% for itemProcess in itemProcesses %}
+                                                        <option value="{{ itemProcess }}">{{ itemProcess }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                    <tr><th colspan="11" class="text-right"><span class="text-right">Total </span></th><th id="total">{{ entity.subTotal|number_format(2) }}</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr><th colspan="11" ><span class="text-right">Previous Due</span></th><th>{{ balance|number_format(2) }}</th>
+                                    <td></td>
+                                    </tr>
+                                    <tr>
+                                    <th colspan="11" class="text-right"><span class="text-right">Outstanding Adjustment</span></th>
+                                    <td><input class="m-wrap span12 form-control input-number" type="text" name="adjustment" id="adjustment" value="0" placeholder="Adjustment"></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                    <th colspan="11" class="text-right"><span class="text-right">Cash Payment</span></th>
+                                    <td><input class="m-wrap span12 form-control input-number" type="text" name="payment" id="payment" value="0" placeholder="Payment"></td>
+                                        <td></td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                                {% endif %}
+                                <div class="clearfix"><br/></div>
+                                <!--/span-->
+                                <div class="form-actions portlet box grey">
+                                    <div class="pull-right">
+                                        <input type="hidden" id="grandTotal" name="grandTotal" value="" >
+                                        <button type="button" id="submitBtn" class="btn green approve" disabled="disabled"><i class="icon-save"></i> Save</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BusinessBundle/Resources/public/js/invoice-return.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}
+
+

@@ -1,0 +1,202 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Invoice No # {{ entity.invoice }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('business_invoice') }}"> Invoice</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Manage Invoice Details</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>{{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Invoice Details</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('business_invoice_new') }}"><i class="icon-plus-sign"></i> New Invoice</a>
+                                <a class="btn black" href="{{ path('business_invoice') }}"><i class="icon-th-list"></i> Invoice</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body form">
+                        <div class="row-fluid">
+
+                            <div class="span3">
+                                <h4>About:</h4>
+                                <ul class="unstyled">
+                                    {% if entity.customer is not empty %}<li><strong>Customer #:</strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                                    {% if entity.customer is not empty %}<li><strong>Mobile #:</strong>&nbsp;{{ entity.customer.mobile }}</li>{% endif %}
+                                    {% if entity.customer is not empty %}<li><strong>Address #:</strong>&nbsp;{{ entity.customer.address }}</li>{% endif %}
+                                    {% if entity.customer is not empty and entity.customer.location is not empty   %}<li><strong>Location #:</strong>&nbsp;{{ entity.customer.location.name }}, {{ entity.customer.location.parent.name }}</li>{% endif %}
+                                    <li><strong>Created:</strong>&nbsp;{{ entity.created|date('d-m-Y') }}</li>
+                                </ul>
+                            </div>
+
+                            <div class="span3 invoice-payment">
+                                <h4>Payment Details:</h4>
+                                <ul class="unstyled">
+                                    <li><strong>Total BDT:</strong>&nbsp;{{ entity.total|number_format() }}</li>
+                                    <li><strong>Received BDT:</strong>&nbsp;{{ entity.received|number_format() }}</li>
+                                    {% if entity.discount %}<li><strong>Discount BDT:</strong>&nbsp;{{ entity.discount|number_format() }}</li>{% endif %}
+                                    {% if entity.due %}<li><strong>Due BDT:</strong>&nbsp;{{ entity.due|number_format() }}</li>{% endif %}
+                                    <li><strong>Payment status</strong>&nbsp;{{  entity.paymentStatus|capitalize }}</li>
+                                </ul>
+                            </div>
+                            <div class="span3">
+                                <h4>Payment Method:</h4>
+                                <ul class="unstyled">
+                                    <li><strong>Payment Method:</strong>&nbsp;{{ entity.transactionMethod.name }}</li>
+                                    {% if entity.accountMobileBank is not empty %}<li><strong>Received Mobile:</strong>&nbsp;{{ entity.accountMobileBank.name }}</li>{% endif %}
+                                    {% if entity.paymentMobile is not empty %}<li><strong>Mobile/Transaction:</strong>&nbsp;{{ entity.paymentMobile }}/{{ entity.transactionId }}</li>{% endif %}
+                                    {% if entity.accountBank is not empty %}<li><strong>Received Bank:</strong>&nbsp;{{ entity.accountBank.name }}</li>{% endif %}
+                                    {% if entity.paymentCard is not empty %}<li><strong>Payment Card/No:</strong>&nbsp;{{ entity.paymentCard.name }}/{{ entity.cardNo }}</li>{% endif %}
+                                    {% if entity.bank is not empty %}<li><strong>Bank:</strong>&nbsp;{{ entity.bank.name  }}</li>{% endif %}
+                                    <li><strong>Sales By:</strong>&nbsp;{% if entity.salesBy is defined and entity.salesBy is not empty %}{{ entity.salesBy }}{% endif %}</li>
+                                    <li><strong>Received By:</strong>&nbsp;{% if entity.createdBy is defined and entity.createdBy is not empty %}{{ entity.createdBy }}{% endif %}</li>
+                                </ul>
+                            </div>
+                            {% if entity.businessConfig.businessModel == "event" %}
+                            <div class="span3 invoice-payment">
+                                <h4>Event Information:</h4>
+                                <ul class="unstyled">
+                                    <li><strong>Event Type:</strong>&nbsp;{{ entity.eventType }}</li>
+                                    <li><strong>Venue:</strong>&nbsp;{{ entity.venue }}</li>
+                                    <li><strong>Start Date:</strong>&nbsp;{{ entity.startDate|date('d-m-Y') }}</li>
+                                    <li><strong>End Date:</strong>&nbsp;{{ entity.endDate|date('d-m-Y') }}</li>
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid box green">
+                            <div class="span12" id="particular-table">
+                                <table class="table table-bordered table-striped table-condensed table-fixed">
+                                    <thead class="flip-content ">
+                                    <tr class="head-blue">
+                                    <th class="span1"> S/N</th>
+                                        <th class="span4">Particular</th>
+                                        {% if entity.businessConfig.businessModel == 'sign' %}
+                                        <th class="span1">Size</th>
+                                        {% endif %}
+                                        <th class="span1">Qnt</th>
+                                        <th class="span1">Unit</th>
+                                        <th class="span1">Unit Price</th>
+                                        <th class="span1">Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="invoiceParticulars">
+                                    {% for item in entity.businessInvoiceParticulars %}
+                                        <tr id="remove-{{ item.id }}">
+                                            <td  class="">{{ loop.index }}.</td>
+                                            <td class="">{{ item.particular }}</td>
+                                            {% if entity.businessConfig.businessModel == 'sign' %}
+                                            <td>
+                                            {% if item.height is not empty and item.width is not empty %}
+                                                {{ item.height }} x {{ item.width }} = {{ item.subQuantity }}
+                                            {% endif %}
+                                            </td>
+                                            {% endif %}
+                                            <td class="">{{ item.totalQuantity }}</td>
+                                            <td class="">{{ item.unit }}</td>
+                                            <td class="">{{ item.price }}</td>
+                                            <td class="" id="subTotal-{{ item.id }}">{{ item.subTotal|number_format }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                    {% if entity.businessConfig.businessModel == 'sign' %}
+                                        {% set colspan = 7 %}
+                                        {% set panCol = 6 %}
+                                    {% else %}
+                                        {% set colspan = 6 %}
+                                        {% set panCol = 5 %}
+                                    {% endif %}
+                                    <tr>
+                                        <td colspan="{{ colspan }}" class="span12" style="border: 1px double #000"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="{{ panCol }}" class="span9"><span class="pull-right"><strong>Total Amount TK.</strong> =</span></td>
+                                        <td class="span1"><strong class="subTotal">{{ entity.subTotal|number_format }}</strong></td>
+                                   </tr>
+                                    <tr>
+                                        <td colspan="{{ panCol }}" class="span9"><span class="pull-right"><strong>Vat/Tax TK.</strong> =</span></td>
+                                        <td class="span1"><strong class="vat">{{ entity.vat|number_format }}</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="{{ panCol }}" class="span9"><span class="pull-right"><strong>Discount TK.</strong> =</span></td>
+                                        <td class="span1"><strong class="discount">{{ entity.discount|number_format }}</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="{{ panCol }}" class="span9"><span class="pull-right"><strong>Received TK.</strong> =</span></td>
+                                        <td class="span1"><strong class="netTotal">{{ entity.received|number_format }}</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="{{ panCol }}" class="span9"><span class="pull-right"><strong>Due TK.</strong> =</span></td>
+                                        <td class="span1"><strong class="netTotal">{{ entity.due|number_format }}</strong></td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                                <div class="clearfix">&nbsp;</div>
+                                <div class="row-fluid"><strong>Narration</strong> : {{ entity.comment|raw }} </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-right">
+                                {% set processes =['Delivered','Done'] %}
+                                {% if (entity.process in processes and app.user.granted("ROLE_DOMAIN")) or ( ("now"|date("d-m-y") == entity.updated|date('d-m-y')) and entity.process in processes and app.user.granted("ROLE_BUSINESS_INVOICE_REVERSE"))  %}
+                                    <a  href="{{ path('business_sales_reverse',{'id':entity.id}) }}"  data-url="" class="btn blue"><i class="icon-retweet"></i>&nbsp;Reverse</a>
+                                {% endif %}
+                                <a class="btn yellow" target="_blank" href="{{ path('business_invoice_print',{'id':entity.id,'print':'print'}) }}"><i class="icon-print"></i> Print Invoice</a>
+                                <a class="btn black" target="_blank" href="{{ path('business_invoice_print',{'id':entity.id,'print':'chalan'}) }}"><i class="icon-print"></i> Print Chalan</a>
+                                {% if (entity.process == "In-progress" and app.user.granted("ROLE_DOMAIN")) or (  entity.process == "In-progress" and app.user.granted("ROLE_BUSINESS_MANAGER"))  %}
+                                <a class="btn blue confirm"  data-url="{{ path('business_invoice_approved',{'id':entity.id}) }}"><i class="icon-refresh"></i> Approve</a>
+                                {% endif %}
+                                <span  class="btn purple"><i class=" icon-ok"></i>&nbsp;{{ entity.process }}</span>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BusinessBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

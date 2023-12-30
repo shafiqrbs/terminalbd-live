@@ -1,0 +1,70 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4 text-center"><h2>{{ user.globalOption.name }}</h2>
+    <p>Name of Report: User base Loan Details</p>
+    </div>
+    <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}</div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <p><strong>{{ user.profile.name }}</strong></p>
+        <p>Mobile: {{ user.profile.mobile }}</p>
+    </div>
+    <div class="col-md-2  text-right">
+        <p>&nbsp;</p>
+        <p><strong>Start Date:&nbsp;</strong></p>
+    </div>
+    <div class="col-md-2  text-left">
+        <p>&nbsp;</p>
+        <p><strong>{% if data['startDate'] is defined and data['startDate'] is not empty %}{{ data['startDate']|date('d-m-Y') }}{% endif %}</strong></p>
+    </div>
+    <div class="col-md-2  text-right">
+        <p>&nbsp;</p>
+        <p><strong>End Date:&nbsp;</strong></p>
+    </div>
+    <div class="col-md-2  text-left">
+        <p>&nbsp;</p>
+        <p><strong>{% if data['endDate'] is defined and data['endDate'] is not empty %}{{ data['endDate']|date('d-m-Y') }}{% endif %}</strong></p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table" border="1">
+            <tbody><tr>
+                <th>SI.</th>
+                <th>Created</th>
+                <th>Method</th>
+                <th>Transaction</th>
+                <th class="text-right">Debit</th>
+                <th class="text-right">Credit</th>
+                <th class="text-right">Balance</th>
+            </tr>
+            <tbody>
+            {% set balance = 0 %}
+            {% for entity in entities %}
+                {% set balance = balance + entity.amount %}
+                <tr id="remove-{{ entity.id }}">
+                    <td>{{ loop.index }}</td>
+                    <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                    <td class="numeric" >{% if entity.transactionMethod %}{{ entity.transactionMethod.name }}{% endif %}</td>
+                    <td class="numeric" >{{ entity.transactionType }}</td>
+                    <td class="text-right" >{% if entity.transactionType == 'Debit' %}{{ entity.amount|number_format(2) }} {% endif %}</td>
+                    <td class="text-right" >{% if entity.transactionType == 'Credit' %}{{ entity.amount|abs|number_format(2) }} {% endif %}</td>
+                    <td class="text-right" >{{ entity.balance|number_format(2) }}</td>
+                </tr
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <th class="text-right" colspan="6">Grand Balance</th>
+                <th class="text-right">{{ balance|number_format(2) }}</th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+

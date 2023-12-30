@@ -1,0 +1,188 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Point of sale
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_branchinvoice') }}">Branch Invoice</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Branch invoice</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="clearfix">&nbsp;</div>
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Branch Invoice Information</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('inventory_branchinvoice') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="portlet-body">
+                        {% if entity.process != 'approved' %}
+
+                            <div class="portlet-body form">
+                                {% include('flash-message.html.twig')  %}
+
+                                <!-- END purchase_order HEADER-->
+                                {{ form_start(form) }}
+                                {{ form_row(form._token) }}
+
+                                <div class="row-fluid">
+                                    <div class="span6 ">
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.barcode) }}
+                                                {{ form_errors(form.barcode) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6 ">
+                                        <div class="controls">
+                                            <div class="input-append span9">
+                                                {{ form_widget(form.quantity) }}
+                                                {{ form_errors(form.quantity) }}
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-save"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                                {{ form_end(form) }}
+                            <!-- BEGIN FORM-->
+
+                            <div class="clearfix">&nbsp;</div>
+                            <!--/span-->
+                           <!-- END FORM-->
+                        </div>
+                        {% endif %}
+
+                    </div>
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>List of items</div>
+                    </div>
+                    <div class="portlet-body">
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                            <thead class="flip-content ">
+                            <tr class="head-grey">
+                                <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Quantity</th>
+                                <th class="numeric" >Sales Price</th>
+                                <th class="numeric" >Sub-Total</th>
+                                <th class="numeric" >Action</th>
+                            </tr>
+                            </thead>
+                            <tbody id="sales">
+                            {% if entity.branchInvoiceItems is not empty %}
+                                {% set grandQuantity = 0 %}
+                                {% set grandTotal = 0 %}
+                            {% for invoiceItem in entity.branchInvoiceItems %}
+
+                                {% set grandQuantity = grandQuantity + invoiceItem.quantity  %}
+                                {% set grandTotal = grandTotal + invoiceItem.subTotal  %}
+
+                            <tr id="action-{{ invoiceItem.id }}">
+                                <td>&nbsp;&nbsp;{{ loop.index }}</td>
+                                <td class="numeric" >
+                                    {{ invoiceItem.purchaseItem.item.masterItem.name }}
+                                    {% if invoiceItem.purchaseItem.item.color  %}-{{ invoiceItem.purchaseItem.item.color.name }}{% endif %}
+                                    {% if invoiceItem.purchaseItem.item.size  %}-{{ invoiceItem.purchaseItem.item.size.name }}{% endif %}
+                                    {% if invoiceItem.purchaseItem.item.vendor  %}-{{ invoiceItem.purchaseItem.item.vendor.vendorCode }}{% endif %}
+                                </td>
+                                <td class="numeric" >{{ invoiceItem.quantity }}</td>
+                                <td class="numeric" >{{ invoiceItem.salesPrice }}</td>
+                                <td class="numeric" >{{ invoiceItem.subTotal|number_format }}</td>
+                                <td class="numeric" >
+                                    {% if entity.process != 'approved' %}
+                                    <a title="Are you sure went to delete ?" id="{{ invoiceItem.id }}" data-url="{{ path('inventory_branchinvoice_item_delete',{'id':invoiceItem.id}) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a>
+                                {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                                    <tr>
+                                     <th class="numeric" colspan="2" ><span class="pull-right">Grand Quantity</span></th>
+                                     <th class="numeric" >{{ grandQuantity }}</th>
+                                     <th class="numeric" ><span class="pull-right">Grand Total</span></th>
+                                     <th class="numeric" >{{ grandTotal|number_format }}</th>
+                                     <th class="numeric" ><a  class="btn green mini" href="{{ path('inventory_branchinvoice_item_approved',{'id':entity.id}) }}"><i class="icon-check"></i>&nbsp;Approve</a></th>
+                                     </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/sales.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $(document).on("click", ".delete", function() {
+
+        var id = $(this).attr("data-id");
+        var url = $(this).attr("data-url");
+        $('#action-'+id).hide();
+        $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (response) {
+        if ('success' == response ) {
+            location.reload();
+        }
+        },
+        })
+
+    })
+
+{% endblock %}

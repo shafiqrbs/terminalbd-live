@@ -1,0 +1,152 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h2 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    h3 {
+        font-size: 20px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+{% set startDate = searchForm.month is defined ? searchForm.month :"now"|date("d-m-Y") %}
+{% set endDate = searchForm.year is defined ? searchForm.year :"now"|date("d-m-Y") %}
+
+<table class="table">
+    <thead>
+    <tr>
+        <td class="pull-center" colspan="9"><h2>{{ globalOption.name }}</h2></td>
+    </tr>
+    <tr>
+        <th class="pull-center" colspan="9"><h3><strong>DAILY CASH STATEMENT SHEET: {{ startDate }} To {{ endDate }}</strong></h3></th>
+    </tr>
+    <tr>
+        <td colspan="9">
+            <table class="table table-bordered table-striped table-condensed flip-content ">
+                <thead class="flip-content">
+                <tr class="head-red">
+                    <th class="" ><strong>Opening Balance</strong></th>
+                    <th class="" ><strong>Receive</strong></th>
+                    <th class="" ><strong>Payment</strong></th>
+                    <th class="" ><strong>Closing Balance</strong></th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr>
+                    <td class="numeric" ><strong>{{ overview.openingBalance|number_format }}</strong></td>
+                    <td class="numeric" ><strong>{{ overview.debit|number_format }}</strong></td>
+                    <td class="numeric" ><strong>{{ overview.credit|number_format }}</strong></td>
+                    <td class="numeric" ><strong>{{ (overview.openingBalance + overview.debit - overview.credit)|number_format }}</strong></td>
+                </tr>
+
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr class="head-green">
+        <th class="numeric" >Created</th>
+        <th class="numeric" >Process</th>
+        <th class="numeric" >Description</th>
+        <th class="numeric" colspan="3" >
+            <div class="row-fluid" style="border-bottom: 2px solid #ffffff; text-align: center; font-weight: bold"><span class="span12">Receive</span></div>
+            <div class="row-fluid"><span class="span4">Cash</span><span class="span4">Bank</span><span class="span4">Mobile</span></div>
+        </th>
+        <th class="numeric" colspan="3" >
+            <div class="row-fluid" style="border-bottom: 2px solid #ffffff; text-align: center; font-weight: bold"><span class="span12">Payment</span></div>
+            <div class="row-fluid"><span class="span4">Cash</span><span class="span4">Bank</span><span class="span4">Mobile</span></div>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr id="remove-{{ entity.id }}">
+            <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+            <td class="numeric" >{{ entity.processHead }}</td>
+            <td class="numeric" >
+                {% if entity.processHead == 'Expenditure' %}
+                    Expense: {% if entity.expenditure.category is defined and entity.expenditure.category is not empty %} {{ entity.expenditure.category.accountHead.name }}{% endif %}: {{ entity.accountRefNo }}
+                    {% if entity.expenditure.remark is not empty  %}
+                        <br/> {{ entity.expenditure.remark }}
+                    {% endif %}
+                {% elseif entity.processHead == 'Sales' %}
+                    Account Sales : {{ entity.accountRefNo }}
+                    {% if entity.accountSales.remark is not empty  %}
+                        <br/> {{ entity.accountSales.remark }}
+                    {% endif %}
+                {% elseif entity.processHead == 'Purchase' %}
+                    Account Purchase : {{ entity.accountRefNo }}
+                    {% if entity.accountPurchase.remark is not empty  %}
+                        <br/> {{ entity.accountPurchase.remark }}
+                    {% endif %}
+                {% elseif entity.processHead == 'Journal' and  entity.debit > 0 %}
+                    Journal: {% if entity.accountJournal is defined and entity.accountJournal.accountHeadCredit is not empty %} {{ entity.accountJournal.accountHeadCredit.name }}{% endif %}: {{ entity.accountRefNo }}
+                    {% if entity.accountJournal.remark is not empty  %}
+                        <br/> {{ entity.accountJournal.remark }}
+                    {% endif %}
+                {% elseif entity.processHead == 'Journal' and  entity.credit > 0 %}
+                    Journal: {% if  entity.accountJournal is defined and entity.accountJournal.accountHeadDebit is not empty %} {{ entity.accountJournal.accountHeadDebit.name }}{% endif %}: {{ entity.accountRefNo }}
+                    {% if entity.accountJournal.remark is not empty  %}
+                        <br/> {{ entity.accountJournal.remark }}
+                    {% endif %}
+                {% elseif entity.processHead == 'BalanceTransfer'%}
+                    Balance Transfer: {% if  entity.balanceTransfer is defined  %} {{ entity.accountHead.name }}{% endif %}: {{ entity.accountRefNo }}
+                {% endif %}
+            </td>
+            <td class="numeric" >{% if entity.debit > 0 and entity.transactionMethod.slug == 'cash'  %}{{ entity.debit|number_format }}{% endif %}</td>
+            <td class="numeric" >{% if entity.debit > 0 and entity.transactionMethod.slug == 'bank'  %}{{ entity.debit|number_format }}{% endif %}</td>
+            <td class="numeric" >{% if entity.debit > 0 and entity.transactionMethod.slug == 'mobile'  %}{{ entity.debit|number_format }}{% endif %}</td>
+            <td class="numeric" >{% if entity.credit > 0 and entity.transactionMethod.slug == 'cash'  %}{{ entity.credit|number_format }}{% endif %}</td>
+            <td class="numeric" >{% if entity.credit > 0 and entity.transactionMethod.slug == 'bank'  %}{{ entity.credit|number_format }}{% endif %}</td>
+            <td class="numeric" >{% if entity.credit > 0 and entity.transactionMethod.slug == 'mobile'  %}{{ entity.credit|number_format }}{% endif %}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

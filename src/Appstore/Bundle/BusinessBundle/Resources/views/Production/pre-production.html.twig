@@ -1,0 +1,183 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+    <!-- BEGIN category HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="category-title">
+                Product Name #  <strong>{{ entity.name }}</strong>
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li><a href="{{ path('business_stock') }}">Product Measurement & Cost</a></li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END category HEADER-->
+    <!-- BEGIN category CONTENT-->
+    <div class="row-fluid">
+    <div class="span12">
+
+    <div class="portlet box green tabbable">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Product: {{ entity.name }}</div>
+            <div class="actions">
+                <div class="btn-group">
+                    <a class="btn red" href="{{ path('business_stock') }}"><i class="icon-th-list"></i> Product Measurement & Cost</a>
+                </div>
+            </div>
+        </div>
+    <div class="portlet-body">
+        <div class="portlet-body form">
+            {% include('flash-message.html.twig')  %}
+            <!-- BEGIN FORM-->
+            {{ form_start(form) }}
+            {{ form_row(form._token) }}
+            <div class="clearfix">&nbsp;</div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="row-fluid particular-info" >
+                        <div class="span6" style="margin-left:15px" >
+                            <select id="particular" name="particular" class="span12 select2">
+                                <option value="">--- Select product name ---</option>
+                                {% for particular in particulars %}
+                                    <option value="{{ path('business_purchase_particular_search',{'id':particular.id}) }}">{{ particular.particularCode }}-{{ particular.name }} </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="span3">
+                            <div class="input-group input-append">
+                                <input type="text" class="m-wrap span6" id="purchasePrice" disabled="disabled" required="required" name="purchasePrice" placeholder="Purchase price" value="" maxlength="8">
+                                <input type="text" class="m-wrap span6" id="price" required="required" name="price" placeholder="Sales price" value="" maxlength="8">
+                                <span class="input-group-btn">
+                                   <button type="button" class="btn yellow btn-number" data-type="minus" data-field="quantity">
+                                            <span class="fa fa-minus"></span>
+                                   </button>
+                                </span>
+                                <input type="text" class="m-wrap span4 form-control input-number" id="quantity" name="quantity" value="1" min="1" max="10000">
+                                <span class="input-group-btn">
+                                          <button type="button" class="btn green btn-number"  data-type="plus" data-field="quantity">
+                                                  <span class="fa fa-plus"></span>
+                                          </button>
+                                        <button type="button" class="btn yellow"  id="unit" >Unit</button>
+                                        <input type="hidden" id="particularId" name="particularId" value="">
+                                        <button type="button" class="btn blue" id="addParticular" data-url="{{ path('business_production_particular_add',{'id':entity.id}) }}" >Add</button>
+                                        </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix">&nbsp;</div>
+            <div class="row-fluid">
+                <div class="span12" id="particular-table">
+                    <table class="table table-bordered table-striped table-condensed table-fixed">
+                        <thead>
+                        <tr>
+                            <th class="span1">&nbsp;&nbsp;<i class="icon-list"></i></th>
+                            <th class="span1">Code</th>
+                            <th class="span4">Name</th>
+                            <th class="span1">Qnt</th>
+                            <th class="span1">Unit</th>
+                            <th class="span1">Purchase</th>
+                            <th class="span1">PP SubTotal</th>
+                            <th class="span1">Sales</th>
+                            <th class="span1">Sales SubTotal</th>
+                            <th class="span1"></th>
+                        </tr>
+                        </thead>
+                        <tbody id="invoiceParticulars">
+                        {% set productionPurchaseCost = 0 %}
+                        {% set productionSalesCost = 0 %}
+                        {% if entity.productionElements is not empty %}
+                            {% for item in entity.productionElements %}
+                                {% set productionPurchaseCost = productionPurchaseCost + (item.purchasePrice * item.quantity) %}
+                                {% set productionSalesCost = productionSalesCost + (item.salesPrice * item.quantity) %}
+                                <tr id="remove-{{ item.id }}">
+                                    <td  class="span1">{{ loop.index }}</td>
+                                    <td  class="span1">{{ item.particular.particularCode }}</td>
+                                    <td class="span4">{{ item.particular.name }}</td>
+                                    <td class="span1">{{ item.quantity }}</td>
+                                    <td class="span1">{% if item.particular.unit is not empty %}{{ item.particular.unit.name }}{% endif %}</td>
+                                    <td class="span1">{{ item.purchasePrice }}</td>
+                                    <td class="span1">{{ (item.purchasePrice * item.quantity)|number_format }}</td>
+                                    <td class="span1">{{ item.salesPrice }}</td>
+                                    <td class="span1">{{ (item.salesPrice * item.quantity)|number_format }}</td>
+                                    <td class="span1"><a id="{{ item.id }}" data-url="{{ path('business_pre_production_delete',{'particular': entity.id,'id': item.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a></td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="10" class="span12" style="border: 1px double #000"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" class="span9"><span class="pull-right"><strong>Total TK.</strong> =</span></td>
+                            <td class="span1"><strong id="subTotal">{{ productionPurchaseCost|number_format }}</strong></td>
+                            <td class="span1"><strong id="subTotal">{{ productionSalesCost|number_format }}</strong></td>
+                            <td class="span1"></td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                    <div class="clearfix">&nbsp;</div>
+                    <div class="form-actions portlet box grey">
+                        <div class="row-fluid " >
+                            <div class="span8">
+                            </div>
+                            <div class="span4">
+                                <div class="input-group input-append">
+                                    <span class="input-group-btn">
+                                        <input type="text" class="m-wrap span3" id="productionPurchasePrice" readonly="readonly" required="required" name="purchasePrice" placeholder="Purchase price" value="{{ entity.purchasePrice }}" >
+                                        <input type="text" class="m-wrap span3" id="productionSalesPrice" required="required" name="salesPrice" placeholder="Sales price" value="{{ entity.salesPrice }}" >
+                                        <input type="text" class="m-wrap span3" id="productionQuantity" required="required" name="productionQuantity" placeholder="quantity" value="" >
+                                        <button type="button" class="btn blue" id="receiveBtn"><span class="fa fa-save"></span> Save</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div></div>
+            <div class="clearfix">&nbsp;</div>
+            {{ form_end(form) }}
+            <!-- END FORM-->
+        </div>
+
+    </div>
+ <style>
+     .sales-right{
+         width: 110px;
+     }
+ </style>
+{% endblock %}
+
+{% block cssBlock %}
+{% stylesheets filter='cssrewrite'
+    '@BusinessBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BusinessBundle/Resources/public/js/production.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $('input[name=particular]').focus();
+{% endblock %}
+

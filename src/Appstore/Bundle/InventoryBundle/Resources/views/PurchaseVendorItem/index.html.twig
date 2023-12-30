@@ -1,0 +1,198 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Purchase Vendor Items
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('purchase') }}">Purchase</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Purchase Vendor Items</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Purchase Vendor Items Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('purchase_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('purchase') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <style>
+                        .search-input{
+                            height: 34px!important;
+                        }
+                    </style>
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="portlet search-portlet box grey">
+                                <div class="row-fluid" >
+                                    <form class="search-form" action="" method="get" name="itemSearch">
+                                        <div class="span7">
+                                            <div class="controls">
+                                                <input type="text" id="grn" name="grn"  class="span4 search-input" value="{% if searchForm.grn is defined %}{{ searchForm.grn }}{% endif %}"  autocomplete="off" placeholder="goods receive no">
+                                                <input type="text" id="receiveDate" name="receiveDate"  class="span4 search-input  m-ctrl-medium date-picker" value="{% if searchForm.receiveDate is defined %}{{ searchForm.receiveDate }}{% endif %}"  autocomplete="off" placeholder="received date ">
+                                                <input type="text" id="memo" name="memo"  class="span4 search-input" value="{% if searchForm.memo is defined %}{{ searchForm.memo }}{% endif %}"  autocomplete="off" placeholder="memo no">
+                                            </div>
+                                        </div>
+                                        <div class="span4 left-margin">
+                                            <input type="text" id="vendor" name="vendor"  class="span11 select2Vendor" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Enter vendor name ">
+                                        </div>
+                                        <div class="span1">
+                                            <div class="btn-group">
+                                                <button class="btn" type="submit" >
+                                                    <i class="icon-search"></i>&nbsp;Go</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric" >Vendor item name</th>
+                                    <th class="numeric" >Master item</th>
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >GRN</th>
+                                    <th class="numeric" >Qnt</th>
+                                    <th class="numeric" >Reminig Qnt</th>
+                                    <th class="numeric" >Purchase</th>
+                                    <th class="numeric" >Sales</th>
+                                    <th class="numeric" >Is web</th>
+                                </tr>
+                                </thead>
+                                <tbody id="purchaseentity" >
+                                {% for entity in entities %}
+                                    <tr class="remove-vendor-item-{{ entity.id }}">
+                                        <td> {% if entity.purchaseItems is defined and  entity.purchaseItems is not empty  %}<span class="badge badge-success toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span>{% endif %}</td>
+                                        <td class="numeric" ><a href="{{ path('inventory_vendor_show',{'id':entity.id}) }}"> {{ entity.name }}</a></td>
+                                        <td class="numeric" >
+                                            <a  data-type="select" class="editable" id="masterItem" data-name="Item" href="#" data-source="{{ path('inventory_product_inline_search') }}"  data-url="{{ path('inventory_vendoritem_inline_update') }}" data-pk="{{ entity.id }}" data-value="{% if entity.masterItem is not empty %}{{ entity.masterItem.id }}{% endif %}" data-original-title="Enter master item">{% if entity.masterItem is not empty %}{{ entity.masterItem.name }}{% endif %}</a>
+                                        </td>
+                                        <td class="numeric" >{% if entity.purchase is not empty %}{{ entity.purchase.created|date('d-m-Y') }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.purchase is not empty %}{{ entity.purchase.grn }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.quantity }}</td>
+                                        <td class="numeric" >{{ entity.stockReminigQnt }}</td>
+                                        <td class="numeric" >{{ entity.purchasePrice }}</td>
+                                        <td class="numeric" >{{ entity.salesPrice }}</td>
+                                        <td class="numeric" >
+                                        {% if( entity.isWeb == 1) %}
+                                                <a href="{{ path('inventory_vendoritem_status', { 'id': entity.id}) }}" class="btn blue mini"><i class="icon-check"></i></a>
+                                            {% else %}
+                                                <a  href="{{ path('inventory_vendoritem_status', { 'id': entity.id}) }}" class="btn blue mini" ><i class="icon-check-empty"></i></a>
+                                            {% endif %}
+                                        </td>
+
+                                    </tr>
+
+                                    <tr id="show-{{ entity.id }}" class="showing-overview remove-vendor-item-{{ entity.id }}">
+                                        <td colspan="11">
+                                            {% if entity.purchaseItems is defined and  entity.purchaseItems is not empty  %}
+                                                <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                                    <thead class="flip-content ">
+                                                    <tr class="head-green">
+                                                        <th class="numeric" >Item</th>
+                                                        <th class="numeric" >Item SKU</th>
+                                                        <th class="numeric" >Qnt</th>
+                                                        <th class="numeric" >Sales</th>
+                                                        <th class="numeric" >Sub-total</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="purchaseItem" >
+                                                    {% for purchaseItem in entity.purchaseItems %}
+                                                        <tr id="remove-purchase-item-{{ entity.id }}">
+                                                            <td class="numeric" >
+                                                                    {{ purchaseItem.item.name }}
+                                                            </td>
+                                                            <td class="numeric" >
+                                                                    {{ purchaseItem.item.sku }}
+                                                            </td>
+                                                            <td class="numeric" >{{ purchaseItem.quantity }}</td>
+                                                            <td class="numeric" >
+
+                                                                    {{purchaseItem.salesPrice}}
+
+                                                            </td>
+                                                            <td class="numeric" >{{  purchaseItem.salesPrice * purchaseItem.quantity|number_format() }}</td>
+
+                                                        </tr>
+                                                    {% endfor %}
+
+                                                    </tbody>
+
+                                                </table>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/editable.js'
+    '@InventoryBundle/Resources/public/js/puschase.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    InventoryPurchasePage();
+{% endblock %}
+

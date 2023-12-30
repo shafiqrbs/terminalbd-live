@@ -1,0 +1,82 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    View Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Employee Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Employee List</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('account_paymentsalary') }}"><i class="icon-th-list"></i>&nbsp;Payment Salary</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric">Name</th>
+                                    <th class="numeric">User</th>
+                                    <th class="numeric">Joining date</th>
+                                    <th class="numeric">Designation</th>
+                                    <th class="numeric">Mobile</th>
+                                    <th class="numeric">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    {% if entity.isDelete != 1 %}
+                                        <tr>
+                                            <td><span class="badge badge-warning toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+                                            <td>{{ entity.profile.name }}</td>
+                                            <td>{{ entity.username }}</td>
+                                            <td>{{ entity.profile.joiningDate|date("d-F-Y") }}</td>
+                                            <td>{% if entity.profile.designation is not empty %}{{ entity.profile.designation.name }}{% endif %}</td>
+                                            <td class="numeric"><a href="tel:+88 {{ entity.profile.mobile }}"> {{ entity.profile.mobile }}</a></td>
+                                            <td class="numeric">
+                                                <a href="{{ path('account_paymentsalary_new', { 'user': entity.id }) }}" class="btn green mini" ><i class="icon-plus"></i>&nbsp;Add payment</a>
+                                                <a href="{{ path('account_paymentsalary_show', { 'user': entity.id }) }}" class="btn purple mini" ><i class="icon-eye-open"></i></a>
+                                            </td>
+                                        </tr>
+
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

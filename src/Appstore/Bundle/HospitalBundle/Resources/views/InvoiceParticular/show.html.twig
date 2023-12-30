@@ -1,0 +1,192 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Patient Diagnostic Invoice # {{ entity.invoice }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('hms_invoice_particular_show',{'id':entity.id}) }}">Collection & Report</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Collection & Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>c
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Report</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('hms_invoice_particular') }}"><i class="icon-th-list"></i>&nbsp;Diagnostic Test</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+
+                                <div class="span4">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+                                        {% if entity.customer is not empty %}<li><strong>Customer #:</strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                                        {% if entity.customer is not empty %}<li><strong>Mobile #:</strong>&nbsp;{{ entity.customer.mobile }}</li>{% endif %}
+                                        {% if entity.customer is not empty and entity.customer.location is not empty   %}<li><strong>Location #:</strong>&nbsp;{{ entity.customer.location.name }}, {{ entity.customer.location.parent.name }}</li>{% endif %}
+                                    </ul>
+                                </div>
+                                <div class="span4">
+                                    <h4>Payment Method:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Created:</strong>&nbsp;{{ entity.created|date('d-m-Y') }}</li>
+                                        <li><strong>Delivery:</strong>&nbsp;{{ entity.deliveryDate }}</li>
+                                        <li><strong>Payment Method:</strong>&nbsp;{{ entity.paymentMethod }}</li>
+                                        <li><strong>Received By:</strong>&nbsp;{% if entity.createdBy is defined and entity.createdBy is not empty %}{{ entity.createdBy }}{% endif %}</li>
+                                        <li><strong>Delivery Status:</strong>&nbsp;{{ entity.process|capitalize }}</li>
+                                    </ul>
+                                </div>
+                                <div class="span4">
+                                    <h4>Referred By:</h4>
+                                    {% if entity.referredDoctor is not empty %}
+                                        <ul class="unstyled">
+                                            <li><strong>Code:</strong>&nbsp;{{ entity.referredDoctor.particularCode }}</li>
+                                            <li><strong>Name:</strong>&nbsp;{{ entity.referredDoctor.name }}</li>
+                                            <li><strong>Mobile:</strong>&nbsp;{{ entity.referredDoctor.mobile }}</li>
+                                            <li><strong>Address:</strong>&nbsp;{{ entity.referredDoctor.address }}</li>
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid box green">
+                                {% if entity.invoiceParticulars is defined and  entity.invoiceParticulars is not empty  %}
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                                        <thead class="flip-content ">
+                                        <tr class="head-green">
+                                            <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                            <th class="numeric">Report No</th>
+                                            <th class="numeric">Code</th>
+                                            <th class="numeric">Particular</th>
+                                            <th class="numeric">Service</th>
+                                            <th class="numeric">Sepcimen</th>
+                                            <th class="numeric">Report Progress</th>
+                                            <th class="numeric">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for item in entity.invoiceParticulars %}
+                                            {% if item.particular.service.slug == 'diagnostic' %}
+                                            <tr id="remove-{{ item.id }}">
+                                                <td><span class="badge badge-warning toggle badge-custom" id="{{ item.id  }}" ><span>[+]</span></span></td>
+                                                <td  class="numeric">{{ entity.invoice  }}-{{ item.particular.particularCode  }}</td>
+                                                <td  class="numeric">{{ item.particular.particularCode }}</td>
+                                                <td class="numeric">{{ item.particular.name }}</td>
+                                                <td class="numeric">{{ item.particular.service.name }}</td>
+                                                <td class="numeric">{{ item.particular.sepcimen }}</td>
+                                                <th class="numeric">{% if item.particular.service.id == 1 %}<span class="tooltips" data-trigger ='hover' data-original-title='Collected by: {% if item.sampleCollectedBy is not empty %}{{ item.sampleCollectedBy }}{% endif %} , Prepared by: {% if item.particularPreparedBy is not empty %}{{ item.particularPreparedBy }}{% endif %}, Assign Doctor: {% if item.assignDoctor is not empty %}{{ item.assignDoctor.name }}{% endif %}'>{{ item.process }}</span>{% endif %}</th>
+                                                <td class="numeric">
+                                                    <div class="btn-group">
+                                                    {% if item.particular.service.slug == 'diagnostic' and item.sampleCollectedBy is empty %}
+                                                        <a class="btn mini blue confirm"  data-url="{{ path('hms_invoice_particular_collection_confirm',{'id':item.id}) }}" href="javascript:"><i class="icon-ok"></i>&nbsp;Confirm</a>
+                                                        <a class="btn mini green"  href="{{ path('hms_invoice_particular_collection_barcode',{'id':item.id}) }}" ><i class="icon-barcode"></i> Tag Print</a>
+                                                    {% elseif item.particular.service.slug == 'diagnostic' and item.process == 'Collected' %}
+                                                        <a class="btn mini purple " href="{{ path('hms_invoice_particular_preparation', {'id': item.id}) }}"><i class="icon-retweet"></i>&nbsp;Preparation</a>
+                                                        <a target="_blank" class="btn mini green"  href="{{ path('hms_invoice_particular_collection_barcode',{'id':item.id}) }}" ><i class="icon-barcode"></i> Tag Print</a>
+                                                    {% elseif item.particular.service.slug == 'diagnostic' %}
+                                                        <a target="_blank" class="btn mini blue"  href="{{ path('hms_invoice_particular_report_print',{'id':item.id}) }}" ><i class="icon-print"></i> Report Print</a>
+                                                        <a class="btn mini purple " href="{{ path('hms_invoice_particular_preparation', {'id': item.id}) }}"><i class="icon-retweet"></i>&nbsp;Preparation</a>
+                                                        {% if  item.webPath is not empty %}
+                                                            <a class="btn red pull-right mini" target="_blank" href="/{{ item.webPath }}"><i class="icon-download"></i> Download Report</a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                             <tr id="show-{{ item.id }}" class="showing-overview">
+                                                    <td colspan="11">
+                                                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                                                            <tr class="">
+                                                                <th class="span3" >Sepcimen/Sample</th>
+                                                                <td class="span9" >{{ item.particular.sepcimen }}</td>
+                                                            </tr>
+                                                            <tr class="">
+                                                                <th class="span3" >Assign Doctor By</th>
+                                                                <td class="span9" >{% if item.assignDoctor is not empty %}{{ item.assignDoctor.name }}{% endif %}</td>
+                                                            </tr>
+                                                            <tr class="">
+                                                                <th class="span3" >Prepared By</th>
+                                                                <td class="span9" >{% if item.particularPreparedBy is not empty %}{{ item.particularPreparedBy }}{% endif %}</td>
+                                                            </tr>
+                                                            <tr class="">
+                                                                <th class="span3" >Collected By & Collection Date</th>
+                                                                <td class="span9" >{% if item.sampleCollectedBy is not empty %}{{ item.sampleCollectedBy }}{% endif %} / {{ item.collectionDate|date('d-m-Y h:i:s A') }}</td>
+                                                            </tr>
+                                                            <tr class="">
+                                                                <th class="span3" >Instruction</th>
+                                                                <td class="span9" >{{ item.particular.instruction }}</td>
+                                                            </tr>
+                                                            <tr class="">
+                                                                <th class="span3" >Pathological Comment</th>
+                                                                <td class="span9" >{{ item.comment }}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@HospitalBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/invoice.js'
+    '@HospitalBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}
+
+

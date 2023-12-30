@@ -1,0 +1,144 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Purchase Item
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('business_purchase') }}"> Manage Purchase Item</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Purchase Item</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn black" href="{{ path('business_purchase') }}"><i class="icon-th-list"></i> Purchase</a>
+                                {% set grn = searchForm.grn is defined ? searchForm.grn :'' %}
+                                {% set vendor = searchForm.vendor is defined ? searchForm.vendor :'' %}
+                                {% set startDate = searchForm.startDate is defined ? searchForm.startDate : "now"|date("d-m-Y") %}
+                                {% set endDate = searchForm.endDate is defined ? searchForm.endDate :"now"|date("d-m-Y") %}
+                                <a target="_blank" href="{{ path('business_purchase_item',{'pdf':'pdf','startDate':startDate,'endDate':endDate,'vendor':vendor,'grn':grn}) }}" class="btn purple"><i class="icon icon-print"></i> Download</a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid" >
+                                        <form class="search-form" action="" method="get" name="itemSearch">
+                                            <div class="row-fluid" style="margin-bottom: 10px">
+                                                <div class="span3">
+                                                    <input class="m-wrap span12 select2VendorCompany search-input" name="vendor" id="vendor" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Vendor company name">
+                                                </div>
+                                                <div class="span3">
+                                                    <div class="input-icon left">
+                                                        <i class="icon-calendar"></i>
+                                                        <input class="m-wrap span12 search-input dateCalendar" name="startDate" id="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %}" >
+                                                    </div>
+                                                </div>
+
+                                                <div class="span3">
+                                                    <div class="input-icon left">
+                                                        <i class="icon-calendar"></i>
+                                                        <input class="m-wrap span12 search-input dateCalendar" name="endDate" id="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}">
+                                                    </div>
+                                                </div>
+                                                <div class="span3">
+                                                    <div class="controls">
+                                                        <div class="input-append span11">
+                                                            <input type="text" id="grn" name="grn"  class="span11 m-wrap" value="{% if searchForm.grn is defined %}{{ searchForm.grn }}{% endif %}"  autocomplete="off" placeholder="Enter grn no ">
+                                                            <div class="btn-group">
+                                                                <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </form>
+                                    </div>
+                                </form>
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <td class="">&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="">Code</th>
+                                    <th class="">Particular</th>
+                                    <th class="">Received</th>
+                                    <th class="">GRN</th>
+                                    <th class="">Quantity</th>
+                                    <th class="">Bonus Quantity</th>
+                                    <th class="">Total Qnt</th>
+                                    <th class="">Unit</th>
+                                    <th class="">PP</th>
+                                    <th class="">Sub-Total</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for item in entities %}
+                                    <tr id="remove-{{ item.id }}">
+                                        <td  class="">{{ loop.index }}</td>
+                                        <td  class="">{{ item.businessParticular.particularCode }}</td>
+                                        <td class="">{{ item.businessParticular.name }}</td>
+                                        <td class="">{{ item.businessPurchase.receiveDate|date('d-m-Y') }}</td>
+                                        <td class="">{{ item.businessPurchase.grn }}</td>
+                                        <td class="">{{ item.quantity }}</td>
+                                        <td class="">{{ item.bonusQuantity }}</td>
+                                        <td class="">{{ item.quantity+item.bonusQuantity  }}</td>
+                                        <td class="">{% if item.businessParticular.unit is not empty %}{{ item.businessParticular.unit.name }}{% endif %}</td>
+                                        <td class="">{{ item.purchasePrice }}</td>
+                                        <td class="">{{ item.purchaseSubTotal|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BusinessBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+

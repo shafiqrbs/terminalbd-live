@@ -1,0 +1,195 @@
+{% if invoiceMode == 'grid' %}
+<div class="row-fluid">
+    <div class="span12">
+        <input type="text" id="search" name="search" class="span12 m-wrap m-wrap-bg" value="" autocomplete="off" placeholder="Search product">
+    </div>
+</div>
+<div class="grid-products">
+    {% for product in entities %}
+    <div class="product-content" >
+        <div data-match-height="tab-content" class="bs-calltoaction calltoaction-gray">
+            {% if config.cartImage is defined and config.cartImage == 1 %}
+            <div class="col-md-12 addProduct" data-action="{{ path('pos_item_add',{'product':product.item_id}) }}">
+                <img class="fileupload-preview fileupload-exists" alt="" src="{{ image(product.imagePath).resize(180,120) }}">
+            </div>
+            {% endif %}
+            <div class="row addProduct" data-action="{{ path('pos_item_add',{'product':product.item_id}) }}">
+                <div class="col-md-9 cta-contents">
+                    <h1 class="cta-title">{{ product.unit_id }}-{{ product.name }}</h1>
+                </div>
+                <div class="col-md-3 cta-button">
+                    <a href="#" class="btn btn-lg btn-block btn-primary">{{ product.salesPrice }}</a>
+                </div>
+            </div>
+            {% if config.salesMode == "purchase-item"  %}
+            <div class="purchase-item-box">
+                <div>
+                    <select class="m-wrap span12 purchaseBatch" data-id="{{ product.item_id }}" id="batch-{{ product.item_id }}" name="batch-{{ product.item_id }}" data-action="{{ path('pos_stock_item_serialno',{'id':product.item_id}) }}">
+                        <option value="">Select Item Batch</option>
+                        {% if product.measurement is not empty %}
+                            {% for key,batch in product.measurement.subItemId  %}
+                                <option {% if cart[product.item_id] is defined and cart[product.item_id] is not empty and cart[product.item_id].purchaseItem == batch %} selected="selected" {% endif %} value="{{ batch }}">{{ product.measurement.created[key]|date('d-M-y') }} - {{ product.measurement.barcode[key] }}[{{ product.measurement.subQuantity[key] }}]</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                {% if config.isAttribute == 1  and product.measurement is not empty  %}
+                <div class="">
+                    {% for key,batch in product.measurement.subItemId  %}
+                        {% if product.measurement.serialNo[key] is defined and product.measurement.serialNo[key] is not empty %}
+                            <div class="serial {% if cart[product.item_id] is defined and cart[product.item_id] is not empty and cart[product.item_id].purchaseItem == batch and cart[product.item_id].serial is not empty %} selected-serial {% endif %}" id="serialBox-{{ batch }}">
+                                <select multiple="multiple" class="m-wrap span12 multiselect" data-id="{{ batch }}" id="serial-{{ batch }}" name="serial-{{ batch }}">
+                                    {% for serial in product.measurement.serialNo[key]  %}
+                                        <option {% if cart[product.item_id] is defined and cart[product.item_id] is not empty and cart[product.item_id].serial is not empty and serial in cart[product.item_id].serial  %} selected="selected" {% endif %} value="{{ serial }}">{{ serial }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+            </div>
+            {% endif %}
+            <div class="" style="background: #ddd; padding-top: 15px">
+                <div class="input-append">
+                  <span class="input-group-btn">
+                  <input type="text" class="form-control inline-medium-wrap btn-qnt-particular tooltips" data-trigger = 'hover' data-original-title='{{ product.salesPrice }}'  data-id="{{ product.item_id }}"  id="price-{{ product.item_id }}" required="required" name="price-{{ product.item_id }}" value="{{ product.salesPrice }}" data-title="{{ product.salesPrice }}" placeholder="{{ product.salesPrice }}">
+                  <a href="javascript:"  class="btn blue btn-number-cart" data-type="minus" data-id="{{ product.item_id }}"  data-text="{{ product.item_id }}" data-title="{{ product.salesPrice }}"  data-field="quantity"> <span class="fa fa-minus"></span> </a>
+                  <input type="text" class="form-control inline-medium-wrap btn-qnt-particular tooltips" data-trigger = 'hover' data-original-title='{{ product.quantity }}'  data-id="{{ product.item_id }}"  id="quantity-{{ product.item_id }}" required="required" value="1" name="quantity-{{ product.item_id }}" data-title="{{ product.salesPrice }}" placeholder="{{ product.quantity }}" d min="1" max="{{ product.quantity }}">
+                  <a href="javascript:"  class="btn blue btn-number-cart"  data-type="plus" data-id="{{ product.item_id }}" data-title="{{ product.salesPrice }}"  data-text="{{ product.item_id }}" data-field="quantity"> <span class="fa fa-plus"></span></a></span>
+                  <a href="javascript:" data-action="{{ path('pos_item_add',{'product':product.item_id}) }}" class="btn yellow addToCart"  data-id="{{ product.item_id }}" data-title="{{ product.salesPrice }}"  data-text="{{ product.item_id }}" > <span class="fa fa-shopping-basket"></span></a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% elseif invoiceMode == 'list' and config.salesMode == "purchase-item" %}
+<table class="table table-bordered table-striped table-condensed flip-content" id="dataTableSearch">
+    <thead class="flip-content ">
+    <tr class="head-red">
+        <th class="span1 pull-center">S/N</th>
+        <th class="span4">Item Name</th>
+        <th class="span1">Unit</th>
+        <th class="span1">Item Batch</th>
+        {% if config.isAttribute == 1  %}
+        <th class="span1">IME/Serial no</th>
+        {% endif %}
+        <th class="span1">Price</th>
+        <th class="span3">&nbsp;</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for product in entities %}
+        <tr {% if cart[product.item_id] is defined and cart[product.item_id] is not empty and cart[product.item_id].id == product.item_id %} class="cart-selected" {% endif %}>
+            <td class="pull-center">{{ loop.index }}.</td>
+            <td>{{ product.barcode }} - {{ product.name }}</td>
+            <td>{{ product.unit }}</td>
+            <td>
+                <select class="m-wrap purchaseBatch" data-id="{{ product.item_id }}" id="batch-{{ product.item_id }}" name="batch-{{ product.item_id }}" data-action="{{ path('pos_stock_item_serialno',{'id':product.item_id}) }}">
+                    <option value="">Select Item Batch</option>
+                    {% if product.measurement is not empty %}
+                        {% for key,batch in product.measurement.subItemId  %}
+                            <option {% if cart[product.item_id] is defined and cart[product.item_id] is not empty and cart[product.item_id].purchaseItem == batch %} selected="selected" {% endif %} value="{{ batch }}">{{ product.measurement.created[key]|date('d-M-y') }} - {{ product.measurement.barcode[key] }}[{{ product.measurement.subQuantity[key] }}]</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </td>
+            {% if config.isAttribute == 1  %}
+                <td id="ime-{{ product.item_id }}">
+                        {% if product.measurement is not empty %}
+                            {% for key,batch in product.measurement.subItemId  %}
+                                {% if product.measurement.serialNo[key] is defined and product.measurement.serialNo[key] is not empty %}
+                                    <div class="serial {% if cart[product.item_id] is defined and cart[product.item_id] is not empty and cart[product.item_id].purchaseItem == batch and cart[product.item_id].serial is not empty %} selected-serial {% endif %}" id="serialBox-{{ batch }}">
+                                        <select multiple="multiple" class="m-wrap multiselect" data-id="{{ batch }}" id="serial-{{ batch }}" name="serial-{{ batch }}">
+                                            {% for serial in product.measurement.serialNo[key]  %}
+                                                <option {% if cart[product.item_id] is defined and cart[product.item_id] is not empty and cart[product.item_id].serial is not empty and serial in cart[product.item_id].serial  %} selected="selected" {% endif %} value="{{ serial }}">{{ serial }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                </td>
+            {% endif %}
+            <td>
+                <input type="text" class="form-control inline-medium-wrap btn-qnt-particular tooltips" data-trigger = 'hover' data-original-title='{{ product.salesPrice }}'  data-id="{{ product.item_id }}"  id="price-{{ product.item_id }}" required="required" name="price-{{ product.item_id }}" value="{{ product.salesPrice }}" data-title="{{ product.salesPrice }}" placeholder="{{ product.salesPrice }}">
+            </td>
+            <td>
+                <div class="input-append" >
+                  <span class="input-group-btn">
+                  <a href="javascript:"  class="btn blue btn-number-cart" data-type="minus" data-id="{{ product.item_id }}"  data-text="{{ product.item_id }}" data-title="{{ product.salesPrice }}"  data-field="quantity"> <span class="fa fa-minus"></span> </a>
+                  <input type="text" class="form-control inline-medium-wrap btn-qnt-particular tooltips" data-trigger = 'hover' data-original-title='{{ product.quantity }}'  data-id="{{ product.item_id }}"  id="quantity-{{ product.item_id }}" required="required" name="quantity-{{ product.item_id }}" value="1" data-title="{{ product.quantity }}" placeholder="{{ product.quantity }}"  min="1" max="100">
+                  <a href="javascript:"  class="btn blue btn-number-cart"  data-type="plus" data-id="{{ product.item_id }}" data-title="{{ product.salesPrice }}"  data-text="{{ product.item_id }}" data-field="quantity"> <span class="fa fa-plus"></span></a>
+                    <a href="javascript:" data-action="{{ path('pos_item_add',{'product':product.item_id}) }}" class="btn yellow addToCart"  data-id="{{ product.item_id }}" data-title="{{ product.salesPrice }}"  data-text="{{ product.item_id }}" > <span class="fa fa-shopping-basket"></span></a>
+                    </span>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<table class="table table-bordered table-striped table-condensed flip-content" id="dataTableSearch">
+    <thead class="flip-content ">
+    <tr class="head-red">
+        <th class="span1 pull-center">S/N</th>
+        <th class="span2">Barcode</th>
+        <th class="span4">Item Name</th>
+        <th class="span1">Unit</th>
+        <th class="span1">Price</th>
+        <th class="span3">&nbsp;</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for product in entities %}
+        <tr>
+            <td class="pull-center">{{ loop.index }}.</td>
+            <td>{{ product.unit_id }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.unit }}</td>
+            <td>
+                <input type="text" class="form-control inline-medium-wrap btn-qnt-particular tooltips" data-trigger = 'hover' data-original-title='{{ product.salesPrice }}'  data-id="{{ product.item_id }}"  id="price-{{ product.item_id }}" required="required" name="price-{{ product.item_id }}" value="{{ product.salesPrice }}" data-title="{{ product.salesPrice }}" placeholder="{{ product.salesPrice }}">
+            </td>
+            <td>
+                <div class="input-append" >
+                  <span class="input-group-btn">
+                  <a href="javascript:"  class="btn blue btn-number-cart" data-type="minus" data-id="{{ product.item_id }}"  data-text="{{ product.item_id }}" data-title="{{ product.salesPrice }}"  data-field="quantity"> <span class="fa fa-minus"></span> </a>
+                  <input type="text" class="form-control inline-medium-wrap btn-qnt-particular tooltips" data-trigger = 'hover' data-original-title='{{ product.quantity }}'  data-id="{{ product.item_id }}"  id="quantity-{{ product.item_id }}" required="required" name="quantity-{{ product.item_id }}" value="1" data-title="{{ product.salesPrice }}" placeholder="{{ product.quantity }}"  min="1" max="100">
+                  <a href="javascript:"  class="btn blue btn-number-cart"  data-type="plus" data-id="{{ product.item_id }}" data-title="{{ product.salesPrice }}"  data-text="{{ product.item_id }}" data-field="quantity"> <span class="fa fa-plus"></span></a>
+                    <a href="javascript:" data-action="{{ path('pos_item_add',{'product':product.item_id}) }}" class="btn yellow addToCart"  data-id="{{ product.item_id }}" data-title="{{ product.salesPrice }}"  data-text="{{ product.item_id }}" > <span class="fa fa-shopping-basket"></span></a>
+                    </span>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+<style>
+    .cart-selected {
+        background: #c3d6e8;
+    }
+    tr.cart-selected td{
+        background:#c3d6e8!important;
+    }
+    select.m-wrap {
+        margin-bottom: 0px!important;
+    }
+    .purchase-item-box{
+        background: #bab5b5; padding:7px; display: grid
+    }
+    .serial{
+        display: none;
+    }
+    .selected-serial{
+        display: block;
+    }
+    .multiselect-container>li>a>label {
+        padding: 3px 20px 3px 10px!important;
+    }
+    .multiselect-container>li>a>label input[type="checkbox"] {
+        margin: 9px 9px 9px;
+    }
+</style>

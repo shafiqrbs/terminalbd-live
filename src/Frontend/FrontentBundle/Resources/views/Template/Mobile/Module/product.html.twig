@@ -1,0 +1,26 @@
+<div class="clearfixTopMargin" ></div>
+    {% for key,product in pagination  %}
+        <div class="col-md-12 wow fadeInDown" data-wow-delay="1s" >
+            <div class="our-portfolio" data-match-height="pageFeature">
+                <img style="width:100%!important" src="{{ image(product.webPath).forceResize(400,250) }}" alt="">
+                <div class="team-content">
+                    <h3 class="team-prof">
+                        <a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': product.module.slug,'slug':product.slug }) }}">{{ product.name }}</a>
+                        {% if product.category is not empty %}<small>{{ product.category.name }}</small>{% endif %}
+                    </h3>
+                </div>
+            </div>
+            <h5><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': product.module.slug,'slug':product.slug }) }}"><strong>{{ product.name }}</strong></a></h5>
+            <span>{% for cat in product.moduleCategory  %}
+                                    <a class="" href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'module': product.module.slug,'slug':cat.slug }) }}"> {{ cat.name }}</a>
+                    {% if not loop.last %},{% endif %}
+                {% endfor %}
+            </span>
+            {% if product.price is not empty and product.price > 0 %}
+                <p class="text-left">{% if product.pricePrefix is not empty %}{{ product.pricePrefix.currency }}. {% endif %}<strong>{{ product.price }}</strong></p>
+            {% endif %}
+        </div>
+    {% endfor %}
+<div class="pagination pull-center"  >
+    {{ knp_pagination_render(pagination) }}
+</div>

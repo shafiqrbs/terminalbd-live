@@ -1,0 +1,49 @@
+{% block body %}
+    <script>
+       // window.print();
+    </script>
+    <link rel="stylesheet" href="{{ asset('assets/css/print.css') }}">
+    <div class="wrapper">
+        <table class="table">
+            <tr valign="top">
+                <td valign="top" class="main-table">
+                    <div class="table-head">
+
+                        <table>
+                            <tr>
+                                <td style="position: relative">
+                                    {% if(entity.user.education.webPath) %}
+                                        <img class="fileupload-preview thumbnail" style="width: 220px" alt="" src="/{{ entity.webPath }}">
+                                    {% endif %}
+
+                                  <div style="position: absolute; bottom: 5px; margin-left: 20px; left: 24%">
+                                      <p><h3>{{ entity.user.education.name | default() }}</h3></p>
+                                      <p>{{ entity.user.education.address | default() }}</p>
+                                      {% if(entity.user.education.thana) %}<p>{{ entity.user.education.thana.name | default() }},{{ entity.user.education.thana.district.name | default() }}</p>{% endif %}
+                                      {% if(entity.user.education.postalCode) %}<p>{{ entity.user.education.postalCode | default() }}</p>{% endif %}
+                                      {% if(entity.user.education.hotline) %}<p>+88 {{ entity.user.education.hotline | default() }}</p>{% endif %}
+                                      {% if(entity.user.education.email) %}<p> {{ entity.user.education.email | default() }}</p>{% endif %}
+
+                                  </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><hr></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <table class="inner-table">
+                                        <tr><td class="label-td">Title</td><td class="body-value">{{ entity.name|raw }}</td></tr>
+                                        <tr><td class="label-td">Content</td><td class="body-value">{{ entity.content|raw }}</td></tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+{% endblock %}

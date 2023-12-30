@@ -1,0 +1,30 @@
+{% if entities is defined and entities is not empty  %}
+    <section id="blog">
+        <div class="container">
+            <div class="text-center"><h2>{% if pageModule.name is not empty %}{{ pageModule.name }}{% else %}Latest Blog Posts {% endif %}</h2>
+                <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {% for blog in entities  %}
+                        <div class="col-md-4 col-sm-12 col-xs-12 portfolio-item">
+                            <figure class="effect-oscar">
+                                <img src="{{ image(blog.webPath).scaleResize(350,263) }}" alt="{{ blog.name }}" class="img-responsive" />
+                                <figcaption>
+                                    <h2>{{ blog.name }}</h2>
+                                    <a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'blog','slug':blog.slug }) }}">View more</a>
+                                </figcaption>
+                            </figure>
+                            <p class="text-center">{{ blog.content|raw|truncate(200) }}</p>
+                            <div class="text-center">
+                                <a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'blog','slug':blog.slug }) }}" class="btn btn-sm orange">Read More<i class="fa fa-link"></i></a>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </section>
+{% endif %}
+

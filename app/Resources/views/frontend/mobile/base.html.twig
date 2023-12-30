@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+
+<head>
+    <meta charset="utf-8"/>
+    <title>BD Educations : First of Education Base Portal in Bangladesh</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <meta name="MobileOptimized" content="320">
+    <meta property="og:site_name" content="-CUSTOMER VALUE-">
+    <meta property="og:title" content="-CUSTOMER VALUE-">
+    <meta property="og:description" content="-CUSTOMER VALUE-">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="-CUSTOMER VALUE-"><!-- link to image for socio -->
+    <meta property="og:url" content="-CUSTOMER VALUE-">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    {% stylesheets filter='cssrewrite'
+    'assets/frontend/mobile/css/jquery.mmenu.all.css'
+    'assets/bindu/3rd/select2/select2.css'
+    'assets/frontend/mobile/css/style.css'
+    'assets/frontend/mobile/css/camera.css'
+    'assets/frontend/common/css/hover-effects.css'
+    'assets/frontend/common/css/accordion.css'
+    'assets/bindu/3rd/tooltip/css/iml-styles.css'
+    'assets/module/accordion/css/accordion.css'
+    'assets/module/remodal/css/jquery.remodal.css'
+    'assets/bindu/3rd/simple-editor/css/jquery.classyedit.css'
+    'assets/bindu/3rd/rcswitcher/css/rcswitcher.min.css'
+    'assets/bindu/3rd/time-picker/css/jquery.ptTimeSelect.css'
+    'assets/frontend/common/css/common.css'
+    'assets/bindu/css/custom.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <link rel="stylesheet" href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css">
+
+</head>
+<body class="o-page p-home">
+<div id="page">
+    {{ include('frontend/mobile/header.html.twig')}}
+    {% block body %}{% endblock %}
+    {{ include('frontend/mobile/menu.html.twig')}}
+    {{ include('frontend/mobile/footer.html.twig')}}
+</div>
+
+{% block footer %}
+{% endblock footer %}
+{% javascripts
+'assets/frontend/mobile/js/jquery.min.js'
+'assets/frontend/mobile/js/jquery.mmenu.min.all.js'
+'assets/frontend/mobile/js/o-script.js'
+'assets/frontend/mobile/js/slider/jquery.mobile.customized.min.js'
+'assets/frontend/mobile/js/slider/jquery.easing.1.3.js'
+'assets/frontend/mobile/js/slider/camera.min.js'
+'assets/bindu/3rd/select2/select2.js'
+'assets/bindu/3rd/mask/js/jquery.maskedinput.min.js'
+'assets/module/accordion/js/jquery.cookie.js'
+'assets/module/accordion/js/jquery.accordion.js'
+'assets/module/remodal/js/jquery.remodal.js'
+'assets/bindu/3rd/tooltip/js/iml.js'
+'assets/bindu/3rd/simple-editor/js/jquery.classyedit.js'
+'assets/bindu/3rd/rcswitcher/js/rcswitcher.min.js'
+'assets/bindu/3rd/time-picker/js/jquery.ptTimeSelect.js'
+'assets/bindu/3rd/jquery-validation/jquery.validate.min.js'
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+        jQuery('#camera_wrap_4').camera({
+            height: 'auto',
+            loader: 'bar',
+            pagination: false,
+            thumbnails: false,
+            hover: false,
+            opacityOnGrid: false
+        });
+        $(".mobile").mask("(99999) 999-999");
+        jQuery('.select2').select2({
+
+            placeholder: "Select a institute level",
+            allowClear: true,
+            theme: "classic"
+
+
+        });
+        //  The second way to initialize:
+        $('[data-remodal-id=modal2]').remodal({
+            modifier: 'with-red-theme'
+        });
+
+        $('.scrollToTop').click(function(){
+            $('html, body').animate({scrollTop : 0},800);
+            return false;
+        });
+
+        $('.plainText').bind('keyup blur',function(){
+                    var node = $(this);
+                    node.val(node.val().replace(/[^a-z]/g,'') ); }
+        );
+        var acc_wrapper = $('.tm-accordion');
+        $('.tm-accordion .accordion-container').hide();
+        $.each(acc_wrapper, function(index, item){
+            $(this).find($('.accordion-title')).first().addClass('active').next().show();
+
+        });
+        $('.accordion-title').on('click', function(e) {
+            if( $(this).next().is(':hidden') ) {
+                $(this).parent().find($('.active')).removeClass('active').next().slideUp(300);
+                $(this).toggleClass('active').next().slideDown(300);
+            }
+            e.preventDefault();
+        });
+
+        $(".classy-editor").ClassyEdit();
+        $(".aboutus-editor").ClassyEdit();
+
+
+        var checkCookie = $.cookie("nav-item");
+        if (checkCookie != "") {
+            $('#nav > li > a:eq('+checkCookie+')').addClass('active').next().show();
+        }
+        $('#nav > li > a').click(function(){
+            var navIndex = $('#nav > li > a').index(this);
+            $.cookie("nav-item", navIndex);
+            $('#nav li div').slideUp();
+            if ($(this).next().is(":visible")){
+                $(this).next().slideUp();
+            } else {
+                $(this).next().slideDown();
+            }
+            $('#nav li a').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        {% block documentready %}
+        {% endblock %}
+
+    });
+</script>
+</body>
+</html>

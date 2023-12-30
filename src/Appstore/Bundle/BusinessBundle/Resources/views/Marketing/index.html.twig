@@ -1,0 +1,185 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Marketing
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                     <li><a href="#">Marketing</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Marketing</div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="portlet-body ">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Name<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.name) }}
+                                            {{ form_errors(form.name) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Designation<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.designation) }}
+                                            {{ form_errors(form.designation) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Mobile No<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.mobileNo) }}
+                                            {{ form_errors(form.mobileNo) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Monthly Sales</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.monthlySales) }}
+                                            {{ form_errors(form.monthlySales) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Yearly Sales</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.yearlySales) }}
+                                            {{ form_errors(form.yearlySales) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Discount(%)</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.discount) }}
+                                            {{ form_errors(form.discount) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Joining Date<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.joiningDate) }}
+                                            {{ form_errors(form.joiningDate) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="row-fluid box green">
+                                <div class="span12" id="particular-table">
+                                    <form name="salesUser" id="salesUser" action="{{ path('business_marketing_sales_target') }}" method="post">
+                                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                                            <thead class="flip-content ">
+                                            <tr class="head-grey">
+                                                <th> S/N</th>
+                                                <th>Name</th>
+                                                <th>Designation</th>
+                                                <th>Mobile No</th>
+                                                <th>Joining Date</th>
+                                                <th class="numeric" >Monthly Sales</th>
+                                                <th class="numeric" >Yearly Sales</th>
+                                                <th class="numeric" >Discount(%)</th>
+                                                <th class="numeric" ></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for entity in entities %}
+                                                <tr>
+                                                    <td  class="">{{ loop.index }}.</td>
+                                                    <td class="">{{ entity.name }}</td>
+                                                    <td class="">{{ entity.designation }}</td>
+                                                    <td class="">{{ entity.mobileNo }}</td>
+                                                    <td class="">{{ entity.joiningDate|date('d-m-Y') }}</td>
+                                                    <td class="numeric" >
+                                                        <input type="hidden" name="user[]" value="{{ entity.id }}" >
+                                                        <input type="text" class="numeric td-inline-input price span12"  autocomplete = "off" min="1" name="monthlySales[]" value="{{ entity.monthlySales }}" placeholder="Enter monthly amount ">
+                                                    </td>
+                                                    <td class="numeric" >
+                                                        <input type="text" class="numeric td-inline-input price span12"  autocomplete = "off" min="1" name="yearlySales[]" value="{{ entity.yearlySales }}" placeholder="Enter yearly amount ">
+                                                    </td>
+                                                    <td class="numeric" >
+                                                        <input type="text" class="numeric td-inline-input price span12"  autocomplete = "off" min="1" name="discount[]" value="{{ entity.discount }}" placeholder="Enter discount percent">
+                                                    </td>
+                                                    <td class="">
+                                                        {% if( entity.status == 1) %}
+                                                            <a class="btn mini blue btn-action" href="{{ path('business_marketing_status', { 'id': entity.id}) }}"><i class="icon-ok"></i></a>
+                                                        {% else %}
+                                                            <a class="btn mini red btn-action" href="{{ path('business_marketing_status', { 'id': entity.id}) }}">x</a>
+                                                        {% endif %}
+                                                        <a href="{{ path('business_marketing_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+                                                        <a href="{{ path('business_marketing_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        <div class="form-actions portlet box blue">
+                                            <div class="pull-center">
+                                                <button type="submit" class="btn green"><i class="icon-save"></i> Sales Target Generate</button>
+                                            </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

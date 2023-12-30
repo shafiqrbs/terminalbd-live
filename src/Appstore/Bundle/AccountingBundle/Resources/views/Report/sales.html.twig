@@ -1,0 +1,181 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Account of sales
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_sales') }}">Account of sales</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Account of sales lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account sales</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('account_sales_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('account_sales') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body">
+                            {% include('flash-message.html.twig') %}
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span2">
+                                        <input type="text" id="mobile" name="mobile"  class="leftMargin span12 select2Customer" value="{% if searchForm.toUser is defined %}{{ searchForm.toUser }}{% endif %}"  autocomplete="off" placeholder="Customer mobile no">
+                                    </div>
+                                    <div class="span2">
+                                        <input type="text" id="invoice" name="invoice"  class="leftMargin span12 select2Invoice" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}"  autocomplete="off" placeholder="Invoice no">
+                                    </div>
+                                    <div class="span2">
+                                        <select name="transactionMethod" id="transactionMethod" class="select2 leftMargin span12">
+                                            <option value="" >--Transaction--</option>
+                                            {% for method in transactionMethods %}
+                                                <option {% if searchForm.transactionMethod is defined and searchForm.transactionMethod == method.id %} selected="selected" {% endif %} value="{{ method.id }}" >{{ method.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span2">
+                                        <input type="text" id="accountRefNo" name="accountRefNo"  class="span12 search-input  " value="{% if searchForm.accountRefNo is defined %}{{ searchForm.accountRefNo }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.accountRefNo is defined %}{{ searchForm.accountRefNo }}{% else %}Enter Ref No{% endif %} ">
+                                    </div>
+                                    <div class="span2">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 search-input  date-picker" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span2">
+                                        <div class="controls">
+                                            <div class="input-append span11">
+                                                <input type="text" id="endDate" name="endDate"  class="span10 search-input  m-ctrl-medium date-picker" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %} ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content">
+                                <tr class="head-red">
+                                    <th class="" >Total Amount</th>
+                                    <th class="" >Received Amount</th>
+                                    <th class="" >Balance</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="numeric" ><strong>{{ overview.totalAmount|number_format }}</strong></td>
+                                    <td class="numeric" ><strong>{{ overview.receiveAmount|number_format }}</strong></td>
+                                    <td class="numeric" ><strong>{{ (overview.totalAmount - overview.receiveAmount)|number_format }}</strong></td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content "><tr class="head-blue">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Invoice</th>
+                                    <th class="numeric" >Mode</th>
+                                    <th class="numeric" >Ref No.</th>
+                                    <th class="numeric" >Trans. Method</th>
+                                    <th class="numeric" >Sales</th>
+                                    <th class="numeric" >Received</th>
+                                    <th class="numeric" >Balance</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr id="remove-{{ entity.id }}">
+                                        <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{% if entity.customer is not empty %}{{ entity.customer.mobile }}{% endif %}</td>
+                                        <td class="numeric" >
+                                            {% if entity.sales is not empty %}{{ entity.sales.invoice }} {% endif %}
+                                        </td>
+                                        <td class="numeric" >
+                                            {% if entity.sales is not empty %}{{ entity.sales.salesMode }} {% endif %}
+                                        </td>
+                                        <td class="numeric" >{{ entity.accountRefNo }}</td>
+                                         <td class="numeric" >
+                                             {% if entity.transactionMethod is defined and entity.transactionMethod is not empty %}{{ entity.transactionMethod.name }}{% endif %}
+                                         </td>
+                                        <td class="numeric" >{{ entity.totalAmount|number_format }}</td>
+                                        <td class="numeric" >
+                                            {{ entity.amount|number_format }}
+                                        </td>
+                                        <td class="numeric" >{{ entity.balance|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+    $(".editable").editable();
+    AccountingApproveProcess();
+{% endblock %}
+
+

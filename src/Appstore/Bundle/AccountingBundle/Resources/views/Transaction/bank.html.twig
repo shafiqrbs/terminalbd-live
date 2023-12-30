@@ -1,0 +1,178 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Account of Bank Cash
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="#">Account of Bank Cash</a>
+                    </li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account Bank Cash</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('account_transaction_cash') }}"><i class="icon-plus-sign"></i>&nbsp;Account of Cash</a></li>
+                                    <li><a href="{{ path('account_transaction_bank') }}"><i class="icon-th-list"></i>&nbsp;Account of Bank</a></li>
+                                    <li><a href="{{ path('account_transaction_mobilebank') }}"><i class="icon-th-list"></i>&nbsp;Account of Mobile</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body">
+                            {% include('flash-message.html.twig') %}
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <select name="accountBank" id="accountBank" class=" span12 leftMargin">
+                                            <option value="" >--Select Bank Account--</option>
+                                            {% for account in accountBanks %}
+                                                <option {% if searchForm.accountBank is defined and searchForm.accountBank == account.id %} selected="selected" {% endif %} value="{{ account.id }}" >{{ account.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span2">
+                                        <select name="processHead" id="processHead" class="leftMargin span12">
+                                            <option value="" >--Select Process--</option>
+                                            {% for process in processHeads %}
+                                                <option {% if searchForm.processHead is defined and searchForm.processHead == process.slug %} selected="selected" {% endif %} value="{{ process.slug }}" >{{ process.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span2">
+                                        <input type="text" id="accountRefNo" name="accountRefNo"  class="m-wrap  span12 search-input  " value="{% if searchForm.accountRefNo is defined %}{{ searchForm.accountRefNo }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.accountRefNo is defined %}{{ searchForm.accountRefNo }}{% else %}Enter Ref No{% endif %} ">
+                                    </div>
+                                    <div class="span2">
+                                        <input type="text" id="startDate" name="startDate"  class="m-wrap span12 dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span11">
+                                                <input type="text" id="endDate" name="endDate"  class="span11 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}{{ "now"|date("d-m-Y") }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content">
+                                <tr class="head-red">
+                                    <th class="" ><strong>Opening Balance</strong></th>
+                                    <th class="" ><strong>Receive</strong></th>
+                                    <th class="" ><strong>Payment</strong></th>
+                                    <th class="" ><strong>Balance</strong></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <tr>
+                                    <td class="numeric" ><strong>{{ overview.openingBalance|number_format }}</strong></td>
+                                    <td class="numeric" ><strong>{{ overview.debit|number_format }}</strong></td>
+                                    <td class="numeric" ><strong>{{ overview.credit|number_format }}</strong></td>
+                                    <td class="numeric" ><strong>{{ (overview.openingBalance + overview.debit - overview.credit)|number_format }}</strong></td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="portlet-body flip-scroll">
+
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Bank</th>
+                                    <th class="numeric" >Account Head</th>
+                                    <th class="numeric" >Process</th>
+                                    <th class="numeric" >Ref no.</th>
+                                    <th class="numeric" >Receive</th>
+                                    <th class="numeric" >Payment</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr id="remove-{{ entity.id }}">
+                                        <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{% if entity.accountBank is not empty %}{{ entity.accountBank.name }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.accountHead is not empty %}{{ entity.accountHead.name }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.processHead }}</td>
+                                        <td class="numeric" >{{ entity.accountRefNo }}</td>
+                                        <td class="numeric" >{{ entity.debit|number_format }}</td>
+                                        <td class="numeric" >{{ entity.credit|number_format }}</td>
+
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .leftMargin {
+            margin-left: 0!important;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/editable.js'
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    AccountingApproveProcess();
+{% endblock %}
+
+
+

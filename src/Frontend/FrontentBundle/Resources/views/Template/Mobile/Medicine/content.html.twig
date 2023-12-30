@@ -1,0 +1,86 @@
+{% extends ':frontend/template/mobile:ecommerce-base.html.twig' %}
+{% block body %}
+    <!--/welcome-->
+    {% if page.photoGallery is not empty %}
+        <div class="carousel-container">
+            <div id="carousel" class="carousel slide carousel-fade">
+                <div class="carousel-inner">
+                    <a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}" id="mobile-logo">
+                        {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+                    </a>
+                    {% if page.webPath is not empty %}
+                        <div class="carousel-cover item active" data-slide-no="0" style="background-image: url('{{ image(page.webPath) }}')!important;"></div>
+                    {% endif %}
+                    {% for slide in page.photoGallery.galleryImages %}
+                        <div  class="carousel-cover item {% if loop.index-1 == 0 and page.webPath is empty %} active  {% endif %}" style="background-image: url('{{ image(slide.getAbsolutePath(page.globalOption.id,page.photoGallery.id)) }}')!important;"  {% if loop.index-1 == 0 and page.webPath is empty %} data-slide-no="{{ loop.index-1 }}"  {% endif %} ></div>
+                    {% endfor %}
+                </div>
+                <!-- Navigation -->
+                <a class="carousel-post-control left" href="#carousel" data-slide="prev">‹</a>
+                <a class="carousel-post-control right" href="#carousel" data-slide="next">›</a>
+            </div>
+        </div>
+        <hr>
+    {% else %}
+        <div class="header-grid"  {% if page.webPath is not empty %} style="background-image:url('{{ image(page.webPath) }}')!important;" {% endif %} >
+            <a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}" id="mobile-logo">
+                {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+            </a>
+        </div>
+        <hr>
+    {% endif %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="w3ls-title">{{ page.name }}</h3>
+                <div class="clearfix"></div>
+                <p>{{ page.content|raw }}</p>
+            </div>
+            <div class="clearfix"><br/></div>
+            <div class="col-md-12">
+                <ul class="mbm_social">
+                    <li><a class="social-facebook" target="_blank" href="https://www.facebook.com/share.php?u={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}&picture={{ app.request.getSchemeAndHttpHost() }}/{{ page.webPath }}&title={{ page.name }}&description={{ page.content|striptags|truncate(250)|raw }}">
+                            <i class="fa fa-facebook"></i>
+                            <div class="tooltip"><span>facebook</span></div>
+                        </a>
+                    </li>
+                    <li><a class="social-linkedin" target="_blank" href="//www.linkedin.com/shareArticle?mini=true&url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                            <i class="fa  fa-linkedin"></i>
+                            <div class="tooltip"><span>LinkedIn</span></div>
+                        </a>
+                    </li>
+                    <li><a class="social-google-plus" target="_blank" href="//plus.google.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                            <i class="fa fa-google-plus"></i>
+                            <div class="tooltip"><span>Google</span></div>
+                        </a>
+                    </li>
+                    <li><a class="social-twitter" target="_blank" href="//twitter.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                            <i class="fa fa-twitter"></i>
+                            <div class="tooltip"><span>Twitter</span></div>
+                        </a>
+                    </li>
+                    <li><a class="social-instagram" target="_blank" href="//instagram.com/share?url={{ app.request.getSchemeAndHttpHost() }}/{{ page.slug }}">
+                            <i class="fa  fa-instagram"></i>
+                            <div class="tooltip"><span>Instagram</span></div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="clearfix"><br/></div>
+        </div>
+    </div>
+    {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+        {% render controller("FrontendBundle:WebsiteWidget:featureMobileWidget",{'globalOption':globalOption.id, 'menu': menu.id,'position':'mobile'}) %}
+    {% endif %}
+    <!--//welcome-->
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@FrontendBundle/Resources/public/template/mobile/js/common.js'
+    '@FrontendBundle/Resources/public/template/mobile/js/page.js'
+    '@FrontendBundle/Resources/public/template/mobile/js/corporate.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}

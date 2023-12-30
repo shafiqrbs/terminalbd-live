@@ -1,0 +1,493 @@
+<!-- BEGIN FORM-->
+{{ form_start(form) }}
+{{ form_row(form._token) }}
+<div class="portlet box">
+<div class="portlet-body" style="min-height: 460px">
+<div class="portlet box green">
+    <div class="portlet-title">
+        <div class="row-fluid">
+            <div class="span9">
+                <input type="text" id="patient" data-url="{{ path('hms_patient_invoice_search') }}" name="patient"  class="m-wrap span12 invoiceSearch select2Customer" value=""  autocomplete="off" placeholder="Patient ID/name/mobile no">
+            </div>
+            <div class="span3">
+                <div class="actions text-right">
+                <div class="btn-group">
+                    <div class="input-append">
+                        <a target="_blank" class="btn red" href="{{ path('hms_invoice') }}"><i class="icon-th-list"></i> Invoice</a>
+                        <a target="_blank" class="btn yellow" href="{{ path('hms_invoice_report_process') }}"><i class="icon-th-list"></i> Delivery Report</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid particular-info" style="padding-left: 15px; padding-right: 15px!important;" >
+        <div class="row-fluid">
+            <div class="span9">
+                <div class="row-fluid patient-info">
+                    <div class="span4">
+                        <div class="">
+                            <label class="control-label red" for="firstName">Patient ID</label>
+                            <div class="controls">
+                                <input type="text" id="customerId" name="customerId" class="m-wrap span12 numeric inputs" placeholder="Enter customer ID" aria-required="true">
+                            </div>
+                        </div>
+                    </div>
+                    {% if  'admission' in hospital.invoiceProcess %}
+                    <div class="span8">
+                        <div class="">
+                            <label class="control-label red" for="firstName">Admission ID</label>
+                            <div class="controls">
+                                <input type="text" id="admissionId" name="admissionId" class="m-wrap span12 numeric select2Admission" placeholder="Enter admission ID" aria-required="true">
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="row-fluid patient-info">
+                    <div class="span4">
+                        <div class="">
+                            <label class="control-label red" for="firstName">Patient Name<span class="required">*</span></label>
+                            <div class="controls">
+                                {{ form_widget(form.customer.name) }}
+                                {{ form_errors(form.customer.name) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <div class="">
+                            <label class="control-label red" for="firstName"><span>Mobile no</span><span class="required">*</span></label>
+                            <div class="controls">
+                                {{ form_widget(form.customer.mobile) }}
+                                {{ form_errors(form.customer.mobile) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span4">
+                        <div class="">
+                            <label class="control-label red" for="firstName"><span>Age</span><span class="required">*</span></label>
+                            <div class="controls span6" style="margin-left: 0!important;">
+                                {{ form_widget(form.customer.age) }}
+                            </div>
+                            <div class="controls span6">
+                                {{ form_widget(form.customer.ageType) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <div class="">
+                            <label class="control-label red" for="firstName"><span>Gender</span><span class="required">*</span></label>
+                            <div class="controls">
+                                {{ form_widget(form.customer.gender) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span3">
+                <div class="">
+                    <div class="controls patient-info">
+                        {{ form_widget(form.customer.address) }}
+                        {{ form_errors(form.customer.address) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid investigation-box" style="padding-left: 15px" >
+        {% if hospital.advanceSearchParticular == 1 %}
+        <div class="row-fluid">
+            <div class="span12">{{ form_widget(form.particulars) }} </div>
+        </div>
+        {% else %}
+        <div class="row-fluid">
+            <div class="span7">
+                <select id="particular" name="particular" class="span12 m-wrap select2">
+                    <option value="">Test Name, Accessories, Surgery etc. </option>
+                    {{ particularService|raw }}
+                </select>
+            </div>
+            <div class="span2">
+            <div class="input-append span12" style="margin-bottom:0!important">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                       <button type="button" class="btn blue btn-number" data-type="minus" data-field="quantity"><span class="fa fa-minus"></span></button>
+                    </span>
+                    <input type="number" class="m-wrap span5 form-control input-number" id="quantity" name="quantity" value="1" min="1" max="100">
+                    <span class="input-group-btn">
+                      <button type="button" class="btn blue btn-number"  data-type="plus" data-field="quantity"><span class="fa fa-plus"></span></button>
+                    </span>
+                </div>
+            </div>
+            </div>
+            <div class="span3">
+            <div class="input-append span11" style="margin-bottom:0!important">
+                <input type="hidden" id="particularId" name="particularId" value="">
+                <input type="text" class="m-wrap span8" readonly="readonly" id="price" name="price" value="" maxlength="8">
+                <div class="btn-group">
+                    <button type="button" class="btn red" id="temporaryParticular" data-url="{{ path('hms_invoice_temporary_particular_add') }}" ><i class="icon-plus"></i> Add</button>
+                </div>
+            </div>
+        </div>
+        </div>
+        {% endif %}
+    </div>
+    <div class="row-fluid" style="background:#ffffff!important;">
+        <div class="span8" id="particular-table" >
+            <table class="table table-bordered table-striped table-condensed table-fixed">
+                <thead class="head-blue">
+                <tr>
+                    <th class="span2">&nbsp;&nbsp;<i class="icon-list"></i> Si/No</th>
+                    <th class="span6">Particular</th>
+                    <th class="span1">Qnt</th>
+                    <th class="span1">Unit</th>
+                    <th class="span1">Amount</th>
+                    <th class="span1"><i class="icon-trash"></i></th>
+                </tr>
+                </thead>
+                <tbody id="invoiceParticulars">
+                {% for item in user.hmsInvoiceTemporaryParticulars %}
+                    <tr id="remove-{{ item.id }}">
+                        <td  class="">{{ loop.index }}</td>
+                        <td class="">{{ item.particular.name }}</td>
+                        <td class="">{% if item.particular.service.hasQuantity == 1 %}{{ item.quantity }}{% endif %}</td>
+                        <td class="">{{ item.salesPrice }}</td>
+                        <td class="">{{ item.subTotal|number_format }}</td>
+                        <td class=""><a id="{{ item.id }}" data-id="{{ item.id }}" title="Are you sure went to delete ?" data-url="{{ path('hms_invoice_temporary_particular_delete',{'id': item.id }) }}" href="javascript:" class="btn red mini initialParticularDelete" ><i class="icon-trash"></i></a></td>
+                    </tr>
+                    {% if item.particular.service.id == 1 and item.particular.instruction is not empty %}
+                        <tr><td colspan="6"><strong>Instruction</strong>: {{ item.particular.instruction }}</td></tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="6" class="span12" style="border: 1px double #000"></td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="span9"><span class="pull-right"><strong>Sub-Total TK.</strong> =</span></td>
+                    <td class="span2"><strong class="subTotal">{{ temporarySubTotal|number_format }}</strong></td>
+                    <td class="span1"></td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="span9"><span class="pull-right"><strong>Discount TK.</strong> =</span></td>
+                    <td class="span2"><strong class="initialDiscount">{{ initialDiscount|number_format }}</strong></td>
+                    <td class="span1"></td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="span9"><span class="pull-right"><strong>Grand Total TK.</strong> =</span></td>
+                    <td class="span2"><strong class="initialGrandTotal">{{ temporarySubTotal|number_format }}</strong></td>
+                    <td class="span1"></td>
+                </tr>
+                </tfoot>
+            </table>
+            <div class="clearfix">&nbsp;</div>
+        </div>
+        <div class="span4 payment-info" style="background:#eaecef; padding: 5px;">
+            {% if hospital.isMarketingExecutive == 1 %}
+            <div class="row-fluid margin-bottom-10">
+                <div class="span12">
+                    {{ form_widget(form.marketingExecutive) }}
+                </div>
+            </div>
+            {% endif %}
+            <div class="row-fluid margin-bottom-10" id="consultant-box">
+                <div class="span10">
+                {{ form_widget(form.consultant) }}
+                </div>
+                <div class="span2" style="margin-top: 2px">
+                    <a href="javascript:" id="show" class="pull-left btn yellow addDoctor"><i class="icon-medkit"></i></a>
+                </div>
+            </div>
+            <div id="consultant" style="background: #f6f7e9">
+            <div class="row-fluid" id="" style="margin-top: 5px">
+                <div class="span12 input-append-border">
+                    {{ form_widget(form.assignDoctor.name) }}
+                </div>
+            </div>
+            <div class="row-fluid" id="">
+                <div class="span6 input-append-border">
+                    {{ form_widget(form.assignDoctor.mobile) }}
+                </div>
+                <label class="custom-control  custom-checkbox span6">Send to Account
+                    {{ form_widget(form.assignDoctor.sendToAccount) }}
+                    <span class="custom-control-indicator"></span>
+                </label>
+            </div>
+            <div class="row-fluid" id="">
+                <div class="span12 input-append-border">
+                    {{ form_widget(form.assignDoctor.doctorSignature) }}
+                </div>
+            </div>
+            <div class="row-fluid" id="">
+                <div class="span12 input-append-border">
+                    {{ form_widget(form.assignDoctor.doctorSignatureBangla) }}
+                </div>
+            </div>
+            <div class="row-fluid" id="">
+                <div class="span12 input-append-border">
+                    {{ form_widget(form.assignDoctor.specialist) }}
+                </div>
+            </div>
+            </div>
+            <div class="row-fluid" style="background: #d9b133;margin-bottom: 7px;">
+                <div class="span6">
+                    <label class="custom-control custom-checkbox span12 text-right" style="text-align: left; margin-left: 18px">
+                        <strong>Is Discount</strong>{{ form_widget(form.isDiscount) }}
+                        <span class="custom-control-indicator discount-indicator"></span>
+                    </label>
+                </div>
+                <div class="span6">
+                    <label class="custom-control  custom-checkbox span12 text-right" style="">
+                        <strong>Is Hold</strong>{{ form_widget(form.isHold) }}
+                        <span class="custom-control-indicator"></span>
+                    </label>
+                </div>
+            </div>
+            <div id="discount-box">
+                <div class="row-fluid">
+                    <div class="span12">
+                        {{ form_widget(form.discountRequestedBy) }}
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span12">
+                        {{ form_widget(form.discountRequestedComment) }}
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid margin-bottom-10">
+                <div class="span6">
+                    <label class="label-custom">Discount Type</label>
+                </div>
+                <div class="span6">
+                    <select class="span11 m-wrap" id="discountType" name="discountType">
+                        <option value="flat">Flat</option>
+                        <option value="percentage">Percentage</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row-fluid margin-bottom-10">
+                <div class="span6"><label class="label-custom">Discount</label></div>
+                <div class="span6">
+                    {{ form_widget(form.discountCalculation) }}
+                    {{ form_widget(form.discount) }}
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span6">
+                    {{ form_widget(form.transactionMethod) }}
+                    {{ form_errors(form.transactionMethod) }}
+                </div>
+                <div class="span6">
+                <div class="input-prepend">
+                    <button class="btn blue" type="button" onclick="javascript:NewCssCal('deliveryDateTime','ddMMyyyy','arrow',true,'12','','future')"><i class="icon-calendar"></i></button>
+                    <input type="text" disabled="disabled"   id="deliveryDateTime" name="deliveryDateTime"  class="m-wrap span9 tooltips input2" value="{{ entity.deliveryDateTime }}" data-trigger="hover" placeholder="Report delivery date" data-original-title="Report delivery date" autocomplete="off">
+                </div>
+                </div>
+            </div>
+
+            <div id="cartMethod" class="bankHide">
+                <div class="row-fluid">
+                    <div class="span12">
+                        {{ form_widget(form.accountBank) }}
+                        {{ form_errors(form.accountBank) }}
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span6">
+                        {{ form_widget(form.paymentCard) }}
+                        {{ form_errors(form.paymentCard) }}
+                    </div>
+                    <div class="span6">
+                        {{ form_widget(form.cardNo) }}
+                        {{ form_errors(form.cardNo) }}
+                    </div>
+                </div>
+            </div>
+            <div id="bkashMethod" class="mobileBankHide">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="control-group">
+                            <div class="controls">
+                                {{ form_widget(form.accountMobileBank) }}
+                                {{ form_errors(form.accountMobileBank) }}
+                            </div>
+                        </div>
+                    </div>
+                    <!--/span-->
+                </div>
+                <div class="row-fluid">
+                    <div class="span6">
+                        {{ form_widget(form.paymentMobile) }}
+                        {{ form_errors(form.paymentMobile) }}
+                    </div>
+                    <div class="span6">
+                        {{ form_widget(form.transactionId) }}
+                        {{ form_errors(form.transactionId) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="row-fluid" id="referred-box">
+                <div class="span10">
+                    {{ form_widget(form.referredId) }}
+                </div>
+                <div class="span2" style="margin-top: 2px">
+                    <a href="javascript:" id="show" class="pull-left btn yellow referredId"><i class="icon-user"></i></a>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div id="referredDoctor" style="background: #f6f6f3; margin-top: 10px">
+                <div class="row-fluid" id="" >
+                    <div class="span12 input-append-border">
+                        {{ form_widget(form.referredDoctor.name) }}
+                    </div>
+                </div>
+                <div class="row-fluid" id="">
+                    <div class="span8 input-append-border">
+                        {{ form_widget(form.referredDoctor.mobile) }}
+                    </div>
+                    <label class="custom-control  custom-checkbox span4">&nbsp;&nbsp;Is Doctor
+                        {{ form_widget(form.referredDoctor.isDoctor) }}
+                        <span class="custom-control-indicator"></span>
+                    </label>
+                </div>
+                <div class="row-fluid" id="">
+                    <div class="span12 input-append-border">
+                        {{ form_widget(form.referredDoctor.doctorSignature) }}
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group">
+                        <label class="control-label" id="receive-label" for="firstName"><span class="label-custom span5" >Receivable TK.</span>  <span class="span4  sales-right">{{ form_widget(form.payment) }}</span><span class="span3 label-custom pull-right"><strong class="initialGrandTotal" id="dueable">{{ temporarySubTotal }}</strong></span></label>
+                    </div>
+                </div>
+                <!--/span-->
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid" style="padding-top: 13px">
+        <div class="span8" style="padding-left: 15px">
+            {{ form_widget(form.comment) }}
+            {{ form_errors(form.comment) }}
+        </div>
+        <div class="span4">
+            <div class="input-append span11">
+                {#{{ form_widget(form.printFor) }}
+                {{ form_errors(form.printFor) }}#}
+                <div class="btn-group span12">
+                    <input type="hidden" class="initialGrandTotal" name="initialDue" id="initialDue" value="{{ temporarySubTotal }}">
+                    <input type="hidden" name="initialDiscount" id="initialDiscount" value="">
+                    <button type="submit" class="btn red big span12" {% if temporarySubTotal is empty %} disabled="disabled" {% endif %}  id="saveDiagnosticButton"><i class="icon-save"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div class="clearfix">&nbsp;</div>
+</div>
+{{ form_end(form) }}
+<!-- END FORM-->
+<style>
+    input.m-wrap , select.m-wrap , textarea.m-wrap{
+        border: 2px solid #0052cc!important;
+    }
+    .label-custom{
+        padding: 0px;
+        width: auto;
+        display: inline-block;
+        padding-left: 15px;
+        color: #000000;
+        font-weight: bold;
+    }
+    #receive-label{
+        background:#4b4851;
+        height: 54px;
+    }
+
+    #referred-box{
+        background: #4b4851;
+        margin-top: -5px;
+        padding-left: 12px;
+        padding-top: 7px;
+        padding-bottom: 5px;
+        margin-bottom: 7px!important;
+    }
+
+    #consultant-box{
+        background: #4b4851;
+        margin-top: -5px;
+        padding-left: 12px;
+        padding-top: 7px;
+        padding-bottom: 8px;
+        margin-bottom: 7px!important;
+    }
+
+    .discount-type {
+        border: 2px solid #4b8df8 !important;
+    }
+
+    #receive-label .label-custom{
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 54px;
+        color: #FFFFff;
+    }
+
+    .sales-right input[class*="span"].payment {
+        border: 3px solid #4b8df8 !important;
+        height: 45px !important;
+        font-size: 20px;
+        margin-top: 4px;
+        width: 130px;
+    }
+
+    input[class*="span"]#appstore_bundle_hospitalbundle_invoice_comment{
+        height:54px!important;
+    }
+    .address{
+        background: #ffffff!important;
+    }
+    .select2-container{
+        border: 2px solid #0052cc!important;
+    }
+    .bankHide , .mobileBankHide , .customer, #discount-box{
+        display: none;
+    }
+    .dialogModal{
+        z-index: 9999!important;
+    }
+    #calBorder, .select2-drop , .select2-drop-mask{
+        z-index: 99999!important;
+    }
+    .select2-container .select2-choice {
+        height: 35px!important;
+    }
+    #instruction{
+        color: red;
+        line-height: 30px;
+    }
+    .form form.patient-info{
+        padding-top: 15px!important;
+    }
+    .patient-info label {
+        line-height: 12px!important;
+        margin-top: 0!important;
+    }
+    textarea[class*="span"].address {
+        height: 110px!important;
+        resize: none;
+    }
+    .investigation-box{
+        padding: 7px 15px!important;
+    }
+    #consultant , #referredDoctor{
+        display: none;
+    }
+</style>

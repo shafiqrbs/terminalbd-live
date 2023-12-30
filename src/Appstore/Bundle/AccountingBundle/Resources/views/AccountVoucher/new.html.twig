@@ -1,0 +1,258 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+    <!-- BEGIN category HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="category-title">
+                Bill Voucher no #  <strong>{{ entity.accountRefNo }}</strong>
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li>
+                    <a href="{{ path('account_voucher') }}">Bill Voucher</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li><a href="#">Manage Bill Voucher</a></li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END category HEADER-->
+    <!-- BEGIN category CONTENT-->
+    <div class="row-fluid">
+    <div class="span12">
+
+    <div class="portlet box green tabbable">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Bill Voucher Information</div>
+            <div class="actions">
+                <div class="btn-group">
+                    <a class="btn red" href="{{ path('account_voucher_new') }}"><i class="icon-plus-sign"></i> Bill Voucher New</a>
+                    <a class="btn" href="{{ path('account_voucher') }}"><i class="icon-th-list"></i> Bill Voucher</a>
+                </div>
+            </div>
+        </div>
+    <div class="portlet-body">
+        <div class="portlet-body form">
+            {% include('flash-message.html.twig')  %}
+            <!-- BEGIN FORM-->
+            <form class="" id="purchaseItem" name="purchaseItem" method="post" action="{{ path('account_voucher_particular_add',{'invoice':entity.id}) }}">
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="row-fluid particular-info" >
+                        <div class="span5" style="margin-left:15px">
+                          <select class="m-wrap span12 select2" name="productGroup" id="productGroup" >
+                              {% for product in products %}
+                              <option value="{{ product.id }}">{{ product.name }} ({{ product.productType|capitalize }})</option>
+                              {% endfor %}
+                          </select>
+                        </div>
+                        <div class="span3" style="margin-left:15px">
+                            <input type="text" class="m-wrap span12" id="name"  name="name" placeholder="Enter item name" value=""  autocomplete="off">
+                        </div>
+                        <div class="span3">
+                            <div class="input-append">
+                                <div class="input-group">
+                                    <input type="text" class="m-wrap span8" id="price"  name="price" placeholder="Price" value="" maxlength="8" autocomplete="off">
+                                    <input type="number" class="m-wrap span4 form-control input-number" id="quantity" name="quantity" value="1" min="1" autocomplete="off">
+                                    <button type="submit" class="btn blue" id="addParticular" ><i class="icon-save"></i> Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </form>
+            {{ form_start(form) }}
+            {{ form_row(form._token) }}
+            <div class="clearfix">&nbsp;</div>
+            <div class="row-fluid">
+                <div class="span8">
+                    <div class="span12" id="particular-table">
+                        <table class="table table-bordered table-striped table-condensed table-fixed">
+                            <thead>
+                            <tr>
+                                <th class="span1">&nbsp;&nbsp;<i class="icon-list"></i></th>
+                                <th class="span4">Product Group</th>
+                                <th class="span3">Item</th>
+                                <th class="span1">Price</th>
+                                <th class="span1">Qnt</th>
+                                <th class="span1">Sub Total</th>
+                                <th class="span1"><i class="icon-trash"></i></th>
+                            </tr>
+                            </thead>
+                            <tbody id="invoiceParticulars">
+                            {% if entity.voucherItems is not empty %}
+                                {% for item in entity.voucherItems %}
+                                    <tr id="remove-{{ item.id }}">
+                                        <td>{{ loop.index }}</td>
+                                        <td >{{ item.productGroup.name }}</td>
+                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.price }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>{{ item.subTotal|number_format }}</td>
+                                        <td><a id="{{ item.id }}" data-url="{{ path('account_voucher_particular_delete',{'invoice': entity.id ,'id': item.id }) }}" href="javascript:" class="btn red mini item-delete" ><i class="icon-trash"></i></a></td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="8" class="span12" style="border: 1px double #000"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" class="span9"><span class="pull-right"><strong>Total TK.</strong> =</span></td>
+                                <td class="span2"><strong id="subTotal">{{ entity.totalAmount|number_format }}</strong></td>
+                                <td class="span1"></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="span4 payment-info">
+                    <div class="clearfix"></div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"><span class="label">Total TK.</span> <span class="pull-right sales-right">{{ form_widget(form.totalAmount) }}</span></label>
+                                <div class="controls">
+                                {{ form_errors(form.totalAmount) }}
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"><span class="label">Payment TK.</span> <span class="pull-right sales-right">{{ form_widget(form.payment) }}
+                                        </span>
+                                </label>
+                                <div class="controls">
+                                {{ form_errors(form.payment) }}
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="control-group">
+                                {{ form_widget(form.accountVendor) }}
+                                {{ form_errors(form.accountVendor) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="control-group">
+                                <div class="controls">
+                                    {{ form_widget(form.transactionMethod) }}
+                                    {{ form_errors(form.transactionMethod) }}
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                    </div>
+                    <div class="bankHide"  {% if entity.transactionMethod is defined and entity.transactionMethod is not empty and entity.transactionMethod.slug == 'bank'  %} id="bankMethod" {% endif %}>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        {{ form_widget(form.accountBank) }}
+                                        {{ form_errors(form.accountBank) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                    </div>
+                    <div class="mobileHide" {% if entity.transactionMethod is defined and entity.transactionMethod is not empty and  entity.transactionMethod.slug == 'mobile'  %} id="mobileMethod" {% endif %}  >
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        {{ form_widget(form.accountMobileBank) }}
+                                        {{ form_errors(form.accountMobileBank) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="control-group">
+                                {{ form_widget(form.remark) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+
+            </div>
+            <div class="clearfix">&nbsp;</div>
+
+
+            <div class="clearfix"></div>
+            <div class="clearfix">&nbsp;</div>
+            <div class="form-actions portlet box grey">
+                <input type="hidden" name="purchaseId" id="purchaseId" value="{{ entity.id }}">
+                <input type="hidden" name="paymentTotal" id="paymentTotal" class="netTotal" value="{{ entity.totalAmount }}">
+                <div class="pull-right span4">
+                    <div class="actions">
+                        <div class="btn-group span12">
+                            {{ form_widget(form.process) }}
+                            <button type="button" class="btn blue  confirmSubmit" id="receiveBtn"><i class="icon-save"></i> Payment</button>
+                        </div>
+                    </div>
+                        </div>
+            </div>
+            {{ form_end(form) }}
+            <!-- END FORM-->
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block cssBlock %}
+{% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    '@AccountingBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/voucher.js'
+    '@AccountingBundle/Resources/public/js/common.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    CommonJs();
+    $('input[name=particular]').focus();
+{% endblock %}
+

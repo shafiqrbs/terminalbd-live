@@ -1,0 +1,135 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="portlet box grey">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-cogs"></i>Branding
+
+            </div>
+            <div id="" class="date-tooltip" >
+                <i class="fa fa-calendar"></i>
+                {{ "now"|date("d-F-Y") }}
+            </div>
+        </div>
+        <div>
+
+            <ul class="page-breadcrumb breadcrumb">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" >Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('branding') }}" >Manage Brand</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    Create
+                </li>
+
+                <li class="pull-right custom-pull-right" >
+                    <a class="btn green-stripe purple" href="{{ path('branding_new') }}"><i class="icon-plus"></i> New Create</a>
+                    <a class="btn purple-stripe blue" href="{{ path('branding') }}">Listing<i class="icon-headphones"></i></a>
+
+                </li>
+            </ul>
+        </div>
+        {% include('flash-message.html.twig')  %}
+        <div class="form-group form-group-custom backgroundWhite ">
+            <div class="modal-dialog modal-dialog-form" >
+                <div class="modal-content" >
+
+                    <div class="modal-body ">
+                        <div class="portlet box">
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Brander name:</label>
+                                <div class="col-md-9 form-group-error">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.name) }}
+                                        {{ form_errors(form.name) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Brand type:</label>
+                                <div class="col-md-9 form-group-error">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.type) }}
+                                        {{ form_errors(form.type) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Categories:</label>
+                                <div class="col-md-9 form-group-error">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.categories) }}
+                                        {{ form_errors(form.categories) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Sponsor:</label>
+                                <div class="col-md-9 form-group-error">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.sponsor) }}
+                                        {{ form_errors(form.sponsor) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Custom URL:</label>
+                                <div class="col-md-9 form-group-error">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.customUrl) }}
+                                        {{ form_errors(form.customUrl) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Logo:</label>
+                                <div class="col-md-9 form-group-error">
+                                    <div class="input-icon">
+                                        <div data-provides="fileupload" class="fileupload fileupload-new">
+                                            {% if(entity.webPath) %}
+                                                <img alt="" src="{{ image(entity.webPath).resize(200,150) }}">
+                                            {% else %}
+                                                <img alt="" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
+                                            {% endif %}
+                                            <div style="max-width: 200px; max-height: 150px; line-height: 20px;" class="fileupload-preview fileupload-exists thumbnail"></div>
+                                            <div>
+													<span class="btn btn-file"><span class="fileupload-new">Select image</span>
+													<span class="fileupload-exists">Change</span>
+                                                        {{ form_widget(form.file) }}</span>
+                                                <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Status:</label>
+                                <div class="col-md-9">
+                                    <label class="checkbox line">
+                                        {{ form_widget(form.status) }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <label for="item_itemName"  class="control-label col-md-2 required"></label>
+                                <div class="col-md-9">
+                                    {{ form_widget(form.submit) }}{{ form_widget(form.reset) }}
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Patient Pathological Invoice # {{ entity.invoice }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('hms_invoice_particular') }}">Collection & Report</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Collection</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>c
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Invoice Details</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a href="{{ path('hms_invoice_particular_show',{'id':entity.id}) }}" class="btn" ><i class="icon-backward"></i>&nbsp;Back to</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+
+                                <div class="span8">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+                                        {% if entity.customer is not empty %}<li><strong>Patient #:</strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                                        {% if entity.customer is not empty %}<li><strong>Mobile #:</strong>&nbsp;{{ entity.customer.mobile }}</li>{% endif %}
+                                        {% if entity.customer is not empty and entity.customer.location is not empty   %}<li><strong>Location #:</strong>&nbsp;{{ entity.customer.location.name }}, {{ entity.customer.location.parent.name }}</li>{% endif %}
+                                        <li><strong>Created:</strong>&nbsp;{{ entity.created|date('d-m-Y') }}</li>
+                                    </ul>
+                                </div>
+                                <div class="span4">
+                                    <h4>Referred By:</h4>
+                                    {% if entity.referredDoctor is not empty %}
+                                        <ul class="unstyled">
+                                            <li><strong>Code:</strong>&nbsp;{{ entity.referredDoctor.particularCode }}</li>
+                                            <li><strong>Name:</strong>&nbsp;{{ entity.referredDoctor.name }}</li>
+                                            <li><strong>Mobile:</strong>&nbsp;{{ entity.referredDoctor.mobile }}</li>
+                                            <li><strong>Address:</strong>&nbsp;{{ entity.referredDoctor.address }}</li>
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid box green">
+                                {% if entity.invoiceParticulars is defined and  entity.invoiceParticulars is not empty  %}
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                                        <thead class="flip-content ">
+                                        <tr class="head-green">
+                                            <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                            <th class="numeric">Report No</th>
+                                            <th class="numeric">Code</th>
+                                            <th class="numeric">Particular</th>
+                                            <th class="numeric">Service</th>
+                                            <th class="numeric">Qnt</th>
+                                            <th class="numeric">Progress</th>
+                                            <th class="numeric">Sepcimen/Sample</th>
+                                            <th class="numeric">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for item in entity.invoiceParticulars %}
+                                            <tr id="remove-{{ item.id }}">
+                                                <td><span class="badge badge-warning toggle badge-custom" id="{{ item.id  }}" ><span>[+]</span></span></td>
+                                                <td  class="numeric">{{ entity.invoice  }}-{{ item.particular.particularCode  }}</td>
+                                                <td  class="numeric">{{ item.particular.particularCode }}</td>
+                                                <td class="numeric">{{ item.particular.name }}</td>
+                                                <td class="numeric">{{ item.particular.service.name }}</td>
+                                                <td class="numeric">{{ item.quantity }}</td>
+                                                <th class="numeric">{% if item.particular.service.id == 1 and item.sampleCollectedBy is not empty %} <span class="tooltips" data-trigger ='hover' data-original-title='Collected by {{ item.sampleCollectedBy }}'>{{ item.process }}</span>{% endif %}</th>
+                                                <td class="numeric">{{ item.particular.sepcimen }}</td>
+                                                <td class="numeric">
+                                                    {% if item.particular.service.id == 1 and item.sampleCollectedBy is empty %}
+                                                        <a class="btn mini blue confirm"  data-url="{{ path('hms_invoice_particular_collection_confirm',{'id':item.id}) }}" href="javascript:"><i class="icon-ok"></i>&nbsp;Confirm</a>
+                                                    {% elseif item.particular.service.id == 1 and item.process == 'Collected' %}
+                                                        {{ item.collectionDate|date('d-m-Y h:i:s A') }}
+                                                        <a class="btn mini purple " href="{{ path('hms_invoice_particular_preparation', {'id': item.id}) }}"><i class="icon-retweet"></i>&nbsp;Preparation</a>
+                                                    {% endif %}
+                                                    <a target="_blank" class="btn mini green"  href="{{ path('hms_invoice_particular_collection_barcode',{'id':item.id}) }}" ><i class="icon-barcode"></i> Tag Print</a>
+                                                </td>
+                                            </tr>
+                                            {% if item.particular.service.id == 1 %}
+                                                <tr id="show-{{ item.id }}" class="showing-overview">
+                                                    <td colspan="11">
+                                                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                                                            <tr class="">
+                                                                <th class="span3" >Instruction</th>
+                                                                <td class="span9" >{{ item.particular.instruction }}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}
+
+

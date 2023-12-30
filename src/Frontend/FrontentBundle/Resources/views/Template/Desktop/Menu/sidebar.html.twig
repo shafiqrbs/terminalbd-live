@@ -1,0 +1,94 @@
+<section class="animate-menu animate-menu-left">
+    <ul class="sidebar-menu" id="sidebar-scroll">
+        <li class="sidebar-header">{{ globalOption.name }}  <button id="remove-nav"><i class="fa fa-remove"></i> </button></li>
+        {% for  menu in globalOption.ecommerceMenus  %}
+            <li><a href="{% if menu.menu is not empty %}/{{ menu.menu.slug }}{% else %}javascript:{% endif %}"> <span>{{ menu.name }}</span>
+                    {% if menu.childMenus is not empty or  menu.features is not empty or menu.promotions is not empty or menu.discounts is not empty or menu.tags is not empty or menu.categories is not empty or menu.brands is not empty  %}
+                        <i class="fa fa-angle-left pull-right"></i>
+                    {% endif %}
+
+                </a>
+                {% if menu.childMenus is not empty or  menu.features is not empty or menu.promotions is not empty or menu.discounts is not empty or menu.tags is not empty or menu.categories is not empty or menu.brands is not empty  %}
+                    <ul class="sidebar-submenu">
+                        {% if menu.childMenus is not empty %}
+                            {% for childMenu in  menu.childMenus %}
+                                <li><a href="/{{ childMenu.slug }}">{{ childMenu.menu }}</a></li>
+                            {% endfor %}
+                        {% endif %}
+                        {% if menu.features is not empty %}
+                            <li><a href="javascript:"><span>Feature's</span> <i class="fa fa-angle-left pull-right"></i></a>
+                                <ul class="sidebar-submenu">
+                                    {% for feature in  menu.features %}
+                                        {% if feature.targetTo == 'Category' and feature.category is not empty %}
+                                            {% set path = path(globalOption.subDomain ~ '_webservice_product_category',{'id':feature.category.id}) %}
+                                        {% elseif feature.targetTo == 'Promotion' and feature.promotion is not empty %}
+                                            {% set path = path(globalOption.subDomain ~ '_webservice_product_promotion',{'id':feature.promotion.id}) %}
+                                        {% elseif feature.targetTo == 'Tag' and feature.tag is not empty %}
+                                            {% set path = path(globalOption.subDomain ~ '_webservice_product_tag',{'id':feature.tag.id}) %}
+                                        {% elseif feature.targetTo == 'Discount' and feature.discount is not empty %}
+                                            {% set path = path(globalOption.subDomain ~ '_webservice_product_discount',{'id':feature.discount.id}) %}
+                                        {% elseif feature.targetTo == 'Brand' and feature.brand is not empty %}
+                                            {% set path = path(globalOption.subDomain ~ '_webservice_product_brand',{'id':feature.brand.id}) %}
+                                        {% elseif feature.targetTo == 'Page' and feature.menu is not empty %}
+                                            {% set path = path(globalOption.subDomain ~ '_webservice_module',{'module':feature.menu.slug}) %}
+                                        {% else %}
+                                            {% set path = path(globalOption.subDomain ~ '_webservice_product') %}
+                                        {% endif %}
+                                        <li><a href="{{ path }}">{{ feature.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if menu.promotions is not empty %}
+                            <li><a href="javascript:"><span>Promotion's</span> <i class="fa fa-angle-left pull-right"></i></a>
+                                <ul class="sidebar-submenu">
+                                    {% for promotion in  menu.promotions %}
+                                        <li><a href="{{ path(globalOption.subDomain ~ '_webservice_product',{'promotion':promotion.id}) }}">{{ promotion.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if menu.discounts is not empty %}
+                            <a href="javascript:"><span>Feature's</span> <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="sidebar-submenu">
+                                {% for discount in  menu.discounts %}
+                                    <li><a href="{{ path(globalOption.subDomain ~ '_webservice_product',{'discount':discount.id}) }}">{{ discount.name }}&nbsp;{{ discount.type|capitalize }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% if menu.tags is not empty %}
+                            <li><a href="javascript:"><span>Popular Tags's</span> <i class="fa fa-angle-left pull-right"></i></a></li>
+                            <ul class="sidebar-submenu">
+                                {% for tag in  menu.tags %}
+                                    <li><a href="{{ path(globalOption.subDomain ~ '_webservice_product',{'tag':tag.id}) }}">{{ tag.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% if menu.categories is not empty %}
+                            {% render controller("FrontendBundle:EcommerceWidget:returnSimpleCategoryMenu",{categories: menu.categories}) %}
+                        {% endif %}
+                        {% if menu.brands is not empty %}
+                            {% for brand in menu.brands %}
+                                <li><a href="{{ path(globalOption.subDomain ~ '_webservice_product_brand',{'id' : brand.id}) }}">{{ brand.name }}</a></li>
+                            {% endfor %}
+                        {% endif %}
+
+                    </ul>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</section>
+<style>
+    .sidebar-menu .sidebar-submenu > li > a {
+        padding: 5px 5px 5px 15px!important;
+        font-size: 14px;
+        color: #8aa4af;
+    }
+    #remove-nav {
+        position: absolute;
+        right: 8px;
+        background: transparent;
+        border: none;
+    }
+</style>

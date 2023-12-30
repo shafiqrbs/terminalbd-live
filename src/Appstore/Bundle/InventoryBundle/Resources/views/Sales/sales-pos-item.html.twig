@@ -1,0 +1,37 @@
+{% for salesitem in entity.salesItems %}
+    <tr id="remove-{{ salesitem.id }}">
+        <td class="numeric" >{{ loop.index }}</td>
+        <td  class="numeric">
+            {{ salesitem.item.name }}
+            {% if entity.inventoryConfig.isAttribute == 1 %}
+                {% if salesitem.salesItemSerials is not empty %}
+                    <br/>Serial No:
+                    {% for serial in salesitem.salesItemSerials %}
+                        {{ serial.barcode }}{{ not loop.last ? ',' }}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+            {% if salesitem.assuranceType and salesitem.assuranceToCustomer is not empty %}
+                <p>{{ salesitem.assuranceType }} : {{ salesitem.assuranceToCustomer }} - {{ salesitem.expiredDate|date('d-m-Y') }}</p>
+            {% endif %}
+        </td>
+        <td class="span1" >
+            {% if salesitem.salesItemSerials is not empty %}
+                {{ salesitem.quantity }}
+                <input type="hidden" id="quantity-{{ salesitem.id }}" rel="{{ salesitem.id }}" name="quantity[]"  value="{{ salesitem.quantity }}" class="quantity inputs td-inline-input" placeholder="{{ salesitem.purchaseItem.quantity }}" min="1" max="{{ salesitem.purchaseItem.quantity }}">
+            {% else %}
+                <input type="text" id="quantity-{{ salesitem.id }}" rel="{{ salesitem.id }}" name="quantity[]"  value="{{ salesitem.quantity }}" class="quantity inputs td-inline-input" placeholder="" min="1" max="">
+            {% endif %}
+        </td>
+        <td>
+            <input type="hidden" name="estimatePrice" id="estimatePrice-{{ salesitem.id }}" value="{{ salesitem.estimatePrice }}">
+            <input class="numeric salesPrice inputs td-inline-input"  rel="{{ salesitem.id }}" id="salesPrice-{{ salesitem.id }}" type="text" name="salesPrice" value="{{ salesitem.salesPrice }}" placeholder="{{ salesitem.estimatePrice }}">
+        </td>
+        <td><span id="subTotalShow-{{ salesitem.id }}" ><strong>{{ salesitem.subTotal }}</strong></span></td>
+        <td>
+            <div class="btn-group">
+                <a id="{{ salesitem.id }}" rel="{{ path('inventory_salesitem_delete',{'sales':entity.id,'salesItem':salesitem.id}) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a>
+            </div>
+        </td>
+    </tr>
+{% endfor %}

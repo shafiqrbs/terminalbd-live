@@ -1,0 +1,200 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN inventory_customer HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="inventory_customer-title">
+                    Create new customer
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('domain_customer') }}">Customer List</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Edit Customer</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END inventory_customer HEADER-->
+        <!-- BEGIN inventory_customer CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Customer Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <li><a class="btn black" href="{{ path('domain_customer') }}"><i class="icon-th-list"></i>&nbsp;Customer</a></li>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Name<span class="required">*</span></label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        <i class="icon-user"></i>
+                                                        {{ form_widget(form.name) }}
+                                                        {{ form_errors(form.name) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span6">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Credit Limit</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.creditLimit) }}
+                                                    {{ form_errors(form.creditLimit) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="span6">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">OLD Reference No</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.referenceId) }}
+                                                    {{ form_errors(form.referenceId) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="email">Mobile<span class="required">*</span></label>
+                                                    <div class="controls">
+                                                        <div class="input-icon left">
+                                                            <i class="icon-mobile-phone"></i>
+                                                            {{ form_widget(form.mobile) }}
+                                                            {{ form_errors(form.mobile) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="email">Alternative Mobile</label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        <i class="icon-mobile-phone"></i>
+                                                        {{ form_widget(form.alternativeMobile) }}
+                                                        {{ form_errors(form.alternativeMobile) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="email">Email</label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        <i class="icon-envelope"></i>
+                                                        {{ form_widget(form.email) }}
+                                                        {{ form_errors(form.email) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="email">Status</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.status) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="span6">
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="email">Location</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.location) }}
+                                                    {{ form_errors(form.location) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="email">Marketing Executive</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.marketing) }}
+                                                    {{ form_errors(form.marketing) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Address</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.address) }}
+                                                    {{ form_errors(form.address) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"><br/></div>
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-center">
+                                    <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                    <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                                    {% if(entity.id > 0 ) %}
+                                        <a href="{{ path('inventory_customer_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,179 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Attendance
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Attendance</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Attendance Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <div class="btn-group">
+                                    <a class="red btn" href="{{ path('daily_attendance_month') }}"><i class="icon-calendar"></i>&nbsp; Attendance {{ "now"|date("F,Y") }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        {% include('flash-message.html.twig')  %}
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                <th class="numeric">Name of Month</th>
+                                <th class="numeric" >Year</th>
+                                <th class="numeric" ></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for entity in entities  %}
+                                <tr><td>{{ loop.index }}.</td><td>{{ entity.month }}</td><td>{{ entity.year }}</td><td><a class="blue btn mini" href="{{ path('daily_attendance_show',{'month':entity.month,'year':entity.year}) }}"><i class="fa fa-eye"></i> View</a></td></tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+<style>
+
+    table.DTFC_Cloned thead,table.DTFC_Cloned tfoot{background-color:white}div.DTFC_Blocker{background-color:white}div.DTFC_LeftWrapper table.dataTable,div.DTFC_RightWrapper table.dataTable{margin-bottom:0;z-index:2}div.DTFC_LeftWrapper table.dataTable.no-footer,div.DTFC_RightWrapper table.dataTable.no-footer{border-bottom:none}
+
+    th, td { white-space: nowrap; }
+    div.dataTables_wrapper {
+        margin: 0 auto;
+    }
+    .red{
+        background: red;
+    }
+
+    table {
+        border-collapse: separate;
+        border-spacing: 0;
+        border-top: 1px solid grey;
+    }
+
+    td, th {
+        margin: 0;
+        border: 1px solid grey;
+        white-space: nowrap;
+        border-top-width: 0px;
+    }
+
+    .table-div {
+        width: 500px;
+        overflow-x: scroll;
+        margin-left: 5em;
+        overflow-y: visible;
+        padding: 0;
+    }
+
+    .headcol {
+        position: absolute;
+        width: 5em;
+        left: 0;
+        top: auto;
+        border-top-width: 1px;
+        /*only relevant for first row*/
+        margin-top: -1px;
+        /*compensate for top border*/
+    }
+
+    .headcol:before {
+        content: 'Row ';
+    }
+
+    .long {
+        background: yellow;
+        letter-spacing: 1em;
+    }
+
+    .fix-column {
+        float: left;
+    }
+    .thead {
+        height: 40px;
+        white-space: nowrap;
+    }
+    .thead > span {
+        display: inline-block;
+        width: 120px;
+        line-height: 40px;
+        box-shadow: inset 0 0 1px 0 rgba(0,0,0,.5);
+        background-color: rgba(255,0,0,.3);
+        text-align: center;
+    }
+    .trow {
+        white-space: nowrap;
+    }
+    .trow > span {
+        display: inline-block;
+        width: 120px;
+        box-shadow: inset 0 0 1px 0 rgba(0,0,0,.5);
+        line-height: 80px;
+        height: 80px;
+    }
+    .tbody {
+        height: 300px;
+        overflow: auto;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .fix-column > .tbody {
+        overflow: hidden;
+        /*padding-bottom: 50px;*/
+    }
+    /*.fix-column > .tbody > .trow:last-child {margin-bottom: 50px;}*/
+
+    .fix-column > .tbody > .trow {
+        margin-top: -50px;
+        margin-bottom: 50px;
+    }
+    .fix-column > .tbody > .trow:first-child {
+        margin-top: 0px;
+    }
+
+    .rest-columns {
+        width: 350px;
+    }
+    .rest-columns > .thead {
+        /*padding-right: 50px;*/
+        overflow: hidden;
+    }
+    /*.rest-columns > .thead > :last-child {margin-right: 50px;}*/
+    .rest-columns > .thead > span {
+        margin-right: 50px;
+        margin-left: -50px;
+    }
+    .rest-columns > .thead > :first-child {margin-left: 0px;}
+</style>
+{% endblock %}
+
+
+
+
+

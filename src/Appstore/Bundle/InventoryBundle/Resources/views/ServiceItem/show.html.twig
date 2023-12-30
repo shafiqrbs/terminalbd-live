@@ -1,0 +1,233 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Purchase Vendor Item
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('purchase') }}">Purchase Vendor Item</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Add/Edit Purchase Vendor Item</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid" style="position: relative">
+
+            <div class="span12">
+                <div id="dataProces"></div>
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Purchase Vendor Item Information</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('purchase_new') }}"><i class="icon-plus-sign"></i>&nbsp;Create</a></li>
+                                    <li><a href="{{ path('inventory_purchaseitem_new',{'purchase':purchase.id}) }}"><i class="icon-plus-sign"></i>&nbsp;Add to inventory</a></li>
+                                    <li><a href="{{ path('purchase') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                    <li><a href="{{ path('item') }}"><i class="icon-th-list"></i>&nbsp;Item</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="{{ path('item_new') }}"><i class="icon-plus-sign"></i>&nbsp;Item create</a></li>
+                                    <li><a href="{{ path('inventory_product') }}"><i class="icon-plus-sign"></i>&nbsp;Master item</a></li>
+                                    <li><a href="{{ path('inventory_product_new') }}"><i class="icon-plus-sign  "></i>&nbsp;Master item create</a></li>
+                                    <li class="divider"></li>
+                                    {% if(entity.id > 0 ) %}
+                                        <li><a href="{{ path('purchase_edit',{'id':entity.id}) }}"><i class="icon-edit"></i>&nbsp;Edit</a></li>
+                                        <li><a href="{{ path('purchase_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;Show</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body" >
+
+                        <div class="portlet-body form" >
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <h4>Vendor:</h4>
+                                    <ul class="unstyled">
+                                        <li>{{ purchase.vendor.companyName }}</li>
+                                        <li>{{ purchase.vendor.name }}</li>
+                                        <li>{{ purchase.vendor.mobile }}</li>
+                                        <li>{{ purchase.vendor.address }}</li>
+                                        {% if purchase.vendor.country %}
+                                            <li>{{ purchase.vendor.country.name }}</li>
+                                        {% endif %}
+
+                                    </ul>
+                                </div>
+                                <div class="span4">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Memo/Invoice #:</strong>{{ purchase.memo }} {% if  purchase.invoice  %}/{{ purchase.invoice }}{% endif %}</li>
+                                        <li><strong>Item/Qnt:</strong> {{ purchase.totalItem }}/{{ purchase.totalQnt }}</li>
+                                        {#<li><strong>Created:</strong> {{ purchase.created }}</li>#}
+                                        <li><strong>Received:</strong> {{ purchase.receiveDate|date('d-m-Y') }}</li>
+                                        <li><strong>Created:</strong> {{ purchase.created|date('d-m-Y') }}</li>
+                                        <li><strong>Created By:</strong> {{ purchase.createdBy }}</li>
+                                    </ul>
+                                </div>
+                                <div class="span4 invoice-payment">
+                                    <h4>Payment Details:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Total BDT:</strong> {{ purchase.totalAmount|number_format() }}</li>
+                                        <li><strong>Payment BDT:</strong> {{ purchase.paymentAmount|number_format() }}</li>
+                                        <li><strong>Due BDT:</strong> {{ purchase.dueAmount|number_format() }}</li>
+                                        <li><strong>Commission BDT:</strong> {{ purchase.commissionAmount|number_format() }}</li>
+
+
+                                    </ul>
+                                </div>
+                                <div class="span3 image-preview"></div>
+                            </div>
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="row-fluid clone  box blue">
+                                <div class="row-fluid">
+                                    <div class="span4">
+                                        {{ form_widget(form.name) }}
+                                        {{ form_errors(form.name) }}
+                                    </div>
+                                    <div class="span4">
+                                        {{ form_widget(form.masterItem) }}
+                                        {{ form_errors(form.masterItem) }}
+                                    </div>
+                                    <div class="span4">
+                                        <div class="span4">
+                                            {{ form_widget(form.quantity) }}
+                                            {{ form_errors(form.quantity) }}
+                                        </div>
+                                        <div class="span4">
+                                            {{ form_widget(form.purchasePrice) }}
+                                            {{ form_errors(form.purchasePrice) }}
+                                        </div>
+                                        <div class="span4">
+                                            {{ form_widget(form.subTotalPurchasePrice) }}
+                                            {{ form_errors(form.subTotalPurchasePrice) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span8">&nbsp;</div>
+                                    <div class="span4">
+                                        <div class="span4">&nbsp;</div>
+                                        <div class="span4">
+                                            {{ form_widget(form.salesPrice) }}
+                                            {{ form_errors(form.salesPrice) }}
+                                        </div>
+                                        <div class="span4">
+                                            {{ form_widget(form.subTotalSalesPrice) }}
+                                            {{ form_errors(form.subTotalSalesPrice) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-actions portlet box grey">
+                                <div class="span8" id="message"></div>
+                                {% if purchase.process != 'wfs' %}
+                                    <div class="pull-right">
+                                        <input type="hidden" id="totalQnt" value="">
+                                        <button type="submit" class="btn green action-button"><i class="icon-ok"></i>&nbsp;Submit</button>
+                                        <button type="reset" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                                    </div>
+                                {% else %}
+                                    <div class="pull-right"><span style="line-height: 28px; color: #ffffff; margin-right:10px">Waiting for inventory add item</span></div>
+                                {% endif %}
+                            </div>
+                            {{ form_end(form) }}
+
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid" style="background: #4d90fe; min-height: 27px!important; padding-top: 9px">
+                            <div class="span11">
+                                <div class="label label-success">
+                                    <i class="icon-reorder"></i>  Add vendor item
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid box green" >
+
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="numeric" >Vendor item name</th>
+                                    <th class="numeric" >Master item</th>
+                                    <th class="numeric" >Qnt</th>
+                                    <th class="numeric" >Purchase price</th>
+                                    <th class="numeric" >Sub-total purchase</th>
+                                    <th class="numeric" >Sales price</th>
+                                    <th class="numeric" >Sub-total sales</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody id="purchaseVendorItem" >
+                                {% for vendorItem in purchase.purchaseVendorItems %}
+                                    <tr id="remove-vendor-item-{{ vendorItem.id }}">
+                                        <td class="numeric" >{{ vendorItem.name }}</td>
+                                        <td class="numeric" >{% if vendorItem.masterItem is not empty %}{{ vendorItem.masterItem.name }}{% endif %}</td>
+                                        <td class="numeric" >{{ vendorItem.quantity }}</td>
+                                        <td class="numeric" >{{ vendorItem.purchasePrice }}</td>
+                                        <td class="numeric" >{{ (vendorItem.purchasePrice * vendorItem.quantity) }}</td>
+                                        <td class="numeric" >{{ vendorItem.salesPrice }}</td>
+                                        <td class="numeric" >{{ (vendorItem.salesPrice * vendorItem.quantity) }}</td>
+                                        <td class="numeric pull-center" ><a title="Are you sure went to delete ?" rel="{{ path('inventory_purchasevendoritem_delete', { 'id': vendorItem.id }) }}" id="{{  vendorItem.id }}" href="javascript:" class="btn red mini removeVendorItem" ><i class="icon-trash"></i></a>
+
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        var purchase = {{ purchase.id }}
+    </script>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/puschaseVendorItem.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    var url = "{{ path('inventory_purchaseitem_new',{'purchase':purchase.id}) }}";
+    InventoryPurchaseVendorItemPage(url);
+{% endblock %}

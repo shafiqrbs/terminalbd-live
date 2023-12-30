@@ -1,0 +1,41 @@
+{% if homeEntity.homeBlocks is defined and homeEntity.homeBlocks is not empty  %}
+<section id="home-block">
+    <div class="container">
+        <div class="row">
+            {% set count = homeEntity.homeBlocks|length %}
+            {% if count == 4 or count > 4   %}
+            {% set limit = 4 %}
+            {% set column = 3 %}
+            {% elseif count == 3  %}
+            {% set limit = 3 %}
+            {% set column = 4 %}
+            {% elseif count == 2  %}
+            {% set limit = 2 %}
+            {% set column = 6 %}
+            {% elseif count == 1  %}
+            {% set limit = 1 %}
+            {% set column = 12 %}
+            {% endif %}
+            {% for key,block in homeEntity.homeBlocks|slice(0,limit) %}
+            <div class="col-md-{{ column }}">
+                <div class="home-block {% if key == 0 %}green{% elseif key == 1 %}purple{% elseif  key == 2 %}blue{% elseif  key == 3 %}orange{% endif %}">
+                    <div class="service-icon">
+                        <i class="fa {% if block.icon is defined and block.icon is not empty  %}{{ block.icon.className }} {% endif %}"></i>
+                    </div>
+                    <div class="service-content">
+                        <h3>{{ block.name }}</h3>
+                        <p>
+                            {{ block.content|raw|truncate(150) }}
+                        </p>
+                        <div class="text-right">
+                            <a href="" class="btn btn-sm orange">Details<i class="fa fa-link"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+{% endif %}

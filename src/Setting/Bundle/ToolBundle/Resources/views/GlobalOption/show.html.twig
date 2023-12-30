@@ -1,0 +1,100 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="portlet box grey">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-cogs"></i>Option
+
+            </div>
+            <div id="" class="date-tooltip" >
+                <i class="fa fa-calendar"></i>
+                {{ "now"|date("d-F-Y") }}
+            </div>
+        </div>
+        <div class="">
+
+            <ul class="page-breadcrumb breadcrumb">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" >Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('globaloption') }}" >Option</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    Show
+                </li>
+
+                <li class="pull-right custom-pull-right">
+                    <a class="btn green-stripe blue" href="{{ path('globaloption_new') }}"><i class="icon-plus"></i> New Create</a>
+                    <a class="btn red-stripe purple" href="{{ path('globaloption_edit', { 'id': entity.id }) }}"><i class="ui-icon-pencil"></i> Edit</a>
+                    <a class="btn purple-stripe blue" href="{{ path('globaloption') }}">Listing<i class="icon-headphones"></i></a>
+
+                </li>
+            </ul>
+        </div>
+        {% include('flash-message.html.twig')  %}
+        <div class="form-group form-group-custom backgroundWhite ">
+            <div class="modal-dialog modal-dialog-form" >
+                <div class="modal-content" >
+
+                    <div class="modal-body">
+                        <div class="form-group form-group-custom backgroundWhite ">
+
+                            <div class="tabbable tabbable-custom" >
+
+                                <table class="table table-striped table-bordered table-hover table-full-width dataTable" >
+
+                                    <tbody>
+
+                                    <tr>
+                                        <td><strong>Syndicate name</strong></td> <td>{{ entity.syndicate.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Domain</strong></td> <td>{{ entity.domain }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Sub-domain</strong></td> <td>{{ entity.subDomain }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Customize design</strong></td> <td>{% if(entity.customizeDesign == 1) %}{{ 'Yes' }}{% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Is mobile</strong></td> <td>{% if(entity.isMobile == 1) %}{{ 'Yes' }}{% endif %}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Promotion</strong></td> <td>{% if(entity.promotion == 1) %}{{ 'Yes' }}{% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Facebook ads</strong></td> <td>{% if(entity.facebookAds == 1) %}{{ 'Yes' }}{% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>facebookApps</strong></td> <td>{% if(entity.facebookApps == 1) %}{{ 'Yes' }}{% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>facebookPageUrl</strong></td> <td>{{ entity.facebookPageUrl }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Cart</strong></td> <td>{% if(entity.cart == 1) %}{{ 'Yes' }}{% endif %}</td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+

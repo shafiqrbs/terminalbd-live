@@ -1,0 +1,107 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    h1 , h2 , h3 , h4 , h5 , h6,p{
+        display: block;
+        padding: 0;
+        margin: 0;
+    }
+    h3 {
+        font-size: 24px;
+        line-height: 45px;
+        height: 45px;
+    }
+
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+<table class="table">
+    <thead>
+    <tr><td class="pull-center" colspan="20"><h2>{{ option.organizationName }}</h2></td></tr>
+    <tr><td class="pull-center" colspan="20">{{ option.restaurantConfig.address|raw }}</td></tr>
+    {% set startDate = searchForm.startDate is defined ? searchForm.startDate :"now"|date("d-m-Y") %}
+    {% set endDate = searchForm.endDate is defined ? searchForm.endDate :"now"|date("d-m-Y") %}
+    <tr>
+        <th class="pull-center" colspan="2"><h5><strong>CATEGORY BASED SALES OVERVIEW STATEMENT SHEET</strong></h5></th>
+    </tr>
+    <tr>
+        <th class="pull-left"  style="width: 50%">Print Date:{{ "now"|date("d-m-Y") }}</th>
+        <th class="pull-right" >Report For: {{ startDate|date('d-m-Y')  }} To {{ endDate|date('d-m-Y')  }}</th>
+    </tr>
+    <tr>
+        <th class="pull-center" colspan="2"><h3><strong>Category Based Sales</strong></h3></th>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th class="numeric span10"><strong>Category Name</strong></th>
+                    <th class="numeric"><strong>Quantity</strong></th>
+                    <th class="numeric"><strong>Amount</strong></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% set catTotalQnt = 0 %}
+                {% set catTotalAmount = 0 %}
+                {% if categoryOverview is defined and categoryOverview is not empty %}
+                    {% for category in categoryOverview %}
+                        {% set catTotalQnt = catTotalQnt + category.quantity  %}
+                        {% set catTotalAmount = catTotalAmount + category.amount  %}
+                        <tr>
+                            <td class="numeric span10">{{ loop.index }}. {{ category.categoryName }}</td>
+                            <td class="numeric">{{ category.quantity }}</td>
+                            <th class="numeric">{{ category.amount|number_format(2) }}</th>
+                        </tr>
+                    {% endfor %}
+                    <tr><th>Total Amount</th><th>{{ catTotalQnt }}</th><th>{{ catTotalAmount|number_format(2) }}</th></tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </td>
+    </tr>
+</table>

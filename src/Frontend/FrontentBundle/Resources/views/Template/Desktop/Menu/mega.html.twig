@@ -1,0 +1,115 @@
+<nav class="navbar navbar-mega-menu">
+               <div class="navbar-header">
+                   <button class="navbar-toggle" type="button" data-toggle="collapse"
+                           data-target=".js-navbar-collapse">
+                       <span class="sr-only">Toggle navigation</span>
+                       <span class="icon-bar"></span>
+                       <span class="icon-bar"></span>
+                       <span class="icon-bar"></span>
+                   </button>
+               </div>
+               <div class="collapse navbar-collapse js-navbar-collapse">
+                   <ul class="nav navbar-nav">
+                       {% for  menu in globalOption.ecommerceMenus  %}
+                           <li class="dropdown mega-dropdown">
+                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ menu.name }}<span
+                                           class="caret"></span></a>
+                               <ul class="dropdown-menu mega-dropdown-menu">
+                                   {% if menu.features is not empty or menu.promotions is not empty or menu.discounts is not empty or menu.tags is not empty %}
+                                       <li class="col-sm-3" data-match-height="menu-content" style="background-color: #f9f9f9; border-right:1px solid #d6d9dd">
+                                           {% if menu.features is not empty %}
+                                               <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                                                   <!-- Wrapper for slides -->
+                                                   <div class="carousel-inner menu-carousel-inner" role="listbox">
+                                                       {% for feature in  menu.features %}
+                                                           {% if(feature.webPath) %}
+                                                               {% if feature.targetTo == 'Promotion' %}
+                                                                   {% set path = path('webservice_product_promotion',{'id':feature.id}) %}
+                                                               {% elseif feature.targetTo == 'Tag' %}
+                                                                   {% set path = path('webservice_product_tag',{'id':feature.tag.id}) %}
+                                                               {% elseif feature.targetTo == 'Discount' %}
+                                                                   {% set path = path('webservice_product_tag',{'id':feature.discount.id}) %}
+                                                               {% elseif feature.targetTo == 'Brand' %}
+                                                                   {% set path = path('webservice_product') %}
+                                                               {% else %}
+                                                                   {% set path = path('webservice_product') %}
+                                                               {% endif %}
+                                                               <div class="item menu-slider {% if loop.index == 1 %} active {% endif %}">
+                                                                   <a href="{{ path }}"><img  src="{{ image(feature.webPath).forceResize(220,160) }}"  style="height: 160px!important;" class="img-responsive" alt="{{ feature.name }}"></a>
+                                                                   <h4><small>{{ feature.name|capitalize }}</small></h4>
+                                                                   <span class="menu-slider-button text-center"><a href="{{ path }}" class="btn btn-info" type="button">See Me&nbsp;<span class="glyphicon glyphicon-play"></span></a></span>
+                                                               </div><!-- End Item -->
+                                                           {% endif %}
+                                                       {% endfor %}
+                                                   </div>
+                                                   <!-- Controls -->
+                                                   <a class="header-carousel-left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                                                       <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                                   </a>
+                                                   <a class="header-carousel-right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                                                       <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                                   </a>
+                                               </div>
+                                           {% endif %}
+                                           {% if menu.promotions is not empty %}
+                                               <ul class="col-sm-12">
+                                                   <li class="dropdown-header">Promotion's</li>
+                                                   {% for promotion in  menu.promotions %}
+                                                       <li><a href="{{ path('webservice_product',{'promotion':promotion.id}) }}">{{ promotion.name }}</a></li>
+                                                   {% endfor %}
+                                               </ul>
+                                           {% endif %}
+                                           {% if menu.discounts is not empty %}
+                                               <ul class="col-sm-12">
+                                                   <li class="dropdown-header">Discount Offer's</li>
+                                                   {% for discount in  menu.discounts %}
+                                                       <li><a href="{{ path('webservice_product',{'discount':discount.id}) }}">{{ discount.name }}&nbsp;{{ discount.type|capitalize }}</a></li>
+                                                   {% endfor %}
+                                               </ul>
+                                           {% endif %}
+                                           {% if menu.tags is not empty %}
+                                               <ul class="col-sm-12">
+                                                   <li class="dropdown-header">Popular Tag's</li>
+                                                   {% for tag in  menu.tags %}
+                                                       <li><a href="{{ path('webservice_product',{'tag':tag.id}) }}">{{ tag.name }}</a></li>
+                                                   {% endfor %}
+                                               </ul>
+                                           {% endif %}
+                                       </li>
+                                   {% endif %}
+                                   {% if menu.categories is not empty %}
+
+                                       {% if menu.features is empty and menu.promotions is empty and menu.discounts is empty and menu.tags is  empty and  menu.brands is empty %}
+                                           {% set column   = "col-sm-3" %}
+                                           {% set class    = "col-sm-12" %}
+                                       {% elseif (menu.features is not empty and  menu.brands is empty)  or (menu.promotions is not empty and  menu.brands is empty ) or (menu.discounts is not empty and  menu.brands is empty ) or (menu.tags is not  empty and  menu.brands is empty )  %}
+                                           {% set column   = "col-sm-4" %}
+                                           {% set class    = "col-sm-9" %}
+                                       {% elseif (menu.features is not empty  and  menu.brands is not empty ) or (menu.promotions is not empty  and  menu.brands is not empty ) or (menu.discounts is not empty  and  menu.brands is not empty ) or ( menu.tags is not empty  and  menu.brands is not empty) %}
+                                           {% set column   = "col-sm-6" %}
+                                           {% set class    = "col-sm-6" %}
+                                       {% else %}
+                                           {% set class    = "col-sm-6" %}
+                                       {% endif %}
+
+                                       <li class="{{ class }}" data-match-height="menu-content" style="border-right:1px solid #d6d9dd">
+                                           {% render controller("FrontendBundle:EcommerceWidget:returnMegaCategoryMenu",{globalOption:globalOption, categories: menu.categories,column:column}) %}
+                                       </li>
+                                   {% endif %}
+                                   {% if menu.brands is not empty %}
+                                       <li data-match-height="menu-content" class="{% if (menu.features is empty or menu.promotions is empty or menu.discounts is empty or menu.tags is  empty ) and  menu.categories is empty %} col-sm-12 {% elseif menu.categories is empty %} col-sm-9 {% else %} col-sm-3 {% endif %}">
+                                           <ul class="col-sm-12">
+                                               <li class="dropdown-header">Brand's</li>
+                                               {% for brand in menu.brands %}
+                                                   <li class="{% if menu.categories is empty %} col-sm-3 {% endif %}" ><a href="{{ path('webservice_product_brand',{'id' : brand.id}) }}">{{ brand.name }}</a></li>
+                                               {% endfor %}
+                                           </ul>
+                                       </li>
+                                   {% endif %}
+                               </ul>
+                           </li>
+                       {% endfor %}
+                   </ul>
+
+               </div><!-- /.nav-collapse -->
+           </nav>

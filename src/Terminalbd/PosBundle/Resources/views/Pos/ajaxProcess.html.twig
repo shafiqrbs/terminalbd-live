@@ -1,0 +1,21 @@
+<div class="span8">
+    <div class="switch-field">
+        {% set process = ['Order','Kitchen','Hold','Reserved','Free'] %}
+        {% for pro in process %}
+            <input type="radio" data-id="{{ entity.id }}" id="{{ pro }}" {% if pro == entity.process  %} checked="checked" {% endif %} data-action="{{ path('restaurant_tableinvoice_process',{'id':entity.id,'process':pro}) }}"   class="invoice-process"  name="process" value="{{ pro }}"/>
+            <label for="{{ pro }}">{{ pro }}</label>
+        {% endfor %}
+    </div>
+</div>
+<div class="span4">
+    <div class="row-fluid">
+        <div class="pull-center">
+            {% if config.posPrint == 1 and config.payFor == "pre-pay" %}
+                <button type="button" class="btn red big payBtn receiveBtn" {% if entity.subTotal is empty %} disabled="disabled" {% endif %} id="posButton" name="posButton" value="posBtn"><i class="icon-print"></i> BILL PAY</button>
+            {% elseif config.posPrint == 1 and config.payFor == "post-pay" %}
+                <button type="button" class="btn red big receiveBtn" {% if entity.subTotal is empty %} disabled="disabled" {% endif %} id="posButton" name="posButton" value="posBtn"><i class="icon-print"></i> BILL PAY</button>
+            {% endif %}
+            <button type="button" class="btn blue big  receiveBtn" {% if entity.subTotal is empty %} disabled="disabled" {% endif %} id="saveButton"><i class="icon-save"></i> SAVE</button>
+        </div>
+    </div>
+</div>

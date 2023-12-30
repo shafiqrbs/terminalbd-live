@@ -1,0 +1,161 @@
+restaurant_invoice:
+    path:     /
+    defaults: { _controller: "RestaurantBundle:Invoice:index" }
+
+restaurant_invoice_show:
+    path:     /{id}/show
+    defaults: { _controller: "RestaurantBundle:Invoice:show" }
+
+restaurant_invoice_new:
+    path:     /new
+    defaults: { _controller: "RestaurantBundle:Invoice:new" }
+
+restaurant_invoice_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "RestaurantBundle:Invoice:edit" }
+
+restaurant_invoice_particular_search:
+    path:     /{id}/particular-search
+    defaults: { _controller: "RestaurantBundle:Invoice:particularSearch" }
+
+
+restaurant_invoice_particular_add:
+    path:     /{invoice}/particular-add
+    defaults: { _controller: "RestaurantBundle:Invoice:addParticular" }
+    methods:  POST
+    options:
+            expose: true
+
+restaurant_invoice_product_add:
+    path:     /{invoice}/{product}/product-add
+    defaults: { _controller: "RestaurantBundle:Invoice:addProduct" }
+
+
+restaurant_invoice_product_update:
+    path:     /{invoice}/{product}/product-update
+    defaults: { _controller: "RestaurantBundle:Invoice:updateProduct" }
+
+
+restaurant_invoice_particular_delete:
+    path:     /{invoice}/{id}/particular-delete
+    defaults: { _controller: "RestaurantBundle:Invoice:invoiceParticularDelete" }
+
+restaurant_invoice_particular_create:
+    path:     /{id}/particular-create
+    defaults: { _controller: "RestaurantBundle:Invoice:update" }
+    methods:  [POST]
+
+restaurant_invoice_update:
+    path:     /{id}/update
+    defaults: { _controller: "RestaurantBundle:Invoice:update" }
+    methods:  [POST, PUT]
+
+restaurant_invoice_discount_update:
+    path:     /dicount-update
+    defaults: { _controller: "RestaurantBundle:Invoice:invoiceDiscountUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+restaurant_invoice_discount_coupon:
+    path:     /dicount-coupon
+    defaults: { _controller: "RestaurantBundle:Invoice:invoiceDiscountCoupon" }
+    methods:  POST
+    options:
+            expose: true
+
+restaurant_invoice_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "RestaurantBundle:Invoice:delete" }
+
+restaurant_sales_invoice_delete:
+    path:     /{id}/invoice-delete
+    defaults: { _controller: "RestaurantBundle:Invoice:delete" }
+
+
+restaurant_invoice_reverse:
+    path:     /{invoice}/sales-reverse
+    defaults: { _controller: "RestaurantBundle:Invoice:reverse" }
+
+restaurant_invoice_approve:
+    path:     /{id}/sales-approve
+    defaults: { _controller: "RestaurantBundle:Invoice:approvedOrder" }
+
+restaurant_invoice_reverse_show:
+    path:     /{invoice}/sales-reverse-show
+    defaults: { _controller: "RestaurantBundle:Invoice:reverseShow" }
+
+
+
+restaurant_invoice_empty_delete:
+    path:     /delete/empty-invoice
+    defaults: { _controller: "RestaurantBundle:Invoice:deleteEmptyInvoice" }
+
+restaurant_invoice_customer_details:
+    path:     /invoice-patient-details
+    defaults: { _controller: "DomainUserBundle:CustomerHms:details" }
+    methods:  POST
+    options:
+           expose: true
+
+restaurant_invoice_pos:
+    path:     /{invoice}/invoice-pos-print
+    defaults: { _controller: "RestaurantBundle:Invoice:PosPrint" }
+    methods:  [PUT,POST]
+    options:
+            expose: true
+
+restaurant_invoice_delivery_print:
+    path:     /{id}/invoice-delivery-print
+    defaults: { _controller: "RestaurantBundle:Invoice:PosDeliveryPrint" }
+    methods:  [GET]
+    options:
+            expose: true
+
+
+restaurant_invoice_save:
+    path:     /{invoice}/invoice-save
+    defaults: { _controller: "RestaurantBundle:Invoice:save" }
+
+
+restaurant_today_sales:
+    path:     /today-sales
+    defaults: { _controller: "RestaurantBundle:Invoice:todaySales" }
+    options:
+           expose: true
+
+
+restaurant_load_product:
+    path:     /{invoice}/loading-sales-product
+    defaults: { _controller: "RestaurantBundle:Invoice:products" }
+    options:
+            expose: true
+
+
+restaurant_invoice_kitchen:
+    path:     /{invoice}/invoice-kitchen-print
+    defaults: { _controller: "RestaurantBundle:Invoice:KitchenPrint" }
+    options:
+            expose: true
+
+restaurant_invoice_payment:
+    path:     /{id}/invoice-payment-print
+    defaults: { _controller: "RestaurantBundle:Invoice:PaymentPrint" }
+    options:
+            expose: true
+
+restaurant_invoice_token_check:
+    path:      /invoice-token-check
+    defaults: { _controller: "RestaurantBundle:Invoice:checkTokenBooking" }
+    methods:  [POST]
+    options:
+            expose: true
+
+restaurant_invoice_android:
+    path:     /android
+    defaults: { _controller: "RestaurantBundle:Invoice:androidSales" }
+
+
+restaurant_device_sales_import:
+    path:      /device-sales-delete-import/{android}
+    defaults: { _controller: "RestaurantBundle:Invoice:insertGroupApiSalesImport" }

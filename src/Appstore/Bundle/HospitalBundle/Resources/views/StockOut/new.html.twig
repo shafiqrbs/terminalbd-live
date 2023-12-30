@@ -1,0 +1,230 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+    <!-- BEGIN category HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="category-title">
+                Stockout no #  <strong>{{ entity.invoice }}</strong>
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li>
+                    <a href="{{ path('hms_stockout') }}">Medicine</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li><a href="#">Manage Medicine</a></li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END category HEADER-->
+    <!-- BEGIN category CONTENT-->
+    <div class="row-fluid">
+    <div class="span12">
+
+    <div class="portlet box green tabbable">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Medicine Information</div>
+            <div class="actions">
+                <div class="btn-group">
+                    <a class="btn" href="{{ path('hms_stockout') }}"><i class="icon-th-list"></i> Medicine</a>
+                </div>
+            </div>
+        </div>
+    <div class="portlet-body">
+        <div class="portlet-body form">
+            {% include('flash-message.html.twig')  %}
+            {{ form_start(itemForm) }}
+            {{ form_row(form._token) }}
+            <div class="row-fluid particular-info" style="padding-left: 15px; margin-left: -10px" >
+                <div class="span8">
+                    {{ form_widget(itemForm.particular) }}
+                    {{ form_errors(itemForm.particular) }}
+                </div>
+                <div class="span4">
+                    <div class="input-append">
+                        <div class="input-group">
+                            <button type="button" class="btn red btn-number" data-type="minus" data-field="quantity">
+                                <span class="fa fa-minus"></span>
+                            </button>
+                            <input type="number" class="m-wrap span3 form-control input-number" id="quantity" name="quantity" value="1" min="1" max="10000">
+                            <button type="button" class="btn green btn-number"  data-type="plus" data-field="quantity">
+                                <span class="fa fa-plus"></span>
+                            </button>
+                            <input type="hidden" id="particularId" name="particularId" value="">
+                            <input type="text" class="m-wrap span4" id="price"  required="required" name="price" placeholder="Sales price" value="" maxlength="8">
+                            <button type="button" class="btn blue" id="addParticular" data-url="{{ path('hms_stockout_particular_add',{'invoice':entity.id}) }}" >Add</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="clearfix">&nbsp;</div>
+            {{ form_end(itemForm) }}
+            <div class="form-actions portlet box purple">
+                <div class="pull-left span3">
+                    <a class="btn purple span12 pull-left" style="text-align: left" ><i class="icon-plus"></i>&nbsp;List of Issue Item</a>
+                </div>
+                <div class="pull-left span4 msg-hidden" style="display: none">
+                    <a class="btn yellow span12 pull-left" ><span id="msg"></span></a>
+                </div>
+                <div class="pull-right span3">
+                    <button type="button" class="btn green span12 grandTotal" style="text-align: left">{{ entity.netTotal }}</button>
+                </div>
+                <div class="pull-right span2">
+                    <a class="btn blue span12 pull-right" style="text-align: right" ><i class="icon-money"></i>&nbsp;<strong>Grand Total</strong>&nbsp;=&nbsp;</a>
+                </div>
+
+            </div>
+            <div class="clearfix">&nbsp;</div>
+
+            <!-- BEGIN FORM-->
+            {{ form_start(form) }}
+            {{ form_row(form._token) }}
+            <div class="row-fluid">
+                <div class="span8" id="particular-table">
+                    <table class="table table-bordered table-striped table-condensed table-fixed">
+                        <thead>
+                        <tr>
+                            <th class="span1">&nbsp;&nbsp;<i class="icon-list"></i></th>
+                            <th class="span1">Code</th>
+                            <th class="span4">Name</th>
+                            <th class="span1">Price</th>
+                            <th class="span1">Qnt</th>
+                            <th class="span1">Sub Total</th>
+                            <th class="span1"><i class="icon-trash"></i></th>
+                        </tr>
+                        </thead>
+                        <tbody id="invoiceParticulars">
+                        {% if entity.stockOutItems is not empty %}
+                            {% for item in entity.stockOutItems %}
+                                <tr id="remove-{{ item.id }}">
+                                    <td  class="span1">{{ loop.index }}</td>
+                                    <td  class="span1">{{ item.particular.particularCode }}</td>
+                                    <td class="span4">{{ item.particular.name }}</td>
+                                    <td class="span1">{{ item.salesPrice }}</td>
+                                    <td class="span1">{{ item.quantity }}</td>
+                                    <td class="span1">{{ item.salesSubTotal|number_format }}</td>
+                                    <td class="span1"><a id="{{ item.id }}" title="Are you sure went to delete ?" data-url="{{ path('hms_stockout_particular_delete',{'invoice': entity.id ,'id': item.id }) }}" href="javascript:" class="btn red mini itemDelete" ><i class="icon-trash"></i></a></td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="7" class="span12" style="border: 1px double #000"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="span9"><span class="pull-right"><strong>Total TK.</strong> =</span></td>
+                            <td class="span2"><strong id="subTotal">{{ entity.subTotal|number_format }}</strong></td>
+                            <td class="span1"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="span9"><span class="pull-right"><strong>Discount TK.</strong> =</span></td>
+                            <td class="span2"><strong id="subTotal">{{ entity.discount|number_format }}</strong></td>
+                            <td class="span1"></td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                    <div class="clearfix">&nbsp;</div>
+                </div>
+                <div class="span4 payment-info">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"><span class="label" >Discount TK.</span> <span class="pull-right sales-right"><input class="numeric m-wrap span12"  name="discount" id="discount" value="{{ entity.discount }}" autocomplete="off" type="text"></span></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"><span class="label" >Invoice For</span> <span class="pull-right sales-right"> {{ form_widget(form.invoiceFor) }}</span></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"><span class="label">Payment TK.</span> <span class="pull-right sales-right"> {{ form_widget(form.payment) }}</span></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"><span class="label" id="balance">Due TK.</span> <span class="pull-right sales-right dueAmount" style="text-align: left; width: 110px"  id="" >{{ entity.due }}</span></label>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {{ form_widget(form.remark) }}
+                                {{ form_errors(form.remark) }}
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div></div>
+                <div class="clearfix">&nbsp;</div>
+                <div class="form-actions portlet box grey">
+                <input type="hidden" class="dueAmount" name="due" id="due" value="{{ entity.due }}">
+                <input type="hidden" name="purchaseId" id="purchaseId" value="{{ entity.id }}">
+                <input type="hidden" name="paymentTotal" id="paymentTotal" value="{{ entity.netTotal }}">
+                <div class="pull-right">
+                    <button type="button" class="btn blue span12 confirmSubmit" id="receiveBtn"><i class="icon-save"></i> Issue</button>
+                </div>
+            </div>
+            {{ form_end(form) }}
+            </div>
+
+
+            <!-- END FORM-->
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <style>
+        .label{
+            padding-left: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block cssBlock %}
+{% stylesheets filter='cssrewrite'
+    '@HospitalBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/stockout.js'
+    '@HospitalBundle/Resources/public/js/approveProcess.js'
+    '@HospitalBundle/Resources/public/js/datetimepicker_css.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $('input[name=particular]').focus();
+{% endblock %}
+

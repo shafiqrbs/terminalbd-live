@@ -1,0 +1,354 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN item HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="item-title">
+                    Product Details
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_goods') }}">Product</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> Add new product details</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END item HEADER-->
+        <!-- BEGIN item CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Product Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('inventory_goods') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                    {% if(entity.id > 0 ) %}
+                                        <li><a href="{{ path('inventory_goods_edit',{'id':entity.id}) }}"><i class="icon-edit"></i>&nbsp;Edit</a></li>
+                                        <li><a href="{{ path('inventory_goods_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;Show</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        {{ form_start(masterForm) }}
+                        {{ form_row(masterForm._token) }}
+                        <div class="row-fluid">
+                            <div class="span5">
+                                <div class="control-group">
+                                    <label class="control-label" for="name">Product category</label>
+                                    <div class="controls">
+                                        {{ form_widget(masterForm.category) }}
+                                        {{ form_errors(masterForm.category) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span5">
+                                <div class="control-group">
+                                    <label class="control-label" for="name">Product name</label>
+                                    <div class="controls">
+                                        {{ form_widget(masterForm.name) }}
+                                        {{ form_errors(masterForm.name) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="name">Unit</label>
+                                    <div class="controls">
+                                        {{ form_widget(masterForm.productUnit) }}
+                                        {{ form_errors(masterForm.productUnit) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-right">
+                                <button type="button" class="btn green" id="addMasterItem"><i class="icon-save"></i> Save</button>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+
+                        {{ form_end(masterForm) }}
+                        <!-- END FORM-->
+                        <!-- BEGIN FORM-->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+                        <div class="row-fluid">
+                            <div class="span8">
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Master Product</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.masterItem) }}
+                                                {{ form_errors(form.masterItem) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="name">Item name</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-font"></i>
+                                                    {{ form_widget(form.webName) }}
+                                                    {{ form_errors(form.webName) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Brand</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.brand) }}
+                                                {{ form_errors(form.brand) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Country</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.country) }}
+                                                {{ form_errors(form.country) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" >Colors</label>
+                                            <div class="clearfix" style="height:10px"></div>
+                                            <div class="controls">
+                                                {{ form_widget(form.itemColors) }}
+                                                {{ form_errors(form.itemColors) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span4">
+                                        <div class="control-group">
+                                            <label class="control-label" for="warningLabel">Warning Type</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.warningLabel) }}
+                                                {{ form_errors(form.warningLabel) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span8">
+                                        <div class="control-group">
+                                            <label class="control-label" for="warningText">Warning Text</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.warningText) }}
+                                                {{ form_errors(form.warningText) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" >Description</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.content) }}
+                                                {{ form_errors(form.content) }}
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="span4">
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <div class="control-group">
+                                            <label class="control-label" for="size">Size/Weight/Dimension</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.size) }}
+                                                {{ form_errors(form.size) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="control-group">
+                                            <label class="control-label" for="productUnit">Unit</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.productUnit) }}
+                                                {{ form_errors(form.productUnit) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="masterQuantity">Quantity</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-font"></i>
+                                                    {{ form_widget(form.quantity) }}
+                                                    {{ form_errors(form.quantity) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="purchasePrice">Purchase Price <span class="required">*</span></label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-money"></i>
+                                                    {{ form_widget(form.purchasePrice) }}
+                                                    {{ form_errors(form.purchasePrice) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="overHeadCost">Overhead Cost</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-money"></i>
+                                                    {{ form_widget(form.overHeadCost) }}
+                                                    {{ form_errors(form.overHeadCost) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="salesPrice">Sales Price <span class="required">*</span></label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-money"></i>
+                                                    {{ form_widget(form.salesPrice) }}
+                                                    {{ form_errors(form.salesPrice) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12 ">
+                                        <div class="control-group">
+                                            <label class="control-label" >Promotion</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.promotion) }}
+                                                {{ form_errors(form.promotion) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12 ">
+                                        <div class="control-group">
+                                            <label class="control-label" >Tags</label>
+                                            <div class="clearfix" style="height:10px"></div>
+                                            <div class="controls">
+                                                {{ form_widget(form.tag) }}
+                                                {{ form_errors(form.tag) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            <!--/span-->
+
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-right">
+                                <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                        <!-- END FORM-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .popover{
+            width: 250px !important;
+        }
+        input[class*="span"].m-wrap {
+            height: 33px!important;
+        }
+
+        .select2-container-multi .select2-choices .select2-search-field input{
+            height: auto!important;
+        }
+        input[class*="span"].m-wrap {
+            height: 33px!important;
+        }
+
+        .select2-container-multi .select2-choices .select2-search-field input{
+            height: auto!important;
+            min-height: 20px !important;
+        }
+        .row-fluid [class*="span"]{
+            min-height: 33px !important;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+
+
+{% endblock %}

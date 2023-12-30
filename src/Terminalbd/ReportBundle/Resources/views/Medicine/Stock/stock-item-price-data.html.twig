@@ -1,0 +1,20 @@
+
+{% set total = 0 %}
+{% for entity in entities %}
+    {#{% set total = (total + (entity.remainingQnt * entity.purchaseAvgPrice))  %}#}
+
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td class="numeric" >{{ entity.name }}</td>
+        <td class="numeric" >{{ entity.brandName }}</td>
+        <td class="numeric" >{{ entity.openingQuantity }}</td>
+        <td class="numeric" >{{ entity.purchaseQuantity }}</td>
+        <td class="numeric" >{{ entity.averagePurchasePrice|number_format(2) }}</td>
+        <td class="numeric" >{{ (entity.purchaseQuantity * entity.averagePurchasePrice)|number_format }}</td>
+        <td class="numeric" >{{ entity.salesQuantity }}</td>
+        <td class="numeric" >{{ entity.averageSalesPrice|number_format(2) }}</td>
+        <td class="numeric" >{{ (entity.salesQuantity * entity.averageSalesPrice)|number_format }}</td>
+        <td class="numeric" >{{ entity.remainingQuantity }}</td>
+        <td class="numeric text-right" ></td>
+    </tr>
+{% endfor %}

@@ -1,0 +1,19 @@
+<div class="row">
+{% for key,portfolio in pagination  %}
+    <div class="{% if globalOption.templateCustomize.showSidebar == 1 and globalOption.featureWidgets is empty  %} col-md-4 {% else %}  col-md-3 {% endif %} grid">
+        <div class="our-portfolio">
+            <img src="{{ image(portfolio.webPath).scaleResize(380,266) }}" alt="">
+            <div class="team-content">
+                <h3 class="team-prof">
+                    <a href="http://{{ portfolio.website }}">{{ portfolio.name }}</a>
+                    {% if portfolio.category is not empty %}<small>{{ portfolio.category.name }}</small>{% endif %}
+                </h3>
+            </div>
+            <p><a href="http://{{ portfolio.website }}">{{ portfolio.name }}</a></p>
+        </div>
+    </div>
+{% endfor %}
+</div>
+<div class="pagination pull-center"  >
+    {{ knp_pagination_render(pagination) }}
+</div>

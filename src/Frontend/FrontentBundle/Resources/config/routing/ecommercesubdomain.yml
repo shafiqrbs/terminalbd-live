@@ -1,0 +1,369 @@
+ecommercesubdomain:
+    path:     /
+    defaults: { _controller: FrontendBundle:WebService:index }
+
+domain_authentication:
+    path:     /authentiction
+    defaults: { _controller: FrontendBundle:WebService:adminAuthentiction}
+
+webservice_sms_receive:
+    path:     /receive/sms
+    defaults: { _controller: FrontendBundle:SmsEmailReceive:smsReceive}
+    options:
+            expose: true
+
+webservice_user_signin:
+    path:     /web/sign-in
+    defaults: { _controller:  FrontendBundle:WebServiceCustomer:domainLogin }
+
+webservice_buyer_dashboard:
+    path:     /shop/dashboard
+    defaults: { _controller: FrontendBundle:WebOrder:dashboard }
+
+webservice_buyer_checkout:
+    path:     /shop/checkout
+    defaults: { _controller: FrontendBundle:WebOrder:cartToOrder }
+
+webservice_buyer_oder_details:
+    path:     /{invoice}/shop/order/show
+    defaults: { _controller: FrontendBundle:WebOrder:show }
+
+webservice_buyer_order_delete:
+    path:     /{invoice}/shop/order/delete
+    defaults: { _controller: FrontendBundle:WebOrder:delete }
+
+webservice_buyer_order_download:
+    path:     /{invoice}/shop/order/download
+    defaults: { _controller: FrontendBundle:WebOrder:downloadAttachFile }
+
+webservice_buyer_order:
+    path:     /shop/order
+    defaults: { _controller: FrontendBundle:WebOrder:order }
+
+webservice_buyer_preorder:
+    path:     /shop/pre-order
+    defaults: { _controller: FrontendBundle:WebOrder:preOrder }
+
+webservice_otp:
+    path:     /otp/customer-check
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:mobileOtp }
+
+webservice_otp_confirm:
+    path:     /otp/customer-confirm
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:otpConfirm }
+
+webservice_order_coupon:
+    path:     /cart/coupon
+    defaults: { _controller: FrontendBundle:WebServiceProduct:returnCoupon }
+
+homepage:
+     path:     /backend
+     defaults: { _controller: BusinessBundle:Default:index }
+
+webservice_login:
+    path:     /login
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:domainLogin }
+
+webservice_domain_backend:
+     path:     /business/dashboard
+     defaults: { _controller: BusinessBundle:Default:index }
+
+webservice_security_signin:
+    path:     web/security-signin
+    defaults: { _controller:  "UserBundle:Security:domainLogin" }
+    methods:  POST
+
+webservice_member_signup:
+    path:     /{subdomain}/register-member-insert
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:insertMember }
+    methods:  POST
+    options:
+            expose: true
+
+webservice_ecommerce_signup:
+    path:     /{subdomain}/customer-ecommerce-insert
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:insertEcommerceCustomer }
+    methods:  POST
+    options:
+            expose: true
+
+webservice_ecommerce_customer_update:
+    path:     /{subdomain}/customer-ecommerce-update
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:updateEcommerceCustomer }
+    methods:  POST
+    options:
+            expose: true
+
+webservice_product_cookie_base_list:
+    path:     /cookie/product-list
+    defaults: { _controller: FrontendBundle:EcommerceWidget:cookieBaseProductList }
+
+webservice_email_receive:
+    path:     /receive/email-sender
+    defaults: { _controller: FrontendBundle:SmsEmailReceive:emailReceive}
+    methods:  POST
+    options:
+            expose: true
+
+webservice_news_letter_receive:
+    path:     /receive/news-letter-sender
+    defaults: { _controller: FrontendBundle:SmsEmailReceive:newsLetterReceive}
+    methods:  POST
+    options:
+            expose: true
+
+webservice_captch:
+    path:     /captcha/recheck
+    defaults: { _controller: FrontendBundle:SmsEmailReceive:captcha}
+    methods:  POST
+    options:
+            expose: true
+
+webservice_product_details:
+    path:     /product/{item}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productDetails }
+
+webservice_product_modal_subitem:
+    path:     /product-subitem-modal/{product}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:modalSubItem }
+
+webservice_product_modal:
+    path:     /product-modal/{item}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productModal }
+
+webservice_product_cart:
+    path:     /cart/{product}/{subitem}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productAddCart }
+    methods:  POST
+    options:
+            expose: true
+
+webservice_product_inline_cart:
+    path:     /cart/inline-item-cart/{product}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productInlineCart }
+    methods:  GET
+    options:
+           expose: true
+
+webservice_product_single_cart:
+    path:     /single-cart/{product}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productAddSingleCart }
+
+webservice_product_medicine_cart:
+    path:     /single-medicine-cart/{product}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productAddMedicineCart }
+    methods:  GET
+    options:
+            expose: true
+
+
+webservice_product_cart_update:
+    path:     /cart/product-update/{cartid}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productMedicineUpdateCart }
+    methods:  GET
+    options:
+            expose: true
+
+
+webservice_product_medicine_cart_update:
+    path:     /cart/product-medicine-update/{cartid}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productMedicineUpdateCart }
+    methods:  GET
+    options:
+            expose: true
+
+
+webservice_product_cart_ajax_details:
+    path:      /cart/product-details
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productCartDetails }
+
+webservice_product_cart_remove:
+    path:      /cart/product-remove/{cartid}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productRemoveCart }
+
+webservice_product_wishlist:
+    path:     /wishlist/{item}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productAddWishList }
+
+webservice_product_sub_item:
+    path:     /modal-sub-item
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productSubProduct }
+    methods:  GET
+    options:
+           expose: true
+
+webservice_reset_password:
+    path:     /reset-customer-password
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:customerForgetPassword}
+    methods:  GET
+    options:
+           expose: true
+
+webservice_product_sub_item_cart:
+    path:     /sub-item/{product}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productSubProductCart }
+
+webservice_product_inline_item_load:
+    path:     /inline-product-load/{product}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:inlineSubProduct }
+
+webservice_module_category:
+    path:     /category/{module}/{slug}
+    defaults: { _controller: FrontendBundle:WebServiceModule:moduleCategory }
+
+webservice_product_category:
+    path:     /product/category/{category}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:category }
+
+webservice_product_promotion:
+    path:     /product/promotion/{promotion}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:promotion }
+
+webservice_product_tag:
+    path:     /product/tag/{tag}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:tag }
+
+webservice_product_discount:
+    path:     /product/discount/{discount}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:discount }
+
+webservice_product_brand:
+    path:     /product/brand/{brand}
+    defaults: { _controller: FrontendBundle:WebServiceProduct:brand }
+
+webservice_logout:
+    path:     /frontend-logout
+    defaults: { _controller: FrontendBundle:WebService:frontendLogout}
+
+webservice_contact:
+    path:     /contact
+    defaults: { _controller: FrontendBundle:WebServiceModule:contact }
+
+webservice_product_cart_details:
+    path:     /basket
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productCart }
+
+webservice_product_cart_print:
+    path:     /cart-print
+    defaults: { _controller: FrontendBundle:WebServiceProduct:cartPrint }
+
+
+webservice_product:
+    path:     /product
+    defaults: { _controller: FrontendBundle:WebServiceProduct:product }
+
+webservice_product_filter:
+    path:     /product-filter
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productFilter }
+
+webservice_customer_register:
+    path:     /register
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:register }
+
+webservice_customer_create:
+    path:     /register-customer-create
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:create }
+
+webservice_customer_insert:
+    path:     /register-customer-insert
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:insert }
+    methods:  POST
+    options:
+            expose: true
+
+webservice_customer_confirm:
+    path:     /registration-confirm
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:confirm }
+
+webservice_customer_checking:
+    path:      /checking-username
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:userChecking }
+    methods:  GET
+    options:
+            expose: true
+
+webservice_member_checking:
+    path:      /checking-member
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:memberChecking }
+    methods:  GET
+    options:
+            expose: true
+
+webservice_customer_checking_email:
+    path:      /checking-user-email
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:userCheckingEmail }
+    methods:  GET
+    options:
+            expose: true
+
+webservice_member_checking_email:
+    path:      /checking-member-email
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:memberCheckingEmail }
+    methods:  GET
+    options:
+            expose: true
+
+webservice_customer_mobile_validation:
+    path:     /validation-user/login-mobile-validation-customer
+    defaults: { _controller: FrontendBundle:WebServiceCustomer:customerLoginMobileValidation }
+    methods:  GET
+    options:
+            expose: true
+
+webservice_product_stock_search:
+    path:     /product-stock-search
+    defaults: { _controller: "FrontendBundle:WebServiceProduct:productStockSearch" }
+    options:
+            expose: true
+
+webservice_medicine_stock_details:
+    path:     /product-stock-details
+    defaults: { _controller: "FrontendBundle:WebServiceProduct:stockItemDetails" }
+    options:
+            expose: true
+
+webservice_search:
+    path:     /search
+    defaults: { _controller: FrontendBundle:WebServiceModule:search }
+
+webservice_product_search:
+    path:     /product-search
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productSearch }
+
+webservice_stock_item_create:
+    path:     /product-stock-item-create
+    defaults: { _controller: FrontendBundle:WebServiceProduct:stockProductToCart }
+    methods:  POST
+    options:
+            expose: true
+
+webservice_stock_prescription:
+    path:     /cart-stock-item
+    defaults: { _controller: FrontendBundle:WebServiceProduct:stockPreview }
+    methods:  POST
+    options:
+            expose: true
+
+webservice_prescription_upload:
+    path:     /prescription-upload
+    defaults: { _controller: FrontendBundle:WebServiceProduct:productCart }
+    methods:  POST
+    options:
+            expose: true
+
+webservice_module_page:
+    path:     /{module}/{slug}
+    defaults: { _controller: FrontendBundle:WebServiceModule:modulePage }
+
+webservice_module:
+    path:     /{module}
+    defaults: { _controller: FrontendBundle:WebServiceModule:module }
+
+
+
+
+
+
+
+
+

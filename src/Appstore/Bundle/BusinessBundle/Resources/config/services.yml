@@ -1,0 +1,44 @@
+services:
+#    appstore_dms.example:
+#        class: Appstore\Bundle\DmsBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+    
+
+    appstore.business.particular.event.listener:
+        class: Appstore\Bundle\BusinessBundle\EventListener\BusinessParticularListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.business.wearhouse.event.listener:
+        class: Appstore\Bundle\BusinessBundle\EventListener\BusinessWearHouseListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.business.invoice.event.listener:
+        class: Appstore\Bundle\BusinessBundle\EventListener\BusinessInvoiceListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.business.purchase.event.listener:
+        class: Appstore\Bundle\BusinessBundle\EventListener\BusinessPurchaseListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.business.purchase.return.event.listener:
+        class: Appstore\Bundle\BusinessBundle\EventListener\BusinessPurchaseReturnListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.business.vendor.stock.event.listener:
+        class: Appstore\Bundle\BusinessBundle\EventListener\BusinessVendorStockListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore_business_item_import:
+        class: Appstore\Bundle\BusinessBundle\Importer\ProductExcel
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    appstore.business.item.import.event.listener:
+        class: Appstore\Bundle\BusinessBundle\Importer\ProductDataReader
+        arguments: [ @phpexcel ]

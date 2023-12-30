@@ -1,0 +1,110 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    {{ user.profile.name }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('domain_customer') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Dashboard</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Our Portal Domain</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('customer_domain') }}"><i class="icon-th-list"></i>&nbsp;All Domain</a></li>
+                                    <li><a href="{{ path('customer_domain_bookmark') }}"><i class="icon-th-list"></i>&nbsp;Bookmark Domain</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                                    <div class="row-fluid">
+                                        <div class="span4">
+                                            {{ form_widget(form.location) }}
+                                        </div>
+                                        <div class="span4">
+                                            {{ form_widget(form.syndicate) }}
+                                        </div>
+                                        <div class="span4">
+                                            <div class="input-append">
+                                                {{ form_widget(form.name) }}
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit">
+                                                        <i class="icon-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            {{ form_end(form) }}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Domain</th>
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Category</th>
+                                    <th class="numeric" >Location</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr id="remove-tr-{{ entity.id }}">
+                                        <td><span class="badge badge-warning toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+                                        <td class="numeric" ><a href="http://www.{{ entity.domain }}" target="_blank">{{ entity.name }}</a></td>
+                                        <td class="numeric" ><a href="http://www.{{ entity.domain }}" target="_blank">{{ entity.domain }}</a></td>
+                                        <td class="numeric" >{{ entity.mobile }}</td>
+                                        <td class="numeric" >{{ entity.syndicate.name }}</td>
+                                        <td class="numeric" >{% if entity.location is not empty %}{{ entity.location.name }}{% endif %}</td>
+                                        <td class="numeric" >
+                                        <a href="{{ path('domain_customer_homepage', { 'shop': entity.slug}) }}" class="btn blue mini" ><i class="icon-home"></i> Dashboard</a>
+                                      {#  <a href="{{ path('customer_preorder_new', { 'shop': entity.slug }) }} " target="_blank" class="btn yellow mini" ><i class="icon-envelope"></i></a>
+                                        <a href="{{ path('customer_preorder_new', { 'shop': entity.slug }) }} " target="_blank" class="btn yellow mini" ><i class="icon-envelope"></i></a>
+                                        {% if entity.syndicate.parent is not empty and entity.syndicate.parent.slug == 'retailer-e-commerce' %}
+                                        <a href="{{ path('order_product', { 'shop': entity.slug}) }}" target="_blank" class="btn blue mini" ><i class="icon-shopping-cart"></i></a>
+                                        <a href="{{ path('preorder_new', { 'shop': entity.slug }) }} " target="_blank" class="btn green mini" ><i class="icon-shopping-cart"></i></a>
+                                        {% endif %}#}
+                                        </td>
+                                    </tr>
+                                  {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

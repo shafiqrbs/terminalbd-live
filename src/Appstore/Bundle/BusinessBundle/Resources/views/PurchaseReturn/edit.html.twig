@@ -1,0 +1,106 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Vendor Name : {{ entity.vendor.companyName }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="{{ path('medicine_purchase_return') }}">Manage Product Purchase Return</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Product Purchase Return Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('business_purchase_return') }}"><i class="icon-th-list"></i> Purchase Return</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            <form class="" id="purchaseReturn" name="purchaseReturn" method="post" action="{{ path('business_purchase_return_update',{'id':entity.id}) }}"  >
+                            {% if particulars is not empty %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric span8" >Product Name </th>
+                                    <th class="numeric span1" >Price</th>
+                                    <th class="numeric span1" >Quantity</th>
+                                    <th class="numeric span1" >SubTotal</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for particular in particulars %}
+                                    <tr>
+                                        <td class="numeric" >  {{ particular.itemName }}
+                                            <input type="hidden" name="subTotal[]" id="sub-{{  particular.itemId }}" class="subTotal" value="0">
+                                            <input type="hidden" name="itemId[]" value="{{ particular.itemId }}">
+                                            <input type="hidden" name="price[]" value="{{ particular.purchasePrice }}">
+                                        </td>
+                                        <td class="numeric" > {{ particular.purchasePrice }}</td>
+                                        <td class="numeric" ><input class="m-wrap span12 form-control input-number" type="text" name="quantity[]" data-id="{{ particular.itemId }}" data-value="{{ particular.purchasePrice }}" id="quantity-{{  particular.itemId }}" value="" placeholder="Input quantity"></td>
+                                        <td class="numeric span2" id="subTotal-{{  particular.itemId }}" ></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                <tr><th colspan="3">Total </th><th id="total"></th></tr>
+                                </tfoot>
+                            </table>
+                            {% endif %}
+                            <div class="clearfix"><br/></div>
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <input type="hidden" id="grandTotal" name="grandTotal" value="" >
+                                    <button type="button" id="submitBtn" class="btn green approve"><i class="icon-save"></i> Save & Approve</button>
+                                </div>
+                            </div>
+                            </form>
+
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BusinessBundle/Resources/public/js/purchase-return.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}
+
+

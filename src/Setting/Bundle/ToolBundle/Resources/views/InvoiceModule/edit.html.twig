@@ -1,0 +1,212 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN color HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="color-title">
+                    Variant Components
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('color') }}">Generic Invoice</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Generic Invoice new/edit</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END color HEADER-->
+        <!-- BEGIN color CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Generic Invoice Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('invoicemodule') }}"><i class="icon-plus-sign"></i>&nbsp; Invoice Module</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Address To Domain</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.globalOption) }}
+                                            {{ form_errors(form.globalOption) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Address To Another</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.name) }}
+                                                {{ form_errors(form.name) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Bill For</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.billFor) }}
+                                            {{ form_errors(form.billFor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Mobile No</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.mobile) }}
+                                            {{ form_errors(form.mobile) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Bill Month</label>
+                                        <div class="controls">
+                                            <div class="span12">
+                                                {%  set months = ['January','February','March','April','May','June','July','August','September','October','November','December'] %}
+                                                <select class="span6 m-wrap" name="month" id="month">
+                                                    <option value="">--- Select Month---</option>
+                                                    {% for month in months %}
+                                                        <option {% if searchForm.month is defined and searchForm.month == month %}selected="selected"{% endif %} value="{{ month }}">{{ month }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                {%  set years = ['2018','2019','2020','2021','2022','2023','2024','2025'] %}
+                                                <select class="span5 m-wrap" name="year" id="year">
+                                                    <option value="">---Year---</option>
+                                                    {% for year in years %}
+                                                        <option {% if searchForm.year is defined and searchForm.year == year %}selected="selected"{% endif %} value="{{ year }}">{{ year }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Address</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.address) }}
+                                            {{ form_errors(form.address) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"><br/></div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="form-actions portlet box blue">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Particular & Price</div>
+                                    <a href="javascript:" class="btn green pull-right mini addmore"><i class="icon-plus"></i> Add Row</a>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="row-fluid clone-block" id="clone-block">
+                                <div class="clone">
+                                    <div class="span9">
+                                        <div class="control-group">
+                                            <input type="hidden" name="metaId[]" value="" >
+                                            <input type="text" name="name[]" class="m-wrap span12" placeholder="Particular name" value="">
+                                        </div>
+                                    </div>
+                                    <div class="span2">
+                                        <div class="control-group">
+                                            <input type="text" name="amount[]" class="m-wrap span12" placeholder="Price" value="">
+                                        </div>
+                                    </div>
+                                    <div class="span1">
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                <a href="javascript:"  class="btn red  remove hidden mini"><i class="icon-trash"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if  entity.invoiceModuleItems is defined and entity.invoiceModuleItems is not empty %}
+                                {% for meta in entity.invoiceModuleItems %}
+                                    <div class="row-fluid trash" id="remove-{{ meta.id }}"  >
+                                        <div class="span9 ">
+                                            <div class="control-group">
+                                                <input type="hidden" name="metaId[]" value="{{ meta.id }}" >
+                                                <input type="text" name="name[]" class="m-wrap span12" placeholder="Label name" value="{{ meta.name }}">
+                                            </div>
+                                        </div>
+                                        <div class="span2">
+                                            <div class="control-group">
+                                                <input type="text" name="amount[]" class="m-wrap span12" placeholder="Label value" value="{{ meta.amount }}">
+                                            </div>
+                                        </div>
+                                        <div class="span1">
+                                            <div class="control-group">
+                                                <div class="controls">
+                                                    <a href="javascript:" id="{{ meta.id }}"  data-url="{{ path('invoicemodule_item_delete',{'invoice':entity.id,'item':meta.id}) }}" class="btn red  remove mini"><i class="icon-trash"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            <div class="clearfix"><br/></div>
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-center">
+                                    <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@SettingContentBundle/Resources/public/js/editable.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+{% endblock %}

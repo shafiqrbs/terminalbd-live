@@ -1,0 +1,112 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Website Widget Sorting
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('appearancefeaturewidget') }}"> >Manage Website Widget</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-reorder"></i> Manage Website Widget Sorting</div>
+                    <div class="actions">
+                        <div class="btn-group">
+                            <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                Tools
+                                <i class="icon-tasks"></i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li><a href="{{ path('appearancewebsitewidget_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                <li><a href="{{ path('appearancewebsitewidget') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div style="position: relative" class="portlet-body flip-scroll dd" id="nestable_list_2">
+                    <form id="sorting" action="" method="post">
+                        <ul class="sortable grid dd-list">
+                            {% for entity in entities %}
+                                <li  data-id="{{ entity.id }}" id="item_{{ entity.id }}" class="dd-item dd3-item">
+                                    <span data-id="{{ entity.id }}" class="dd-handle dd3-handle"></span>
+                                    <div class="dd3-content">
+                                            <div class="span3">
+                                                <div class="btn-group">
+                                                    <button class="btn blue mini" >Menu Name</button>
+                                                    <button class="btn green mini">{{ entity.menu.menu }}</button>
+                                                </div>
+                                            </div>
+                                            <div class="span4">
+                                                <div class="btn-group">
+                                                    <button class="btn blue mini" >Module & Feature</button>
+                                                    <button class="btn yellow mini">{{ entity.module.name }}</button>
+                                                    <button class="btn purple mini">{{ entity.moduleShowType }}</button>
+                                                </div>
+                                            </div>
+                                            <div class="span3">
+                                                <div class="btn-group">
+                                                    <button class="btn blue mini" >Page & Feature</button>
+                                                    <button class="btn yellow mini">{%  if entity.page is not empty %} Yes {% endif %}</button>
+                                                    <button class="btn purple mini">{{ entity.pageShowType }}</button>
+                                                </div>
+                                            </div>
+                                            <div class="span2">{% if entity.jsFeature is not empty %}Image For: {{ entity.jsFeature.name }}{% endif %}</div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-center">
+                                <button type="button" class="btn green" id="serialize" ><i class="icon-ok"></i> Save Sorting</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block documentready %}
+
+    {{ parent() }}
+
+    $('.sortable').sortable({
+        handle: 'span'
+    });
+
+    $('#serialize').click(function(){
+
+        var serialized = $(".sortable").sortable("serialize");
+        $.ajax({
+            url: '{{ path('appearancefeaturewidget_list_sorted') }}',
+            type: "POST",
+            data: serialized
+        }).done(function(data){
+                location.reload();
+        });
+
+    })
+
+{% endblock %}

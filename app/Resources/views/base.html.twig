@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8"/>
+    <title>{% if app.user.globaloption is not empty and app.user.globaloption is defined %}{{ app.user.globaloption.name }}{% else %} {{ app.user.profile.name }} {% endif %} | MANAGE PANEL</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="TERMINALBD.COM is one Most of the popular Web based software company in Bangladesh(BD) ,Application & Mobile application create & manage" name="description"/>
+    <meta name="keywords" content="Web Design Company, Website development company, website design company Bangladesh, best web design company Bangladesh, best software firm in Bangladesh. Email marketing company bd, SMS bd, SMS marketing company bd, eicra, esoft, Roopokar, e-Soft, Technobd, daraz, bagdoom, ajkerdeal, web design training, graphics design training, digital marketing training, web design company Bangladesh, Bangladeshi web design company bangladesh,ecommerce website design company Bangladesh, website design company list in Bangladesh,website design and development company Bangladesh, Bangladeshi web design company, web page design company in Bangladesh, logo - web design & development company in Bangladesh Dhaka, web design and development company in Dhaka Bangladesh, web design and development company in bangladesh, best web design company bangladesh, web design company in Dhaka bd,web design company from Bangladesh, web design company in bangladesh, website design company in Bangladesh, software development company Bangladesh, software development company in Dhaka Bangladesh, software development company in bd, Bangladesh software development company list, best software development company in Bangladesh, custom software development company in bangladesh, top 10 software development company in Bangladesh, software development company in Bangladesh, list of software development companies in Bangladesh, email marketing company in bangladesh, best email marketing company in bangladesh, sms marketing company in bangladesh, bulk sms bangladesh, bulk sms bangladesh free, buy bulk sms bangladesh, bulk sms software bangladesh, bulk sms reseller bangladesh, cheap bulk sms bangladesh, bulk sms provider bangladesh, bulk sms messages bangladesh, send bulk sms bangladesh, airtel bulk sms bangladesh, bulk sms airtel bd, bulk sms buy bd, bulk sms for bangladesh,bulk sms gateway bangladesh,bulk sms gateway provider in bangladesh, bulk sms in bangladesh,bulk sms provider in bangladesh,bulk sms reseller in bangladesh,free bulk sms in bangladesh,bulk sms software in bangladesh,bulk sms provider in bd,send free bulk sms in bangladesh,online bulk sms bangladesh,send free bulk sms online bangladesh,bulk sms rate in bangladesh,bulk sms service bangladesh,bulk sms service provider bangladesh,bulk sms to bangladesh,send free bulk sms to bangladesh, digital marketing company in bangladesh, digital marketing agencies in bangladesh, best digital marketing company in bangladesh, top digital marketing company in bangladesh, digital marketing agency in bangladesh, list of digital marketing agency in bangladesh, best digital marketing agency in bangladesh, top digital marketing agency in bangladesh, web design training in dhaka web design course in dhaka university, web design training center in dhaka, best web design training in dhaka, web design and development training in dhaka, best web design training institute in dhaka, best web design training center in dhaka, web design and development courses in dhaka, web design and development training center in dhaka, web design training courses in dhaka, web design training institute in dhaka, web page design training in dhaka, graphics design training in dhaka, graphics design course in dhaka, graphics design institute in dhaka, graphic design course in dhaka university, graphic design course in dhaka bangladesh, graphics design training center in dhaka, graphics design training centre in dhaka, graphics design training course in dhaka, best graphics design training in dhaka, graphic design training in bd " />
+    <meta name="description" content="Terminal BD is the best web design company in Bangladesh. We are one of the best software development company in Dhaka, Bangladesh. Terminalbd known as a top outsourcing company in Bangladesh. We are the 1st and best digital marketing agency in Bangladesh. Terminalbd also provide IT training like web development training, graphics design training and digital marketing training in Uttara, Dhaka, Bangladesh. We are the no1 and best Email & SMS Marketing Company in Bangladesh" />
+    <meta content="Best Web Design and Development Company in Bangladesh, Best Software development Company in Dhaka, Bangladesh, Email Marketing in Bangladesh, SMS Marketing Company in Dhaka, Bangladesh, Digital Marketing Company in Dhaka, Chittagong, Bangladesh,Best E-commerce development Company in Bangladesh, Best IT Company in Bangladesh, Best IT Training in Uttara, Web design training in dhaka, Best Graphics Design training in Uttara Dhaka, Best Digital Marketing Training Center in Dhaka, Best Outsourcing Company in Bangladesh, Largest IT Company in Bangladesh" name="author"/>
+    <meta name="google-site-verification" content="syISMv7mxTevfDNUFQb71C9vybrXTBAvr1WfeN0lAaw" />
+    <meta name="MobileOptimized" content="320">
+    <link rel="shortcut icon"  href="{{ asset('assets/img/favicon/favicon.ico') }}">
+    <link rel="manifest" href="{{ asset('assets/img/favicon/manifest.json') }}">
+    <script src="{{ asset('assets/plugins/jquery-2.2.4.min.js') }}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+    {% stylesheets filter='cssrewrite'
+        'assets/plugins/bootstrap/css/bootstrap.min.css'
+        'assets/plugins/bootstrap/css/bootstrap-responsive.min.css'
+        'assets/plugins/font-awesome/css/font-awesome.min.css'
+        'assets/plugins/font-awesome/css/font-awesome-4.7.0.min.css'
+        'assets/plugins/font-awesome/css/fa-font-awesome.css'
+        'assets/css/style.css'
+        'assets/css/style-responsive.css'
+        'assets/css/style-metro.css'
+        'assets/css/themes/darkblue.css'
+        'assets/plugins/uniform/css/uniform.default.css'
+        'assets/plugins/bootstrap-fileupload/bootstrap-fileupload.css'
+        'assets/plugins/gritter/css/jquery.gritter.css'
+        'assets/plugins/chosen-bootstrap/chosen/chosen.css'
+        'assets/plugins/select2/select2_metro.css'
+        'assets/plugins/clockface/css/clockface.css'
+        'assets/plugins/bootstrap-datepicker/css/datepicker.css'
+        'assets/plugins/data-tables/jquery.dataTables.min.css'
+        'assets/plugins/bootstrap-timepicker/compiled/timepicker.css'
+        'assets/plugins/bootstrap-colorpicker/css/colorpicker.css'
+        'assets/plugins/bootstrap-toggle-buttons/static/stylesheets/bootstrap-toggle-buttons.css'
+        'assets/plugins/bootstrap-daterangepicker/daterangepicker.css'
+        'assets/plugins/bootstrap-multiselect/css/bootstrap-multiselect.css'
+        'assets/plugins/bootstrap-datetimepicker/css/datetimepicker.css'
+        'assets/plugins/jquery-multi-select/css/multi-select.css'
+        'assets/plugins/bootstrap-modal/css/bootstrap-modal.css'
+        'assets/plugins/bootstrap-switch/static/stylesheets/bootstrap-switch-metro.css'
+        'assets/plugins/jquery-tags-input/jquery.tagsinput.css'
+        'assets/plugins/jquery-selectbox/css/jquery.selectbox.css'
+        'assets/plugins/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css'
+        'assets/plugins/data-tables/DT_bootstrap.css'
+        'assets/plugins/data-tables/dataTables.bootstrap.min.css'
+        'assets/plugins/glyphicons/css/glyphicons.css'
+        'assets/plugins/glyphicons_halflings/css/halflings.css'
+        'assets/plugins/bootstrap-editable/bootstrap-editable/css/bootstrap-editable.css'
+        'assets/plugins/bootstrap-editable/inputs-ext/address/address.css'
+        'assets/plugins/summernote/summernote-lite.min.css'
+        'assets/plugins/colorpicker/css/evol.colorpicker.min.css'
+        'assets/plugins/jquery-nestable/jquery.nestable.css'
+        'assets/plugins/jquery-ui/jquery-ui-1.12.1.min.css'
+        'assets/plugins/jquery-tree/src/css/jquery.tree.css'
+        'assets/plugins/bootstrap-modal/css/bootstrap-modal.css'
+        'assets/plugins/remodal/css/remodal.css'
+        'assets/plugins/remodal/css/remodal-default-theme.css'
+        'assets/plugins/bootstrap-modal/css/bootstrap-modal.css'
+        'assets/plugins/calculator/SimpleCalculadorajQuery.css'
+        'assets/plugins/pop-modal/popModal.min.css'
+        'assets/plugins/jquery-checkradios/css/jquery.checkradios.css'
+        'assets/template/desktop/css/css-loader.css'
+        'assets/css/comments.css'
+        'assets/css/overwrite.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+    {% block cssBlock %}
+    {% endblock %}
+ </head>
+<body class="page-header-fixed  page-footer-fixed  {% if app.user.globaloption.isSidebar != 1 %} page-sidebar-closed {% endif %} {{ app.request.locale }}{% block bodyClass %}{% endblock bodyClass %}">
+<!-- BEGIN HEADER -->
+<div class="header navbar navbar-inverse navbar-fixed-top">
+<!-- BEGIN TOP NAVIGATION BAR -->
+<div class="navbar-inner">
+    <div class="container-fluid">
+<!-- BEGIN LOGO -->
+<a class="brand" href="{{ path('home') }}" style="margin-left:0">
+{% if app.user.globaloption is not empty and app.user.globaloption is defined %}
+    {{ app.user.globaloption.name }}
+{% endif %}
+</a>
+<div class='mobile-nav'><i class="fa fa-bars"></i></div>
+<!-- END LOGO -->
+<!-- BEGIN RESPONSIVE MENU TOGGLER -->
+{% if is_granted('ROLE_CUSTOMER') %}
+    {{ include('customer/topbar.html.twig')}}
+{% else %}
+    {{ include('SettingToolBundle:Widget:common.html.twig')}}
+{% endif %}
+<!-- END RESPONSIVE MENU TOGGLER -->
+</div>
+</div>
+<!-- END TOP NAVIGATION BAR -->
+</div>
+<!-- END HEADER -->
+<div class="page-container row-fluid">
+    {% block navigation %}
+        <div class="page-sidebar nav-collapse" >
+            {% if is_granted('ROLE_CUSTOMER') %}
+            {{ include('customer/sidebar.html.twig')}}
+            {% else %}
+            {{ include('sidebar.html.twig')}}
+            {% endif %}
+        </div>
+    {% endblock navigation %}
+    <div class="page-content">{% block body %}{% endblock %}</div>
+    <div id="confirm-content" style="display:none">
+        <div class="confirmModal_content">
+            Are you sure to confirm this record?
+        </div>
+        <div class="confirmModal_footer">
+            <button type="button" class="btn red" data-confirmmodal-but="cancel">Cancel</button>
+            <button type="button" class="btn green" data-confirmmodal-but="ok">Confirm</button>
+        </div>
+    </div>
+    <div id="dialog_content" class="dialog_content" style="display:none">
+        <div class="dialogModal_header"></div>
+        <div class="dialogModal_content"></div>
+    </div>
+</div>
+{% javascripts
+'assets/plugins/jquery-migrate-1.2.1.min.js'
+'assets/plugins/jquery-ui/jquery-ui-1.10.2.custom.min.js'
+'assets/plugins/jquery-ui/jquery.ui.droppable.js'
+'assets/plugins/jquery-ui/jquery.ui.autocomplete.js'
+'assets/plugins/jquery-ui/jquery.ui.menu.min.js'
+'assets/plugins/jquery-ui/jquery.ui.position.min.js'
+'assets/plugins/jquery-ui/jquery.ui.widget.min.js'
+'assets/plugins/jquery-tree/src/js/jquery.tree.js'
+'assets/print/js/kinzi.print.min.js'
+'assets/plugins/bootstrap/js/bootstrap.min.js'
+'assets/plugins/bootstrap/js/bootstrap.typeahead.js'
+'assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js'
+'assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js'
+'assets/plugins/jquery.blockui.min.js'
+'assets/plugins/jquery.cookie.min.js'
+'assets/plugins/uniform/jquery.uniform.min.js'
+'assets/plugins/bootstrap-fileupload/bootstrap-fileupload.js'
+'assets/plugins/select2/select2.min.js'
+'assets/plugins/chosen-bootstrap/chosen/chosen.jquery.min.js'
+'assets/plugins/bootstrap-wysihtml5/wysihtml5-0.3.0.js'
+'assets/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js'
+'assets/plugins/bootstrap-toggle-buttons/static/js/jquery.toggle.buttons.js'
+'assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js'
+'assets/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js'
+'assets/plugins/bootstrap-daterangepicker/moment.min.js'
+'assets/plugins/bootstrap-multiselect/js/bootstrap-multiselect.js'
+'assets/plugins/clockface/js/clockface.js'
+'assets/plugins/bootstrap-daterangepicker/date.js'
+'assets/plugins/bootstrap-daterangepicker/daterangepicker.js'
+'assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js'
+'assets/plugins/bootstrap-timepicker/js/bootstrap-timepicker.js'
+'assets/plugins/jquery-inputmask/jquery.inputmask.bundle.min.js'
+'assets/plugins/jquery.input-ip-address-control-1.0.min.js'
+'assets/plugins/jquery-multi-select/js/jquery.multi-select.js'
+'assets/plugins/bootstrap-modal/js/bootstrap-modal.js'
+'assets/plugins/bootstrap-modal/js/bootstrap-modalmanager.js'
+'assets/plugins/jquery.pwstrength.bootstrap/src/pwstrength.js'
+'assets/plugins/bootstrap-switch/static/js/bootstrap-switch.js'
+'assets/plugins/jquery-tags-input/jquery.tagsinput.min.js'
+'assets/plugins/plupload/js/plupload.full.js'
+'assets/plugins/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js'
+'assets/plugins/multi-datepicker/js/jquery.ui.datepicker.js'
+'assets/plugins/multi-datepicker/js/jquery.ui.core.js'
+'assets/plugins/multi-datepicker/js/jquery-ui.multidatespicker.1.js'
+'assets/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js'
+'assets/plugins/bootstrap-touchspin/bootstrap.touchspin.js'
+'assets/plugins/fuelux/js/spinner.min.js'
+'assets/plugins/jquery-selectbox/js/jquery.selectBox.js'
+'assets/plugins/data-tables/jquery.dataTables.min.js'
+'assets/plugins/data-tables/dataTables.fixedColumns.min.js'
+'assets/plugins/data-tables/DT_bootstrap.js'
+'assets/scripts/table-managed.js'
+'assets/plugins/jquery.mockjax.js'
+'assets/plugins/bootstrap-editable/bootstrap-editable/js/bootstrap-editable.min.js'
+'assets/plugins/bootstrap-editable/inputs-ext/address/address.js'
+'assets/plugins/jquery-key/jquery.key.js'
+'assets/template/plugin/validation/jquery.validate-1.14.0.min.js'
+'assets/template/plugin/validation/jquery-validate.bootstrap-tooltip.min.js'
+'assets/plugins/sortable-alphabetically/jquery.sortableTable.js'
+'assets/plugins/jquery.confirm.min.js'
+'assets/plugins/remodal/js/remodal.js'
+'assets/plugins/pop-modal/popModal.js'
+'assets/plugins/plupload/js/plupload.full.js'
+'assets/plugins/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js'
+'assets/plugins/fancybox/source/jquery.fancybox.pack.js'
+'assets/template/plugin/matchHeight/height-match.js'
+'assets/plugins/calculator/SimpleCalculadorajQuery.js'
+'assets/plugins/colorpicker/js/evol.colorpicker.min.js'
+'assets/plugins/jquery-ui/sortable.js'
+'assets/plugins/jquery-checkradios/js/jquery.checkradios.min.js'
+'assets/template/plugin/matchHeight/height-match.js'
+'assets/plugins/summernote/summernote-lite.min.js'
+'assets/module/numeric/jquery.numeric.js'
+'assets/print/js/print.js'
+'assets/scripts/jquery.mjs.nestedSortable.js'
+'assets/scripts/nested-sortable.js'
+'assets/scripts/app.js'
+'assets/scripts/script.js'
+'assets/scripts/charts.js'
+'assets/scripts/ui-modals.js'
+'assets/scripts/form-editable.js'
+'assets/js/jquery.cookie-1.4.1.min.js'
+'assets/scripts/ui-jqueryui.js'
+'assets/scripts/form-components.js'
+'assets/scripts/table-advanced.js'
+'assets/scripts/input-box.js'
+'assets/plugins/table-excel/table-to-excel.js'
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+<script type="text/javascript" src="{{ asset('assets/plugins/ckeditor/ckeditor.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/plugins/ckeditor/config.js') }}"></script>
+{% endjavascripts %}
+{% block javascriptBlock %}
+{% endblock %}
+<script type="text/javascript">
+
+    $(function() {
+        {% block documentready %}
+        App.init();
+        FormComponents.init();
+        TableAdvanced.init();
+        GlobalScript.init();
+        $('.select2').select2();
+        $('.selectbox').selectBox();
+        $('.selectbox select').selectBox();
+        $(".numeric").numeric();
+        $(".mask_number").numeric();
+        $(".invoice-no").inputmask("mask", {"mask": "9999-99-99-9999"}); //specifying fn & options
+        $(".batch-year").inputmask("mask", {"mask": "9999"}); //specifying fn & options
+        $(".mobile").inputmask("mask", {"mask": "99999-999-999"}); //specifying fn & options
+        $(".phone").inputmask("mask", {"mask": "99-999999"}); //specifying fn & options
+        $("#schedule").inputmask("mask", {"mask":"dd/mm/yyyy"}); //specifying fn & options
+        $( ".date-picker" ).datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+        $('.editor').summernote({
+            height: 200,
+        });
+        $('.big-editor').summernote({
+            height: 450,
+        });
+        $('#datatable').DataTable( {
+            scrollY: "500px",
+            scrollCollapse: true,
+            scrollX: false,
+            paging:false,
+            info: false,
+        } );
+        $( ".datePicker" ).datepicker({
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true
+        }).inputmask('dd/mm/yyyy');
+
+        $('.multiselect').multiselect();
+
+        $('.toggle').click(function(){
+            var id = $(this).attr('id');
+            $("#show-"+id).slideToggle(100);
+        }).toggle( function() {
+            $(this).children("span").text("[-]");
+        }, function() {
+            $(this).children("span").text("[+]");
+        });
+
+        $('.current_ancestor').addClass('active');
+
+        $('.mobileBankHide').hide();
+        $('.bankHide').hide();
+        $(document).on('change', '.transactionMethod', function() {
+
+            var transactionMethod = $(this).val();
+            if(transactionMethod == 2 ){
+                $('.bankHide').show(500);
+                $('.mobileBankHide').hide(500);
+            }else if(transactionMethod == 3 ){
+                $('.bankHide').hide(500);
+                $('.mobileBankHide').show(500);
+            }else{
+                $('.bankHide').hide(500);
+                $('.mobileBankHide').hide(500);
+            }
+
+        });
+
+        /*$('.horizontal-form').submit(function(){
+            $("button[type='submit']", this)
+                .attr('disabled', 'disabled');
+            setTimeout(function(){
+                $('.pull-right').find('button').removeAttr('disabled')
+            }, 3000);
+            return true;
+        });
+
+        $('.form-horizontal').submit(function(){
+            $("button[type='submit']", this)
+                .attr('disabled', true);
+                setTimeout(function(){
+                    $('.pull-right').find('button').removeAttr('disabled')
+                }, 3000);
+            return true;
+        });
+*/
+        /*$('.horizontal-form').submit(function(){
+            var submitBtn = $("button[type='submit']", this).text();
+            $("button[type='submit']", this)
+                .html("Please Wait...")
+                .attr('disabled', 'disabled');
+            //setTimeout(function(){ location.reload() }, 3000);
+            setTimeout(function(){
+                $("button[type='submit']", this).html(submitBtn).removeAttr("disabled");
+            }, 2000);
+            return true;
+        });
+
+        $('.form-horizontal').submit(function(){
+            var submitBtn = $("button[type='submit']", this).text();
+            $("button[type='submit']", this)
+                .html("Please Wait...")
+                .attr('disabled', 'disabled');
+            //setTimeout(function(){ location.reload() }, 3000);
+            setTimeout(function(){
+                $("button[type='submit']", this).html(submitBtn).removeAttr("disabled");
+            }, 2000);
+            return true;
+        });*/
+
+        $(document).on('change', '.targetTo', function() {
+            var targetTo = $(this).val();
+            $('.hide').hide();
+            $('#'+targetTo).show();
+        });
+
+        $(document).on('click', '#show-messenger', function() {
+
+            $('#messenger-block').show();
+            $('#calculator-block').hide();
+        });
+
+        $('#fb-msg-close').click(function(){
+
+            $('#messenger-block').hide();
+        });
+        $( ".select2GenericMedicine" ).autocomplete({
+
+            source: function( request, response ) {
+                $.ajax( {
+                    url: Routing.generate('medicine_search_medicine_generic_complete'),
+                    data: {
+                        term: request.term
+                    },
+                    success: function( data ) {
+                        response( data );
+                    }
+                } );
+            },
+            minLength: 2,
+            select: function( event, ui ) {
+                $("#medicineId").val(ui.item.id); // save selected id to hidden input
+
+            }
+        });
+
+        $('.mobile-nav').click(function(){
+            $('.nav-collapse').toggleClass("mob-nav-collapse");
+        });
+
+        {% endblock %}
+    });
+
+</script>
+<style>
+    .page-content {
+         padding:0!important;
+        margin-top: 1px!important;
+
+    }
+    .container-fluid {
+        padding-right:5px!important;
+        padding-left: 5px!important;
+    }
+    .action li a.btn{
+        text-align: left!important;
+    }
+    .header .brand{
+        width: auto!important;
+    }
+    .ui-autocomplete{
+        width: 90%;
+    }
+    div.checker {
+        margin-right: 15px;
+    }
+
+    .page-sidebar.in{
+        height: auto!important;
+    }
+    .fb-messenger , .calculator-messenger {
+        position: fixed;
+        bottom: 32px;
+        right: 20px;
+        z-index: 100;
+    }
+    .panel-messenger {
+        border-color: #4d90fe;
+    }
+    .panel-messenger > .panel-heading , .panel-calculator > .panel-heading {
+        color: #fff;
+        background-color: #4d90fe;
+        border-color: #4d90fe;
+        padding: 10px;
+    }
+    .panel {
+        position: relative;
+    }
+    #messenger-block , #calculator-block{
+        display: none;
+        width: 400px;
+    }
+    .mbottom:nth-child(5),.mbottom:nth-child(9) ,.mbottom:nth-child(13) {
+       margin-left: 0!important;
+    }
+    .txtr{
+        margin-top: 10px;
+    }
+
+    ul.page-sidebar-menu > li.current_ancestor > ul > li.current_ancestor{
+        background:#dce2ed!important;
+    }
+
+    .confirmModal .confirmModal_body{
+        border: 1px solid #0362fd;
+    }
+    .mobile-nav{
+        display: none;
+        font-weight: bold;
+        position: absolute;
+        z-index: 999;
+        font-size: 20px;
+        color: #fff;
+        top: 25%;
+        left: 5%;
+    }
+    .select-error-tooltip{
+        position: relative;
+    }
+    .select-error-tooltip .tooltip{
+        top:10px;
+    }
+    @media (max-width: 979px) {
+        .navbar .brand {
+            display: none !important;
+        }
+
+        .page-content .breadcrumb{
+            display:none !important;
+        }
+        .page-title{
+            margin: 0!important;
+        }
+        .showing-overview{
+            display: none !important;
+        }
+        .pagination ul>li>a, .pagination ul>li>span{
+            padding: 4px 23px;
+        }
+        .mobile-nav{
+            display: block;
+        }
+    }
+
+    .dialogModal .dialogModal_top .dialogModal_header{
+        width: 100%!important;
+    }
+    .dialogModal .dialogModal_top .dialogModal_header .close{
+        background-image: none!important;
+    }
+    .dialogModal .dialogModal_body{
+        width: 100%!important;
+    }
+    .dialogModal .dialogModal_content{
+
+    }
+    .dialogModal_content .mini{
+        height: 20px!important;
+    }
+    .select2-results .select2-highlighted {
+        background: #217ebd !important;
+        color: #ffffff;
+    }
+    .mob-nav-collapse{
+        height: auto!important;
+    }
+    .editable-buttons {
+        margin-left: 12px!important;
+    }
+
+    .page-content {
+        margin-left: 250px;
+    }
+
+    ul.page-sidebar-menu > li.current_ancestor > a {
+        background: none repeat scroll 0 0 #0052cc !important;
+        border-top-color: transparent !important;
+        color: #fff5f7!important;
+    }
+
+    .page-sidebar .page-sidebar-menu>li.open>a, .page-sidebar .page-sidebar-menu>li:hover>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li.open>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li:hover>a {
+        background: #e0e8e0;
+        color: #e4e9f2;
+    }
+
+    .page-sidebar {
+        background-color: #f4f4f4;
+        width: 250px;
+    }
+
+    ul.page-sidebar-menu > li > a {
+        border-top: none !important;
+        border-bottom: 1px solid #e4e9ec !important;
+        color: #fff5f7 !important;
+    }
+
+    .page-sidebar-closed ul.page-sidebar-menu > li > a > .title, .page-sidebar-closed ul.page-sidebar-menu > li > a > .arrow {
+        font-weight: bold;
+    }
+
+    .page-sidebar .page-sidebar-menu>li>a>i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li>a>i {
+        color: #000000!important;
+    }
+
+    .page-sidebar .page-sidebar-menu .sub-menu>li.active>a, .page-sidebar .page-sidebar-menu .sub-menu>li.open>a, .page-sidebar .page-sidebar-menu .sub-menu>li:hover>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li.active>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li.open>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li:hover>a {
+        background: transparent!important;
+        color: #0052cc!important;
+    }
+
+    .page-sidebar .page-sidebar-menu .sub-menu>li>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li>a {
+        color: #000000 !important;
+    }
+
+    .page-sidebar .page-sidebar-menu .sub-menu>li>a>i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li>a>i {
+        color: #ffffff!important;
+    }
+
+    .page-sidebar .page-sidebar-menu .sub-menu>li>a>i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li>a>i {
+        color: #000000!important;
+    }
+
+    ul.page-sidebar-menu > li > ul.sub-menu > li > a {
+        border-bottom: 1px solid #d9dde1;
+    }
+
+    .page-sidebar-closed .page-content {
+        margin-left: 65px !important;
+    }
+    .page-sidebar-closed .page-sidebar {
+        width: 50px;
+        padding-left: 15px;
+    }
+
+    .page-sidebar-closed .page-sidebar .page-sidebar-menu:hover .sub-menu, .page-sidebar-closed .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu:hover .sub-menu {
+        background-color: #f4f4f4;
+    }
+
+    .page-sidebar .page-sidebar-menu>li>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li>a {
+        border-bottom: 1px solid #d9dde1;
+        color: #000000!important;
+    }
+
+    .page-sidebar .page-sidebar-menu .sub-menu>li>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li>a {
+        color: #000000!important;
+    }
+
+    .page-sidebar-menu li.first{
+        margin-top: 15px;
+    }
+    .page-sidebar .page-sidebar-menu>li>a{
+       font-weight: bold;
+    }
+    .ul.page-sidebar-menu > li > ul.sub-menu li > ul.sub-menu > li > a span.title{
+        font-weight: normal;
+        color: #000000;
+    }
+    ul.page-sidebar-menu > li > ul.sub-menu li > a,ul.page-sidebar-menu > li > ul.sub-menu li > ul.sub-menu > li > a{
+        font-weight: normal;
+        color: #000000;
+        font-size: 13px!important;
+    }
+
+</style>
+<div id="print-container" style="display:none"><div id="print-area"></div></div>
+</body>
+</html>

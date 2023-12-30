@@ -1,0 +1,214 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN account_balancetransfer HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="account-title">
+                    Balance Transfer Entry
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_balancetransfer') }}">Balance Transfer</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Balance Transfer Entry</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END account_balancetransfer HEADER-->
+        <!-- BEGIN account_balancetransfer CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Balance Transfer Entry Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('account_balancetransfer') }}"><i class="icon-th-list"></i>&nbsp; Balance Transfer</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="transactionMethod">From Transaction<span class="required">*</span></label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.fromTransactionMethod) }}
+                                                    {{ form_errors(form.fromTransactionMethod) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid fromBankHide">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Bank Account</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.fromAccountBank) }}
+                                                    {{ form_errors(form.fromAccountBank) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid fromMobileBankHide">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Mobile Account</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.fromAccountMobileBank) }}
+                                                    {{ form_errors(form.fromAccountMobileBank) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">To Transaction<span class="required">*</span></label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.toTransactionMethod) }}
+                                                    {{ form_errors(form.toTransactionMethod) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid toBankHide">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">To Bank Account</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.toAccountBank) }}
+                                                    {{ form_errors(form.toAccountBank) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid toMobileBankHide">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">To Mobile Account</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.toAccountMobileBank) }}
+                                                    {{ form_errors(form.toAccountMobileBank) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Amount<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.amount) }}
+                                            {{ form_errors(form.amount) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Remark</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.remark) }}
+                                            {{ form_errors(form.remark) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green"><i class="icon-save"></i>&nbsp;Save</button>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+
+    {{ parent() }}
+    AccountingApproveProcess();
+    $('.fromMobileBankHide').hide();
+    $('.fromBankHide').hide();
+    $('.toMobileBankHide').hide();
+    $('.toBankHide').hide();
+
+
+    $(document).on('change', '.fromTransactionMethod', function() {
+
+        var transactionMethod = $(this).val();
+        if(transactionMethod == 2 ){
+        $('.fromBankHide').show(500);
+        $('.fromMobileBankHide').hide(500);
+        }else if(transactionMethod == 3 ){
+        $('.fromBankHide').hide(500);
+        $('.fromMobileBankHide').show(500);
+        }else{
+        $('.fromBankHide').hide(500);
+        $('.fromMobileBankHide').hide(500);
+        }
+
+    });
+
+    $(document).on('change', '.toTransactionMethod', function() {
+
+        var transactionMethod = $(this).val();
+        if(transactionMethod == 2 ){
+            $('.toBankHide').show(500);
+            $('.toMobileBankHide').hide(500);
+        }else if(transactionMethod == 3 ){
+            $('.toBankHide').hide(500);
+            $('.toMobileBankHide').show(500);
+        }else{
+            $('.toBankHide').hide(500);
+            $('.toMobileBankHide').hide(500);
+        }
+
+    });
+
+{% endblock %}

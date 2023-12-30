@@ -1,0 +1,101 @@
+{% extends ':bindu:base.html.twig' %}
+{% block body %}
+    <div id="tm-page-body">
+        <div id="tm-template-default-fullwidth" class="tm-container">
+            <div class="page-content">
+                <div class="page-content-inner tm-content">
+                    <div class="tm-row" style="padding:50px 0 80px; text-align:center; display: none">
+                        <div class="tm-wrap">
+                            <img alt="img" style="margin-bottom:20px" width="100" height="100" src="../../assets/bindu/img/sample/home/icons/mobile-icon.png">
+                            <div class="header-line-center-bottom">
+                                <h1>
+                                    Creative design on desktop, tablet and mobile
+                                </h1>
+                            </div>
+                            <p style="padding:30px 0">
+                                Fedora is ready to WOW the web visitors no matter what devices they are using to surf the website. With responsive layout, your website will seamlessly displays and run smoothly on any device including desktop, tablet and mobile phone with any screen resolution.
+                            </p>
+                            <div class="setanimate">
+                                <a><img alt="img" class="tm-animate slide-from-bottom" src="../../assets/bindu/img/sample/home/responsive.jpg"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tm-row" style="text-align:center;padding:50px 0 100px 0;background:#eee;">
+                        <div class="tm-wrap">
+                            <h1>Confirm to create new site</h1>
+
+                        </div>
+                    </div>
+
+                    <div class="tm-row" style="margin:-50px 0 0 0">
+                        <div class="tm-wrap">
+                            <div class="one-third">
+                                <div style="padding-top:100px">
+
+                                </div>
+                            </div>
+                            <div class="one-third">
+                                <div id="container-form">
+                                    <div class="entry-container">
+                                        <section id="tm-comment">
+                                            <section id="respond">
+                                                <!-- BEGIN FORM-->
+                                                <form class="form-vertical login-form" id="commentform" action="{{ path("fos_user_security_check") }}" method="post" novalidate="novalidate">
+                                                <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+                                                <div>
+                                                    <p><span class="fa-icon"><i class="fa  fa-mobile"></i></span>
+                                                        <input type="text" id="_username" name="_username" required="required" class="" placeholder="Enter your mobile no">
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <p><span class="fa-icon"><i class="fa  fa-lock"></i></span>
+                                                        <input type="text" id="_password" name="_password" required="required" class="secured" placeholder="Enter your password">
+                                                    </p>
+                                                </div>
+                                                <div><p class="form-suphobmit" style="text-align:right"><input id="signup" class="tm-btn dark small" type="submit" value="Signin" name="submit"></p></div>
+                                                </form>
+                                            </section>
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="one-third last">
+                                <div style="padding-top:100px">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!--page-content-->
+        </div>
+        <!--tm-container-->
+    </div>
+{% endblock %}
+
+{% block documentready %}
+
+        $('#commentform').validate({
+
+            rules: {
+                _username: {
+                    required: true
+                },
+                _password: {
+                    required: true
+                },
+            },
+            messages:{
+
+            },
+            submitHandler: function(form) {
+                 $('#commentform').submit();
+            }
+
+        });
+
+
+{% endblock %}

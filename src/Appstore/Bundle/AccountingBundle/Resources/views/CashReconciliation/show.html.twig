@@ -1,0 +1,234 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN account_cashreconciliation HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="account-title">
+                    Cash Reconciliation Entry
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_cashreconciliation') }}">Cash Reconciliation</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Cash Reconciliation</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END account_cashreconciliation HEADER-->
+        <!-- BEGIN account_cashreconciliation CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Cash Reconciliation Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('account_cashreconciliation') }}"><i class="icon-th-list"></i>&nbsp;Cash Reconciliation</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        {% set methods = ['Cash','Bank','Mobile'] %}
+                        <!-- BEGIN FORM-->
+                        <div class="form-actions portlet box red">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Reconciliation Summary</div>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        <table class="table table-bordered tatransactionCashOverviewsble-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-yellow">
+                                <th class="span3">Name of Transaction</th>
+                                <th class="span3">System</th>
+                                <th class="span3">Reconciliation</th>
+                                <th class="span3" >Less/More</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Bank</td>
+                                <td>{{ entity.systemBank|number_format }}</td>
+                                <td>{{ entity.bank|number_format }}</td>
+                                <td>{{ (entity.systemBank - entity.bank)|number_format }}</td>
+                            </tr>
+                            <tr>
+                                <td>Mobile</td>
+                                <td>{{ entity.systemMobile|number_format }}</td>
+                                <td>{{ entity.mobile|number_format }}</td>
+                                <td>{{ (entity.systemMobile - entity.mobile)|number_format }}</td>
+                            </tr>
+                            <tr>
+                                <td>Cash</td>
+                                <td>{{ entity.systemCash|number_format }}</td>
+                                <td>{{ entity.cash|number_format }}</td>
+                                <td>{{ (entity.systemCash - entity.cash)|number_format }}</td>
+                            </tr>
+                            <tr>
+                                <td>Grand Total</td>
+                                <td>{{ (entity.systemBank + entity.systemMobile + entity.systemCash)|number_format }}</td>
+                                <td>{{ (entity.bank + entity.mobile + entity.cash)|number_format }}</td>
+                                <td>{{ ((entity.systemBank + entity.systemMobile + entity.systemCash) - (entity.bank + entity.mobile + entity.cash))|number_format }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Bank Account Reconciliation</div>
+                                <div class="actions">
+                                    <div class="btn-group">
+                                        <button class="btn red" > <i class="icon-money"></i> Bank Amount: {{ entity.systemBank|number_format }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+
+                        {% if transactionBankCashOverviews.result is not empty %}
+                            <table class="table table-bordered tatransactionCashOverviewsble-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="span8">Bank Account Name</th>
+                                    <th class="span2" >System Amount</th>
+                                    <th class="span2" >Amount</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% set sumBank = 0 %}
+                                {% for note in entity.cashReconciliationMetas %}
+                                    {% if note.TransactionMethod == 'Bank' %}
+                                        <tr>
+                                            <th >{{ note.metaKey }}</th>
+                                            <th>{{ note.systemAmount }}</th>
+                                            <th class="numeric" >
+                                                <div class="span12">
+                                                    <div class="actions">{{ note.amount }}</div>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                                <tr>
+                                    <th class="numeric"><span class="pull-right">Grand Total</span></th>
+                                    <td class="numeric" ><strong id="">{{ entity.systemBank|number_format }}</strong></td>
+                                    <td class="numeric" ><strong id="bankTotal">{{ entity.bank|number_format }}</strong></td>
+                                </tr>
+                            </table>
+                        {% endif %}
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Mobile Account Reconciliation</div>
+                                <div class="actions">
+                                    <div class="btn-group">
+                                        <button class="btn red" > <i class="icon-money"></i> Mobile Amount: {{ entity.systemMobile|number_format }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+
+                        {% if transactionMobileBankCashOverviews.result is not empty %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="span8">Mobile Account</th>
+                                    <th class="span2" >System Amount</th>
+                                    <th class="span2" >Amount</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% set sumTotal = 0 %}
+                                {% for note in entity.cashReconciliationMetas %}
+                                    {% if note.TransactionMethod == 'Mobile' %}
+                                        <tr>
+                                            <th >{{ note.metaKey }}</th>
+                                            <th>{{ note.systemAmount }}</th>
+                                            <th class="numeric" >
+                                                <div class="span12">
+                                                    <div class="actions">
+                                                        <div class="btn-group">
+                                                            {{ note.amount }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                                <tr>
+                                    <th class="numeric"><span class="pull-right">Grand Total</span></th>
+                                    <td class="numeric" ><strong id="mobileTotal">{{ entity.systemMobile|number_format }}</strong></td>
+                                    <td class="numeric" ><strong id="">{{ entity.mobile|number_format }}</strong></td>
+                                </tr>
+                            </table>
+                        {% endif %}
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Notes Reconciliation</div>
+                                <div class="actions">
+                                    <div class="btn-group">
+                                        <button class="btn red" > <i class="icon-money"></i> Cash Amount: {{ entity.systemCash|number_format }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-grey">
+                                <th class="span10">Note/Particular</th>
+                                <th class="span2" >Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% set sumTotal = 0 %}
+                            {% for note in entity.cashReconciliationMetas %}
+                                {% if note.TransactionMethod == 'Cash' %}
+                                    <tr>
+                                        <th>{{ note.metaKey }}</th>
+                                        <th class="numeric" >
+                                            <div class="span12">
+                                                <div class="actions">{{ note.amount }}</div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                            <tr>
+                                <th class="numeric"><span class="pull-right">Grand Total</span></th>
+                                <td class="numeric" ><strong id="total">{{ entity.systemCash|number_format }}</strong></td>
+                            </tr>
+                        </table>
+                        <div class="clearfix">&nbsp;</div>
+                    </div>
+                    <!-- END FORM-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+    <style>
+        input[class*="span"].custom-field
+        {
+            text-align: right;
+            border: 2px solid red!important;
+        }
+    </style>
+{% endblock %}

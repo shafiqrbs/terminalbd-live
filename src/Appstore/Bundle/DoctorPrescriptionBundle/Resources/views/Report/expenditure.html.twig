@@ -1,0 +1,97 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="page-title">
+                Expense Report
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li>
+                    <a href="javascript:">Expense Report</a>
+                </li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-reorder"></i>Expense Category wise Report</div>
+                    <div class="actions">
+                        {% set startDate = searchForm.startDate is defined ? searchForm.startDate :'' %}
+                        {% set endDate = searchForm.endDate is defined ? searchForm.endDate :'' %}
+                        <a target="_blank" href="{{ path('dps_report_expenditure_pdf',{'startDate':startDate,'endDate':endDate}) }}" class="btn purple"><i class="icon icon-print"></i> Download</a>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <form class="search-form" action="" method="get" name="itemSearch">
+                        <div class="row-fluid">
+                            <div class="span6"></div>
+                            <div class="span3">
+                                <div class="input-icon left">
+                                    <i class="icon-calendar"></i>
+                                    <input class="m-wrap span12 search-input date-picker" name="startDate" id="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Created start date{% endif %}" >
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="controls">
+                                    <div class="input-append span11">
+                                        <input class="m-wrap span9 date-picker" style="padding-left: 15px" name="endDate" id="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}Created end date{% endif %}">
+                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="clearfix">&nbsp;</div>
+                    <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                        <tr>
+                            <th class="numeric span8">Expense Category</th>
+                            <th class="numeric">Amount</th>
+                        </tr>
+                        {% set subTotal = 0 %}
+                        {% for expenditure in expenditures %}
+                            {%  set subTotal = subTotal + expenditure.amount  %}
+                            <tr>
+                                <th class="numeric span8">{{ loop.index }}. {{ expenditure.categoryName }}</th>
+                                <th class="numeric">{{ expenditure.amount|number_format }}</th>
+                            </tr>
+                        {% endfor %}
+
+                        <tfoot>
+                        <tr><th>Total Expense</th><th>{{ subTotal|number_format }}</th></tr>
+                        </tfoot>
+                    </table>
+                    <div class="clearfix">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    {% endblock %}
+    {% block javascriptBlock %}
+        {{ parent() }}
+        {% javascripts
+        '@DoctorPrescriptionBundle/Resources/public/js/approveProcess.js'
+        %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    {% endblock %}
+    {% block documentready %}
+        {{ parent() }}
+        AccountingApproveProcess();
+    {% endblock %}

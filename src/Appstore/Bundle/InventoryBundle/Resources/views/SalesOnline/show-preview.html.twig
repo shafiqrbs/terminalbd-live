@@ -1,0 +1,112 @@
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+    <h3>Invoice ID # {{ entity.invoice }}</h3>
+</div>
+<div class="modal-body">
+    <div class="scroller" style="height:300px" data-always-visible="1" data-rail-visible1="1">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet-body">
+                    <div class="portlet-body form">
+                        <div class="row-fluid">
+
+                            <div class="span4">
+                                <h4>About:</h4>
+                                <ul class="unstyled">
+                                    {% if entity.customer is not empty %}<li><strong>Customer #:</strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                                    {% if entity.customer is not empty %}<li><strong>Mobile #:</strong>&nbsp;{{ entity.customer.mobile }}</li>{% endif %}
+                                    {% if entity.customer is not empty %}<li><strong>Address #:</strong>&nbsp;{{ entity.customer.address }}</li>{% endif %}
+                                    {% if entity.customer is not empty and entity.customer.location is not empty   %}<li><strong>Location #:</strong>&nbsp;{{ entity.customer.location.name }}, {{ entity.customer.location.parent.name }}</li>{% endif %}
+                                    <li><strong>Created:</strong>&nbsp;{{ entity.created|date('d-m-Y') }}</li>
+                                </ul>
+                            </div>
+
+                            <div class="span4 invoice-payment">
+                                <ul class="unstyled">
+                                    <li><strong>Total BDT:</strong>&nbsp;{{ entity.subTotal|number_format() }}</li>
+                                    {% if entity.discount %}<li><strong>Discount BDT:</strong>&nbsp;{{ entity.discount|number_format() }}</li>{% endif %}
+                                    <li><strong>Net Total BDT:</strong>&nbsp;{{ entity.payment|number_format() }}</li>
+                                    <li><strong>Payment BDT:</strong>&nbsp;{{ entity.payment|number_format() }}</li>
+                                    {% if entity.due %}<li><strong>Due BDT:</strong>&nbsp;{{ entity.due|number_format() }}</li>{% endif %}
+                                    <li><strong>Payment status</strong>&nbsp;{{  entity.paymentStatus|capitalize }}</li>
+                                </ul>
+                                <h4>Payment Details:</h4>
+                            </div>
+                            <div class="span4">
+                                <h4>Payment Method:</h4>
+                                <ul class="unstyled">
+                                    <li><strong>Payment Method:</strong>&nbsp;{{ entity.paymentMethod }}</li>
+                                    {% if entity.accountMobileBank is not empty %}<li><strong>Received Mobile:</strong>&nbsp;{{ entity.accountMobileBank.name }}</li>{% endif %}
+                                    {% if entity.paymentMobile is not empty %}<li><strong>Mobile/Transaction:</strong>&nbsp;{{ entity.paymentMobile }}/{{ entity.transactionId }}</li>{% endif %}
+                                    {% if entity.accountBank is not empty %}<li><strong>Received Bank:</strong>&nbsp;{{ entity.accountBank.name }}</li>{% endif %}
+                                    {% if entity.paymentCard is not empty %}<li><strong>Payment Card/No:</strong>&nbsp;{{ entity.paymentCard.name }}/{{ entity.cardNo }}</li>{% endif %}
+                                    {% if entity.bank is not empty %}<li><strong>Bank:</strong>&nbsp;{{ entity.bank.name  }}</li>{% endif %}
+                                    <li><strong>Sales By:</strong>&nbsp;{% if entity.createdBy is defined and entity.createdBy is not empty %}{{ entity.createdBy }}{% endif %}</li>
+                                    <li><strong>Confirmed By:</strong>&nbsp;{% if entity.approvedBy is defined and entity.approvedBy is not empty %}{{ entity.approvedBy }}{% endif %}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row-fluid box green">
+                            {% if entity.salesItems is defined and  entity.salesItems is not empty  %}
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+                                    <thead class="flip-content ">
+                                    <tr class="head-green">
+                                        <td>&nbsp;&nbsp;<i class="icon-reorder"></i></td>
+                                        <th class="numeric" >Item</th>
+                                        <th class="numeric" >Barcode</th>
+                                        <th class="numeric" >Qnt</th>
+                                        <th class="numeric" >Estimate price</th>
+                                        <th class="numeric" >Sales price</th>
+                                        <th class="numeric" >Sub-total</th>
+                                        {% if entity.inventoryConfig.isBranch == 1 %}
+                                        <th class="numeric" >Branch Stock</th>
+                                        <th class="numeric" ></th>
+                                        {% endif %}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for salesItem in entity.salesItems %}
+                                        <tr>
+                                            <td class="numeric" >{{ loop.index }}</td>
+                                            <td class="numeric" >{{ salesItem.item.name }}</td>
+                                            <td class="numeric" >{{ salesItem.purchaseItem.barcode }}</td>
+                                            <td class="numeric" >{{ salesItem.quantity }}</td>
+                                            <td class="numeric" >{{ salesItem.estimatePrice|number_format() }}</td>
+                                            <td class="numeric" >{{ salesItem.salesPrice|number_format() }}</td>
+                                            <td class="numeric" >{{ salesItem.subTotal|number_format() }}</td>
+                                            {% if entity.inventoryConfig.isBranch == 1 %}
+                                                <td class="numeric" >
+                                                    {% if itemBranchStocks['stockReceiveItem'][salesItem.purchaseItem.id]|default(0)  is empty %}
+                                                        Received NULL
+                                                    {% else %}
+                                                        {{ itemBranchStocks['stockReceiveItem'][salesItem.purchaseItem.id]|default(0) + itemBranchStocks['stockSalesReturnItem'][salesItem.purchaseItem.id]|default(0) - itemBranchStocks['stockSalesItem'][salesItem.purchaseItem.id]|default(0) - itemBranchStocks['stockReturnItem'][salesItem.purchaseItem.id]|default(0) }}
+                                                    {% endif %}
+                                                </td>
+                                                <td class="numeric"  ><a href="javascript:" id="{{ salesItem.purchaseItem.barcode }}" data-url="{{ path('inventory_barcode_wise_branch_stock',{'barcode' : salesItem.purchaseItem.barcode }) }}" class="btn mini purple itemBranchPreview">Details</a></td>
+                                            {% endif %}
+                                        </tr>
+                                        {% if entity.inventoryConfig.isBranch == 1 %}
+                                            <tr><td colspan="10" id="branchDetails-{{ salesItem.purchaseItem.barcode }}"></td></tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    {% if entity.inventoryConfig.onlineSalesPrinter == 'pos'  %}
+        <a href="javascript:" data-url="{{ path('inventory_online_pos_print_individual',{'id':entity.id}) }}"  class="btn green  onlinePosPrintIndividual" ><i class="icon-print"></i> Pos Print</a>
+    {% else %}
+        <a href="{{ path('inventory_sales_print_invoice',{'invoice':entity.invoice}) }}" target="_blank" class="btn green " ><i class="icon-print"></i> Print</a>
+    {% endif %}
+    <span  class="btn blue"><i class=" icon-retweet"></i>&nbsp;{{ entity.process }}</span>
+    <button type="button" data-dismiss="modal" class="btn">Close</button>
+</div>

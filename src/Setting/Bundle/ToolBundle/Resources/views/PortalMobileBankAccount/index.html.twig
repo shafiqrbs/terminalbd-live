@@ -1,0 +1,92 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Mobile Bank Account
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('mobilebankaccount') }}">Mobile Bank Account</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> Mobile Bank Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i> Mobile Bank Account Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('mobilebankaccount_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('mobilebankaccount') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+
+                                <tr class="head-grey">
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Account Owner</th>
+                                    <th class="numeric" >Service Name</th>
+                                    <th class="numeric" >Authorised</th>
+                                    <th class="numeric" >Account Type</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr id="remove-{{ entity.id }}">
+                                        <td class="numeric" >{{   entity.mobile }}</td>
+                                        <td class="numeric" >{{ entity.accountOwner }}</td>
+                                        <td class="numeric" >{{ entity.serviceName }}</td>
+                                        <td class="numeric" >{{ entity.authorised }}</td>
+                                        <td class="numeric" >{{ entity.accountType }}</td>
+                                        <td class="numeric" >
+                                            <a href="{{ path('mobilebankaccount_edit',{'id':entity.id}) }}" id=""  class="btn blue mini"><i class="icon-pencil"></i></a>
+                                            <a href="javascript:" id="" data-id="{{ entity.id }}" class="btn red mini delete"  data-url="{{ path('mobilebankaccount_delete',{'id':entity.id}) }}"><i class="icon-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

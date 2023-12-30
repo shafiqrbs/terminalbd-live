@@ -1,0 +1,81 @@
+{% extends ':frontend/template:base.html.twig' %}
+{% block body %}
+    <section>
+        <div class="container" style="border-bottom: 1px; border-color: #c0c5c9">
+            <div class="row">
+                {% if globalOption.templateCustomize.showSidebar == 1 and globalOption.templateCustomize.sidebarPosition == 'left' and menu.featureWidgetExist == 'ture' %}
+                    <div class="col-md-3"  >
+                        {% if globalOption.templateCustomize.sidebarTitle is not empty %}
+                            <div class="page-title">{{ globalOption.templateCustomize.sidebarTitle }}</div>
+                        {% endif %}
+                        {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                            {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'sidebar-top'}) %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <div class="{% if globalOption.templateCustomize.showSidebar == 1 and menu.featureWidgetExist == 'true'  %} col-md-9 {% else %} col-md-12 {% endif %}"  >
+                    {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                        {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu': menu.id,'position':'body-top'}) %}
+                    {% endif %}
+                    {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                        {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'body-bottom'}) %}
+                    {% endif %}
+                </div>
+                {% if globalOption.templateCustomize.showSidebar == 1 and globalOption.templateCustomize.sidebarPosition == 'right' and menu.featureWidgetExist == 'true'  %}
+                    <div class="col-md-3">
+                        {% if globalOption.templateCustomize.sidebarTitle is not empty %}
+                            <div class="page-title-bar row">
+                                <div class="col-md-12">
+                                    <div class="btn-group pull-left">
+                                        <div class="page-title"><span class="glyphicon glyphicon-tag"></span>&nbsp;{{ globalOption.templateCustomize.sidebarTitle }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                            {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'sidebar-top'}) %}
+                        {% endif %}
+                        {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                            {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'sidebar-bottom'}) %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    <div class="clearfix"></div>
+    <script>
+        {% if globalOption.templateCustomize.showSidebar == 1 and menu.featureWidgetExist == 'true' %}
+            columnItem = 3;
+        {% else %}
+            columnItem = 4;
+        {% endif %}
+    </script>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@FrontendBundle/Resources/public/template/desktop/css/sidebar.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+        '@FrontendBundle/Resources/public/template/desktop/js/sidebar.js'
+        '@FrontendBundle/Resources/public/template/desktop/js/page.js'
+        '@FrontendBundle/Resources/public/template/desktop/js/headerfooter.js'
+        '@FrontendBundle/Resources/public/template/desktop/js/corporate.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    {% if globalOption.templateCustomize.showSidebar == 1 and menu.featureWidgetExist == 'true' %}
+        sliderPageOwl(3);
+    {% else %}
+        sliderPageOwl(4);
+    {% endif %}
+{% endblock %}
+

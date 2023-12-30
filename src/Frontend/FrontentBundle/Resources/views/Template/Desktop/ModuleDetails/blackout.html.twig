@@ -1,0 +1,24 @@
+{% extends ':mobile/slasher:base.html.twig' %}
+{% block body %}
+    {{ include('mobile/slasher/header.html.twig')}}
+    <div class="page-header-clear"></div>
+    <div class="container no-bottom">
+        <h3> {{ entity.user.blackout.name }} </h3>
+        <div class="decoration"></div>
+        <p class="left-text">{{ entity.user.blackout.content }}</p>
+        <div class="decoration"></div>
+        <div id="blackout" class="box"></div>
+    </div>
+{% endblock %}
+{% block documentready %}
+
+    $('#blackout').multiDatesPicker({
+    dateFormat: "dd/mm/yy",
+    addDates:{{ entity.user.blackout.offBlackoutDate|json_encode|raw }}
+    });
+
+
+{% endblock %}
+
+
+

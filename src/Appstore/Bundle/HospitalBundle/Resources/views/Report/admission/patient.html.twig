@@ -1,0 +1,101 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    h1 , h2 , h3 , h4 , h5 , h6,p{
+        display: block;
+        padding: 0;
+        margin: 0;
+    }
+    h3 {
+        font-size: 24px;
+        line-height: 45px;
+        height: 45px;
+    }
+
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+<table class="table">
+    <thead>
+        <tr>
+        <th>S/N</th>
+        <th>Created</th>
+        <th>Released</th>
+        <th>Patient Name</th>
+        <th>Mobile</th>
+        <th>Assign Doctor</th>
+        <th>Anesthesia Doctor</th>
+        <th>Assistant Doctor</th>
+        <th>Total</th>
+        <th>Payment</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% set sumSalesTotal = 0 %}
+    {% set sumPurchaseTotal = 0 %}
+    {% for entity in entities %}
+        {% set sumSalesTotal = sumSalesTotal + entity.total %}
+        {% set sumPurchaseTotal = sumPurchaseTotal + entity.payment %}
+        {% set sumPurchaseTotal = 0 %}
+    <tr>
+        <td class="numeric">{{ loop.index }}</td>
+        <td class="numeric">{{ entity.created|date('d-m-Y') }}</td>
+        <td class="numeric">{{ entity.updated|date('d-m-Y') }}</td>
+        <td class="numeric">{{ entity.customer.name }}</td>
+        <td class="numeric">{{ entity.customer.mobile }}</td>
+        <td class="numeric">{% if entity.assignDoctor is not empty %}{{ entity.assignDoctor.name }}{% endif %}</td>
+        <td class="numeric">{% if entity.anesthesiaDoctor is not empty %}{{ entity.anesthesiaDoctor.name }}{% endif %}</td>
+        <td class="numeric">{% if entity.assistantDoctor is not empty %}{{ entity.assistantDoctor.name }}{% endif %}</td>
+        <td class="numeric">{{ entity.total }}</td>
+        <td class="numeric">{{ entity.payment }}</td>
+        <td class="numeric">{{ entity.process|capitalize }}</td>
+    </tr>
+    {% endfor %}
+<tr><th class="span11" colspan="8"><span class=" pull-right">Total</span></th><th>{{ sumPurchaseTotal|number_format(2) }}</th><th>{{ sumSalesTotal|number_format(2) }}</th><th>{{ (sumSalesTotal - sumPurchaseTotal)|number_format(2) }}</th></tr>
+</tbody>
+</table>

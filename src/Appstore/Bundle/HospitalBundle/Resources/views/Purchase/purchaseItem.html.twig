@@ -1,0 +1,162 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">Stock Item Details</h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Stock Item Details</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Stock Item Details Item</div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+
+                                    <div class="span3">
+                                        <input type="text" id="startExpiryDate" name="startExpiryDate"  class="span6 m-wrap dateCalendar" value="{% if searchForm.startExpiryDate is defined %}{{ searchForm.startExpiryDate }}{% endif %}"  autocomplete="off" placeholder="Expiry start date">
+                                        <input type="text" id="endExpiryDate"  name="endExpiryDate"  class="span6 m-wrap dateCalendar" value="{% if searchForm.endExpiryDate is defined %}{{ searchForm.endExpiryDate }}{% endif %}"  autocomplete="off"  placeholder="Expiry end date">
+                                    </div>
+                                    <div class="span3">
+                                        <select name="rackNo" id="rackNo" class="span12 m-wrap">
+                                            <option value="">Rack no</option>
+                                            {% for rack in racks %}
+                                                <option {% if searchForm.rack is defined and searchForm.rack == method.id %} selected="selected" {% endif %} value="{{ rack.id }}" >{{ rack.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <select name="mode" id="mode" class="span12 m-wrap">
+                                            <option  value="">Product Mode</option>
+                                            {% for mode in modeFor %}
+                                                <option {% if searchForm.mode is defined and searchForm.mode == mode.slug %} selected="selected" {% endif %} value="{{ mode.slug }}">{{ mode.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="grn"  name="grn"  class="span12 m-wrap" value="{% if searchForm.grn is defined %}{{ searchForm.grn }}{% endif %}"  autocomplete="off"  placeholder="Enter purchase grn no">
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="name" name="name"  class="span12 m-wrap select2StockMedicineName" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Enter medicine & others name ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="brandName"  name="brandName"  class="span12 m-wrap select2BrandName" value="{% if searchForm.brandName is defined %}{{ searchForm.brandName }}{% endif %}"  autocomplete="off"  placeholder="Product brand name">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="vendor" name="vendor"  class="span12 m-wrap select2VendorCompany" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Enter vendor name">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="sku"  name="sku"  class="span12 m-wrap" value="{% if searchForm.sku is defined %}{{ searchForm.sku }}{% endif %}"  autocomplete="off"  placeholder="Enter mediicne/accessories sku">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric" >Expiry Date</th>
+                                <th class="numeric" >Barcode</th>
+                                <th class="numeric" >Medicine Name</th>
+                                <th class="numeric" >Rack</th>
+                                <th class="numeric" >Grn</th>
+                                <th class="numeric" >Vendor</th>
+                                <th class="numeric" >PP</th>
+                                <th class="numeric" >MRP</th>
+                                <th class="numeric" >Quantity</th>
+                               {# <th class="numeric" >P Return</th>
+                                <th class="numeric" >S Qnt.</th>
+                                <th class="numeric" >S Return</th>
+                                <th class="numeric" >Damage</th>
+                                <th class="numeric" >Remain Qnt.</th>#}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for entity in entities %}
+                                <tr {% if entity.expirationEndDate is not empty and "now"|date('Y-m-d') >= entity.expirationEndDate|date('Y-m-d') %} class="red-alert" {% endif %} >
+                                    <th class="numeric" >{% if  entity.expirationEndDate is not empty %}
+                                            <a href="javascript:" id="expirationDate" data-url="{{ path('medicine_purchaseitem_inline_update') }}"  data-name="expirationDate" data-type="date" data-viewformat="dd-mm-yyyy" data-pk="{{ entity.id }}" data-placement="right" data-original-title="Change medicine expiration date" class="editable editable-click" style="background-color: rgba(0, 0, 0, 0);">{{ entity.expirationEndDate|date('d-m-Y') }}</a>
+                                        {% endif %}</th>
+                                    <td class="numeric" >{{ entity.barcode }}</td>
+                                    <td class="numeric" >{{ entity.medicineStock.name }}</td>
+                                    <td class="numeric" >{% if entity.medicineStock.rackNo is not empty %}{{ entity.medicineStock.rackNo.name }}{% endif %}</td>
+                                    <td class="numeric" >{{ entity.medicinePurchase.grn }}</td>
+                                    <td class="numeric" >{% if entity.medicinePurchase.medicineVendor is defined and entity.medicinePurchase.medicineVendor is not empty %}{{ entity.medicinePurchase.medicineVendor.companyName }}{% endif %}</td>
+                                    <td class="numeric" >
+                                        {% if ( app.user.granted("ROLE_MEDICINE_MANAGER") or app.user.granted("ROLE_DOMAIN"))  %}
+                                            <a  class="editable" data-name="PurchasePrice" href="#"  data-url="{{ path('medicine_purchaseitem_inline_update_purchase_price',{'id':entity.id}) }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change purchase price">{{ entity.purchasePrice }}</a>
+                                        {% endif %}
+                                    </td>
+                                    <td class="numeric" >{{ entity.salesPrice }}</td>
+                                    <td class="numeric" >{{ entity.quantity }}</td>
+                                    {#
+                                    <td class="numeric" >{{ entity.purchaseReturnQuantity }}</td>
+                                    <td class="numeric" >{{ entity.salesQuantity }}</td>
+                                    <td class="numeric" >{{ entity.salesReturnQuantity }}</td>
+                                    <td class="numeric" >{{ entity.damageQuantity }}</td>
+                                    <td class="numeric" >{{ entity.remainingQuantity }}</td>#}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="pagination pull-center" >
+                            {{ knp_pagination_render(entities) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+<style>
+    .red-alert th, .red-alert td{
+        background-color: red!important;
+        color: #fff!important;
+    }
+</style>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/editable.js'
+    '@MedicineBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    EditableWithLoadInit();
+{% endblock %}
+
+
+

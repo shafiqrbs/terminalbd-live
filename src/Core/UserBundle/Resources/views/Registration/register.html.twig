@@ -1,0 +1,132 @@
+{% extends "login.html.twig" %}
+{% block body %}
+
+    <!-- BEGIN LOGO -->
+    <div class="logo">
+        <img src="../../assets/frontend/img/bdeducations.png" height="80" alt="" />
+    </div>
+    <!-- END LOGO -->
+    <!-- BEGIN LOGIN -->
+    <div class="content">
+        <!-- BEGIN REGISTRATION FORM -->
+        <form action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="POST" class="fos_user_registration_register form-vertical">
+            <div class="alert alert-error {% if not form.vars.errors|length %} hide {% endif %}">
+                <button class="close" data-dismiss="alert"></button>
+                You have some form errors. Please check below.
+                {{ form_errors(form) }}
+            </div>
+            <h3 >Sign Up</h3>
+            <p>Organization Name<span class="required">*</span>:</p>
+            <div class="control-group">
+                <label class="control-label visible-ie8 visible-ie9">Institute Name</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <i class="icon-font"></i>
+                        {{ form_widget(form.globalOption.name)}}
+                        {{ form_errors(form.globalOption.name) }}
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                <label class="control-label visible-ie8 visible-ie9">Group</label>
+
+
+                <div class="controls">
+                    <div class="input-icon left">
+                        {{ form_widget(form.globalOption.syndicate)}}
+                        {{ form_errors(form.globalOption.syndicate) }}
+                    </div>
+                </div>
+            </div>
+            <p>Enter your personal details below:</p>
+            <div class="control-group">
+                <label class="control-label visible-ie8 visible-ie9">Full Name</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <i class="icon-font"></i>
+                        {{ form_widget(form.name)}}
+                        {{ form_errors(form.name) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label visible-ie8 visible-ie9">Address</label>
+                <div class="controls">
+                    <div class="input-icon input-prepend"><span class="add-on">+88</span>
+                        {{ form_widget(form.profile.mobile)}}
+                        {{ form_errors(form.profile.mobile) }}
+                    </div>
+                </div>
+            </div>
+            <p>Enter your account details below:</p>
+            <div class="control-group">
+                <label class="control-label visible-ie8 visible-ie9">Username</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <i class="icon-envelope"></i>
+                        {{ form_widget(form.email)}}
+                        {{ form_errors(form.email) }}
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label visible-ie8 visible-ie9">Username</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <i class="icon-user"></i>
+                        {{ form_widget(form.username)}}
+                        {{ form_errors(form.username) }}
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label visible-ie8 visible-ie9">Password</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <i class="icon-lock"></i>
+                        {{ form_widget(form.plainPassword.first, {'attr': {'class': 'm-wrap placeholder-no-fix', 'placeholder' : 'Confirm Password' , 'autocomplete':'off' } } ) }}
+                        {{ form_errors(form.plainPassword.first) }}
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label visible-ie8 visible-ie9">Re-type Your Password</label>
+                <div class="controls">
+                    <div class="input-icon left">
+                        <i class="icon-ok"></i>
+                        {{ form_widget(form.plainPassword.second, {'attr': {'class': 'm-wrap placeholder-no-fix', 'placeholder' : 'Confirm Password' , 'autocomplete':'off' } } ) }}
+                        {{ form_errors(form.plainPassword.second) }}
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    {#<label class="checkbox">
+                        {{ form_widget(form.globalOption.status)}} I agree to the <a target="_blank" href="/terms-of-service">Terms of Service</a> and <a target="_blank" href="{{ path('frontend_privacy') }}">Privacy Policy</a>
+                    </label>
+#}
+                    <div id="register_tnc_error"></div>
+                </div>
+            </div>
+            {{ form_rest(form) }}
+            <div class="form-actions">
+                <button id="register-back-btn" type="button" class="btn" onclick="window.location='/login'">
+                    <i class="m-icon-swapleft"></i>  Back
+                </button>
+                <button type="submit" id="register-submit-btn" class="btn green pull-right">
+                    Sign Up <i class="m-icon-swapright m-icon-white"></i>
+                </button>
+            </div>
+        </form>
+        <!-- END REGISTRATION FORM -->
+    </div>
+    <!-- END LOGIN -->
+    <!-- BEGIN COPYRIGHT -->
+    <div class="copyright">
+        {{ "now"|date('Y') }} &copy; Business Booster Ltd.
+    </div>
+
+    <!-- END COPYRIGHT -->
+{% endblock body %}

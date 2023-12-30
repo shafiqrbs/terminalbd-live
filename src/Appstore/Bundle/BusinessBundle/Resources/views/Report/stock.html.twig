@@ -1,0 +1,116 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Sales Item Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> Stock Item Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Stock Item Report</div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <input class="m-wrap span12 select2ParticularName" name="name" id="name" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Search particular name">
+                                    </div>
+                                    <div class="span5">
+                                        <div class="input-append span12">
+                                        <select name="category" id="category" class="m-wrap span12">
+                                            <option value="" >--Category--</option>
+                                            {% for cat in categories %}
+                                                <option value="{{ cat.id }}" {% if searchForm.category is defined and searchForm.category == cat.id %} selected="selected" {% endif %} >{{ cat.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="btn-group">
+                                            <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric" >SKU</th>
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Purchase</th>
+                                <th class="numeric" >Sales</th>
+                                <th class="numeric" >Bonus</th>
+                                <th class="numeric" >Pur Return</th>
+                                <th class="numeric" >Sales Return</th>
+                                <th class="numeric" >Sales Damage</th>
+                                <th class="numeric" >Damage</th>
+                                <th class="numeric" >Remain</th>
+                                <th class="numeric" >Unit</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for entity in pagination %}
+                                <tr>
+                                    <td class="numeric" >{{ entity.particularCode }}</td>
+                                    <td class="numeric" >{{ entity.name }}</td>
+                                    <td class="numeric" >{{ entity.purchaseQuantity }}</td>
+                                    <td class="numeric" >{{ entity.salesQuantity }}</td>
+                                    <td class="numeric" >{{ entity.bonusQuantity }}</td>
+                                    <td class="numeric" >{{ entity.purchaseReturnQuantity }}</td>
+                                    <td class="numeric" >{{ entity.salesReturnQuantity }}</td>
+                                    <td class="numeric" >{% if damages[entity.id] is defined and damages[entity.id] is not empty %}{{ damages[entity.id] }}{% endif %}</td>
+                                    <td class="numeric" >{{ entity.damageQuantity }}</td>
+                                    <td class="numeric" >
+                                        {% if damages[entity.id] is defined and damages[entity.id] is not empty %}
+                                            {{ (entity.remainingQuantity + entity.bonusQuantity - damages[entity.id]) }}
+                                        {% else %}
+                                            {{ (entity.remainingQuantity + entity.bonusQuantity) }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="numeric">{% if  entity.unit is defined and  entity.unit is not empty %}{{ entity.unit.name|default('---') }}{% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="pagination pull-center" >
+                            {{ knp_pagination_render(pagination) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BusinessBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

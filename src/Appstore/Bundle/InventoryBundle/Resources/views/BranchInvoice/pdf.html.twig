@@ -1,0 +1,162 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 50%;
+        border-collapse: collapse;
+        font-size: 12px;
+        font-family:tahoma, geneva, sans-serif;
+        margin:0 auto;
+
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 12px;
+        background: #333;
+        color: #fff;
+        height:25px;
+        font-weight: bold;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height:25px;
+        line-height:25px;
+    }
+
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+    .dl-horizontal{
+        margin: 0;
+        padding: 0;
+    }
+    .dl-horizontal dt {
+        float: left;
+        width: 75px;
+        overflow: hidden;
+        clear: left;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .dl-horizontal dd {
+        margin-left:80px;
+    }
+    #barcode{float: right;text-align: center;width: 170px;margin-top:15px;}
+
+    .btn {
+        position: relative;
+        margin-right: 2%;
+        border: 2px solid black;
+        border-radius: 2px;
+        height: 36px;
+        width: 36px;
+        float: left;
+    }
+    #dots:before {
+        position: absolute;
+        content: "\f10b";
+        border-top: 6px solid black;
+        border-bottom: 17px double black;
+        height: 5px;
+        width: 30px;
+        top: 4px;
+        right: 3px;
+    }
+    #dots:after {
+        position: absolute;
+        content: "";
+        border-left: 6px solid white;
+        border-right: 6px solid white;
+        height: 28px;
+        width: 6px;
+        top: 4px;
+        left: 9px;
+    }
+
+    .fa-mobile-phone:before, .fa-mobile:before {
+        content: "\f10b";
+    }
+    .pull-center p img{
+        height: 12px;
+        width: 12px;
+    }
+
+</style>
+  {{ print|raw }}
+  <table class="table">
+      <thead>
+      <tr>
+          <th class="pull-center"><img height="60" src="{{ asset('assets/img/paris-logo.png') }}"></th>
+          <th class="pull-center" colspan="4">
+              <h3>Paris Fabric’s & Tailors</h3>
+          </th>
+      </tr>
+      <tr>
+
+          <th class="pull-center" colspan="5">
+              <p><img src="{{ asset('assets/img/phone.png') }}">&nbsp;01828148148&nbsp;<img src="{{ asset('assets/img/envelope.png') }}">&nbsp;info@tycoontex.com&nbsp;<img src="{{ asset('assets/img/world.png') }}">&nbsp;tycoontex.com</p>
+          </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="head">
+          <td class="numeric" >S/N</td>
+          <td class="numeric" >Particulars</td>
+          <td class="numeric" >Qnt</td>
+          <td class="numeric" >Price</td>
+          <td class="numeric" >Total</td>
+      </tr>
+      {% for invoiceItem in entity.branchInvoiceItems %}
+      <tr>
+
+          <td class="numeric" >{{ loop.index }}.</td>
+          <td class="numeric" >{{ invoiceItem.purchaseItem.item.masterItem.name }}</td>
+          <td class="numeric" >{{ invoiceItem.quantity }}</td>
+          <td class="numeric" >{{ invoiceItem.salesPrice }}</td>
+          <td class="numeric" >{{ invoiceItem.subTotal|number_format }}</td>
+
+      </tr>
+      {% endfor %}
+     </tbody>
+      <tr><th class="numeric" colspan="4" ><span class="pull-right">Grand Total</span></th><th class="numeric" >{{ entity.total|number_format }}</th></tr>
+      <tr><th class="numeric" colspan="4" ><span class="pull-right">Advance</span></th><th class="numeric" >{{ entity.total|number_format }}</th></tr>
+      <tr><th class="numeric" colspan="4" ><span class="pull-right">Due</span></th><th class="numeric" >{{ entity.total|number_format }}</th></tr>
+      <tr><td colspan="5" >
+              <div style="float: left">
+                  <dl class="dl-horizontal">
+                      <dt>Order:</dt><dd>20-12-2016</dd>
+                      <dt>Delivery:</dt><dd>29-12-2016</dd>
+                      <dt>Received By:</dt><dd>Asad Ahmed</dd>
+                  </dl>
+              </div>
+              <div id="barcode">
+                  {{ barCoder|raw }}
+              </div>
+      </tr>
+      <tr><td style="background: #c3ccda; text-align: center" colspan="5" >Delivery Time:7.30 P.M. Trail After Delivery.</td></tr>
+      <tr><td style="background: #666; text-align: center" colspan="5" ><strong>Notes. The Receipt Remains Valid for 3(three) Months only.</strong></td></tr>
+  </table>

@@ -1,0 +1,71 @@
+<div class="row-fluid">
+
+    <div class="span6">
+        <h4>Item Overview:</h4>
+        <ul class="unstyled">
+            <li><strong>Received Quantity</strong>: {{ totalQnt }}</li>
+            <li><strong>Item Name</strong>: {{ entity.masterItem.name }}</li>
+            {% if entity.masterItem.category is defined and entity.masterItem.category is not empty %}<li><strong>Category</strong>: {{ entity.masterItem.category.name }}</li>{% endif %}
+            {% if entity.brand is defined and entity.brand is not empty %}<li><strong>Brand</strong>: {{ entity.brand.name }}</li>{% endif %}
+            {% if entity.size is defined and entity.size is not empty %}<li><strong>Size/Dimension</strong>: {{ entity.size.name }}</li>{% endif %}
+            {% if entity.color is defined and entity.color is not empty %}<li><strong>Color</strong>: {{ entity.color.name }}</li>{% endif %}
+        </ul>
+    </div>
+</div>
+<table class="table table-bordered table-striped table-condensed flip-content ">
+
+    <thead class="flip-content ">
+    <tr class="head-grey">
+        <th class="numeric" ><i class="icon-reorder"></i></th>
+        <th class="numeric" >Barcode</th>
+        <th class="numeric" >Sales Date</th>
+        <th class="numeric" >Invoice</th>
+        <th class="numeric" >Mode</th>
+        <th class="numeric" >Estimate Price</th>
+        <th class="numeric" >Sales Price</th>
+        <th class="numeric" >Process</th>
+        <th class="numeric" >Sales Qnt</th>
+        <th class="numeric" >Ongoing Qnt</th>
+        <th class="numeric" >Sales Return Qnt</th>
+    </tr>
+    </thead>
+    <tbody >
+
+    {% set salesItem = 0 %}
+    {% set ongoingItem = 0 %}
+    {% set salesReturnItem = 0 %}
+
+
+    {% for entity in entities %}
+    {% if  entity.process == 'Done' %}
+        {%  set salesItem = salesItem + entity.quantity  %}
+    {% endif %}
+    {% if  entity.process != 'Done' %}
+        {%  set ongoingItem = ongoingItem + entity.quantity %}
+    {% endif %}
+        {%  set salesReturnItem = salesReturnItem + stockSalesReturnItem[entity.salesItemId]|default(0) %}
+
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td class="numeric" >{{ entity.barcode }}</td>
+            <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+            <td class="numeric" >{{ entity.invoice }}</td>
+            <td class="numeric" >{{ entity.salesMode }}</td>
+            <td class="numeric" >{{ entity.estimatePrice }}</td>
+            <td class="numeric" >{{ entity.salesPrice }}</td>
+            <td class="numeric" >{{ entity.process }}</td>
+            <td class="numeric" >{% if  entity.process == 'Done' %}{{ entity.quantity }}{% endif %}</td>
+            <td class="numeric" >{% if  entity.process != 'Done' %}{{ entity.quantity }}{% endif %}</td>
+            <td class="numeric" >{{ stockSalesReturnItem[entity.salesItemId]|default() }}</td>
+
+        </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="8"><strong class="pull-right">Total</strong></td>
+        <td class="numeric" >{{ salesItem }}</td>
+        <td class="numeric" >{{ ongoingItem }}</td>
+        <td class="numeric" >{{ salesReturnItem }}</td>
+    </tr>
+
+    </tbody>
+</table>

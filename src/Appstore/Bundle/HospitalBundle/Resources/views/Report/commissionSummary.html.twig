@@ -1,0 +1,152 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Commission Summary Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="javascript:"> Commission Summary Report</a>
+                    </li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i> Commission Summary Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% set startDate = searchForm.startDate is defined ? searchForm.startDate :'' %}
+                                {% set endDate = searchForm.endDate is defined ? searchForm.endDate :'' %}
+                                <a class="btn red" target="_blank" href="{{ path('hms_report_commission_group_pdf',{'startDate':startDate,'endDate':endDate}) }}" >
+                                    <i class=" icon-download"></i>&nbsp;Download PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <form class="search-form" action="" method="get" name="itemSearch">
+                            <div class="row-fluid">
+                                <div class="span6"></div>
+                                <div class="span3">
+                                    <input type="text" id="startDate" name="startDate"  class="m-wrap  span12 dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                </div>
+                                <div class="span3">
+                                    <div class="controls">
+                                        <div class="input-append span11">
+                                            <input type="text" id="endDate" name="endDate"  class="span11 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}{{ "now"|date("d-m-Y") }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                            <div class="btn-group">
+                                                <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                         <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-money"></i>Commission Summary Reports</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        {% if commissions is defined and commissions is not empty %}
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-green">
+                                <th class="numeric">Commission Name</th>
+                                <th class="numeric">Payment</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% set paymentTotal = 0 %}
+                                {% for commission in commissions %}
+                                    {% set paymentTotal = paymentTotal + commission.payment %}
+                                    <tr>
+                                        <th class="numeric span10">{{ commission.commissionName }}</th>
+                                        <td class="numeric">{{ commission.payment|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr><th class="span10"><span class=" pull-right">Total</span></th><th>{{ paymentTotal|number_format }}</th></tr>
+                            </tbody>
+                        </table>
+                        {% endif %}
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-th-list"></i> Referred Base Commission Reports</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        {% if referreds is defined and referreds is not empty %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-yellow">
+                                    <th><i class="icon-th-list"></i></th>
+                                    <th class="numeric">Name</th>
+                                    <th class="numeric">Mobile</th>
+                                    <th class="numeric">Payment</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% set paymentTotal = 0 %}
+                                {% for referred in referreds %}
+                                    {% set paymentTotal = paymentTotal + referred.payment %}
+                                    <tr>
+                                        <th>{{ loop.index }}.</th>
+                                        <th class="numeric">{{ referred.name }}</th>
+                                        <th class="numeric">{{ referred.mobile }}</th>
+                                        <td class="numeric">{{ referred.payment|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr><th class="span10" colspan="3"><span class=" pull-right">Total</span></th><th>{{ paymentTotal|number_format }}</th></tr>
+                                </tbody>
+                            </table>
+                        {% endif %}
+                        <div class="clearfix">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/approveProcess.js'
+    '@HospitalBundle/Resources/public/js/datetimepicker_css.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    AccountingApproveProcess();
+{% endblock %}
+
+
+
+
+

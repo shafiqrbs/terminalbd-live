@@ -1,0 +1,100 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Account of Bank
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('accountbank') }}">Account of Bank</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Account of Bank</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account bank</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('accountbank_new') }}"><i class="icon-plus-sign"></i>&nbsp; Add Account</a>
+                                <a class="btn black" href="{{ path('accountbank') }}"><i class="icon-th-list"></i>&nbsp;Bank Account</a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+
+                                <tr class="head-blue">
+                                    <th class="numeric" >Bank</th>
+                                    <th class="numeric" >Branch</th>
+                                    <th class="numeric" >Account Owner</th>
+                                    <th class="numeric" >Account No</th>
+                                    <th class="numeric" >Account type</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr id="remove-{{ entity.id }}">
+                                        <td class="numeric" >{% if entity.bank %}{{ entity.bank.name }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.Branch }}</td>
+                                        <td class="numeric" >{{ entity.accountOwner }}</td>
+                                        <td class="numeric" >{{ entity.accountNo }}</td>
+                                        <td class="numeric" >{{ entity.accountType }}</td>
+                                        <td class="numeric" >
+                                            <a href="{{ path('accountbank_edit',{'id':entity.id}) }}" id=""  class="btn blue mini"><i class="icon-pencil"></i></a>
+                                            <a href="{{ path('accountbank_delete',{'id':entity.id}) }}" id="" data-id="{{ entity.id }}" class="btn red mini"  data-url=""><i class="icon-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+
+
+
+

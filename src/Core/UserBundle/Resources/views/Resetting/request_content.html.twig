@@ -1,0 +1,83 @@
+{% extends ':bindu:base.html.twig' %}
+{% trans_default_domain 'FOSUserBundle' %}
+{% block body %}
+    <div id="tm-page-body">
+        <div id="tm-template-default-fullwidth" class="tm-container">
+            <div class="page-content">
+                <div class="page-content-inner tm-content">
+
+                    <div class="tm-row" style="text-align:center;padding:50px 0 100px 0;background:#eee;">
+                        <div class="tm-wrap">
+                            <h1>Forget Password ?</h1>
+                        </div>
+                    </div>
+
+                    <div class="tm-row" style="margin:-100px 0 0 0">
+                        <div class="tm-wrap">
+                            <div class="one-third">
+                                <div style="padding-top:100px">
+
+                                </div>
+                            </div>
+                            <div class="one-third">
+                                <div id="container-form">
+                                    <div class="entry-container" style="padding-bottom: 25px">
+                                        <section id="tm-comment">
+                                            <section id="respond">
+                                                <!-- BEGIN FORM-->
+                                                <div class="clear"></div>
+                                                <form id="commentform" action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request" novalidate="novalidate">
+                                                    {% if invalid_username is defined %}
+                                                    <div class="tm-alert error">
+                                                        <strong>Error</strong>The user name or mobile no "{{ invalid_username }}" does not exist.
+                                                    </div>
+                                                    {% endif %}
+                                                    <div>
+                                                        <p style="margin-bottom:1px; color:#ffffff">Enter your mobile no below to reset your password.</p>
+                                                        <p> <span class="fa-icon"><i class="fa  fa-mobile"></i></span>
+                                                            <input type="text" id="username" autocomplete="off" name="username" required="required" class="" placeholder="Enter your mobile no or user name">
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p class="form-suphobmit" style="float: right"><span class="fa-icon"><i class="fa  fa-lock"></i></span><input style="padding-left:25px" id="signup" class="tm-btn light small" type="submit" value="Reset Password" name="submit"></p>
+                                                    </div>
+
+                                                </form>
+                                                <div class="clear"></div>
+                                            </section>
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="one-third last">
+                                <div style="padding-top:100px">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!--page-content-->
+        </div>
+        <!--tm-container-->
+    </div>
+{% endblock %}
+
+{% block documentready %}
+
+    $('#commentform').validate({
+        rules: {
+        username: {
+        required: true
+        }
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+
+{% endblock %}
+
+

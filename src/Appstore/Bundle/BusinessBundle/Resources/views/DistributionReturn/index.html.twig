@@ -1,0 +1,135 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Damage Return
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="{{ path('medicine_purchase_return') }}">Manage Product Damage Return</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Product Damage Return Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            <form class="" id="purchaseReturn" name="purchaseReturn" method="post" action="{{ path('business_distribution_return_create') }}"  >
+                            {% if entities is not empty %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Product Name </th>
+                                    <th class="numeric" >Price</th>
+                                    <th class="numeric" >Today Damage QTY</th>
+                                    <th class="numeric" >DamageQTY</th>
+                                    <th class="numeric" >Spoil QTY</th>
+                                    <th class="numeric" >Return QTY</th>
+                                    <th class="numeric" >Remaining QTY</th>
+                                    <th class="numeric" >Process QTY</th>
+                                    <th class="numeric" >SubTotal</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td class="numeric" >  {{ entity.name }}
+                                            <input type="hidden" name="subTotal[]" id="sub-{{  entity.id }}" class="subTotal" value="0">
+                                            <input type="hidden" name="itemId[]" value="{{ entity.id }}">
+                                            <input type="hidden" name="particularId[]" value="{{ entity.id }}">
+                                            <input type="hidden" name="price[]" value="{{ entity.purchasePrice }}">
+                                        </td>
+                                        <td class="numeric" > {{ entity.purchasePrice }}</td>
+                                        <td class="numeric" > {% if todayReturnItems[entity.id] is defined and todayReturnItems[entity.id] is not empty %} {{ todayReturnItems[entity.id].quantity }} {% endif %}</td>
+                                        <td class="numeric" > {{ entity.damageQnt }}</td>
+                                        <td class="numeric" > {{ entity.spoilQnt }}</td>
+                                        <td class="numeric" > {% if remains[entity.id] is defined and remains[entity.id] is not empty %} {{ remains[entity.id].quantity }} {% endif %}</td>
+                                        <td class="numeric" >
+                                            {% set remain = 0 %}
+                                            {% if remains[entity.id] is defined and remains[entity.id] is not empty %}
+                                                {% set remain = ((entity.damageQnt + entity.spoilQnt) - remains[entity.id].quantity) %}
+                                            {% else %}
+                                                {% set remain = (entity.damageQnt + entity.spoilQnt) %}
+                                            {% endif %}
+                                            {{ remain }}
+                                        </td>
+                                        <td class="numeric" ><input class="m-wrap span12 form-control input-number quantity" type="text" name="quantity[]" data-id="{{ entity.id }}" data-content="{{ remain }}"  data-value="{{ entity.purchasePrice }}" max="{{ remain }}" id="quantity-{{  entity.id }}" value="" placeholder="Input quantity"></td>
+                                        <td class="numeric span2" id="subTotal-{{  entity.id }}" ></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                <tr><th colspan="6">Total </th>
+                                    <th id="totalQTY"></th>
+                                    <th id="total"></th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                            {% endif %}
+                            <div class="clearfix"><br/></div>
+                            <!--/span-->
+
+                                <div class="form-actions portlet box black">
+                                    <div class="pull-right">
+                                        <div class="action"> <strong>Vendor For: </strong>
+                                            <select style="margin-bottom: 0" name="vendor" id="vendor" class="m-wrap">
+                                                <option value="">--Select Vendor</option>
+                                                {% for vendor in vendors %}
+                                                    <option  value="{{ vendor.id }}">{{ vendor.companyName }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <div class="btn-group">
+                                                <input type="hidden" id="grandTotal" name="grandTotal" value="" >
+                                                <button type="submit" class="btn blue" id="receiveBtn" ><i class="icon-save"></i>&nbsp; Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BusinessBundle/Resources/public/js/purchase-return.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}
+
+

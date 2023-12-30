@@ -1,0 +1,254 @@
+{% extends '::print.html.twig' %}
+{% block body %}
+<div style="display: block; height: 450px">
+    {% if entity.hospitalConfig.isPrintHeader == 1 and entity.hospitalConfig.webHeaderPath is defined  and entity.hospitalConfig.webHeaderPath is not empty  %}
+        <img style="max-height:100px;width: 100%!important;" src="/{{ entity.hospitalConfig.webHeaderPath }}">
+    {% endif %}
+    <table class="table table-border" >
+        <thead class="flip-content ">
+        <tr class="print-header">
+            <th style="width: 50%"><strong class="pull-left title">Bill To</strong></th>
+            <th style="width: 50%; float: right; display: inline-grid"><strong class="title">PC Commission Paid</strong></th>
+        </tr>
+        </thead>
+        <tr>
+            <td>
+                <ul class="unstyled">
+                    <li><strong>Invoice no:</strong>&nbsp;{{ entity.invoice }}</li>
+                    <li><strong>Patient:</strong>&nbsp;{{ entity.customer.name }}</li>
+                    <li><strong>Mobile:</strong>&nbsp;{{ entity.customer.mobile }}</li>
+                </ul>
+            </td>
+            <td class="pull-right">
+                <ul class="unstyled">
+                    <li><strong>Created: </strong>&nbsp;<strong>{{ entity.created|date('d-m-Y h:i A') }}</strong></li>
+                    <li><strong>Bill Amount: </strong>&nbsp;<strong>{{ entity.total|number_format(2) }}</strong></li>
+                    {% if entity.transactionMethod is not empty %}<li><strong>Method: </strong>&nbsp;{{ entity.transactionMethod.name }}</li>{% endif %}
+                    {% if entity.paymentMobile is not empty %}<li><strong><i class="icon-money"></i></strong>&nbsp;{{ entity.paymentMobile }}/{{ entity.transactionId }}</li>{% endif %}
+                    {% if entity.cardNo is not empty %}<li><strong><i class="icon-money"></i>&nbsp;</strong>&nbsp;{{ entity.bank.name  }}/{{ entity.cardNo }}</li>{% endif %}
+                    <li><strong>Payment status:</strong>&nbsp;{{  entity.paymentStatus|capitalize }}</li>
+                </ul>
+            </td>
+        </tr>
+        <tr class="print-header">
+            <td>
+                <ul class="unstyled">
+                    <li><strong>P/C:</strong>&nbsp;{{ invoice.assignDoctor.particularCode }}-{{ invoice.assignDoctor.name }}</li>
+                    <li><strong>MPO:</strong>&nbsp;{% if entity.marketingExecutive is not empty %}{{ entity.marketingExecutive.marketingExecutive.username }}{% endif %}</li>
+                </ul>
+            </td>
+            <td class="pull-right">
+                <ul class="unstyled">
+                    <li><strong>P/C For:</strong>&nbsp;{{ invoice.hmsCommission.name }}</li>
+                    <li><strong>Created: </strong>&nbsp;<strong>{{ entity.created|date('d-m-Y h:i A') }}</strong></li>
+                    {% if entity.transactionMethod is not empty %}<li><strong>Method: </strong>&nbsp;{{ entity.transactionMethod.name }}</li>{% endif %}
+                    {% if entity.paymentMobile is not empty %}<li><strong><i class="icon-money"></i></strong>&nbsp;{{ entity.paymentMobile }}/{{ entity.transactionId }}</li>{% endif %}
+                    {% if entity.cardNo is not empty %}<li><strong><i class="icon-money"></i>&nbsp;</strong>&nbsp;{{ entity.bank.name  }}/{{ entity.cardNo }}</li>{% endif %}
+                </ul>
+            </td>
+        </tr>
+    </table>
+    {% if entity.invoiceParticulars is defined and  entity.invoiceParticulars is not empty  %}
+        <table class="table table-bordered table-striped">
+            <tr>
+                <td colspan="2" class="bottom-border"><strong class="strong3">In words</strong>: {{ invoice.payment|in_words }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="bottom-border"><strong class="strong3">Remarks</strong>: {{ invoice.comment|raw }}</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+
+                    <div class="grid-container">
+                        <div class="grid-item grid-item-bottom">
+                            <ul class="unstyled" style="position: absolute; bottom: 0; width: 100%">
+
+                                <li><strong></strong></li>
+                                <li style="border-top:2px solid #000; text-align: center">Received By</li>
+                            </ul>
+                        </div>
+                        <div class="grid-item">
+                            <div style="position: absolute;top:20px;left: 120px; font-weight: bold; text-align: center">Amount Tk. <label class="label-box">{{ invoice.payment|number_format }}</label></div>
+                        </div>
+
+                        <div class="grid-item grid-item-bottom">
+                            <ul class="unstyled" style="position: absolute; bottom: 0; width: 100%">
+                                {% if invoice.createdBy.profile and invoice.createdBy.profile.webSignaturePath %}
+                                    <li style="text-align: center"><img alt="" src="{{ image(invoice.createdBy.profile.webSignaturePath).resize(120,90) }}"></li>
+                                {% endif %}
+                                <li><strong>{{ invoice.createdBy.profile.name }}</strong></li>
+                                <li style="border-top:2px solid #000; text-align: center">Signature</li>
+                            </ul>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr><td colspan="2" ><center>Invoice was created on a computer and is valid without the signature and seal.</center></td></tr>
+        </table>
+    {% endif %}
+</div>
+    <style>
+        body{
+            background-color:#fff!important;
+        }
+        .header .navbar-inner{
+            display: none;
+        }
+        .page-sidebar{
+            display: none;
+        }
+
+        .page-content{
+            margin-left: 0 !important;
+        }
+        .table{
+            border: none!important;
+        }
+        .table th, .table td{
+            border-top: none;
+        }
+        .table th .span4, .table td .span4{
+            width: 100%;
+        }
+        .table-bordered th, .table-bordered td{
+            border-left:none;
+        }
+
+        .footer{
+            display: none!important;
+        }
+
+        /* This parent can be any width and height */
+        .barcode-block {
+            text-align: center;
+            white-space: nowrap;
+            width: 140px;
+            float: left;
+            height: 80px;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-top: none;
+        }
+
+        /* The ghost, nudged to maintain perfect centering */
+        .barcode-block:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -0.25em; /* Adjusts for spacing */
+        }
+
+        /* The element to be centered, can also be of any width and height */
+        .centered {
+            display: inline-block;
+            vertical-align: middle;
+            width: 113px;
+        }
+        .centered p{
+            padding: 0!important;
+            margin: 0!important;
+            display: block;
+            height: 14px;
+            font-size: 10px;
+            line-height: 14px;
+        }
+
+        .centered .left{
+            text-align: left;
+            float: left;
+            display: inline-block;
+            height: 14px;
+        }
+        .centered .center{
+            text-align: center;
+            display: inline-block;
+            height: 14px;
+        }
+        .centered .right{
+            text-align: right;
+            float: right;
+            display: inline-block;
+            height: 14px;
+        }
+
+        #print-container{
+            width: 100%;
+            margin: 0 auto;
+            display: block;
+            font-size: 14px;
+            color: #0A0302;
+        }
+
+        .strong3{
+            display: inline-block;
+            width: 70px;
+        }
+        .table td{
+            font-size:13px;
+        }
+        .barcode-left , .barcode-right{
+            line-height: 42px;
+            font-size:14px;
+        }
+        .bottom-border{
+            border-bottom: dotted 1px #000101;
+        }
+        .label-box{
+            font-size: 13px;
+            border: 2px solid #000;
+            padding: 1px;
+            min-width: 80px;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+        .grid-container {
+            width: 100%;
+            display: grid;
+            grid-gap: 0;
+            font-size: 14px;
+        }
+        .grid-container {
+            grid-template-columns: repeat(3, calc(100%/3));
+            text-align: center;
+
+        }
+
+        .grid-item {
+            background-color: rgba(255, 255, 255, 0.8);
+            margin-bottom:5px;
+            align-items:center;
+            position: relative;
+            min-height: 80px;
+        }
+        .grid-item-bottom img{
+            height: 50px;
+        }
+
+        .frame {
+            height: 80px;      /* Equals maximum image height */
+            line-height: 80px;
+            text-align: center;
+        }
+        .frame .img {
+            background: #3A6F9A;
+            vertical-align: middle;
+            max-height: 25px;
+            max-width: 160px;
+        }
+        .header-logo{
+            position: absolute; left: 5px;
+        }
+        .address{
+            line-height: 15px!important;
+            position: absolute;
+            bottom: 5px;
+            right: 0;
+            text-align: left;
+        }
+
+    </style>
+{% endblock %}

@@ -1,0 +1,116 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Stock Adjustment
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Stock Adjustment</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Stock Adjustment Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('business_stock_adjustment_new') }}"><i class="icon-plus-sign"></i> Add Stock Adjustment</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span6"></div>
+                                    <div class="span5">
+                                        <input type="text" id="name" name="name"  class="span12 m-wrap select2ParticularName" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="Enter item name ">
+                                    </div>
+                                    <div class="span1">
+                                        <div class="controls">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="portlet-body flip-scroll">
+
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Created </th>
+                                    <th class="numeric" >Medicine Name </th>
+                                    <th class="numeric" >Quantity</th>
+                                    <th class="numeric" >Bonus</th>
+                                    <th class="numeric" >Mode</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.item.name }}</td>
+                                        <td class="numeric" >{% if entity.mode =="Minus" %}({{ entity.quantity|abs }}){% else %}{{ entity.quantity|abs }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.mode =="Minus" %}({{ entity.bonus|abs }}){% else %}{{ entity.bonus|abs }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.mode }}</td>
+                                       <td class="numeric" >
+                                           {% if entity.process != "Approved" %}
+                                            <a title="Are you sure went to delete ?" href="{{ path('business_stock_adjustment_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                            <a href="javascript:" data-url="{{ path('business_stock_adjustment_approved', { 'id': entity.id }) }}" class="btn green mini approve" ><i class="icon-ok"></i> Approve</a>
+                                            {% else %}
+                                            <a href="javascript:"  class="btn blue mini " ><i class="icon-ok"></i> Approved</a>
+                                        {% endif %}
+                                       </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+        '@BusinessBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+
+

@@ -1,0 +1,136 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Account of Profit/Loss
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Account of Profit/Loss</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account Profit/Loss</div>
+                        <div class="actions">
+                           <div class="btn-group">
+                               <a class="btn purple" target="_blank" href="{{ path('account_profit_download_profit') }}"><i class="icon-download"></i>&nbsp;Download PDF</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body">
+                            {% include('flash-message.html.twig') %}
+                        </div>
+                        <div class="portlet-body flip-scroll">
+                            <div class="portlet search-portlet">
+                                <form class="search-form" action="{{ path('account_profit_new') }}" method="get" name="itemSearch">
+                                    <div class="row-fluid">
+                                        <div class="span7"></div>
+                                        <div class="span2">
+                                            {% set currentMonth = "now"|date("m") %}
+                                            {% set currentYear = "now"|date("Y") %}
+                                            {% set months = {'01':'January','02':'February','03':'March','04':'April','05':'May','06':'June','07':'July','08':'August','09':'September','10':'October','11':'November','12':'December'} %}
+                                            <select class="span12 m-wrap" name="month" id='month'>
+                                                {% for key,month in months %}
+                                                    <option value='{{ key }}' {% if (searchForm.month is defined and searchForm.month == key) or (key == currentMonth) %} selected="selected" {% endif %} >{{ month }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="span3">
+                                            <div class="controls">
+                                                {% set years = [2018,2019,2020,2021,2022,2023,2024,2025] %}
+                                                <div class="input-append span11">
+                                                    <select class="span6 m-wrap" name="year" id='year'>
+                                                        {% for year in years %}
+                                                            <option value='{{ year }}' {% if (searchForm.year is defined and searchForm.year == year) or (year == currentYear) %} selected="selected" {% endif %} >{{ year }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-refresh"></i> Generate Profit</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i> Created</td>
+                                    <th class="numeric" >Month</th>
+                                    <th class="numeric" >Year</th>
+                                    <th class="numeric" >Sales</th>
+                                    <th class="numeric" >Purchase</th>
+                                    <th class="numeric" >Expenditure</th>
+                                    <th class="numeric" >Revenue</th>
+                                    <th class="numeric" >Profit</th>
+                                    <th class="numeric" >Loss</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr id="remove-{{ entity.id }}">
+                                        <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.generateMonth|date('F') }}</td>
+                                        <td class="numeric" >{{ entity.generateMonth|date('Y') }}</td>
+                                        <td class="numeric" >{{ entity.sales|number_format }}</td>
+                                        <td class="numeric" >{{ entity.purchase|number_format }}</td>
+                                        <td class="numeric" >{{ entity.expenditure|number_format }}</td>
+                                        <td class="numeric" >{{ entity.revenue|number_format }}</td>
+                                        <th class="numeric" >{{ entity.profit|number_format }}</th>
+                                        <th class="numeric" >{{ entity.loss|number_format }}</th>
+                                        <td class="numeric" >
+                                            {% if app.user.granted("ROLE_DOMAIN") or (entity.updated|date('mY') == "now"|date("mY") and app.user.granted("ROLE_DOMAIN_ACCOUNTING_JOURNAL") ) %}
+                                            <a href="javascript:" id="delete-{{ entity.id }}" data-id="{{ entity.id }}" class="btn red mini delete"  data-url="{{ path('account_profit_delete',{'id':entity.id}) }}"><i class="icon-trash"></i></a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    AccountingApproveProcess();
+{% endblock %}
+

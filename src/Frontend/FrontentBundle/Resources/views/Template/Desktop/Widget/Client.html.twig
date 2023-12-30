@@ -1,0 +1,32 @@
+{% if entities is defined and entities is not empty  %}
+<section id="client">
+    <div class="container">
+        <div class="text-center">
+            <h2>{% if pageModule.name is not empty %}{{ pageModule.name }}{% else %}Our Clients {% endif %}</h2>
+            <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+        </div>
+        <div class="row" style="background-color: #333">
+            <div id="client-slider" class="owl-carousel">
+                {% for key,client in entities  %}
+                <div class="col-md-3 col-sm-6">
+                    <div class="client">
+                        <div class="service-image">
+                            <a href="http://{{ client.website }}">
+                                <img src="{{ image(client.webPath).scaleResize(200,125) }}" alt="">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="text-right owl-carousel-next-prev">
+                <div class="customNavigation" >
+                    <a class="btn prev-client glyphicon glyphicon-chevron-left"></a>
+                    <a class="btn next-client glyphicon glyphicon-chevron-right"></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endif %}

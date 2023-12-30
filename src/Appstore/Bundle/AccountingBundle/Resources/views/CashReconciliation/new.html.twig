@@ -1,0 +1,411 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN account_cashreconciliation HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="account-title">
+                   Cash Reconciliation Entry : {{ entity.created|date('d-m-Y') }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_cashreconciliation') }}">Cash Reconciliation</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Cash Reconciliation</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END account_cashreconciliation HEADER-->
+        <!-- BEGIN account_cashreconciliation CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Cash Reconciliation Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('account_cashreconciliation') }}"><i class="icon-th-list"></i>&nbsp;Cash Reconciliation</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        {% set methods = ['Cash','Bank','Mobile'] %}
+                        <form name="cashForm" id="cashForm">
+                            <div class="row-fluid">
+                                <div class="span7">
+                                    <div class="control-group">
+                                        <input type="text" name="particular" id="particular" required="required" class="m-wrap span12" placeholder="Loan particulars" value="">
+                                    </div>
+                                </div>
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <select name="method" id="method" class="m-wrap span12">
+                                            {% for method in methods %}
+                                                <option value="{{ method }}">{{ method }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="span2">
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <input type="number" name="amount" required="required" id="amount" class="m-wrap span8" placeholder="Amount Tk" value="">
+                                            <button type="button" class="btn green" id="cash-reconciliation" data-url="{{ path('account_cashreconciliation_add',{'id':entity.id}) }}"><i class="icon-sign-plus"></i> Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- BEGIN FORM-->
+                        <div class="form-actions portlet box red">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Reconciliation Summary</div>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric span6">Cash Account</th>
+                                <th class="numeric span2" >Opening Balance</th>
+                                <th class="numeric span1" >Receive</th>
+                                <th class="numeric span1" >Payment</th>
+                                <th class="numeric span2" >Closing Balance</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {#{{ dump(transactionCashOverviews.transactionBalances) }}#}
+                            {% set totalOpen = 0 %}
+                            {% set totalDebit = 0 %}
+                            {% set totalCredit = 0 %}
+                            {% for mode in transactionCashOverviews.result %}
+                                {% set open = transactionCashOverviews.openingBalance[mode.transactionId]|default(0) %}
+                                {% set debit = transactionCashOverviews.transactionBalances[mode.transactionId].debit|default(0)  %}
+                                {% set credit = transactionCashOverviews.transactionBalances[mode.transactionId].credit|default(0)  %}
+                                {% set totalOpen = totalOpen + open %}
+                                {% set totalDebit = totalDebit + debit %}
+                                {% set totalCredit = totalCredit + credit %}
+                                <tr>
+                                    <th class="numeric">{{ mode.transactionName }}</th>
+                                    <th class="numeric">{{ open|number_format }}</th>
+                                    <th class="numeric">{{ debit|number_format }}</th>
+                                    <th class="numeric">{{ credit|number_format }}</th>
+                                    <th class="numeric" >{{ ((open + debit)-credit)|number_format }}</th>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <th class="numeric">Total Amount</th>
+                                <th class="numeric">{{ totalOpen|number_format }}</th>
+                                <th class="numeric">{{ totalDebit|number_format }}</th>
+                                <th class="numeric">{{ totalCredit|number_format }}</th>
+                                <th class="numeric" >{{ ((totalOpen + totalDebit)-totalCredit)|number_format }}</th>
+                            </tr>
+                            </tbody>
+
+                        </table>
+                        <div class="clearfix"><br/></div>
+                        <table class="table table-bordered tatransactionCashOverviewsble-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-yellow">
+                                <th class="span3">Name of Transaction</th>
+                                <th class="span3">System</th>
+                                <th class="span3">Reconciliation</th>
+                                <th class="span3" >Less/More</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Bank</td>
+                                    <td>{{ entity.systemBank|number_format }}</td>
+                                    <td>{{ entity.bank|number_format }}</td>
+                                    <td>{{ (entity.bank-entity.systemBank)|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Mobile</td>
+                                    <td>{{ entity.systemMobile|number_format }}</td>
+                                    <td>{{ entity.mobile|number_format }}</td>
+                                    <td>{{ (entity.mobile-entity.systemMobile)|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Cash</td>
+                                    <td>{{ entity.systemCash|number_format }}</td>
+                                    <td>{{ entity.cash|number_format }}</td>
+                                    <td>{{ (entity.cash-entity.systemCash)|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Grand Total</td>
+                                    <td>{{ (entity.systemBank + entity.systemMobile + entity.systemCash)|number_format }}</td>
+                                    <td>{{ (entity.bank + entity.mobile + entity.cash)|number_format }}</td>
+                                    <td>{{ ( (entity.bank + entity.mobile + entity.cash)-(entity.systemBank + entity.systemMobile + entity.systemCash))|number_format }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Bank Account Reconciliation</div>
+                                <div class="actions">
+                                    <div class="btn-group">
+                                        <button class="btn red" > <i class="icon-money"></i> Bank Amount: {{ entity.systemBank|number_format }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        {% if transactionBankCashOverviews.result is not empty %}
+                            <table class="table table-bordered tatransactionCashOverviewsble-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <th class="numeric span6">Bank Account</th>
+                                    <th class="numeric span2" >Opening Balance</th>
+                                    <th class="numeric span1" >Receive</th>
+                                    <th class="numeric span1" >Payment</th>
+                                    <th class="numeric span2" >Closing Balance</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% set sumBank = 0 %}
+                                {% for key,row in transactionBankCashOverviews.result %}
+                                    <tr>
+                                        {% set closing = (transactionBankCashOverviews.openingBalance[row.accountId]|default + transactionBankCashOverviews.transactionBankCash[row.accountId]['debit'] - transactionBankCashOverviews.transactionBankCash[row.accountId]['credit']) %}
+                                        {% set sumBank = sumBank + closing %}
+                                        <th >{{ row.bankName }}</th>
+                                        <th class="numeric">{{ transactionBankCashOverviews.openingBalance[row.accountId]|default|number_format }}</th>
+                                        <td class="numeric" >{{ transactionBankCashOverviews.transactionBankCash[row.accountId].debit|number_format }}</td>
+                                        <td class="numeric" >{{ transactionBankCashOverviews.transactionBankCash[row.accountId].credit|number_format }}</td>
+                                        <th class="numeric" >{% if closing > 0 %}{{ closing|number_format }}{% endif %}</th>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tr>
+                                    <th class="numeric" colspan="4"><span class="pull-right">Grand Total</span></th>
+                                    <td class="numeric" ><strong>{{ sumBank|number_format }}</strong></td>
+                                </tr>
+                            </table>
+                        {% endif %}
+                        <div class="clearfix"><br/></div>
+                        {% if transactionBankCashOverviews.result is not empty %}
+                            <table class="table table-bordered tatransactionCashOverviewsble-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="span8">Bank Account Name</th>
+                                    <th class="span2">System Amount</th>
+                                    <th class="span2" >Amount</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% set sumBank = 0 %}
+                                {% for note in entity.cashReconciliationMetas %}
+                                    {% if note.TransactionMethod == 'Bank' %}
+                                    <tr>
+                                            <th> <input type="text" name="metaKey" id="metaKey-{{ note.id }}" data-id="{{ note.id }}"  class="m-wrap span12" value="{{ note.metaKey }}"></th>
+                                        <th>{{ note.systemAmount }}</th>
+                                        <th class="numeric" >
+                                            <div class="span12">
+                                                <div class="actions">
+                                                    <div class="btn-group">
+                                                        <input type="number" class="m-wrap span10 custom-field bankAmount updateAmount" data-id="{{ note.id }}" data-url="{{ path('account_cashreconciliation_meta_update',{'id':note.id}) }}"  value="{{ note.amount }}">
+                                                        {% if note.isCustom ==  1 %}
+                                                            <a class="btn red mini delete" href="javascript:"  data-url="{{ path('account_cashreconciliation_meta_delete',{'id':note.id}) }}"><i class="icon-trash"></i></a>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    {% endif %}
+                                {% endfor %}
+
+                                </tbody>
+                                <tr>
+                                    <th class="numeric"><span class="pull-right">Grand Total</span></th>
+                                    <td class="numeric" ><strong id="">{{ entity.systemBank|number_format }}</strong></td>
+                                    <td class="numeric" ><strong id="bankTotal">{{ entity.bank|number_format }}</strong></td>
+                                </tr>
+                            </table>
+                        {% endif %}
+
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Mobile Account Reconciliation</div>
+                                <div class="actions">
+                                    <div class="btn-group">
+                                        <button class="btn red" > <i class="icon-money"></i> Mobile Amount: {{ entity.systemMobile|number_format }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        {% if transactionMobileBankCashOverviews.result is not empty %}
+                            {% if transactionMobileBankCashOverviews.result is not empty %}
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+                                    <thead class="flip-content ">
+                                    <tr class="head-green">
+                                        <th class="numeric span6">Mobile Account</th>
+                                        <th class="numeric span2" >Opening Balance</th>
+                                        <th class="numeric span1" >Receive</th>
+                                        <th class="numeric span1" >Payment</th>
+                                        <th class="numeric span2" >Closing Balance</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% set sumTotal = 0 %}
+                                    {% for row in transactionMobileBankCashOverviews.result %}
+                                        <tr>
+                                            {% set closing = (transactionMobileBankCashOverviews.openingBalance[row.accountId]|default + transactionMobileBankCashOverviews.transactionMobileCash[row.accountId]['debit'] - transactionMobileBankCashOverviews.transactionMobileCash[row.accountId]['credit']) %}
+                                            {% set sumTotal = sumTotal + closing %}
+                                            <th  >{{ row.mobileBankName }}</th>
+                                            <th class="numeric">{{ transactionMobileBankCashOverviews.openingBalance[row.accountId]|default|number_format }}</th>
+                                            <td class="numeric" >{{ transactionMobileBankCashOverviews.transactionMobileCash[row.accountId].debit|number_format }}</td>
+                                            <td class="numeric" >{{ transactionMobileBankCashOverviews.transactionMobileCash[row.accountId].credit|number_format }}</td>
+                                            <th class="numeric" >{% if closing > 0 %}{{ closing|number_format }}{% endif %}</th>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    <tr>
+                                        <th class="numeric" colspan="4"><span class="pull-right">Grand Total</span></th>
+                                        <td class="numeric" ><strong>{{ sumTotal|number_format }}</strong></td>
+                                    </tr>
+                                </table>
+                            {% endif %}
+                            <div class="clearfix"><br/></div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="span8">Mobile Account</th>
+                                    <th class="span2" >System Amount</th>
+                                    <th class="span2" >Amount</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% set sumTotal = 0 %}
+                                {% for note in entity.cashReconciliationMetas %}
+                                    {% if note.TransactionMethod == 'Mobile' %}
+                                        <tr>
+                                            <th> <input type="text" name="metaKey" id="metaKey-{{ note.id }}" data-id="{{ note.id }}"  class="m-wrap span12" value="{{ note.metaKey }}"></th>
+                                            <th>{{ note.systemAmount }}</th>
+                                            <th class="numeric" >
+                                                <div class="span12">
+                                                    <div class="actions">
+                                                        <div class="btn-group">
+                                                            <input type="hidden" id="metaId" name="metaId[]" class="" value="{{ note.id }}">
+                                                            <input  type="number" class="m-wrap span10 custom-field mobileAmount updateAmount" data-id="{{ note.id }}" data-url="{{ path('account_cashreconciliation_meta_update',{'id':note.id}) }}" value="{{ note.amount }}">
+                                                            {% if note.isCustom ==  1 %}
+                                                                <a class="btn red delete mini" href="javascript:"  data-url="{{ path('account_cashreconciliation_meta_delete',{'id':note.id}) }}"><i class="icon-trash"></i></a>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                                <tr>
+                                    <th class="numeric"><span class="pull-right">Grand Total</span></th>
+                                    <td class="numeric" ><strong id="">{{ entity.systemMobile|number_format }}</strong></td>
+                                    <td class="numeric" ><strong id="mobileTotal">{{ entity.mobile|number_format }}</strong></td>
+                                </tr>
+                            </table>
+                        {% endif %}
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Notes Reconciliation</div>
+                                <div class="actions">
+                                    <div class="btn-group">
+                                        <button class="btn red" > <i class="icon-money"></i> Cash Amount: {{ entity.systemCash|number_format }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                                    <thead class="flip-content ">
+                                    <tr class="head-grey">
+                                        <th class="span9">Note/Particular</th>
+                                        <th class="span1" >Note</th>
+                                        <th class="span2" >Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% set sumTotal = 0 %}
+                                    {% for note in entity.cashReconciliationMetas %}
+                                        {% if note.TransactionMethod == 'Cash' %}
+                                            <tr>
+                                                {% if note.isCustom == 1 %}
+                                                <th> <input type="text" name="metaKey" id="metaKey-{{ note.id }}" data-id="{{ note.id }}"  class="m-wrap span12" value="{{ note.metaKey }}"></th>
+                                                {% else %}
+                                                <th>{{ note.metaKey }}</th>
+                                                {% endif %}
+                                                <th class="numeric" >
+                                                    {% if note.isCustom != 1 %}
+                                                        <div class="span12">
+                                                            <div class="actions">
+                                                                <div class="btn-group">
+                                                                    <input type="number" class="m-wrap span10 custom-field updateNoteAmount" data-url="{{ path('account_cashreconciliation_meta_update',{'id':note.id}) }}" data-content="{{ note.id }}" data-id="{{ note.noteType }}"  value="{{ note.noteNo }}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                </th>
+                                                <th class="numeric" >
+                                                    <div class="span12">
+                                                        <div class="actions">
+                                                            <div class="btn-group">
+                                                                <input disabled="disabled" type="text" class="m-wrap span10 custom-field"  id="update-show-amount-{{ note.id }}"  value="{{ note.amount }}">
+                                                                <input readonly="readonly" type="hidden" class="m-wrap span10 custom-field amount" data-id="{{ note.id }}" id="update-amount-{{ note.id }}"  value="{{ note.amount }}">
+                                                                {% if note.isCustom ==  1 %}
+                                                                    <a class="btn red delete mini" href="javascript:"  data-url="{{ path('account_cashreconciliation_meta_delete',{'id':note.id}) }}"><i class="icon-trash"></i></a>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                    <tr>
+                                        <th class="numeric" colspan="2"><span class="pull-right">Grand Total</span></th>
+                                        <td class="numeric" ><strong id="total">{{ entity.cash|number_format }}</strong></td>
+                                    </tr>
+                                </table>
+                        <div class="clearfix">&nbsp;</div>
+                    </div>
+                        <!-- END FORM-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+ <style>
+     input[class*="span"].custom-field
+     {
+       text-align: right;
+         border: 2px solid red!important;
+     }
+ </style>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/reconciliation.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

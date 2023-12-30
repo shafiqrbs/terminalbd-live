@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+
+	<!-- Set the viewport width to device width for mobile -->
+	<meta name="viewport" content="width=device-width" />
+
+	<title>jQuery Event Calendar Demo Page</title>
+	<link rel="shortcut icon" href="images/favicon.ico" />
+
+	<!-- Grid CSS File (only needed for demo page) -->
+	<link rel="stylesheet" href="css/paragridma.css">
+
+	<!-- Core CSS File. The CSS code needed to make eventCalendar works -->
+	<link rel="stylesheet" href="css/eventCalendar.css">
+
+	<!-- Theme CSS file: it makes eventCalendar nicer -->
+	<link rel="stylesheet" href="css/eventCalendar_theme_responsive.css">
+
+	<!--<script src="js/jquery.js" type="text/javascript"></script>-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+
+</head>
+<body id="responsiveDemo">
+	<div class="container" id="introPanel">
+		<div class="row">
+			<div class="g4 ac">
+				<img src="img/eventsCalendarIcon_250.png">
+			</div>
+			<div class="g8">
+				<a href="http://www.vissit.com/jquery-event-calendar-plugin-english-version" class="fr">
+					<img src="img/PluginPage.png" />
+				</a>
+				<h1 class="h3">
+					jQuery Event Calendar Demo Page
+				</h1>
+
+				<p>
+					jQuery plugin to show events in a calendar in a very confortable way
+				</p>
+				<p>
+					Main features:
+				</p>
+				<ul class="features disc">
+					<li><strong>Fluid Calendar</strong>: calendar will be shown with the width of its parent. Size is recalculated on window resize. So <strong>you can use it in your responsive designs</strong></li>
+					<li><strong>Change Style as you like</strong>: You can edit the .css file to restyle</li>
+					<li><strong>Light</strong>: Less than 8kb of Javascript(minified)</li>
+					<li><strong>jQuery rules!</strong>: It uses all the power of jQuery, but you can also use it with frameworks like Zepto.js</li>
+					<li><strong>Highly customizable</strong>: You can change almost everything. Look at the following examples</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<hr />
+
+	<div class="container">
+		<div class="row">
+			<div class="g4">
+				<h2 class="h4">Show Events description</h2>
+				<p class="demoDesc">Events description is hide by default (you can show it clicking on the event title), but if you want they can be always visible.</p>
+				<div id="eventCalendarShowDescription"></div>
+				<script>
+					$(document).ready(function() {
+						$("#eventCalendarShowDescription").eventCalendar({
+							eventsjson: 'json/events.json.php',
+							showDescription: true
+						});
+					});
+				</script>
+			<pre>$(id).eventCalendar({
+  eventsjson: 'file.json',
+  showDescription: true
+});</pre>
+			</div>
+			<div class="g4">
+				<h2 class="h4">Show all descriptions</h2>
+				<p class="demoDesc">By default, the plugin only shows the event that you select, but you can open all the descriptions in which you click on</p>
+				<div id="eventCalendarOnlyOneDescription"></div>
+				<script>
+					$(document).ready(function() {
+						$("#eventCalendarOnlyOneDescription").eventCalendar({
+							eventsjson: 'json/events.json.php',
+							onlyOneDescription: false
+						});
+					});
+				</script>
+<pre>$(id).eventCalendar({
+  eventsjson: 'file.json',
+  onlyOneDescription: false
+});</pre>
+			</div>
+			<div class="g4">
+				<h2 class="h4">Animation Speed</h2>
+				<p class="demoDesc">Also you can customize the speed and the opacity of the widget animation</p>
+				<div id="eventCalendarAnimation"></div>
+				<script>
+					$(document).ready(function() {
+						$("#eventCalendarAnimation").eventCalendar({
+							eventsjson: 'json/json.php',
+							moveSpeed: 2000,
+                            startWeekOnMonday: false,
+                            onlyOneDescription: false,
+							moveOpacity: 1,
+                            eventsScrollable:true
+						});
+					});
+				</script>
+			<pre>$(id).eventCalendar({
+  eventsjson: 'file.json',
+  moveSpeed: 2000,
+  moveOpacity: 1
+});</pre>
+			</div>
+		</div>
+	</div>
+
+</body>
+
+<!--script src="js/jquery.timeago.js" type="text/javascript"></script-->
+<!--<script src="js/jquery.eventCalendar.min.js" type="text/javascript"></script>-->
+<script src="js/jquery.eventCalendar.js" type="text/javascript"></script>
+
+
+
+
+</html>

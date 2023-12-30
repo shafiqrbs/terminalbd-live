@@ -1,0 +1,36 @@
+    <div class="content">
+        <div class="container">
+            <h1>{{ details.name }}</h1><button id="slidx_button" >Lists</button>
+            <div class="decoration"></div>
+            <p class="justify-text">{{ details.content|raw }}</p>
+            <div class="decoration"></div>
+            {% if(details.webPath()) %}
+                <div class="wide-item">
+                    {% if(details.photoGallery) %}
+                    <div class="wide-item-titles">
+                        <h4>Click here show Gallery</h4>
+                    </div>
+                    {% endif %}
+                    <div class="wide-image">
+                        <div class="overlay"></div>
+                        <a class="tile-wide" id="gallery" href="javascript:"><img class="responsive-image" src="/{{ details.webPath() }}" alt="img"></a>
+                    </div>
+
+                </div>
+            {% endif %}
+            <div class="decoration"></div>
+
+        </div>
+
+    </div>
+    <nav id="slidx_menu">
+        <ul>
+            {% for row in entity.user.syndicateContents %}
+                <li>
+                    <a href="{{ path('mobile_module',{'subdomain': entity.user.globalOption.subDomain,'module': 'syndicate','slug':row.slug }) }}">{{ row.name | truncate(50, true) }}</a>
+                </li>
+            {% endfor %}
+
+        </ul>
+    </nav>
+

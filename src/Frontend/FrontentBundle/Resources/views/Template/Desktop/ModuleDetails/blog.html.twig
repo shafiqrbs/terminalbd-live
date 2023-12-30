@@ -1,0 +1,34 @@
+{% set commentID = globalOption.id~'-'~menu.module.slug~'-'~page.id %}
+<div class="page-header sidebar-title">
+    <h3>{{ page.name }}</h3>
+    <span>
+        <i class="fa fa-user"></i>&nbsp;{{ page.authorName }}&nbsp;&nbsp;&nbsp;<i class="fa fa-comments"></i>&nbsp;Comments&nbsp;<span class="badge"><span class="fos-comment-count" data-fos-comment-thread-id="{{ commentID }}">#</span></span>&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar"></i>&nbsp;{{ page.updated|date('d F, Y') }}
+        <i class="fa fa-tags"></i>
+        {% for cat in page.moduleCategory %}
+            <a href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'subdomain': globalOption.subDomain,'module':menu.module.slug ,'slug':cat.slug }) }}">{{ cat.name }}</a>
+        {% endfor %}
+    </span>
+</div>
+<div class="clearfix"><br/></div>
+<div class="row">
+    <div class="item col-md-12 col-xs-12 col-lg-12">
+        <div class="shadow-box {% if globalOption.templateCustomize.boxShadow is not empty  %} {{ globalOption.templateCustomize.boxShadow }} {% endif %}">
+            <a href="{{ image(page.webPath) }}" title="{{ page.name }}">
+                <img  src="{{ image(page.webPath).forceResize(1024,512) }}" alt="{{ page.name }}">
+            </a>
+            <div class="caption">{{ page.name }}</div>
+        </div>
+    </div>
+</div>
+<div class="clearfix"><br/></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="content-area"><div>{{ page.content|raw }}</div></div>
+    </div>
+</div>
+<div class="clearfix"><br/></div>
+<div class="blog_post" >
+      {% include 'FOSCommentBundle:Thread:async.html.twig' with {'id': commentID } %}
+    <br/>
+</div>
+

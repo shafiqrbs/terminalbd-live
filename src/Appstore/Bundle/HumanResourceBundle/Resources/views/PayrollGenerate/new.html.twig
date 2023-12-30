@@ -1,0 +1,717 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                  {{ user.profile.name }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('employee_payroll') }}"> {{ user.profile.name }}</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green ">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Employee Information</div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+
+                        <!-- BEGIN FORM-->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="portlet-body flip-scroll">
+                            <div class="span6">
+                            <div class="row-fluid" >
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Employee Type<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.employeeType) }}
+                                                {{ form_errors(form.profile.employeeType) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Full Name<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.name) }}
+                                                {{ form_errors(form.profile.name) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Father Name<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.fatherName) }}
+                                                {{ form_errors(form.profile.fatherName) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Mother Name<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.motherName) }}
+                                                {{ form_errors(form.profile.motherName) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Date of Birth<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.dob) }}
+                                                {{ form_errors(form.profile.dob) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                 <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Gender<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.gender) }}
+                                                {{ form_errors(form.profile.gender) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                         <div class="control-group">
+                                             <label class="control-label"  for="category" >Marital</label>
+                                             <div class="controls">
+                                                 {{ form_widget(form.profile.maritalStatus) }}
+                                                 {{ form_errors(form.profile.maritalStatus) }}
+                                             </div>
+                                         </div>
+                                     </div>
+                                </div>
+
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Religion Status</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.religionStatus) }}
+                                                {{ form_errors(form.profile.religionStatus) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Blood Group</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.bloodGroup) }}
+                                                {{ form_errors(form.profile.bloodGroup) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="span6">
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Joining Date<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.joiningDate) }}
+                                                {{ form_errors(form.profile.joiningDate) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Designation<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.designation) }}
+                                                {{ form_errors(form.profile.designation) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Branch Name</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.branches) }}
+                                                {{ form_errors(form.profile.branches) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                    <div class="row-fluid" >
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label"  for="category" >National ID</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.profile.nid) }}
+                                                    {{ form_errors(form.profile.nid) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Mobile no<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.mobile) }}
+                                                {{ form_errors(form.profile.mobile) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Phone no</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.phoneNo) }}
+                                                {{ form_errors(form.profile.phoneNo) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Email Address</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.email) }}
+                                                {{ form_errors(form.profile.email) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Facebook ID</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.facebookId) }}
+                                                {{ form_errors(form.profile.facebookId) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="fa fa-sign-out"></i>Payroll Basic & Bank Information</div>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+                            <div class="span8">
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="" >Location<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.location) }}
+                                                {{ form_errors(form.profile.location) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="" >Present Address<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.address) }}
+                                                {{ form_widget(form.profile.address) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="" >Permanent Address</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.profile.permanentAddress) }}
+                                                {{ form_widget(form.profile.permanentAddress) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="row-fluid">
+                                            <div class="control-group">
+                                                <label class="control-label" >Profile Picture</label>
+                                                <div class="controls">
+                                                    <div data-provides="fileupload" class="fileupload fileupload-new">
+                                                        <div  class="fileupload-new thumbnail">
+                                                            {% if(entity.profile.webPath) %}
+                                                                <img class="fileupload-preview fileupload-exists" alt="" src="{{ image(entity.profile.webPath).resize(250,150) }}">
+                                                            {% else %}
+                                                                <img alt="" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
+                                                            {% endif %}
+                                                        </div>
+                                                        <div  class="fileupload-preview fileupload-exists thumbnail"></div>
+                                                        <div>
+                                            <span class="btn btn-file">
+                                                <span class="fileupload-new blue btn">Select image</span>
+                                                <span class="fileupload-exists">Change</span>
+                                                {{ form_widget(form.profile.file) }}
+                                                {{ form_errors(form.profile.file) }}
+                                            </span>
+                                                            <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {#<div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" ></label>
+                                                    <div class="controls">
+                                                        <div class="input-icon left">
+                                                            Remove Image {{ form_widget(form.removeImage) }}
+                                                            {{ form_errors(form.removeImage) }}
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>#}
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="fa fa-sign-out"></i>Payroll Basic & Bank Information</div>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+                            <div class="span6">
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Salary Type<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.salaryType) }}
+                                                {{ form_errors(form.salaryType) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Effected Month<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.effectedMonth) }}
+                                                {{ form_errors(form.effectedMonth) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Basic Salary<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.basicAmount) }}
+                                                {{ form_errors(form.basicAmount) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span4">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="" >Bonus Applicable</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.bonusApplicable) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="" >Bonus Percentage</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.bonusPercentage) }}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="" >Payment Method<span class="required">*</span></label>
+                                            <div class="controls">
+                                                {{ form_widget(form.paymentMethod) }}
+                                                {{ form_errors(form.paymentMethod) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="" >Tax Number</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.taxNumber) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Bank Name</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.bank) }}
+                                                {{ form_errors(form.bank) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Bank A/C No</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.accountNo) }}
+                                                {{ form_errors(form.accountNo) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Bank A/C Name</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.bankAccountName) }}
+                                                {{ form_errors(form.bankAccountName) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Bank Branch Name</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.branch) }}
+                                                {{ form_errors(form.branch) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Mobile Banking</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.mobileBanking) }}
+                                                {{ form_errors(form.mobileBanking) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid" >
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="category" >Mobile Account</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.mobileAccount) }}
+                                                {{ form_errors(form.mobileAccount) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" >
+                                <div class="row-fluid" >
+                                    <!--/span-->
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label"  for="" >Remark</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.remark) }}
+                                                {{ form_errors(form.remark) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="form-actions portlet box blue">
+                                <div class="portlet-title">
+                                    <div class="span6">
+                                        <div class="caption"><i class="icon-reorder"></i> Allowance Items
+                                            <span class="actions">
+                                                <a href="javascript:" class="btn red pull-right mini addmore"><i class="icon-plus"></i> Add Item</a>                 </span>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="caption"><i class="icon-reorder"></i> Deduction Items
+                                            <span class="actions">
+                                                <a href="javascript:" class="btn red pull-right mini addDeduction"><i class="icon-plus"></i> Add Item</a>                 </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="row-fluid" >
+                                {% set types = ['Percentage','Fixed'] %}
+                                <div class="span6">
+                                    <div class="row-fluid clone-block" id="clone-block">
+                                        <div class="clone">
+                                            <div class="span5">
+                                                <div class="control-group">
+                                                    <input type="hidden" name="metaId[]" value="" >
+                                                    <select id="particular" name="particular[]" class="m-wrap span12">                                                            {% for particular in particulars %}
+                                                       {% if particular.mode == 'allowance' %}
+                                                       <option value="{{ particular.id }}">{{ particular.name }}</option>
+                                                       {% endif %}
+                                                     {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="span3">
+                                                <div class="control-group">
+                                                    <input type="text" class="m-wrap span12" name="unit[]" id="unit" >
+                                                </div>
+                                            </div>
+                                            <div class="span3">
+                                                <div class="control-group">
+                                                    <div class="btn-group">
+                                                        <select class="m-wrap span12" name="type[]" id="type">
+                                                            {% for type in types %}
+                                                                <option value="{{ type }}">{{ type }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <a href="javascript:"  class="btn red  remove hidden">
+                                                            <i class="icon-trash"></i></a></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if  entity.employeePayrollParticulars is defined
+                                    and entity.employeePayrollParticulars is not empty %}
+                                        {% for meta in entity.employeePayrollParticulars %}
+                                            {% if meta.mode == 'allowance'  %}
+                                                <div class="row-fluid trash" id="remove-{{ meta.id }}"  >
+                                                    <div class="span5">
+                                                        <div class="control-group">
+                                                            <input type="hidden" name="particularId[]" value="{{ meta.id }}" >
+                                                            <select id="particular" name="particular[]" class="m-wrap span12">                                                            {% for particular in particulars %}
+                                                                    {% if particular.mode == 'allowance' %}
+                                                                        <option {% if  particular.id == meta.particular.id %} selected="selected" {% endif %} value="{{ particular.id }}">{{ particular.name }}</option>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="span3">
+                                                        <div class="control-group">
+                                                            <input type="text" class="m-wrap span12" name="unit[]" id="unit" value="{{ meta.unit }}" >
+                                                        </div>
+                                                    </div>
+                                                    <div class="span3">
+                                                        <div class="control-group">
+                                                            <div class="control-group">
+                                                                <div class="btn-group">
+                                                                    <select class="m-wrap span12" name="type[]" id="type">
+                                                                        {% for type in types %}
+                                                                            <option {% if type == meta.type %} selected="selected" {% endif %} value="{{ type }}">{{ type }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                    <a href="javascript:" data-url="{{ path('employee_payroll_particular_delete',{'id':meta.id}) }}" data-id="{{ meta.id }}"  class="btn red  remove">
+                                                                        <i class="icon-trash"></i></a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="span6">
+                                    <div class="row-fluid clone-block-deduction" id="clone-block-deduction">
+                                        <div class="cloneDeduction">
+                                            <div class="span5">
+                                                <div class="control-group">
+                                                    <input type="hidden" name="metaId[]" value="" >
+                                                    <select id="particular" name="particular[]" class="m-wrap span12">
+                                                        {% for particular in particulars %}
+                                                            {% if particular.mode == 'deduction' %}
+                                                                <option value="{{ particular.id }}">{{ particular.name }}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="span3">
+                                                <div class="control-group">
+                                                    <input type="text" class="m-wrap span12" name="unit[]" id="unit" >
+                                                </div>
+                                            </div>
+                                            <div class="span3">
+                                                <div class="control-group">
+                                                    <div class="btn-group">
+                                                        <select class="m-wrap span12" name="type[]" id="type">
+                                                            {% for type in types %}
+                                                                <option value="{{ type }}">{{ type }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <a href="javascript:"  class="btn red  remove hidden"><i class="icon-trash"></i></a></div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    {% if  entity.employeePayrollParticulars is defined
+                                    and entity.employeePayrollParticulars is not empty %}
+                                        {% for meta in entity.employeePayrollParticulars %}
+                                            {% if meta.mode == 'deduction'  %}
+                                                <div class="row-fluid trash" id="remove-{{ meta.id }}"  >
+                                                <div class="span5">
+                                                    <div class="control-group">
+                                                        <input type="hidden" name="particularId[]" value="{{ meta.id }}" >
+                                                        <select id="particular" name="particular[]" class="m-wrap span12">                                                            {% for particular in particulars %}
+                                                                {% if particular.mode == 'deduction' %}
+                                                                    <option {% if particular.id == meta.particular.id %} selected="selected" {% endif %} value="{{ particular.id }}">{{ particular.name }}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="span3">
+                                                    <div class="control-group">
+                                                        <input type="text" class="m-wrap span12" name="unit[]" id="unit" value="{{ meta.unit }}" >
+                                                    </div>
+                                                </div>
+                                                <div class="span3">
+                                                    <div class="control-group">
+                                                        <div class="control-group">
+                                                            <div class="btn-group">
+                                                                <select class="m-wrap span12" name="type[]" id="type">
+                                                                    {% for type in types %}
+                                                                        <option {% if type == meta.type %} selected="selected" {% endif %} value="{{ type }}">{{ type }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                                <a href="javascript:" data-url="{{ path('employee_payroll_particular_delete',{'id':meta.id}) }}" data-id="{{ meta.id }}"  class="btn red  remove">
+                                                                    <i class="icon-trash"></i></a></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        <div class="clearfix"><br/></div>
+                        <div class="form-actions portlet box green">
+                            <div class="pull-right">
+                                <button type="button" class="btn red confirmSubmit"><i class="icon-save"></i> Save</button>
+                                <button type="reset" class="btn yellow"><i class="icon-refresh"></i> Reset</button>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .ui-datepicker-calendar {
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HumanResourceBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

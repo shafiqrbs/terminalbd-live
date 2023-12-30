@@ -1,0 +1,134 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    h1 , h2 , h3 , h4 , h5 , h6,p{
+        display: block;
+        padding: 0;
+        margin: 0;
+    }
+    h3 {
+        font-size: 24px;
+        line-height: 45px;
+        height: 45px;
+    }
+
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+<table class="table">
+    <thead>
+    <tr><td class="pull-center" colspan="20">{{ globalOption.hospitalConfig.address|raw }}</td></tr>
+    {% set startDate = searchForm.startDate is defined ? searchForm.startDate :"now"|date("01-m-Y") %}
+    {% set endDate = searchForm.endDate is defined ? searchForm.endDate :"now"|date("t-m-Y") %}
+    <tr>
+        <th class="pull-center" colspan="2"><h3><strong>COMMISSION BASE SUMMARY STATEMENT SHEET</strong></h3></th>
+    </tr>
+    <tr>
+        <th class="pull-left" >{{ "now"|date("d-m-Y") }}</th>
+        <th class="pull-right" >{{ startDate  }} To {{ endDate }}</th>
+    </tr>
+    <tr>
+        <td colspan="2">
+            {% if commissions is defined and commissions is not empty %}
+                <table class="table" >
+                    <thead>
+                    <tr>
+                        <th style="padding-left: -15px!important;"><i class="icon-th-list"></i></th>
+                        <th class="numeric">Commission Name</th>
+                        <th class="numeric">Payment</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% set paymentTotal = 0 %}
+                    {% for commission in commissions %}
+                        {% set paymentTotal = paymentTotal + commission.payment %}
+                        <tr>
+                            <td style="padding-left: -15px!important;">{{ loop.index }}</td>
+                            <td class="numeric span10">{{ commission.commissionName }}</td>
+                            <th class="numeric">{{ commission.payment|number_format }}</th>
+                        </tr>
+                    {% endfor %}
+                    <tr><th colspan="2" class="span10"><span class=" pull-right">Total</span></th><th>{{ paymentTotal|number_format }}</th></tr>
+                    </tbody>
+                </table>
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th class="pull-center" colspan="2"><h3><strong>REFERRED COMMISSION BASE SUMMARY STATEMENT SHEET</strong></h3></th>
+    </tr>
+    <tr>
+        <td colspan="2">
+            {% if referreds is defined and referreds is not empty %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th style="padding-left: -15px!important;"><i class="icon-th-list"></i></th>
+                        <th class="numeric">Name</th>
+                        <th class="numeric">Mobile</th>
+                        <th class="numeric">Payment</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% set paymentTotal = 0 %}
+                    {% for referred in referreds %}
+                        {% set paymentTotal = paymentTotal + referred.payment %}
+                        <tr>
+                            <td style="padding-left: -15px!important;">{{ loop.index }}.</td>
+                            <td class="numeric">{{ referred.name }}</td>
+                            <td class="numeric">{{ referred.mobile }}</td>
+                            <td class="numeric">{{ referred.payment|number_format }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr><th class="span10" colspan="3"><span class=" pull-right">Total</span></th><th>{{ paymentTotal|number_format }}</th></tr>
+                    </tbody>
+                </table>
+            {% endif %}
+        </td>
+    </tr>
+
+</table>

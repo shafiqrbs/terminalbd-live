@@ -1,0 +1,100 @@
+purchase:
+    path:     /
+    defaults: { _controller: "InventoryBundle:Purchase:index" }
+
+purchase_show:
+    path:     /{id}/show
+    defaults: { _controller: "InventoryBundle:Purchase:show" }
+
+purchase_new:
+    path:     /new
+    defaults: { _controller: "InventoryBundle:Purchase:new" }
+
+purchase_create:
+    path:     /create
+    defaults: { _controller: "InventoryBundle:Purchase:create" }
+    methods:  POST
+
+purchase_check_item_quantity:
+    path:     /check-item-quantity
+    defaults: { _controller: "InventoryBundle:Purchase:checkItemQuantity" }
+    methods:  POST
+
+purchase_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "InventoryBundle:Purchase:edit" }
+
+purchase_update:
+    path:     /{id}/update
+    defaults: { _controller: "InventoryBundle:Purchase:update" }
+    methods:  [POST, PUT]
+
+purchase_status:
+    path:     /{id}/status
+    defaults: { _controller: "InventoryBundle:Purchase:edit" }
+
+inventory_grn_search:
+    path:     /purchase-auto-search
+    defaults: { _controller: "InventoryBundle:Purchase:autoSearch" }
+    options:
+           expose: true
+
+inventory_grn_name:
+    path:     /{grn}/purchase-search-name
+    defaults: { _controller: "InventoryBundle:Purchase:searchName" }
+    options:
+           expose: true
+
+purchase_approve:
+    path:     /{id}/approve
+    defaults: { _controller: "InventoryBundle:Purchase:approve" }
+
+purchase_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "InventoryBundle:Purchase:delete" }
+
+approved_purchase_deleted:
+    path:     /{id}/approved-purchase-deleted
+    defaults: { _controller: "InventoryBundle:Purchase:approvedPurchaseDeleted" }
+
+purchase_vendor_item_delete:
+    path:     /{id}/vendor-item-delete
+    defaults: { _controller: "InventoryBundle:Purchase:deleteVendor" }
+
+purchase_item_delete:
+    path:     /{id}/purchase-item-delete
+    defaults: { _controller: "InventoryBundle:Purchase:deleteItem" }
+
+purchase_edit_approve:
+    path:     /{id}/edit-approve
+    defaults: { _controller: "InventoryBundle:Purchase:editApprove" }
+
+
+purchase_update_approve:
+    path:      /{id}/update-approve
+    defaults: { _controller: "InventoryBundle:Purchase:updateApprove" }
+    methods:  [POST, PUT]
+
+purchase_vendoritem_inline_update:
+    path:     /inline-purchase-vendor-item-update
+    defaults: { _controller: "InventoryBundle:Purchase:inlinePurchaseVendorItemUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+purchase_purchaseitem_inline_update:
+    path:     /inline-purchase-item-update
+    defaults: { _controller: "InventoryBundle:Purchase:inlinePurchaseItemUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+purchase_vendoritem_delete:
+    path:     /{purchase}/{id}/purchase-delete-vendoritem
+    defaults: { _controller: "InventoryBundle:Purchase:purchaseVendorItemDelete" }
+
+purchase_purchaseitem_delete:
+    path:     /{purchase}/{id}/purchase-delete-item
+    defaults: { _controller: "InventoryBundle:Purchase:purchaseItemDelete" }
+
+

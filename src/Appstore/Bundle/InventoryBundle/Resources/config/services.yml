@@ -1,0 +1,96 @@
+services:
+#    appstore_inventory.example:
+#        class: Appstore\Bundle\InventoryBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+    appstore.sales.event.listener:
+        class: Appstore\Bundle\InventoryBundle\EventListener\SalesListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.purchase.vendor.item.event.listener:
+        class: Appstore\Bundle\InventoryBundle\EventListener\PurchaseVendorItemListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.branchinvoice.event.listener:
+        class: Appstore\Bundle\InventoryBundle\EventListener\BranchInvoiceListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.purchase.event.listener:
+        class: Appstore\Bundle\InventoryBundle\EventListener\PurchaseListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.purchaseitem.event.listener:
+        class: Appstore\Bundle\InventoryBundle\EventListener\PurchaseItemListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.item.color.event.listener:
+        class: Appstore\Bundle\InventoryBundle\EventListener\ItemColorListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.item.size.event.listener:
+        class: Appstore\Bundle\InventoryBundle\EventListener\ItemSizeListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.item.event.listener:
+        class: Appstore\Bundle\InventoryBundle\EventListener\ItemListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.delivery.event.listener:
+        class: Appstore\Bundle\InventoryBundle\EventListener\DeliveryListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.setting.event.listener:
+        class: Appstore\Bundle\InventoryBundle\EventListener\SettingListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.purchasereturn.event.listener:
+        class: Appstore\Bundle\InventoryBundle\EventListener\PurchaseReturnListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.salesreturn.event.listener:
+        class: Appstore\Bundle\InventoryBundle\EventListener\SalesReturnListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore_inventory_importer_excel:
+        class: Appstore\Bundle\InventoryBundle\Importer\Excel
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    appstore_inventory.importer.excel_data_reader:
+        class: Appstore\Bundle\InventoryBundle\Importer\ExcelDataReader
+        arguments: [ @phpexcel ]
+
+
+    appstore_inventory_sales_import:
+        class: Appstore\Bundle\InventoryBundle\Importer\SalesExcel
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    appstore_inventory.importer.sales_excel_data_reader:
+        class: Appstore\Bundle\InventoryBundle\Importer\SalesDataReader
+        arguments: [ @phpexcel ]
+
+    appstore_inventory_product_import:
+        class: Appstore\Bundle\InventoryBundle\Importer\ProductExcel
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    appstore_inventory.importer.product_excel_data_reader:
+        class: Appstore\Bundle\InventoryBundle\Importer\ProductDataReader
+        arguments: [ @phpexcel ]
+
+    settong.poItemRepo:
+      class: Appstore\Bundle\InventoryBundle\Service\PosItemManager
+      arguments: [@doctrine]

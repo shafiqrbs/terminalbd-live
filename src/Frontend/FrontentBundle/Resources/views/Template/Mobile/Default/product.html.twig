@@ -1,0 +1,74 @@
+{% extends ':frontend/template/mobile:base.html.twig' %}
+{% block body %}
+    <div class="header-grid">
+        <a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}" id="mobile-logo">
+            {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+        </a>
+    </div>
+    <hr>
+    <div id="content"  class="product" >
+        <div class="page-title-bar">
+            <div class="col-md-12">
+                <div class="page-title"><span class="glyphicon glyphicon-shopping-cart"></span>&nbsp;Products</div>
+            </div>
+        </div>
+        <div class="container" id="product-section">
+            <div class="row">
+                {% for product in products %}
+                    {% set paymentID = globalOption.id~'-ecommerce-product-'~product.id %}
+                    <div class="outer-div col-xs-6 col-md-6" >
+                        <div class="inner-div">
+                            <div id="" class="ic_container capslide_img_cont">
+                                <div class="col-xs-12 col-md-12">
+                                    <a href="javascript:" class="thumbnail">
+                                        <img src="{% if product.webPath is not empty  %}{{ image(product.webPath).scaleResize(400,400) }}{% elseif product.masterItem.webPath is defined and product.masterItem.webPath is not empty %}{{ image(product.masterItem.webPath).scaleResize(400,400) }}{% endif %}"  alt=""/>
+                                    </a>
+                                </div>
+                                <div class="overlay"></div>
+                                <div class="ic_caption">
+                                    <div class="product-short-details">
+                                        <span>{{ globalOption.ecommerceConfig.currency }}&nbsp;{% if product.discount is not empty  %}<strike>{% endif %}{{ product.salesPrice|number_format() }}{% if product.discount is not empty  %}</strike>{% endif %}{% if product.discount is not empty  %}&nbsp;{{ product.discountPrice|number_format() }}{% endif %}</span>
+                                    </div>
+                                    <p class="title" data-match-height="mobileProduct" ><a href="{{ path(globalOption.subDomain ~ '_webservice_product_details',{ 'host':'', 'item':product.slug }) }}"  >{% if product.masterItem is not empty and  globalOption.ecommerceConfig.showMasterName == 1 %}{{ product.masterItem.name }}&nbsp;-&nbsp;{% endif %}{{ product.webName }}</a></p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div><!-- end container -->
+        <br/>
+        <div class="mobile-pagination" style="background-color: #00A8FF">
+            {{ knp_pagination_render(products) }}
+        </div>
+    </div>
+    {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+        {% render controller("FrontendBundle:WebsiteWidget:featureMobileWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'mobile'}) %}
+    {% endif %}
+
+    <style>
+
+
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@FrontendBundle/Resources/public/template/mobile/css/product-cosmetic.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {% javascripts
+    '@FrontendBundle/Resources/public/template/mobile/js/common.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}
+
+
+

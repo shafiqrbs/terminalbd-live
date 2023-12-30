@@ -1,0 +1,154 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Day wise Sales & Profit Statement Sheet
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Day wise Sales & Profit Statement Sheet</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Day wise Sales & Profit Statement Sheet</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% set month = searchForm.month is defined ? searchForm.month :"now"|date("F") %}
+                                {% set year = searchForm.year is defined ? searchForm.year :"now"|date("Y") %}
+                                <a class="btn purple" target="_blank" href="{{ path('medicine_report_sales_daily',{'pdf':'pdf','month':month,year:year}) }}" >
+                                    <i class=" icon-download"></i>&nbsp;Download PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="portlet search-portlet">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid">
+                                        <div class="span6"></div>
+                                        <div class="span3">
+                                            {%  set months = ['January','February','March','April','May','June','July','August','September','October','November','December'] %}
+                                            <select class="span12 m-wrap" name="month" id='month'>
+                                                {% for mon in months %}
+                                                    <option value='{{ mon }}' {% if (month == mon) %} selected="selected" {% endif %} >{{ mon }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="span3">
+                                            <div class="controls">
+                                                {% set years = [2018,2019,2020,2021,2022,2023,2024,2025] %}
+                                                <div class="input-append span11">
+                                                    <select class="span11 m-wrap" name="year" id='year'>
+                                                        {% for yea in years %}
+                                                            <option value='{{ year }}' {% if year == yea %} selected="selected" {% endif %} >{{ yea }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr>
+                                    <th class="pull-center" colspan="9"><h3><strong>DATE WISE STATEMENT SHEET: {{ month|capitalize }} , {{ year }}</strong></h3></th>
+                                </tr>
+                                <tr class="head-green">
+                                    <th>Date</th>
+                                    <th>Sales</th>
+                                    <th>Purchase</th>
+                                    <th>Profit</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% set fullDate =  date(year~'-'~month~'-1')|date('Y-m-d') %}
+                                {% set month =  date(year~'-'~month~'-1')|date('Y-m-') %}
+                                {% set max =  fullDate|date("t") %}
+                                {% set sales = 0 %}
+                                {% set purchase = 0 %}
+                                {% set totalSales = 0 %}
+                                {% set totalPurchase = 0 %}
+                                {% for i in 1..max %}
+                                    {% set blackO               = date(month~i)|date('d-m-Y') %}
+                                    {% set sales                = salesTrans[blackO] is defined and salesTrans[blackO] is not empty ? salesTrans[blackO].salesPrice : 0  %}
+                                    {% set purchase             = purchaseTrans[blackO] is defined and purchaseTrans[blackO] is not empty ? purchaseTrans[blackO].purchasePrice : 0  %}
+                                    {% set totalSales = totalSales + sales %}
+                                    {% set totalPurchase = totalPurchase + purchase %}
+                                    <tr>
+                                        <td>{{ blackO }}</td>
+                                        <td>{{ sales|number_format(2) }}</td>
+                                        <td>{{ purchase|number_format(2) }}</td>
+                                        <td>{{ (sales - purchase)|number_format(2) }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th>Summary</th>
+                                    <th>{{ totalSales|number_format(2) }}</th>
+                                    <th>{{ totalPurchase|number_format(2) }}</th>
+                                    <th>{{ (totalSales - totalPurchase)|number_format(2) }}</th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        function doPrint() {
+            window.print();
+        }
+    </script>
+    <style>
+        .ui-datepicker-calendar {
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/common.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}
+
+

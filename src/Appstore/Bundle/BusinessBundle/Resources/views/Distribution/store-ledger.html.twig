@@ -1,0 +1,27 @@
+{% set totalDebit = 0 %}
+{% set totalCredit = 0 %}
+{% for ledger in entity.storeLedgers %}
+    {% set totalDebit = totalDebit + ledger.debit %}
+    {% set totalCredit = totalCredit + ledger.credit %}
+    <tr id="remove-{{ ledger.id }}">
+        <td class="">{{ loop.index }}</td>
+        <td class="">{{ ledger.store.name }}</td>
+        <td class="">{{ ledger.transactionType }}</td>
+        <td class="">{{ ledger.debit }}</td>
+        <td class="">{{ ledger.credit }}</td>
+        <td>
+            {% if ledger.status != 1 %}
+                <a id="{{ ledger.id }}" data-id="{{ ledger.id }}"  data-url="{{ path('business_invoice_distributor_ledger_delete',{'invoice': entity.id ,'id': ledger.id }) }}" href="javascript:" class="btn red mini ledgerDelete" ><i class="icon-trash"></i></a>
+            {% endif %}
+        </td>
+    </tr>
+{% endfor %}
+<tr>
+    <td colspan="6" class="" style="border: 1px double #000"></td>
+</tr>
+<tr>
+    <td colspan="3" class=""><span class="pull-right"><strong>Total Amount TK.</strong> =</span></td>
+    <td class=""><strong class="subTotal">{{ totalDebit|number_format(2) }}</strong></td>
+    <td class=""><strong class="subTotal">{{ totalCredit|number_format(2) }}</strong></td>
+    <td class=""></td>
+</tr>

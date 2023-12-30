@@ -1,0 +1,74 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="portlet box grey">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-cogs"></i>Module
+
+            </div>
+            <div id="" class="date-tooltip" >
+                <i class="fa fa-calendar"></i>
+                {{ "now"|date("d-F-Y") }}
+            </div>
+        </div>
+        <div>
+
+            <ul class="page-breadcrumb breadcrumb">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" >Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('module') }}" >Module</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    Create
+                </li>
+
+                <li class="pull-right custom-pull-right" >
+                    <a class="btn green-stripe active" href=""><i class="icon-plus"></i> New Create</a>
+                    <a class="btn purple-stripe blue" href="{{ path('module') }}">Listing<i class="icon-headphones"></i></a>
+
+                </li>
+            </ul>
+        </div>
+        {% include('flash-message.html.twig')  %}
+        <div class="form-group form-group-custom backgroundWhite ">
+            <div class="modal-dialog modal-dialog-form" >
+                <div class="modal-content" >
+
+                    <div class="modal-body ">
+                        <div class="portlet box">
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="form-group">
+
+                                <div class="col-md-12">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.modules) }}
+                                        {{ form_errors(form.modules) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <label for="item_itemName"  class="control-label col-md-3 required"></label>
+                                <div class="col-md-6">
+                                    {{ form_widget(form.submit) }}{{ form_widget(form.reset) }}
+                                </div>
+                            </div>
+
+
+                            {{ form_end(form) }}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

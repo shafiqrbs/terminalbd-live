@@ -1,0 +1,158 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Customer Invoice
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('invoicemodule') }}">Customer Invoice</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> Invoice Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Customer Invoice Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('invoicemodule_add') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric" >Invoice</th>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Bill Month</th>
+                                    <th class="numeric" >Total Amount</th>
+                                    <th class="numeric" >Paid Amount</th>
+                                    <th class="numeric" >Due Amount</th>
+                                    <th class="numeric" >Process</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td> {% if entity.invoiceModuleItems is defined and  entity.invoiceModuleItems is not empty  %}<span class="badge badge-warning toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span>{% endif %}</td>
+                                        <td class="numeric" >{{ entity.invoice }}</td>
+                                        <td class="numeric" >{{ entity.name }}</td>
+                                        <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.billMonth }}</td>
+                                        <td class="numeric" >{{ entity.totalAmount }}</td>
+                                        <td class="numeric" >{{ entity.paidAmount }}</td>
+                                        <td class="numeric" >{{ entity.dueAmount }}</td>
+                                        <td class="numeric" >
+                                            {% if entity.process == 'Created' and entity.totalAmount > 0 %}
+                                                <a href="{{ path('invoicemodule_generate',{invoice:entity.invoice}) }}"  title="Created" class="btn purple mini" ><i class="icon-pushpin"></i>&nbsp;Confirm Invoice</a>
+                                            {% elseif entity.process == 'Pending' and entity.totalAmount > 0 %}
+                                                <span  title="In-progress" class="btn green mini" ><i class="icon-pushpin"></i>&nbsp;Pending</span>
+                                            {% elseif entity.process == 'In-progress' %}
+                                                <span  class="btn yellow mini approve" data-id="{{ entity.id }}" data-url="{{ path('invoicemodule_approve',{id:entity.id}) }}" ><i class="icon-retweet"></i>&nbsp;In-progress</span>
+                                            {% elseif entity.process == 'Done' %}
+                                                <span  title="Done" class="btn blue mini" ><i class="icon-ok-circle"></i>&nbsp;Done</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric" >
+                                            {% if entity.customInvoice == 1 and entity.process != 'Done' %}
+                                                <a href="{{ path('invoicemodule_modify', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+                                            {% elseif(entity.process != 'Done')  %}
+                                                <a href="{{ path('invoicemodule_edit', { 'invoice': entity.invoice }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+                                            {% endif %}
+                                            {% if entity.process == 'Pending' or entity.process == 'Created' %}
+                                                <a title="Are you sure went to delete ?" href="{{ path('invoicemodule_delete', { 'invoice': entity.invoice }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                            {% endif %}
+                                            {% if entity.process == 'In-progress' or entity.process == 'Done' %}
+                                            <a href="{{ path('invoicemodule_show', { 'id': entity.id }) }}" class="btn blue mini" ><i class=" icon-eye-open"></i></a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr id="show-{{ entity.id }}" class="showing-overview" >
+                                        <td colspan="10">
+                                        {% if entity.invoiceModuleItems is defined and  entity.invoiceModuleItems is not empty  %}
+                                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                                <thead class="flip-content ">
+                                                <tr class="head-blue">
+                                                    <th class="numeric"  >Name</th>
+                                                    <th class="numeric" >Total</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                {% for item in entity.invoiceModuleItems %}
+                                                    <tr id="remove-{{ item.id }}">
+                                                        <td class="numeric">{{ item.name }}</td>
+                                                        <td class="numeric" >{{ item.amount }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                                <tfoot>
+                                                <td><strong class="pull-right" >Total Amount</strong></td><td colspan="2">{{ entity.totalAmount }}</td>
+                                                </tfoot>
+                                            </table>
+                                        {% endif %}
+                                        </td>
+                                    </tr>
+
+
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@SettingToolBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcessInt();
+{% endblock %}
+
+

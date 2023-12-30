@@ -1,0 +1,27 @@
+{% for purchaseItem in entity.purchaseItems %}
+    <tr id="remove-purchase-item-{{ purchaseItem.id }}">
+        <td>{{ loop.index }}.</td>
+        <td>
+            <a class="editable" data-name="Barcode" href="#"  data-url="{{ path('inventory_purchaseitem_barcode',{'id':purchaseItem.id}) }}" data-type="text" data-pk="{{ purchaseItem.id }}" data-original-title="Add product barcode">{{ purchaseItem.barcode }}</a>
+        </td>
+        <td>{{ purchaseItem.item.name }}</td>
+        {% if entity.inventoryConfig.isAttribute == 1 %}
+            <td class="span3">
+                <a href="#" id="serialNo" data-name="SerialNo" data-url="{{ path('inventory_purchaseitem_inline_update',{'id':purchaseItem.id}) }}"  data-type="textarea" data-pk="{{ purchaseItem.id }}" value="{{ purchaseItem.serialNo }}" data-placeholder="Enter product IME/Serial no" data-title="Enter IME/Serial no" class="editable">{% if purchaseItem.serialNo is not empty %}{% set serialNos = purchaseItem.serialNo|split(',')  %}{% for serial in serialNos %}{{ serial }}{{ not loop.last ? ',<br/>' }}{% endfor %}{% endif %}</a></td>
+        {% else %}
+            <td></td>
+        {% endif %}
+        <td class="span1">
+            <input type="text" class="td-inline-input itemUpdate" data-id="{{ purchaseItem.id }}" autocomplete = "off" min="1"   id="quantity-{{ purchaseItem.id }}" name="quantity[]" value="{{ purchaseItem.quantity }}" placeholder="{{ purchaseItem.quantity }}">
+        </td>
+        <td>{% if purchaseItem.item.masterItem.productUnit is not empty %}{{  purchaseItem.item.masterItem.productUnit.name }}{% endif %}</td>
+        <td><input type="text"  class="td-inline-input itemUpdate" data-id="{{ purchaseItem.id }}" autocomplete = "off"  id="price-{{ purchaseItem.id }}" name="price[]" value="{{ purchaseItem.purchasePrice }}" ></td>
+        <td id="subTotal-{{ purchaseItem.id }}" >{{ purchaseItem.purchaseSubTotal|number_format() }}</td>
+        <td class="span1">
+            <input type="text" class="td-inline-input itemUpdate" data-id="{{ purchaseItem.id }}" autocomplete = "off" min="1"   id="salesPrice-{{ purchaseItem.id }}" name="salesPrice[]" value="{{ purchaseItem.salesPrice }}" placeholder="{{ purchaseItem.salesPrice }}">
+        </td>
+        <td>
+            <a href="javascript:" data-url="{{ path('inventory_purchasesimple_item_delete',{'purchase':entity.id ,'id':purchaseItem.id }) }}" class="btn red mini itemDelete"><i class="icon-trash"></i></a>
+        </td>
+    </tr>
+{% endfor %}

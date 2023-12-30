@@ -1,0 +1,251 @@
+<div class="tm-accordion tm-style4">
+
+    {% if(themes and themes is not null) %}
+        {#<div class="accordion-title">
+            <h3><a href="#" class="iframe" id="" >Templates</a></h3>
+        </div>
+        <div class="accordion-container">
+            <form id="templateID" class="design-form theme-submitted" name="templateID" action="" method="post">
+                Select a template to apply to your site by clicking on the individual template image.
+                <div class="brclear"></div>
+                <p>
+                    <strong>Theme</strong>
+                    <a class="small-text align-right"  href="#"
+                       data-interface="tooltip"
+                       data-position="top"
+                       data-content="This will add a gradient effect and rounded corners on some buttons on your site. Gradients are only visible on supported devices."
+                       data-shift="10"
+                       data-defineClass = "bord"
+                       data-radius = "0">help</a>
+                </p>
+                <div class="brclear"></div>
+                <div class="tm-gallery gallery-carousel">
+
+                    <ul class="slides">
+                        {% for theme in themes %}
+                        <li>
+                            <a class="theme {% if entity.siteSetting.theme.id == theme.id %} themeSelected {% endif %}" rel="{{ theme.id }}" id="theme-{{ theme.id }}" href="javascript:" >
+                                <img alt="img" src="{{ image(theme.webPath).resize(130,128) }}">
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+                <div class="brclear"></div>
+                You can replace or remove the stock image of any of the templates below in the Main image / Carousel feature.
+                <div class="brclear"></div>
+                <input type="hidden" id="themeId" name="themeId" value="{{ entity.siteSetting.theme.id }}">
+                  <p class="align-right" >
+                    To keep these changes, click 'Update'&nbsp;&nbsp;&nbsp;<input type="submit" id="" class="align-right tm-btn mini" value="update"></p>
+
+            </form>
+            <div class="brclear"></div>
+        </div>#}
+    {% endif %}
+    <div class="accordion-title">
+        <h3><a href="#" class="iframe" id="" >Home Overview</a></h3>
+    </div>
+    <div class="accordion-container">
+        Enter a description for your business. This text will appear above/below the logo on the home page of your mobile site only.
+        <form class="design-form home-submitted" id="homepage"  action="" method="post" >
+            <label>Your site name<a class="small-text align-right"  href="#"
+                                    data-interface="tooltip"
+                                    data-position="top"
+                                    data-content="Enter the name of your company. This name will appear at the top of every page of your mobile site."
+                                    data-shift="10"
+                                    data-defineClass = "bord"
+                                    data-radius = "0px"
+                        >help</a></label>
+            <p><span class="fa-icon"><i class="fa  fa-pencil"></i></span><input id="name" type="text" value="{{ entity.homePage.name }}" placeholder="Enter your name" name="name"></p>
+            <label>A few words to summarise your business<a class="small-text align-right"  href="#"
+                                                            data-interface="tooltip"
+                                                            data-position="top"
+                                                            data-content="Enter a description of your company. This text will appear below the logo on the homepage on your mobile site."
+                                                            data-shift="10"
+                                                            data-defineClass = "bord"
+                                                            data-radius = "0px"
+                        >help</a></label>
+            <p><textarea class="classy-editor" id="content" name="content">{{ entity.homePage.content|raw }}</textarea></p>
+
+            <p class="align-right" >
+                To keep these changes, click 'Update'&nbsp;&nbsp;&nbsp;<input type="submit" class="align-right tm-btn mini" value="update">
+            </p>
+        </form>
+        <div class="brclear"></div>
+    </div>
+
+    <div class="accordion-title">
+        <h3><a href="javascript:">Logo</a></h3>
+    </div>
+    <div class="accordion-container">
+        <form class="design-form customize-submitted" id="" action="" method="post" enctype="multipart/form-data" >
+        Add your logo. Supported formats include: JPEG, PNG and GIF. Maximum file size is 4 megabytes. Use the 'Main Image' feature to add a carousel.
+        <div class="brclear"></div>
+        <p>Valid formats: jpeg, gif, png, Max upload: 200kb</p>
+        <!-- loader.gif -->
+        <!-- simple file uploading form -->
+        <div class="img-preview"><img id="logoPreview" {%  if(entity.templateCustomize.webPath('logo') is not null )  %} style="display: inline-block" {% endif %}  src="{{ image(entity.templateCustomize.webPath('logo')).resize() }} "></div>
+        <p><input id="logoUpload" type="file" accept="image/*" name="logo" /></p>
+        <div class="checkbox block">
+            <label >Display only on website</label><input type="checkbox" {% if(entity.templateCustomize.logoDisplayWebsite == 1) %} checked {% endif %} name="logoDisplayWebsite" value="1" />
+        </div>
+        <div class="brclear"></div>
+        <p class="align-right" >To keep these changes, click 'Update'&nbsp;&nbsp;&nbsp;<input id="button" type="submit" class="tm-btn mini" value="Upload"></p>
+        </form>
+        <div class="brclear"></div>
+    </div>
+    {% if(entity.customizeDesign != 1 ) %}
+    <div class="accordion-title">
+        <h3><a href="javascript:">Customize Template</a></h3>
+    </div>
+    <div class="accordion-container">
+        Add your logo. Supported formats include: JPEG, PNG and GIF. Maximum file size is 4 megabytes. Use the 'Main Image' feature to add a carousel.
+        <div class="brclear"></div>
+        <p>Valid formats: jpeg, gif, png, Max upload: 200kb</p>
+        <!-- loader.gif -->
+        <img style="display:none" id="loader" src="{{ asset('assets/bindu/3rd/file-upload/img/loading.gif') }}" alt="Loading...." title="Loading...." />
+        <!-- simple file uploading form -->
+        <div id="preview" style="display:none"></div>
+        <form class="design-form customize-submitted" id="" action="" method="post" >
+            <label>Site Name Color<a class="small-text align-right"  href="#"
+                                     data-interface="tooltip"
+                                     data-position="top"
+                                     data-content="Enter the name of your company. This name will appear at the top of every page of your mobile site."
+                                     data-shift="10"
+                                     data-defineClass = "bord"
+                                     data-radius = "0px"
+                        >help</a></label>
+            <p><span class="fa-icon"><i class="fa  fa-paint-brush"></i></span><input class="cpButton" name="siteNameColor" value="{{ entity.templateCustomize.siteNameColor }}" /></p>
+            <label>Site Background Color<a class="small-text align-right"  href="#"
+                                           data-interface="tooltip"
+                                           data-position="top"
+                                           data-content="Enter the name of your company. This name will appear at the top of every page of your mobile site."
+                                           data-shift="10"
+                                           data-defineClass = "bord"
+                                           data-radius = "0px"
+                        >help</a></label>
+            <p><span class="fa-icon"><i class="fa  fa-paint-brush"></i></span><input class="cpButton" name="siteBgColor" value="{{ entity.templateCustomize.siteBgColor }}" /></p>
+            <label>Feature Image</label>
+            <div class="img-preview"><img id="bgImagePreview" {%  if(entity.templateCustomize.webPath('bgImage') is not null )  %} style="display: inline-block" {% endif %}  src="{{ image(entity.templateCustomize.webPath('bgImage')).resize() }} "> </div>
+            <p><input id="bgImage" type="file" accept="image/*" name="bgImage" /></p>
+            <div class="brclear"></div>
+            <h3><strong>Header</strong></h3>
+            <label>Header Background Color<a class="small-text align-right"  href="#"
+                                             data-interface="tooltip"
+                                             data-position="top"
+                                             data-content="Enter the name of your company. This name will appear at the top of every page of your mobile site."
+                                             data-shift="10"
+                                             data-defineClass = "bord"
+                                             data-radius = "0px"
+                        >help</a></label>
+            <p><span class="fa-icon"><i class="fa  fa-paint-brush"></i></span><input class="cpButton" name="headerBgColor" value="{{ entity.templateCustomize.headerBgColor }}" /></p>
+            <label>Menu Background Color<a class="small-text align-right"  href="#"
+                                           data-interface="tooltip"
+                                           data-position="top"
+                                           data-content="Enter the name of your company. This name will appear at the top of every page of your mobile site."
+                                           data-shift="10"
+                                           data-defineClass = "bord"
+                                           data-radius = "0px"
+                        >help</a></label>
+            <p><span class="fa-icon"><i class="fa  fa-paint-brush"></i></span><input class="cpButton" name="menuBgColor" value="{{ entity.templateCustomize.menuBgColor }}" /></p>
+            <label>Menu Text</label>
+            <p><span class="fa-icon"><i class="fa  fa-paint-brush"></i></span><input class="cpButton" name="menuLia" value="{{ entity.templateCustomize.menuLia }}" /></p>
+            <label>Menu Text:hover</label>
+            <p><span class="fa-icon"><i class="fa  fa-paint-brush"></i></span><input class="cpButton" name="menuLiHovera" value="{{ entity.templateCustomize.menuLiHovera }}" /></p>
+{#
+            <div class="img-preview"><img id="headerBgImagePreview" {%  if(entity.templateCustomize.webPath('headerBgImage') is not null )  %} style="display: inline-block" {% endif %}  src="{{ image(entity.templateCustomize.webPath('headerBgImage')).resize() }} "></div>
+            <p><input id="headerBgImage" type="file" accept="image/*" name="headerBgImage" /></p>
+         #}   <h3><strong>Body</strong></h3>
+            <label>Body Color<a class="small-text align-right"  href="#"
+                                           data-interface="tooltip"
+                                           data-position="top"
+                                           data-content="Enter the name of your company. This name will appear at the top of every page of your mobile site."
+                                           data-shift="10"
+                                           data-defineClass = "bord"
+                                           data-radius = "0px"
+                        >help</a></label>
+            <p><span class="fa-icon"><i class="fa  fa-paint-brush"></i></span><input class="cpButton" name="bodyColor" value="{{ entity.templateCustomize.bodyColor }}" /></p>
+
+            <div class="brclear"></div>
+            <h3><strong>Footer</strong></h3>
+            <label>Footer Background Color<a class="small-text align-right"  href="#"
+                                             data-interface="tooltip"
+                                             data-position="top"
+                                             data-content="Enter the name of your company. This name will appear at the top of every page of your mobile site."
+                                             data-shift="10"
+                                             data-defineClass = "bord"
+                                             data-radius = "0px"
+                        >help</a></label>
+            <p><span class="fa-icon"><i class="fa  fa-paint-brush"></i></span><input class="cpButton" name="footerBgColor" value="{{ entity.templateCustomize.footerBgColor }}" /></p>
+
+            <label>Footer Text Color<a class="small-text align-right"  href="#"
+                                       data-interface="tooltip"
+                                       data-position="top"
+                                       data-content="Enter the name of your company. This name will appear at the top of every page of your mobile site."
+                                       data-shift="10"
+                                       data-defineClass = "bord"
+                                       data-radius = "0px"
+                        >help</a></label>
+            <p><span class="fa-icon"><i class="fa  fa-paint-brush"></i></span><input class="cpButton" name="footerTextColor" value="{{ entity.templateCustomize.footerTextColor }}" /></p>
+            <div class="brclear"></div>
+            <p class="align-right" >To keep these changes, click 'Update'&nbsp;&nbsp;&nbsp;<input id="button" type="submit" class="tm-btn mini" value="Upload"></p>
+        </form>
+        <div class="brclear"></div>
+    </div>
+    {% endif %}
+    <div class="accordion-title">
+        <h3><a href="#">Site Footer</a></h3>
+    </div>
+    <div class="accordion-container">
+        <p>Customize the footer of your site. To display the Phone number and Address in the site footer, the 'Call Us' and 'Find Us' features must be added to the site.</p>
+        <form class="design-form footer-submitted" id="footerSetting" action="" method="post" >
+            <div class="checkbox block">
+                <label >Display Icon</label><input type="checkbox" name="addressIconPage" {% if(entity.footerSetting.addressIconPage == 1) %} checked {% endif %} value="1" />
+            </div>
+            <div class="brclear"></div>
+            <div class="checkbox block">
+                <label >SocialMedia Icon</label><input type="checkbox" name="socialMedia" {% if(entity.footerSetting.socialMedia == 1) %} checked {% endif %} value="1" />
+            </div>
+            <div class="brclear"></div>
+            <label>Copy Right<a class="small-text align-right"  href="#"
+                                data-interface="tooltip"
+                                data-position="top"
+                                data-content="Enter the name of your company. This name will appear at the top of every page of your mobile site."
+                                data-shift="10"
+                                data-defineClass = "bord"
+                                data-radius = "0px"
+                        >help</a></label>
+            <p><span class="fa-icon"><i class="fa  fa-copyright"></i></span><input id="copyRight" type="text" value="{{ entity.footerSetting.copyRight }}" placeholder="Enter your copy right text" name="copyRight"></p>
+            {#<div class="checkbox block">
+                <label >Display only on website</label><input type="checkbox" name="displayWebsite"  {% if(entity.footerSetting.displayWebsite == 1) %} checked {% endif %} value="1" />
+                <label >Turn off footer branding</label><input type="checkbox" name="turnOffBranding"  {% if(entity.footerSetting.turnOffBranding == 1) %} checked {% endif %} value="1" />
+                <p><strong>Address</strong><a class="small-text align-right"  href="#"
+                                              data-interface="tooltip"
+                                              data-position="top"
+                                              data-content="Comming soon information"
+                                              data-shift="10"
+                                              data-defineClass = "bord"
+                                              data-radius = "0px"
+                            >help</a></p>
+                <label >Display on home page</label><input type="checkbox" name="addressHomePage"  {% if(entity.footerSetting.addressHomePage == 1) %} checked {% endif %} value="1" />
+                <label >Display on sub pages</label><input type="checkbox" name="addressSubPage"  {% if(entity.footerSetting.addressSubPage == 1) %} checked {% endif %} value="1" />
+                <label >Display Icon</label><input type="checkbox" name="addressIconPage" value="1" />
+                <p><strong>Phone</strong><a class="small-text align-right"  href="#"
+                                            data-interface="tooltip"
+                                            data-position="top"
+                                            data-content="Customize the footer of your site. To display the Phone number and Address in the site footer, the 'Call Us' and 'Find Us' features must be added to the site."
+                                            data-shift="10"
+                                            data-defineClass = "bord"
+                                            data-radius = "0px"
+                            >help</a></p>
+                <label >Display on home page</label><input type="checkbox" name="phoneHomePage"  {% if(entity.footerSetting.phoneHomePage == 1) %} checked {% endif %} value="1" />
+                <label >Display on sub pages</label><input type="checkbox" name="phoneSubPage"  {% if(entity.footerSetting.phoneSubPage == 1) %} checked {% endif %} value="1" />
+                <label >Display Icon</label><input type="checkbox" name="phoneDisplay" {% if(entity.footerSetting.phoneDisplay == 1) %}  checked {% endif %} value="1" />
+            </div>#}
+            <p class="align-right" >To keep these changes, click 'Update'&nbsp;&nbsp;&nbsp;<input id="footerSettingID" class="tm-btn mini" type="submit" value="update" name="homepage"></p>
+        </form>
+
+        <div class="clear"></div>
+    </div>
+</div>

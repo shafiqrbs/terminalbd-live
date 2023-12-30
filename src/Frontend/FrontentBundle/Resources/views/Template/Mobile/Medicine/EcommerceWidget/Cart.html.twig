@@ -1,0 +1,131 @@
+<div class="modal-header" style="position: relative">
+    <h5 class="modal-title">ORDER DETAILS</h5>
+    <button type="button" class="close-btn btn btn-sm modal-close-btn" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button>
+</div>
+<div class="modal-body">
+    <form class="" id="prescription" name="prescription" action="{{ path('order_checkout',{'shop':globalOption.uniqueCode}) }}" method="post" enctype="multipart/form-data">
+        <div id="cart-item-list">
+            {% if  cart.contents is not empty %}
+                <div class="top">Recent Buy Item's <span class="pull-right" style="margin-right:10px; margin-top:-2px" ><span class="btn btn-warning "><strong class="totalItem">{{ cart.contents|length }}</strong></span></span></div>
+                <div id="cart-item-list-box">
+                    {% for product in cart.contents %}
+                        <dl class="entity-list" id="item-remove-{{ product.rowid }}">
+                            <dt>
+                                {#{% if product.productImg is not empty %}
+                                    <img src="{{ image(product.productImg).scaleResize(80,80) }}" alt=""/>
+                                {% else %}
+                                    <img style="height: 80px; width: 80px" src="{{ asset('assets/img/product-icon.png') }}">
+                                {% endif %}#}
+                                <span class="dd-span-name">
+                            {{ loop.index }}. {{ product.name }}
+                                    <br/>  ৳ {{ product.price }} {% if product.productUnit is not empty %}/ {{ product.productUnit }} {% endif %}</span>
+                                <span class="dd-span-remove">
+                             <button id="{{ product.rowid }}"
+                                     data-url="{{ path(globalOption.subDomain ~ '_webservice_product_cart_remove',{'cartid':product.rowid}) }}"
+                                     class="btn btn-transparent btn-sm hunger-remove-cart">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                        </span>
+                            </dt>
+
+                            <dd>
+                                <div class="col-xs-6 col-md-6">
+                                    <div class="input-group">
+              <span class="input-group-btn input-group-btn-custom">
+                  <button type="button" class="btn btn-sm btn-transparent btn-danger btn-number-cart"
+                          data-type="minus" data-field="quantity" data-id="{{ product.rowid }}"
+                          id="btn-left-{{ product.rowid }}"
+                          data-url="{{ path(globalOption.subDomain ~ '_webservice_product_medicine_cart_update',{'cartid': product.rowid}) }}"
+                          data-text="{{ product.id }}" data-title="{{ product.price }}">
+                                                    <span class="glyphicon glyphicon-chevron-left"></span>
+                                           </button>
+              </span>
+                                        <input type="text" readonly="readonly" name="quantity" id="quantity-{{ product.rowid }}"
+                                               class="btn-number-cart" value="{{ product.quantity }}"
+                                               min="1" max="100">
+                                        <span class="input-group-btn">
+                                    <button type="button" class="btn btn-transparent btn-sm btn-success btn-number-cart"
+                                            data-type="plus" data-field="quantity"
+                                            data-id="{{ product.rowid }}"
+                                            data-url="{{ path(globalOption.subDomain ~ '_webservice_product_medicine_cart_update',{'cartid': product.rowid}) }}"
+                                            data-text="{{ product.id }}" data-title="{{ product.price }}">
+                                                      <span class="glyphicon glyphicon-chevron-right"></span>
+                                              </button>
+
+              </span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-md-6 text-right">
+                                    ৳ <strong id="btn-total-{{ product.rowid }}">{{ product.price * product.quantity }}</strong>
+                                </div>
+                            </dd>
+                        </dl>
+                    {% endfor %}
+                </div>
+                <div class="bottom">
+                    <span class="dd-span pull-left">SubTotal:</span>
+                    <span class="dd-span pull-right"><strong>{{ globalOption.ecommerceConfig.currency }}
+                            &nbsp;<span class="totalAmount">{{ cart.total }}</span></strong></span>
+                </div>
+                <div id="stockCart">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td class="text-right">
+
+                                <textarea name="comment" id="comment" rows="5" style="width: 100%; padding: 7px; font-size: 12px" placeholder="Enter order related instruction"></textarea>
+                                {% if globalOption.ecommerceConfig.uploadFile == 1 %}
+                                    <div style="height:35px">
+                                        <input type="file" id="prescriptionFile" name="prescriptionFile" class="dropzone"/>
+                                    </div>
+                                    <p style="font-size: 11px; color: red; line-height: 20px; margin-bottom: 0">*JPG/GIF/PDF/PNG, less than 1MB</p>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="bottom" id="login-cart">
+                        <span class="dd-span pull-right">
+                            <a  href="#login-modal"
+                                class="btn popup-top-anim btn-success"><span class="glyphicon glyphicon-shopping-cart"></span> Login & Give an Order</a></span>
+                    <span class="dd-span pull-right">
+                        {% if app.user %}
+                            <button  type="submit"
+                                     class="btn btn-success">Give an Order <span class="glyphicon glyphicon-play"></span></button>
+                        {% endif %}
+                        </span>
+                </div>
+            {% else %}
+                <p>You have no products in your shopping Bag.</p>
+            {% endif %}
+        </div>
+    </form>
+    <style>
+        .closest-dropzone span{
+            top:10px!important;
+        }
+        #cart-item-list .dd-span-name {
+            align-items: center;
+            display: flex;
+            width:90%;
+            height: 75px;
+            font-size: 12px;
+            padding-right: 7px;
+            float: left;
+        }
+        #cart-item-list .dd-span-remove {
+            align-items: center;
+            display: flex;
+            height: 75px;
+            font-size: 12px;
+            padding-right: 7px;
+        }
+    </style>
+</div>
+
+
+
+
+
+

@@ -1,0 +1,87 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Brand Stock Price Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Brand Stock Price Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Brand Stock Price Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn purple" target="_blank" href="{{ path('medicine_report_brand_stock_pdf') }}" >
+                                    <i class=" icon-download"></i>&nbsp;Download PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric" >Brand Name</th>
+                                <th class="numeric" >Sales(avg)</th>
+                                <th class="numeric" >Purchase(avg)</th>
+                                <th class="numeric" >Profit(avg)</th>
+                                <th class="numeric" >Sales</th>
+                                <th class="numeric" >Purchase</th>
+                                <th class="numeric" >Profit</th>
+                            </tr>
+                            </thead>
+                            <tbody id="sales">
+                            {% set purchase=0 %}
+                            {% set sales=0 %}
+                            {% set profit = 0 %}
+                             {% set avgPurchase=0 %}
+                            {% set avgSales=0 %}
+                            {% set avgProfit = 0 %}
+                            {% for entity in entities %}
+                                {% set purchase = purchase + entity.purchase %}
+                                {% set sales = sales + entity.sales %}
+                                {% set profit = profit + entity.profit %}
+                                {% set avgPurchase = avgPurchase + entity.avgPurchase %}
+                                {% set avgSales = avgSales + entity.avgSales %}
+                                {% set avgProfit = avgProfit + entity.avgProfit %}
+                                <tr>
+                                    <td class="numeric" >{{ entity.name }}</td>
+                                    <th class="numeric" >{{ entity.avgSales|number_format }}</th>
+                                    <th class="numeric" >{{ entity.avgPurchase|number_format  }}</th>
+                                    <th class="numeric" >{{ entity.avgProfit|number_format }}</th>
+                                    <th class="numeric" >{{ entity.sales|number_format }}</th>
+                                    <th class="numeric" >{{ entity.purchase|number_format  }}</th>
+                                    <th class="numeric" >{{ entity.profit|number_format }}</th>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot><tr><th>Grand</th><th>{{ avgSales|number_format }}</th><th>{{ avgPurchase|number_format }}</th><th>{{ avgProfit|number_format }}</th><th>{{ sales|number_format }}</th><th>{{ purchase|number_format }}</th><th>{{ profit|number_format }}</th></tr></tfoot>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

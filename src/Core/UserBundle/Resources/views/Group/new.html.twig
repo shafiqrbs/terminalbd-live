@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+{% block title %}{{ parent() }} : New User Group{% endblock %}
+
+{% block body %}
+{% include "FOSUserBundle:Group:new_content.html.twig" %}
+{% endblock body %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets  filter='cssrewrite'
+
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+    "assets/plugins/jquery-multi-select/js/jquery.multi-select.js"
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock javascripts %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $("select[multiple=multiple]").multiSelect({selectableOptgroup: true});
+
+{% endblock documentready %}

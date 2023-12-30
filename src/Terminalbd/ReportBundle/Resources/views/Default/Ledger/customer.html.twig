@@ -1,0 +1,91 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div id="print-area">
+        <div class="row print-header">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size: 16px">{{ option.name }}</strong></p>
+                {% if executive %}
+                <p><strong>{{ executive.profile.name }}</strong></p>
+                {% endif %}
+                <p><strong>Name of Report: Customer Sales SUmmary</strong></p>
+            </div>
+            <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table even" border="1">
+                    <colgroup>
+                        <col class="w">
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <tr>
+                        <th class="" >S/N</th>
+                        <th class="" >Customer Name</th>
+                        <th class="" >Mobile</th>
+                        <th class="text-right" >Opening Balance</th>
+                        <th class="text-right" >SubTotal</th>
+                        <th class="text-right" >Discount</th>
+                        <th class="text-right" >Sales</th>
+                        <th class="text-right" >Receive</th>
+                        <th class="text-right" >Outstanding</th>
+                        <th class="text-right" ></th>
+                    </tr>
+                    <tbody>
+                    {% set opening = 0 %}
+                    {% set openingBalance = 0 %}
+                    {% set subTotalSales = 0 %}
+                    {% set totalSales = 0 %}
+                    {% set totalDiscount = 0 %}
+                    {% set totalPayment = 0 %}
+                    {% set balance = 0 %}
+                    {% for entity in entities %}
+                        {% set balance = balance + entity.customerBalance %}
+                        {% set subTotalSales = (subTotalSales + entity.subTotal) %}
+                        {% set totalSales = (totalSales + entity.totalAmount) %}
+                        {% set totalDiscount = (totalDiscount + entity.discount) %}
+                        {% set totalPayment = (totalPayment + entity.amount) %}
+                        {% set openingBalance = (previous is defined and previous[entity.customerId] is defined and previous[entity.customerId] is not empty) ? previous[entity.customerId].balance : 0 %}
+                        {% set opening = (previous is defined and previous[entity.customerId] is defined and previous[entity.customerId] is not empty) ? opening + (previous[entity.customerId].balance)|default(2) : opening + 0 %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td class="numeric" >{{ entity.customerName|capitalize }}</td>
+                            <td class="numeric" >{{ entity.customerMobile }}</td>
+                            <td class="text-right" >{{ openingBalance|number_format(2) }}</td>
+                            <td class="text-right" >{{ entity.subTotal|number_format(2) }}</td>
+                            <td class="text-right" >{{ entity.discount|number_format(2) }}</td>
+                            <td class="text-right" >{{ entity.totalAmount|number_format(2) }}</td>
+                            <td class="text-right" >{{ entity.amount|number_format(2) }}</td>
+                            <td class="text-right" >{{ (previous is defined and previous[entity.customerId] is defined and previous[entity.customerId] is not empty) ? (previous[entity.customerId].balance + entity.customerBalance)|number_format(2) : entity.customerBalance|number_format(2) }}</td>
+                            <td class="numeric" >
+                                <a target="_blank" class="btn mini green" href="{{ path('miss_customer_invoice_ledger_report',{'customer':entity.customerId,'startDate':data['startDate'],'endDate':data['endDate']}) }}"><i class="icon-plus-sign"></i> Ledger</a>
+                                <a target="_blank" class="btn mini yellow" href="{{ path('miss_business_product_report',{'customer':entity.customerId,'startDate':data['startDate'],'endDate':data['endDate']}) }}"><i class="icon-print"></i> Products</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-right"><strong>Grand Total</strong></td>
+                        <th class="text-right"><strong>{{ opening|number_format(2) }}</strong></th>
+                        <th class="text-right"><strong>{{ subTotalSales|number_format(2) }}</strong></th>
+                        <th class="text-right"><strong>{{ totalDiscount|number_format(2) }}</strong></th>
+                        <th class="text-right"><strong>{{ totalSales|number_format(2) }}</strong></th>
+                        <th class="text-right"><strong>{{ totalPayment|number_format(2) }}</strong></th>
+                        <th class="text-right"><strong>{{ ((opening + totalSales) - totalPayment)|number_format(2) }}</strong></th>
+                        <th></th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

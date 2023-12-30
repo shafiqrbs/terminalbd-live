@@ -1,0 +1,35 @@
+<nav class="tm-nav">
+    <ul class="tm-menu">
+        <li>
+            <a href="{{ path('bindu_homepage') }}">Home</a>
+        </li>
+        <li><a href="{{ path('bindu_about') }}">About Us</a></li>
+        <li><a href="{{ path('bindu_find') }}">Our Client</a></li>
+        <li class="parent">
+            <a href="#">Application</a>
+            <ul class="sub-menu">
+                {% for application in applications  %}
+                <li><a href="{{ path('bindu_application',{'slug':application.slug}) }}">{{ application.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+        <li><a href="{{ path('bindu_contact') }}">Contact us</a></li>
+
+    </ul>
+    {#          {{ knp_menu_render('SettingAppearanceBundle:Builder:megaMenu', {'template':'SettingAppearanceBundle:Menu:mega-menu.html.twig','currentClass': 'active'}) }}
+#}
+</nav>
+<!--tm-nav-->
+<div class="tm-social-icons">
+    <a href="https://www.facebook.com/poskeeper" target="_blank" class="tm-icon-facebook">
+        <i class="fa fa-facebook"></i>
+    </a>
+    <a target="_blank" href="https://www.youtube.com/channel/UC6AueCikHgR0vT6Virsfnpg" data-title="Youtube" id="" class="tm-icon-dribbble">
+        <i class="fa fa-youtube"></i>
+    </a>
+    <a href="javascript:" id="search" data-title="Search" class="tm-icon-twitter">
+        <i class="fa fa-search"></i>
+    </a>
+
+</div>
+<!--tm-social-icons-->

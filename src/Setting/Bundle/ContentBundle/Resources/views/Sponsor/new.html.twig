@@ -1,0 +1,140 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="page-title">
+                Sponsor Form Components
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li>
+                    <a href="{{ path('sponsor') }}">Sponsor</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li><a href="#">Sponsor Components</a></li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+
+            <div class="portlet box green tabbable">
+
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-reorder"></i>Basic Information</div>
+                    <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('sponsor_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a></li>
+                                    <li><a href="{{ path('sponsor') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+
+                        <div class="row-fluid">
+                            <div class="span4 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Title <span class="required">*</span></label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-font"></i>
+                                            {{ form_widget(form.name) }}
+                                            {{ form_errors(form.name) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Website</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.website) }}
+                                        {{ form_errors(form.website) }}
+                                        <p>Website name ie. www.google.com or google.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" >Logo</label>
+                                    <div class="controls">
+                                        <div data-provides="fileupload" class="fileupload fileupload-new">
+                                            <div  class="fileupload-new thumbnail">
+                                                {% if(entity.webPath) %}
+                                                    <img class="fileupload-preview fileupload-exists thumbnail" alt="" src="{{ image(entity.webPath).resize(100,100) }}">
+                                                {% else %}
+                                                    <img alt="" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
+                                                {% endif %}
+                                            </div>
+                                            <div  class="fileupload-preview fileupload-exists thumbnail"></div>
+                                            <div>
+                                            <span class="btn btn-file">
+                                                <span class="fileupload-new">Select image</span>
+                                                <span class="fileupload-exists">Change</span>
+                                                {{ form_widget(form.file) }}
+                                                {{ form_errors(form.file) }}
+                                            </span>
+                                                <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-center">
+                                <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                                {% if(entity.id > 0 ) %}
+                                    <a href="{{ path('sponsor_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@SettingContentBundle/Resources/public/js/editable.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+{% endblock %}

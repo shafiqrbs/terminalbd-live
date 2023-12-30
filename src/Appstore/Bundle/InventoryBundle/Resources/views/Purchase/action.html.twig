@@ -1,0 +1,30 @@
+{% if entity.process == 'created' or entity.process == 'wfs'  %}
+    <a href="{{ path('purchase_show', { 'id': entity.id }) }}" class="btn purple mini" ><i class="icon-eye-open"></i></a>
+    {% if entity.purchaseVendorItems is empty %}
+        <a href="{{ path('purchase_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+    {% endif %}
+    {% if entity.purchaseVendorItems is not empty and entity.vendorItemSum != entity.totalQnt  %}
+        <a data-title="Add purchase item" href="{{ path('inventory_purchasevendoritem_new', { 'purchase': entity.id }) }}" class="btn mini blue" ><i class="icon-plus-sign"></i> vendor</a>
+    {% endif %}
+    {% if entity.purchaseVendorItems is not empty and entity.vendorItemSum == entity.totalQnt and entity.vendorItemSum != entity.purchaseItemSum  %}
+        <a data-title="Add purchase item" href="{{ path('inventory_purchaseitem_new', { 'purchase': entity.id }) }}" class="btn mini purple " ><i class="icon-plus-sign"></i>&nbsp;stock</a>
+    {% endif %}
+    <a title="Are you sure went to delete ?" href="javascript:" data-id="{{ entity.id }}" data-url="{{ path('purchase_delete', { 'id': entity.id }) }}"  class="btn red mini delete approved-{{ entity.id }}" ><i class="icon-trash"></i></a>
+{% endif %}
+
+{% if ( app.user.granted("ROLE_DOMAIN")  and entity.process == 'complete' or app.user.granted("ROLE_DOMAIN_INVENTORY_APPROVAL")  and entity.process == 'complete' or app.user.granted("ROLE_DOMAIN_INVENTORY")  and entity.process == 'complete' )  %}
+    <a href="{{ path('purchase_show', { 'id': entity.id }) }}" class="btn purple mini" ><i class="icon-eye-open"></i></a>
+    <a title="Approve" href="javascript:" data-url="{{ path('purchase_approve', { 'id': entity.id }) }}" class="btn blue mini approve approved-{{ entity.id }}" data-title="{{ entity.id }}" id="" ><i class="icon-ok"></i>&nbsp;Approve</a>
+    {% if entity.purchaseVendorItems is empty %}
+        <a href="{{ path('purchase_edit', { 'id': entity.id }) }}" class="btn green mini " ><i class="icon-edit"></i></a>
+    {% endif %}
+    <a  title="Are you sure went to delete ?" href="javascript:" data-id="{{ entity.id }}" data-url="{{ path('purchase_delete', { 'id': entity.id }) }}" class="btn red mini delete approved-{{ entity.id }}" ><i class="icon-trash"></i></a>
+{% endif %}
+{% if ( app.user.granted("ROLE_DOMAIN")  and entity.process == 'imported' or app.user.granted("ROLE_DOMAIN_INVENTORY_APPROVAL")  and entity.process == 'imported' or app.user.granted("ROLE_DOMAIN_INVENTORY")  and entity.process == 'imported' )  %}
+    <a href="{{ path('purchase_edit_approve', { 'id': entity.id }) }}" class="btn blue mini" ><i class="icon-eye-open"></i> Upadte & Approve</a>
+    <a  title="Are you sure went to delete ?" href="javascript:" data-id="{{ entity.id }}" data-url="{{ path('purchase_delete', { 'id': entity.id }) }}" class="btn red mini delete approved-{{ entity.id }}" ><i class="icon-trash"></i></a>
+{% endif %}
+{% if entity.process == 'approved' %}
+    <a href="{{ path('purchase_show', { 'id': entity.id }) }}" class="btn purple mini" ><i class="icon-eye-open"></i></a>
+{% endif %}
+

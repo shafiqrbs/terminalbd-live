@@ -1,0 +1,95 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Vendor base Purchase & Sales Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> Vendor base Purchase & Sales Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i> Vendor base Purchase & Sales Report</div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="controls">
+                                            <div class="input-append span12">
+                                                <input type="text" id="vendor" name="vendor"  class="span11 select2VendorCompany m-wrap" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Search vendor company">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric" >Company Name</th>
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Mobile</th>
+                                <th class="numeric" >Total</th>
+                                <th class="numeric" >Purchase</th>
+                                <th class="numeric" >Payable</th>
+                                <th class="numeric" >Receivable</th>
+                            </tr>
+                            </thead>
+                            <tbody id="sales">
+                            {% set total=0 %}
+                            {% set payment=0 %}
+                            {% set due = 0 %}
+                            {% for entity in entities %}
+                                <tr>
+                                    <td class="numeric" >{{ entity.companyName }}</td>
+                                    <td class="numeric" >{{ entity.vendorName }}</td>
+                                    <td class="numeric" >{{ entity.vendorMobile }}</td>
+                                    <th class="numeric" >{{ entity.total|number_format  }}</th>
+                                    <th class="numeric" >{{ entity.payment|number_format }}</th>
+                                    <th class="numeric" >{{ (entity.total - entity.payment)|number_format }}</th>
+                                    <th class="numeric" >{{  salesVendors[entity.customerId].customerBalance|default|number_format }}</th>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                           {# <tfoot><tr><th colspan="3">Grand</th><th>{{ total|number_format }}</th><th>{{ payment|number_format }}</th><th>{{ (total-payment)|number_format }}</th><th>{{ due|number_format }}</th></tr></tfoot>#}
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+

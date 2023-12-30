@@ -1,0 +1,330 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Sales Overview
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Sales Overview</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box blue tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Sales Overview</div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+
+                            <div class="row-fluid">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+
+
+                                    <div class="row-fluid">
+                                        <div class="span6">
+                                            {% if inventory.isBranch == 1 %}
+                                                <select name="branch" id="branch" class="span12 m-wrap">
+                                                    <option value=""> ---Select Branch --- </option>
+                                                    {% for bran in branches %}
+                                                        <option {% if searchForm.branch is defined and searchForm.branch == bran.id %} selected="selected" {% endif %} value="{{ bran.id }}">{{ bran.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="span3">
+                                            <input type="text" id="startDate" name="startDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                        </div>
+                                        <div class="span3">
+                                            <div class="controls">
+                                                <div class="input-append span10">
+                                                    <input type="text" id="endDate" name="endDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="form-actions portlet box green">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Sales Cash Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Sub-total Amount</th>
+                                    <td class="numeric" >{{ cashOverview.subTotal|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Discount</th>
+                                    <td class="numeric" >{{ cashOverview.totalDiscount|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Vat</th>
+                                    <td class="numeric" >{{ cashOverview.totalVat|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Net Total</th>
+                                    <td class="numeric" >{{ cashOverview.total|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Payment</th>
+                                    <td class="numeric" >{{ cashOverview.totalPayment|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Due</th>
+                                    <td class="numeric" >{{ cashOverview.totalDue|number_format }}</td>
+                                </tr>
+                            </table>
+                            <div class="form-actions portlet box red">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Sales Profit/Loss</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Net Total</th>
+                                    <td class="numeric" >{{ cashOverview.total|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Vat</th>
+                                    <td class="numeric" >{{ cashOverview.totalVat|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Purchase Price</th>
+                                    <td class="numeric" >{{ purchaseSalesPrice.purchasePrice|number_format }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Profit/Loss</th>
+                                    <td class="numeric" >{{ (cashOverview.total- (cashOverview.totalVat + purchaseSalesPrice.purchasePrice))|number_format }}</td>
+                                </tr>
+                            </table>
+                            <div class="form-actions portlet box purple">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Transaction wise cash Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Transaction Method</th>
+                                    <th class="numeric" >Sub-total</th>
+                                    <th class="numeric" >Discount</th>
+                                    <th class="numeric" >Vat</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Due</th>
+                                </tr>
+                                {% for transaction in transactionCash %}
+                                    <tr>
+                                        <td class="numeric" >{{ transaction.transactionName|default }}</td>
+                                        <td class="numeric" >{{ transaction.subTotal|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.totalDiscount|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.totalVat|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.total|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.totalPayment|default|number_format }}</td>
+                                        <td class="numeric" >{{ transaction.totalDue|default|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            <div class="form-actions portlet box grey">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Sales mode wise cash Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Sales Mode</th>
+                                    <th class="numeric" >Sub-total</th>
+                                    <th class="numeric" >Discount</th>
+                                    <th class="numeric" >Vat</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Due</th>
+                                </tr>
+                                {% for mode in salesMode %}
+                                    <tr>
+                                        <td class="numeric" >{{ mode.name|capitalize|default }}</td>
+                                        <td class="numeric" >{{ mode.subTotal|default|number_format }}</td>
+                                        <td class="numeric" >{{ mode.totalDiscount|default|number_format }}</td>
+                                        <td class="numeric" >{{ mode.totalVat|default|number_format }}</td>
+                                        <td class="numeric" >{{ mode.total|default|number_format }}</td>
+                                        <td class="numeric" >{{ mode.totalPayment|default|number_format }}</td>
+                                        <td class="numeric" >{{ mode.totalDue|default|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            <div class="form-actions portlet box yellow">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Sales Process</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Sales Process</th>
+                                    <th class="numeric" >Sub-total</th>
+                                    <th class="numeric" >Discount</th>
+                                    <th class="numeric" >Vat</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Due</th>
+                                </tr>
+                                {% for process in salesProcess %}
+                                    <tr>
+                                        <td class="numeric" >{{ process.name|capitalize|default }}</td>
+                                        <td class="numeric" >{{ process.subTotal|default|number_format }}</td>
+                                        <td class="numeric" >{{ process.totalDiscount|default|number_format }}</td>
+                                        <td class="numeric" >{{ process.totalVat|default|number_format }}</td>
+                                        <td class="numeric" >{{ process.total|default|number_format }}</td>
+                                        <td class="numeric" >{{ process.totalPayment|default|number_format }}</td>
+                                        <td class="numeric" >{{ process.totalDue|default|number_format }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            {#<div class="form-actions portlet box green">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Transaction wise cash Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Purchase</th>
+                                    <td class="numeric" >{{ stockOverview.purchase }}</td>
+                                    <th class="numeric" >Sales</th>
+                                    <td class="numeric" >{{ stockOverview.sales }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >Sales Return</th>
+                                    <td class="numeric" >{{ stockOverview.salesReturn }}</td>
+                                    <th class="numeric" >Purchase Return</th>
+                                    <td class="numeric" >{{ stockOverview.purchaseReturn }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >&nbsp;</th>
+                                    <td class="numeric" >&nbsp;</td>
+                                    <th class="numeric" >Damage</th>
+                                    <td class="numeric" >{{ stockOverview.damage }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" >&nbsp;</th>
+                                    <td class="numeric" >&nbsp;</td>
+                                    <th class="numeric" >Online Sales</th>
+                                    <td class="numeric" >&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <th class="numeric" ></th>
+                                    <td class="numeric" ></td>
+                                    <th class="numeric" >Current Stock</th>
+                                    <th class="numeric" >{{ stockOverview.remaining }}</th>
+                                </tr>
+                            </table>
+                            <div class="form-actions portlet box green">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Payment Status Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Purchase</th>
+                                    <td class="numeric" >{{ stockOverview.purchase }}</td>
+                                    <th class="numeric" >Sales</th>
+                                    <td class="numeric" >{{ stockOverview.sales }}</td>
+                                </tr>
+
+                            </table>
+                            <div class="form-actions portlet box green">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Transaction Method Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Purchase</th>
+                                    <td class="numeric" >{{ stockOverview.purchase }}</td>
+                                    <th class="numeric" >Sales</th>
+                                    <td class="numeric" >{{ stockOverview.sales }}</td>
+                                </tr>
+
+                            </table>
+                            <div class="form-actions portlet box green">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Payment Status Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Purchase</th>
+                                    <td class="numeric" >{{ stockOverview.purchase }}</td>
+                                    <th class="numeric" >Sales</th>
+                                    <td class="numeric" >{{ stockOverview.sales }}</td>
+                                </tr>
+
+                            </table>
+                            <div class="form-actions portlet box green">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Transaction Method Overview</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <tr>
+                                    <th class="numeric" >Purchase</th>
+                                    <td class="numeric" >{{ stockOverview.purchase }}</td>
+                                    <th class="numeric" >Sales</th>
+                                    <td class="numeric" >{{ stockOverview.sales }}</td>
+                                </tr>
+
+                            </table>#}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}
+
+
+
+
+

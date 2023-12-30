@@ -1,0 +1,254 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+    <!-- BEGIN category HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="category-title">
+                Pre-purchase no #  <strong>{{ entity.invoice }}</strong>
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li>
+                    <a href="{{ path('medicine_prepurchase') }}">Medicine Pre-purchase</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li><a href="#">Manage Medicine Pre-purchase</a></li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END category HEADER-->
+    <!-- BEGIN category CONTENT-->
+    <div class="row-fluid">
+    <div class="span12">
+
+    <div class="portlet box green tabbable">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Medicine Pre-purchase Information</div>
+            <div class="actions">
+                <div class="btn-group">
+                    <a class="btn black" href="{{ path('medicine_prepurchase') }}"><i class="icon-th-list"></i> Pre-purchase </a>
+                </div>
+            </div>
+        </div>
+    <div class="portlet-body">
+        <div class="portlet-body form">
+
+            {% include('flash-message.html.twig')  %}
+            <!-- BEGIN FORM-->
+            <div class="clearfix">&nbsp;</div>
+            <div class="">
+                {{ form_start(stockItemForm) }}
+                {{ form_row(stockItemForm._token) }}
+                <div class="row-fluid" >
+                    <div class="span12" style="margin-bottom:1px">
+                        <div class="control-group select-error-tooltip">
+                            <label class="control-label" for="firstName">Medicine/Supplementary Company Name(<sub>For Specific search</sub>)</label>
+                            <div class="controls">
+                                <select name="brandName" id="brandName" class="m-wrap span12 select2">
+                                    <option value="">-- Select Brand Name --</option>
+                                    {% if brands is not empty %}
+                                        {% for item in brands %}
+                                            <option {% if entity.brandName is not empty and entity.brandName == item.name %} selected="selected" {% endif %} value="{{ item.name }}">{{ item.name }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row-fluid" >
+                    <!--/span-->
+                    <div class="span9">
+                        <div class="control-group">
+                            <label class="control-label"  for="category" >Name<span class="required">*</span></label>
+                            <div class="controls">
+                                {{ form_widget(stockItemForm.name) }}
+                                {{ form_errors(stockItemForm.name) }}
+                                <input type="hidden" name="medicineId" id="medicineId" value="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="span2">
+                        <div class="control-group">
+                            <label class="control-label" for="name">Quantity</label>
+                            <div class="controls">
+                                {{ form_widget(stockItemForm.purchaseQuantity) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions portlet box grey">
+                    <div class="pull-right">
+                        <button type="submit" class="btn green" id="stockItemCreate"><i class="icon-save"></i> Add Stock Item</button>
+                    </div>
+                </div>
+                {{ form_end(stockItemForm) }}
+            </div>
+            <div class="clearfix">&nbsp;</div>
+            {{ form_start(form) }}
+            {{ form_row(form._token) }}
+            <div class="row-fluid">
+                <div class="span12" id="particular-table">
+                    <table class="table table-bordered table-striped table-condensed table-fixed">
+                        <thead>
+                        <tr>
+                            <th class="span1">&nbsp;&nbsp;<i class="icon-list"></i> Name</th>
+                            <th class="span1">Rack no</th>
+                            <th class="span1">MRP</th>
+                            <th class="span1">Pack</th>
+                            <th class="span1">Qnt</th>
+                            <th class="span1">Unit</th>
+                            <th class="span1">Total</th>
+                            <th class=""><i class="icon-trash"></i></th>
+                        </tr>
+                        </thead>
+                        <tbody id="invoiceParticulars">
+                        {% if entity.medicinePrepurchaseItems is not empty %}
+                            {% for item in entity.medicinePrepurchaseItems %}
+                                <tr id="remove-{{ item.id }}">
+                                    <td class="span3">{{ loop.index }}. <strong>{{ item.medicineStock.name }}</strong></td>
+                                    <td class="span3">{% if item.medicineStock.rackNo is not empty %}{{ item.medicineStock.rackNo.name }}{% endif %}</td>
+                                    <td class="span1">
+                                       <input type="text" class="td-inline-input salesPrice" data-id="{{ item.id }}" autocomplete = "off"  id="salesPrice-{{ item.id }}" name="salesPrice" value="{{ item.salesPrice }}" >
+                                    </td>
+                                    <td class="span1">
+                                        {% if ( app.user.granted("ROLE_MEDICINE_MANAGER") or app.user.granted("ROLE_DOMAIN"))  %}
+                                            <a  class="editableText" data-name="pack" href="#"  data-url="{{ path('medicine_stock_inline') }}" data-type="text" data-pk="{{ item.medicineStock.id }}" data-original-title="Change pack qnt">{{ item.medicineStock.pack }}</a>
+                                        {% endif %}
+                                    </td>
+                                    <td class="span1">
+                                        <input type="text" class="td-inline-input quantity" data-id="{{ item.id }}" autocomplete = "off" min="1" max="{{ item.quantity }}"  id="quantity-{{ item.id }}" name="quantity[]" value="{{ item.quantity }}" placeholder="{{ item.quantity }}">
+                                    </td>
+                                    <td class="span1">{% if item.medicineStock.unit is not empty %}<span>{{ item.medicineStock.unit.name }}</span>{% endif %}</td>
+                                    <td class="" id="subTotal-{{ item.id }}">{{ (item.salesPrice * item.quantity)|number_format }}</td>
+                                    <td class=""><a id="{{ item.id }}" data-url="{{ path('medicine_prepurchase_particular_delete',{'invoice': entity.id ,'id': item.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a></td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="8" class="span12" style="border: 1px double #000"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="span10"><span class="pull-right"><strong>Percent(%)</strong> =</span></td>
+                            <td class="span1">  {{ form_widget(form.discountCalculation) }}</td>
+                            <td class="span1"><strong id="subTotal">{{ entity.subTotal|number_format(2) }}</strong></td>
+                            <td class="span1"><strong id="discount">{{ entity.discount|number_format(2) }}</strong></td>
+                            <td class="span1"><strong id="total">{{ entity.netTotal|number_format(2) }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4"><span class="pull-right"><strong>Vendor/Supplier</strong> =</span></td>
+                            <td colspan="4">
+                                {{ form_widget(form.medicineVendor) }}
+                                {{ form_errors(form.medicineVendor) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4"></td>
+                            <td colspan="3">
+                                <div class="pull-right">
+                                    <input type="hidden" id="purchaseId" value="{{ entity.id }}">
+                                    <button type="reset" class="btn yellow" id=""><i class="icon-refresh"></i> Reset</button>
+                                    <button type="submit" class="btn blue" id="receiveBtn"><i class="icon-save"></i> Save</button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                    <div class="clearfix">&nbsp;</div>
+                </div>
+            </div>
+            <div class="clearfix">&nbsp;</div>
+            {{ form_end(form) }}
+            <div class="clearfix">&nbsp;</div>
+
+
+            <!-- END FORM-->
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <style>
+        .form-horizontal .payment-info .control-label {
+            float: left;
+            text-align: left;
+            background: #f9f9f9;
+            color: #000;
+            font-weight: bold;
+            line-height: 32px;
+            height: 38px;
+            margin: 0!important;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .numeric input {
+            margin-bottom: 0;
+            min-height: 15px!important;
+            width: 70px;
+            height: 15px!important;
+            border: 1px solid #999;
+            font-size: 13px!important;
+            line-height: 15px!important;
+        }
+
+        .td-inline-input{
+            height: 15px!important;
+            line-height: 13px!important;
+            font-size: 13px!important;
+            border: 2px solid #4d90fe!important;
+            width: 50px;
+            margin-bottom:0!important;
+        }
+        .td-inline-label{
+            height: 15px!important;
+            line-height: 20px!important;
+            min-height: 15px!important;
+            font-size: 13px!important;
+        }
+    </style>
+{% endblock %}
+
+{% block cssBlock %}
+{% stylesheets filter='cssrewrite'
+    '@MedicineBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/prepurchase.js'
+    '@MedicineBundle/Resources/public/js/editable.js'
+    '@MedicineBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    brandMedicineSearch({{ entity.id }});
+    $('.editableText').editable({
+    type: 'text',
+    inputclass: 'span12 m-wrap',
+    placement: 'right',
+    });
+    $('#purchaseItem_stockName').focus();
+{% endblock %}
+
+

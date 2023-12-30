@@ -1,0 +1,266 @@
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block body %}
+    <!-- BEGIN PAGE CONTAINER-->
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                <h3 class="page-title">
+                    My Profile <small>: {{ user.username }}</small>
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li>
+                        <a href="{{ path('globaloption_modify') }}">{{ user.globalOption.name }}</a>
+                        <i class="icon-angle-right"></i>
+                    </li>
+                    <li><a href="javascript:">User Profile</a></li>
+                </ul>
+                <!-- END PAGE TITLE & BREADCRUMB-->
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid profile">
+            <div class="span12">
+                <!--BEGIN TABS-->
+                <div class="tabbable tabbable-custom tabbable-full-width">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#tab_1_1" data-toggle="tab">Overview</a></li>
+                        <li><a href="#tab_1_3" data-toggle="tab">Account</a></li>
+                        <li><a href="#tab_1_6" data-toggle="tab">Help</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane row-fluid active" id="tab_1_1">
+                          {#  {{ include('UserBundle:Profile:overview.html.twig') }}#}
+                        </div>
+                        <!--end tab-pane-->
+                        <div class="tab-pane row-fluid profile-account" id="tab_1_3">
+                            <div class="row-fluid"  style="position: relative">
+                                <div id="dataProcess"></div>
+                                <div class="span12">
+
+                                    <div class="span3">
+                                        <ul class="ver-inline-menu tabbable margin-bottom-10">
+                                            <li class="active">
+                                                <a data-toggle="tab" href="#tab_1-1">
+                                                    <i class="icon-cog"></i>
+                                                    Personal info
+                                                </a>
+                                                <span class="after"></span>
+                                            </li>
+                                            <li ><a data-toggle="tab" href="#tab_2-2"><i class="icon-picture"></i> Change Avatar</a></li>
+                                            <li ><a data-toggle="tab" href="#tab_3-3"><i class="icon-lock"></i> Change User/Email</a></li>
+                                            <li ><a data-toggle="tab" href="#tab_3-4"><i class="icon-lock"></i> Change Password</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="span9">
+                                        <div class="tab-content">
+                                            <div id="tab_1-1" class="tab-pane active">
+                                                {{ include ('UserBundle:Profile/Account:edit.html.twig')}}
+                                            </div>
+                                            <div id="tab_2-2" class="tab-pane">
+                                                {{ include ('UserBundle:Profile/Account:upload.html.twig')}}
+                                            </div>
+                                            <div id="tab_3-3" class="tab-pane">
+                                                {{ include ('UserBundle:Profile/Account:user.html.twig')}}
+                                            </div>
+                                            <div id="tab_3-4" class="tab-pane">
+                                                {{ include ('UserBundle:Profile/Account:password.html.twig')}}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <!--end span9-->
+                                </div>
+                            </div>
+                        </div>
+                        <!--end tab-pane-->
+
+                        <!--end tab-pane-->
+                        <div class="tab-pane row-fluid" id="tab_1_6">
+                            {{ include ('UserBundle:Profile:help.html.twig')}}
+                        </div>
+                        <!--end tab-pane-->
+                    </div>
+                </div>
+                <!--END TABS-->
+            </div>
+        </div>
+        <!-- END PAGE CONTENT-->
+    </div>
+    <!-- END PAGE CONTAINER-->
+{% endblock %}
+{% block documentready %}
+    {#<script>#}
+
+    function isValidEmailAddress(emailAddress) {
+    var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+    return pattern.test(emailAddress);
+    };
+
+    $('#callBackEmail').focusout(function(){
+
+    var emil=$('#callBackEmail').val();
+    if( ! isValidEmailAddress( emil ) ) {
+    $('#callBackEmail').val('').addClass('error-input');
+    $('#callBackEmailError').html(emil+' is not valid e-mail address.');
+    }else{
+    $('#callBackEmail').removeClass('error-input');
+    $('#callBackEmailError').html('');
+    }
+
+    });
+
+    $('#profile').validate({
+
+    rules: {
+    name: {
+    required: true
+    },
+    mobile: {
+    required: true,
+    {#remote: {
+        url: "{{ path('system_user_manager_duplicacy_check_mobile') }}",
+        type: "post",
+        data:
+        {
+            mobile: function()
+            {
+                return $('#profile :input[name="mobile"]').val();
+            },profile_id: function()
+            {
+                return $('#profile :input[name="profile_id"]').val();
+            }
+
+        }
+    }#}
+    },
+    },
+    messages:{
+    name:{
+    required: "Please enter your full name"
+    },
+    mobile:{
+    required: "Please enter your mobile no"
+    },
+    },
+    submitHandler: function(form) {
+    $.ajax({
+    url:'{{ path('system_user_manager_update') }}',
+    type: "POST",
+    beforeSend: function() {
+    $('#dataProces').show().addClass('ajax-loading').fadeIn(3000);
+    },
+    data: $('form#profile').serialize(),
+    success: function(response) {
+    $('#dataProces').fadeOut(3000);
+    $('#profile-submit').attr('enable');
+    }
+    });
+    }
+
+    });
+    $('#credential').validate({
+
+    rules: {
+
+    username: {
+    required: true,
+    remote: {
+    url: "{{ path('system_user_manager_duplicacy_check_user') }}",
+    type: "post",
+    data:
+    {
+    type: function()
+    {
+    return $('#credential :input[name="username"]').val();
+    },
+    user_id: function()
+    {
+    return $('#credential :input[name="user_id"]').val();
+    }
+    }
+    }
+    },
+    email: {
+    required: true,
+    email: true,
+    remote: {
+    url: "{{ path('system_user_manager_duplicacy_check_user') }}",
+    type: "post",
+    data:
+    {
+    type: function()
+    {
+    return $('#credential :input[name="email"]').val();
+    },
+    user_id: function()
+    {
+    return $('#credential :input[name="user_id"]').val();
+    }
+    }
+    }
+    }
+
+
+    },
+    messages:{
+    username:{
+    required: "Must be enter your user name",
+    remote: jQuery.validator.format("{0} is already taken.")
+    },
+    subDomain:{
+    required: "Please enter your choose full sub domain name.",
+    remote: jQuery.validator.format("{0} is already taken.")
+    }
+    },
+    submitHandler: function(form) {
+    $.ajax({
+
+    url:'{{ path('system_user_manager_credential') }}',
+    type: "POST",
+    beforeSend: function() {
+    $('#dataProces').show().addClass('ajax-loading').fadeIn(3000);
+    },
+    data: $('form.option').serialize(),
+    success: function(response) {
+    $('#dataProces').fadeOut(3000);
+    }
+    });
+    }
+
+    });
+
+    $('#upload').submit(function(e){
+
+    $.ajax({
+
+    url: '{{ path('system_user_manager_update') }}',
+    type: 'POST',
+    data: new FormData(this),
+    processData: false,
+    contentType: false,
+    beforeSend: function() {
+    $('#dataProces').show().addClass('ajax-loading').fadeIn(3000);
+    },
+    success: function(data){
+    $('#dataProces').fadeOut(3000);
+    console.log(data);
+    }
+    });
+    e.preventDefault();
+
+
+    })
+
+{% endblock %}

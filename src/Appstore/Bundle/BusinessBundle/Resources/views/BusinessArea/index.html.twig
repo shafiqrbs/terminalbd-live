@@ -1,0 +1,102 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Business Area
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                     <li><a href="#">Business Area</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Business Area</div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="portlet-body ">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Business Area name<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.name) }}
+                                            {{ form_errors(form.name) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid box green">
+                            <div class="span12" id="particular-table">
+                                <table class="table table-bordered table-striped table-condensed table-fixed">
+                                    <thead class="flip-content ">
+                                    <tr class="head-blue">
+                                        <th> S/N</th>
+                                        <th>Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="invoiceParticulars">
+                                    {% for entity in entities %}
+                                        <tr id="remove-{{ entity.id }}">
+                                            <td  class="">{{ loop.index }}.</td>
+                                            <td class="">{{ entity.name }}</td>
+                                            <td class=""> {% if( entity.status == 1) %}
+                                                    <a class="btn mini blue btn-action" href="{{ path('business_area_status', { 'id': entity.id}) }}"><i class="icon-ok"></i></a>
+                                                {% else %}
+                                                    <a class="btn mini red btn-action" href="{{ path('business_area_status', { 'id': entity.id}) }}">x</a>
+                                                {% endif %}
+                                                <a href="{{ path('business_area_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+                                                <a title="Are you sure went to delete ?" href="{{ path('business_area_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <div class="clearfix">&nbsp;</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

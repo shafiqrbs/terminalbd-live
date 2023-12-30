@@ -1,0 +1,97 @@
+{% extends '::print.html.twig' %}
+{% block body %}
+    <table class="table">
+        <tr>
+            <td>
+                <div class="span4  pull-left invoice-logo-space">
+                    {% if entity.inventoryConfig.invoicePrintLogo == 1 %}
+                    {% if entity.inventoryConfig.globalOption.templateCustomize.webPath('logo') is not empty %}   <img style="max-width: 180px; max-height: 60px" src="/{{ entity.inventoryConfig.globalOption.templateCustomize.webPath('logo') }}">{% endif %}
+                    {% endif %}
+                </div>
+            </td>
+            <td class="pull-right">
+                <div class="span4">
+                    <ul class="unstyled">
+                        <li><strong>{{ entity.inventoryConfig.globalOption.name }}</strong></li>
+                        {% if entity.inventoryConfig.invoicePrintUserMobile == 1 and entity.salesBy.profile.mobile is not empty %}
+                        <li><i class="icon-phone"></i>&nbsp;{{ entity.salesBy.profile.mobile }}</li>
+                        {% else %}
+                        <li><i class="icon-phone"></i>&nbsp;{{ entity.inventoryConfig.globalOption.mobile }}</li>
+                        {% endif %}
+                        {% if  entity.inventoryConfig.globalOption.email is not empty %}<li><i class="icon-envelope"></i>&nbsp;{{ entity.inventoryConfig.globalOption.email }}</li>{% endif %}
+                        {% if  entity.inventoryConfig.globalOption.contactPage.address1 %}<li><i class="icon-home"></i>&nbsp;{{ entity.inventoryConfig.globalOption.contactPage.address1 }}</li>{% endif %}
+                        {% if entity.inventoryConfig.globalOption.domain is not empty %}<li><i class="icon-link"></i>&nbsp;www.{{ entity.inventoryConfig.globalOption.domain }}</li>{% endif %}
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <table class="table table-border" >
+        <tr class="print-header">
+            <th colspan="2">
+                <strong class="title">Invoice</strong>
+                <span class="barcode">{{ barcode|raw }}</span>
+            </th>
+        </tr>
+        <tr class="head-black">
+            <th style="padding-left:10px">Bill To</th><th style="padding-right:10px; text-align: right!important;">Transaction</th>
+        </tr>
+        <tr>
+            <td>
+                <ul class="unstyled">
+                    {% if entity.customer is not empty %}<li><strong><i class="icon-user"></i></strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                    {% if entity.customer is not empty %}<li><strong><i class="icon-phone"></i>&nbsp;</strong>&nbsp;{{ entity.customer.mobile }}</li>{% endif %}
+                    {% if entity.customer is not empty %}<li><strong><i class="icon-home"></i>&nbsp;</strong>&nbsp;{{ entity.customer.address }}</li>{% endif %}
+                    {% if entity.customer is not empty and entity.customer.location is not empty %}<li style="padding-left: 16px!important;">{{ entity.customer.location.name }}, {{ entity.customer.location.parent.name }}</li>{% endif %}
+                </ul>
+            </td>
+            <td class="pull-right">
+                <ul class="unstyled">
+                    <li><strong><i class="icon-calendar"></i>&nbsp;</strong>{{ entity.created|date('d-m-Y') }}</li>
+                    {% if entity.transactionMethod is not empty %}<li><strong><i class="icon-money"></i>&nbsp;</strong>{{ entity.transactionMethod.name }}</li>{% endif %}
+                    {% if entity.paymentMobile is not empty %}<li><strong><i class="icon-money"></i></strong>&nbsp;{{ entity.paymentMobile }}/{{ entity.transactionId }}</li>{% endif %}
+                    {% if entity.cardNo is not empty %}<li><strong><i class="icon-money"></i>&nbsp;</strong>&nbsp;{{ entity.bank.name  }}/{{ entity.cardNo }}</li>{% endif %}
+                    <li></li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    {% if entity.salesItems is defined and  entity.salesItems is not empty  %}
+        <table class="table table-bordered table-striped">
+            <thead class="flip-content ">
+            <tr class="head-black">
+                <th>&nbsp;&nbsp;<i class="icon-reorder"></i></th>
+                <th class="numeric" >SKU</th>
+                <th class="numeric" >Description</th>
+                <th class="numeric" >Qnt</th>
+                <th class="numeric" >Unit</th>
+                <th class="numeric" >Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for salesItem in entity.salesItems %}
+                <tr>
+                    <td class="numeric" >{{ loop.index }}.</td>
+                    <td class="numeric" >{{ salesItem.item.sku }}</td>
+                    <td class="numeric" >{{ salesItem.item.name }}</td>
+                    <td class="numeric" >{{ salesItem.quantity }}</td>
+                    <td class="numeric" >{{ salesItem.salesPrice|number_format() }}</td>
+                    <td class="numeric" >{{ salesItem.subTotal|number_format() }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr><td colspan="5"><strong class="pull-right" >Total Amount</strong></td><td><strong>{{ entity.subTotal|number_format() }}</strong></td></tr>
+            {% if entity.discount %}<tr><td colspan="5"><strong class="pull-right" >Discount Amount</strong></td><td><strong>{{ entity.discount|number_format() }}</strong></td></tr>{% endif %}
+            {% if entity.vat %}<tr><td colspan="5"><strong class="pull-right" >Vat/Tax Amount</strong></td><td><strong>{{ entity.vat|number_format() }}</strong></td></tr>{% endif %}
+            <tr><td colspan="5"><strong class="pull-right" >Grand Total</strong></td><td><strong>{{ entity.total|number_format() }}</strong></td></tr>
+            <tr><td colspan="5"><strong class="pull-right" >Paid Amount</strong></td><td><strong>{{ entity.payment|number_format() }}</strong></td></tr>
+            {% if entity.due %}<tr><td colspan="5"><strong class="pull-right" >Due Amount</strong></td><td><strong>{{ entity.due|number_format() }}</strong></td></tr>{% endif %}
+            <tr><td colspan="6" style="text-align:right"><strong>In word TK.</strong>({{ entity.paymentInWord|raw }} Taka only).</td></tr>
+            {% if entity.inventoryConfig.invoicePrintLogo == 1 %}
+            <tr><td colspan="6" style="text-align:center">Powered By: {{ portal_power }}</td></tr>
+            {% endif %}
+            </tfoot>
+        </table>
+    {% endif %}
+{% endblock %}

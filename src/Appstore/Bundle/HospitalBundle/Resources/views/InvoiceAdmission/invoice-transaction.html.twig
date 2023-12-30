@@ -1,0 +1,33 @@
+{% set payment = 0 %}
+{% for transaction in entity.invoiceTransactions %}
+    {% set payment = payment+transaction.payment %}
+    <tr {% if transaction.approvedBy is empty %}  class="yellow-alert" {% endif %}>
+        <td  class="numeric">{{ loop.index }}</td>
+        <td  class="numeric">{{ transaction.updated|date('d-m-Y') }}</td>
+        <td class="numeric">{% if transaction.transactionMethod %}{{ transaction.transactionMethod.name }}{% endif %}</td>
+        <td class="numeric">{{ transaction.discount }}</td>
+        <td class="numeric">{{ transaction.payment }}</td>
+        <td class="numeric">{{ transaction.createdBy }}</td>
+        <td class="numeric">
+            <div class="btn-group">
+                {% if (app.user.granted("ROLE_DOMAIN") and transaction.approvedBy is not empty) or (app.user.granted("ROLE_DOMAIN_HOSPITAL_ADMIN") and  entity.process == "Done"  and entity.updated|date('d-m-Y') == "now"|date('d-m-Y'))  %}
+                    <a id="{{ transaction.id }}" data-id="{{ transaction.id }}"  data-url="{{ path('hms_invoice_admission_transaction_delete',{'invoice': entity.id ,'id': transaction.id }) }}" href="javascript:" class="btn red mini transactionDelete" ><i class="icon-trash"></i></a>
+                {% endif %}
+                {% if transaction.approvedBy is empty %}
+                    <a id="{{ transaction.id }}" data-id="{{ transaction.id }}"  data-url="{{ path('hms_invoice_admission_transaction_delete',{'invoice': entity.id ,'id': transaction.id }) }}" href="javascript:" class="btn red mini transactionDelete" ><i class="icon-trash"></i></a>
+                    <a id="{{ transaction.id }}" data-id="{{ transaction.id }}"  data-url="{{ path('hms_invoice_admission_transaction_approve',{'invoice': entity.id ,'id': transaction.id }) }}" href="javascript:" class="btn blue mini paymentConfirm" ><i class="icon-ok"></i> Approve</a>
+                {% endif %}
+                {% if transaction.approvedBy is not empty %}
+                    <a id="{{ transaction.id }}" data-id="{{ transaction.id }}"  href="{{ path('hms_invoice_admission_transaction_receive_print',{'invoice': entity.invoice ,'id': transaction.id }) }}" target="_blank" class="btn yellow mini" ><i class="icon-print"></i> Print</a>
+                {% endif %}
+            </div>
+        </td>
+    </tr>
+{% endfor %}
+<tr>
+    <td class="numeric" colspan="3"><span class="pull-right"><strong>Total TK.</strong> =</span></td>
+    <td class="numeric"><strong>{{ entity.discount|number_format }}</strong></td>
+    <td class="numeric"><strong>{{ payment|number_format(2) }}</strong></td>
+    <td class="numeric"><strong class="payment">{{ entity.payment|number_format(2) }}</strong></td>
+    <td class="numeric"></td>
+</tr>

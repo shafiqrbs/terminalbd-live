@@ -1,0 +1,198 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Account of expenditure
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Account of expenditure</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Account expenditure</div>
+                        <div class="spn5" id="message"></div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% set transactionMethod = searchForm.transactionMethod is defined ? searchForm.transactionMethod :'' %}
+                                {% set accountHead = searchForm.accountHead is defined ? searchForm.accountHead :"" %}
+                                {% set category = searchForm.category is defined ? searchForm.category :"" %}
+                                {% set toUser = searchForm.toUser is defined ? searchForm.toUser :"" %}
+                                {% set startDate = searchForm.startDate is defined ? searchForm.startDate :"now"|date('d-m-y') %}
+                                {% set endDate = searchForm.endDate is defined ? searchForm.endDate :"now"|date('d-m-y') %}
+                                <a class="btn yellow" href="{{ path('report_expenditure_summary') }}"><i class="icon-th-list"></i>&nbsp; Summary</a>
+                                <a class="btn blue" href="{{ path('report_expenditure_category') }}"><i class="icon-th-list"></i>&nbsp;Category</a>
+                                <a class="btn red" href="{{ path('report_expenditure_details',{'pdf':'pdf','transactionMethod':transactionMethod,'accountHead':accountHead,'category':category,'toUser':toUser,'startDate':startDate,'endDate':endDate}) }}"><i class="icon-download-alt"></i>&nbsp;Download PDF</a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body">
+                            {% include('flash-message.html.twig') %}
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span2">
+                                        <select class="search-input span12 m-wrap" id="transactionMethod" name="transactionMethod">
+                                            <option value="">--Method--</option>
+                                            {% for method in transactionMethods %}
+                                                <option {% if searchForm.transactionMethod is defined and searchForm.transactionMethod == method.id %} selected="selected" {% endif %} value="{{ method.id }}">{{ method.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span2">
+                                        <select class="search-input span12 m-wrap" id="accountHead" name="accountHead">
+                                            <option value="">--Account Head--</option>
+                                            {% for head in heads %}
+                                                <optgroup label="{{ head.name }}">
+                                                    {% for child in head.children %}
+                                                        <option {% if searchForm.accountHead is defined and searchForm.accountHead == child.id %} selected="selected" {% endif %} value="{{ child.id }}">{{ child.name }}</option>
+                                                    {% endfor %}
+                                                </optgroup>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span2">
+                                        <select class="search-input span12 m-wrap" id="category" name="category">
+                                            <option value="">--Category--</option>
+                                            {% for cat in categories %}
+                                                <option {% if searchForm.category is defined and searchForm.category == cat.id %} selected="selected" {% endif %} value="{{ cat.id }}">{{ cat.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span2">
+                                        <select class="search-input span12 m-wrap" id="toUser" name="toUser">
+                                            <option value="">--Select Employee--</option>
+                                            {% for employee in employees %}
+                                                <option {% if searchForm.toUser is defined and searchForm.toUser == employee.username %} selected="selected" {% endif %} value="{{ employee.username }}">{{ employee.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span2">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 search-input m-wrap  date-picker" value="{% if searchForm.startDate is defined and searchForm.startDate is not empty %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span2">
+                                        <div class="controls">
+                                            <div class="input-append span11">
+                                                <input type="text" id="endDate" name="endDate"  class="span10 search-input m-wrap  m-ctrl-medium date-picker" value="{% if searchForm.endDate is defined and searchForm.endDate is not empty %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %} ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content">
+                                    <tr class="head-red">
+                                        <th class="span3" ><strong>Total Expenses</strong></th>
+                                        <th class="" ><strong>{{ overview|number_format }}</strong></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                             <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+
+
+                                <tr class="head-blue">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >From user</th>
+                                    <th class="numeric" >To user</th>
+                                    <th class="numeric" >Category</th>
+                                    <th class="numeric" >Ref No.</th>
+                                    <th class="numeric" >Trans. Method</th>
+                                    <th class="numeric" >Attach</th>
+                                    <th class="numeric" >Amount</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr id="remove-{{ entity.id }}">
+                                        <td><span class="badge badge-success toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{% if entity.createdBy is not empty %}{{ entity.createdBy }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.toUser is not empty %}{{ entity.toUser }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.categoryName is not empty %}{{ entity.categoryName }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.accountRefNo }}</td>
+                                        <td class="numeric" >{% if entity.methodName is not empty %}{{ entity.methodName }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.path is not empty %}<a href="{{ asset('uploads/domain/'~global~'/expenditure/'~entity.path) }}" target="_blank">Download</a>{% endif %}</td>
+                                        <td class="numeric" >{{ entity.amount|number_format }}</td>
+                                    </tr>
+                                    <tr id="show-{{ entity.id }}" class="showing-overview">
+                                        <td colspan="9">
+                                            <table class="table">
+                                                <tr><td>Remark</td><td>{{ entity.remark }}</td></tr>
+                                                {% if entity.bankName is not empty %}
+                                                    <tr><td>Bank name</td><td>{{ entity.bankName }}</td></tr>
+                                                    <tr><td>Account no.</td><td>{{ entity.accountNo }}</td></tr>
+                                                {% endif %}
+                                                {% if entity.mobileBankName is not empty %}
+                                                    <tr><td>Mobile Account</td><td>{{ entity.mobileBankName }}</td></tr>
+                                                {% endif %}
+                                            </table>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/editable.js'
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    AccountingApproveProcess();
+{% endblock %}
+
+
+

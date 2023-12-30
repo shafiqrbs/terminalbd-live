@@ -1,0 +1,195 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Purchase Item Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Purchase Item Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Purchase Item Information</div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                {% if config.isAttribute == 1 %}
+                                {% set assuranceTypes =['Grantee','Warranty','Other'] %}
+                                {% set assuranceFromVendors =['1 Month','3 Month','4 Month','6 Month','1 Year',
+                                '1 Year 6 Month','2 Year','2 Year 6 Month','3 Year','3 Year 6 Month',
+                                '4 Year','4 Year 6 Month','5 Year','5 Year 6 Month','Product Life Time','Others'
+                                ] %}
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <select id="assuranceType" name="assuranceType" class="span12 m-wrap">
+                                            <option value="">--Assurance Type--</option>
+                                            {% for type in assuranceTypes %}
+                                                <option {% if searchForm.assuranceType is defined and type == searchForm.assuranceType %} selected="selected" {% endif %} value="{{ type }}">{{ type }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <select id="assuranceToCustomer" name="assuranceToCustomer" class="span12 m-wrap">
+                                            <option value="">--Assurance Customer--</option>
+                                            {% for toCustomer in assuranceFromVendors %}
+                                                <option {% if searchForm.assuranceToCustomer is defined and toCustomer == searchForm.assuranceToCustomer %} selected="selected" {% endif %} value="{{ toCustomer }}">{{ toCustomer }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="startDate" name="startDate"  class="span6 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Expired start date{% endif %} ">
+                                        <input type="text" id="endDate" name="endDate"  class="span6 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}Expired end date{% endif %} ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="serialNo" name="serialNo"  class="span12 m-wrap" value="{% if searchForm.serialNo is defined %}{{ searchForm.serialNo }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.serialNo is defined %}{{ searchForm.serialNo }}{% else %}Search serial no{% endif %} ">
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="row-fluid">
+                                    <div class="span3">
+                                        <input type="text" id="barcode" name="barcode"  class="span12 select2Barcode " value="{% if searchForm.barcode is defined %}{{ searchForm.barcode }}{% endif %}"  autocomplete="off" placeholder="Enter item barcode ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="item" name="item"  class="span12 select2Product" value="{% if searchForm.item is defined %}{{ searchForm.item }}{% endif %}"  autocomplete="off" placeholder="Enter item name ">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="vendor" name="vendor"  class="span12 select2Vendor" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Enter vendor name">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span11">
+                                                <input type="text" id="grn" name="grn"  class="span11 m-wrap" value="{% if searchForm.grn is defined %}{{ searchForm.grn }}{% endif %}"  autocomplete="off" placeholder="Enter grn name">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                            <thead class="flip-content ">
+                            <tr class="head-grey">
+                                <th class="numeric" ><i class="icon icon-reorder"></i></th>
+                                <th class="numeric" >SKU</th>
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Barcode</th>
+                                {% if config.isAttribute == 1 %}
+                                <th class="numeric" >Expired</th>
+                                {% endif %}
+                                <th class="numeric" >Quantity</th>
+                                <th class="numeric" >Purchase Price</th>
+                                <th class="numeric" >Sales Price</th>
+                                <th class="numeric" >Grn/Date</th>
+                                <th class="numeric" >Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for entity in pagination %}
+                                <tr>
+                                    <td><span data-trigger="hover" data-original-title="Barcode print" class="btn blue mini toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+                                    <td class="numeric" >{{ entity.item.sku }}</td>
+                                    <td class="numeric" >{{ entity.item.name }}</td>
+                                    <td class="numeric" >
+                                        <a class="editable" data-name="Barcode" href="#"  data-url="{{ path('inventory_purchaseitem_inline_update') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change product barcode">{{ entity.barcode }}</a>
+                                    </td>
+                                    {% if config.isAttribute == 1 %}
+                                    <td class="numeric" >
+                                        {% if entity.expiredDate is not empty %}
+                                            {{ entity.expiredDate|date('d-m-Y') }} /
+                                           <span class="btn yellow mini">{{ date(entity.expiredDate|date).diff(date("now")).days }} Days</span>
+                                        {% endif %}
+                                    </td>
+                                    {% endif %}
+                                    <td class="numeric" >{{ entity.quantity }}</td>
+                                    <td class="numeric" >{{ entity.purchasePrice }}</td>
+                                    <td class="numeric" >
+                                        <a class="editable" data-name="SalesPrice" href="#"  data-url="{{ path('inventory_purchaseitem_inline_update') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Change product sales price"> {{ entity.salesPrice }}</a>
+                                    </td>
+                                    <td class="numeric" >{{ entity.purchase.grn }}/{{ entity.purchase.receiveDate|date('d-m-Y') }}</td>
+                                    <td class="numeric" >
+                                        <a href="{{ path('inventory_purchaseitem_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+                                    </td>
+                                </tr>
+                            {% if config.isAttribute == 1 %}
+                                <tr id="show-{{ entity.id }}" class="showing-overview">
+                                    <td colspan="11">
+                                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                                            <tr>
+                                                <th class="numeric" >IME/Serial No</th>
+                                                <td class="" colspan="5" >
+                                                    <a href="#" id="serialNo" data-name="SerialNo" data-url="{{ path('inventory_purchaseitem_inline_update',{'id':entity.id}) }}"  data-type="textarea" data-pk="{{ entity.id }}" value="{{ entity.serialNo }}" data-placeholder="Enter product IME/Serial no" data-title="Enter IME/Serial no" class="editable">{% if entity.serialNo is not empty %}{% set serialNos = entity.serialNo|split(',')  %}{% for serial in serialNos %}{{ serial }}{{ not loop.last ? ',<br/>' }}{% endfor %}{% endif %}</a></td>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="numeric" >Assurance Type</th>
+                                                <td class="numeric" >{{ entity.assuranceType }}</td>
+                                                <th class="numeric" >Assurance From Vendor</th>
+                                                <td class="numeric" >{{ entity.assuranceFromVendor }}</td>
+                                                <th class="numeric" >Assurance To Customer</th>
+                                                <td class="numeric" >{{ entity.assuranceToCustomer }}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                        <div class="pagination pull-center"  >
+                            {{ knp_pagination_render(pagination) }}
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js'
+    '@InventoryBundle/Resources/public/js/editable.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $( ".dateCalendar" ).datepicker({
+        dateFormat: "dd-mm-yy",
+        changeMonth: true,
+        changeYear: true,
+    });
+    ApproveProcess();
+    EditableWithOutReloadInit();
+{% endblock %}
+
+
+

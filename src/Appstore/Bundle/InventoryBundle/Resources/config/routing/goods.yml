@@ -1,0 +1,96 @@
+inventory_goods:
+    path:     /
+    defaults: { _controller: "InventoryBundle:Goods:index" }
+
+inventory_goods_show:
+    path:     /{id}/show
+    defaults: { _controller: "InventoryBundle:Goods:show" }
+
+inventory_goods_new:
+    path:     /new
+    defaults: { _controller: "InventoryBundle:Goods:new" }
+
+inventory_goods_create:
+    path:      /create
+    defaults: { _controller: "InventoryBundle:Goods:create" }
+    methods:  POST
+    options:
+            expose: true
+
+inventory_goods_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "InventoryBundle:Goods:edit" }
+
+inventory_goods_update:
+    path:     /{id}/update
+    defaults: { _controller: "InventoryBundle:Goods:update" }
+    methods:  [POST, PUT]
+
+inventory_goods_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "InventoryBundle:Goods:delete" }
+
+inventory_goods_status:
+    path:     /{id}/product-status
+    defaults: { _controller: "InventoryBundle:Goods:webStatus" }
+
+inventory_goods_copy:
+    path:     /{id}/item-copy
+    defaults: { _controller: "InventoryBundle:Goods:itemCopy" }
+
+inventory_product_inline_discount_search:
+    path:     /inline-discount-search
+    defaults: { _controller: "InventoryBundle:Goods:discountSelect" }
+    options:
+           expose: true
+
+inventory_product_inline_tag_search:
+    path:     /inline-tag-search
+    defaults: { _controller: "InventoryBundle:Goods:tagSelect" }
+    options:
+           expose: true
+
+inventory_goods_inline_update:
+    path:     /inline-goods-update
+    defaults: { _controller: "InventoryBundle:Goods:inlineItemUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+inventory_goods_inline_subitem_update:
+    path:     /inline-goods-subitem-update
+    defaults: { _controller: "InventoryBundle:Goods:inlineSubItemUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+inventory_vendoritem_subproduct:
+    path:     /{id}/sub-product
+    defaults: { _controller: "InventoryBundle:Goods:addSubProduct" }
+    methods:  POST
+
+inventory_goods_subItem_update:
+    path:     /{id}/sub-product-update
+    defaults: { _controller: "InventoryBundle:Goods:updateSubProduct" }
+    methods:  POST
+
+inventory_vendoritem_gallery:
+    path:     /{item}/upload
+    defaults: { _controller: "InventoryBundle:Goods:uploadItemImage" }
+    options:
+           expose: true
+
+inventory_goods_subItem_delete:
+    path:     /{id}/sub-item-delete
+    defaults: { _controller: "InventoryBundle:Goods:subItemDelete" }
+
+inventory_goods_itemkeyvalue_delete:
+    path:     /{id}/item-key-value-delete
+    defaults: { _controller: "InventoryBundle:Goods:keyValueDelete" }
+
+inventory_goods_attribute_sorted:
+    path:     /{id}/item-key-value-sorted
+    defaults: { _controller: "InventoryBundle:Goods:keyValueSorted" }
+    methods:  POST
+    options:
+           expose: true

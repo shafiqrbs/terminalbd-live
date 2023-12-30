@@ -1,0 +1,118 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    DSR Base Sales Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">DSR Base Sales Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>DSR Base Sales Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% set customer = searchForm.customer is defined ? searchForm.customer :'' %}
+                                {% set startDate = searchForm.startDate is defined ? searchForm.startDate :"now"|date("d-m-Y") %}
+                                {% set endDate = searchForm.endDate is defined ? searchForm.endDate :"now"|date("d-m-Y") %}
+                                <a class="btn purple" target="_blank" href="{{ path('business_report_sales_dsr',{'pdf':'pdf','customer':customer,'startDate':startDate,endDate:endDate}) }}" >
+                                    <i class=" icon-download"></i>&nbsp;Download PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <select name="customer" id="customer" class="span12 m-wrap">
+                                            <option value=""> ---Select DSR --- </option>
+                                            {% for executive in executives %}
+                                                <option {% if searchForm.customer is defined and searchForm.customer == executive.id %} selected="selected" {% endif %} value="{{ executive.id }}">{{ executive.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="endDate" name="endDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric" >S/N</th>
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Quantity</th>
+                                <th class="numeric" >Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody id="sales">
+                            {% set subTotal=0 %}
+                            {% set quantity=0 %}
+                            {% for entity in entities %}
+                                {% set subTotal = subTotal+entity.amount %}
+                                {% set quantity = quantity+entity.quantity %}
+                                <tr>
+                                    <td class="numeric" >{{ loop.index }}.</td>
+                                    <td class="numeric" >{{ entity.name }}</td>
+                                    <td class="numeric" >{{ entity.quantity|number_format(2)  }}</td>
+                                    <td class="numeric" >{{ entity.amount|number_format(2)  }}</td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot><tr><th colspan="2">Grand Total</th>
+                                <th>{{ quantity|number_format(2) }}</th>
+                                <th>{{ subTotal|number_format(2) }}</th>
+                               </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}

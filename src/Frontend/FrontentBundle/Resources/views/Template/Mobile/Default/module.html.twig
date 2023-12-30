@@ -1,0 +1,69 @@
+{% extends ':frontend/template/mobile:base.html.twig' %}
+{% block body %}
+<div class="header-grid">
+        {% if globalOption.templateCustomize.mobileShowLogo == 1 %}
+        <a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}" id="mobile-logo">
+            {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+        </a>
+        {% endif %}
+</div>
+<hr>
+<div class="container">
+    <div class="clearfix"></div>
+    <div class="page-title-bar">
+        <div class="btn-group pull-left">
+            <div class="page-title">{{ menu.menu }} {% if category is defined and category is not empty %} : {{ category.name }}{% endif %}</div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+    {% if( menu.module.slug == 'blog' ) %}
+        {{ include('@Frontend/Template/Mobile/Module/blog.html.twig')}}
+    {% elseif( menu.module.slug == 'branch' ) %}
+        {{ include('@Frontend/Template/Mobile/Module/branch.html.twig')}}
+    {% elseif( menu.module.slug == 'client' ) %}
+        {{ include('@Frontend/Template/Mobile/Module/client.html.twig')}}
+    {% elseif( menu.module.slug == 'event' ) %}
+        {{ include('@Frontend/Template/Mobile/Module/event.html.twig')}}
+    {% elseif( menu.module.slug == 'faq' ) %}
+        {{ include('@Frontend/Template/Mobile/Module/faq.html.twig')}}
+    {% elseif ( menu.module.slug == 'news') %}
+        {{ include('@Frontend/Template/Mobile/Module/news.html.twig')}}
+    {% elseif( menu.module.slug == 'noticeboard' ) %}
+        {{ include('@Frontend/Template/Mobile/Module/noticeboard.html.twig')}}
+    {% elseif( menu.module.slug == 'portfolio' ) %}
+        {{ include('@Frontend/Template/Mobile/Module/portfolio.html.twig')}}
+    {% elseif( menu.module.slug == 'service' ) %}
+        {{ include('@Frontend/Template/Mobile/Module/service.html.twig')}}
+    {% elseif( menu.module.slug == 'sponsor' ) %}
+        {{ include('@Frontend/Template/Mobile/Module/sponsor.html.twig')}}
+    {% elseif( menu.module.slug == 'team' ) %}
+        {{ include('@Frontend/Template/Mobile/Module/team.html.twig')}}
+    {% elseif( menu.module.slug == 'testimonial' ) %}
+        {{ include('@Frontend/Template/Mobile/Module/testimonial.html.twig')}}
+    {% elseif( menu.module.slug == 'timeline' ) %}
+        {{ include('@Frontend/Template/Mobile/Module/timeline.html.twig')}}
+    {% elseif( menu.module.slug == 'admission' ) %}
+        {{ include('@Frontend/Template/Mobile/Module/admission.html.twig')}}
+    {% elseif( menu.module.slug == 'products' ) %}
+        {{ include('@Frontend/Template/Mobile/Module/product.html.twig')}}
+    {% else %}
+        {{ include('@Frontend/Template/Mobile/Module/default.html.twig')}}
+    {% endif %}
+    </div>
+</div
+{% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+    {% render controller("FrontendBundle:WebsiteWidget:featureMobileWidget",{'globalOption':globalOption.id, 'menu': menu.id,'position':'mobile'}) %}
+{% endif %}
+<!--//welcome-->
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@FrontendBundle/Resources/public/template/mobile/js/common.js'
+    '@FrontendBundle/Resources/public/template/mobile/js/page.js'
+    '@FrontendBundle/Resources/public/template/mobile/js/corporate.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}

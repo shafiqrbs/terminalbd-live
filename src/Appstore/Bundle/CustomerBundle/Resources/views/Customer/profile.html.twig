@@ -1,0 +1,341 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                 Manage of {{ entity.profile.name }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">{{ entity.globalOption.name }}</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Basic Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn blue" href="{{ path('domain_change_password') }}">
+                                    <i class="icon-lock"></i>
+                                    Change Password
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <!--/row-->
+                            <div class="row-fluid">
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" >Full Name<span class="required">*</span></label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.profile.name) }}
+                                                {{ form_errors(form.profile.name) }}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" >Designation</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.profile.designation) }}
+                                            {{ form_errors(form.profile.designation) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                            </div>
+                            <!--/row-->
+
+                            <!--/row-->
+                            <div class="row-fluid">
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" >Mobile<span class="required">*</span></label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-phone"></i>
+                                                {{ form_widget(form.profile.mobile) }}
+                                                {{ form_errors(form.profile.mobile) }}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" >Email</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-envelope"></i>
+                                                {{ form_widget(form.email) }}
+                                                {{ form_errors(form.email) }}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                            </div>
+                            <!--/row-->
+                            <!--/row-->
+                            <div class="clearfix">&nbsp;</div>
+                            <!--/row-->
+                            <div class="form-actions portlet box grey">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Address & others</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="row-fluid">
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" >National ID</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.profile.nid) }}
+                                                {{ form_errors(form.profile.nid) }}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" >Date of birth & Blood group</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                {{ form_widget(form.profile.dob) }}
+                                                {{ form_errors(form.profile.dob) }}
+                                                {{ form_widget(form.profile.bloodGroup) }}
+                                                {{ form_errors(form.profile.bloodGroup) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                            </div>
+                            <!--/row-->
+                            <div class="row-fluid">
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" >Additional Phone</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.profile.additionalPhone) }}
+                                                {{ form_errors(form.profile.additionalPhone) }}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                                <div class="span3 ">
+                                    <div class="control-group">
+                                        <label class="control-label" >Location</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                {{ form_widget(form.profile.location) }}
+                                                {{ form_errors(form.profile.location) }}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span3 ">
+                                    <div class="control-group">
+                                        <label class="control-label" >Postal code</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.profile.postalCode) }}
+                                                {{ form_errors(form.profile.postalCode) }}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                            </div>
+                            <!--/row-->
+                            <!--/row-->
+                            <!--/row-->
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="row-fluid">
+                                <div class="span12 ">
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-map-marker"></i>
+                                                {{ form_widget(form.profile.address) }}
+                                                {{ form_errors(form.profile.address) }}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12 ">
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-map-marker"></i>
+                                                {{ form_widget(form.profile.permanentAddress) }}
+                                                {{ form_errors(form.profile.permanentAddress) }}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--/row-->
+
+                            <div class="form-actions portlet box grey">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>About</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="row-fluid">
+
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" >About me</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.profile.about) }}
+                                            {{ form_errors(form.profile.about) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" >Profile Image</label>
+                                        <div class="controls">
+                                            <div data-provides="fileupload" class="fileupload fileupload-new">
+                                                <div style="width: 200px; height: 150px;" class="fileupload-new thumbnail">
+                                                    {% if(entity.profile.webPath is defined ) %}
+                                                        <img class="fileupload-preview fileupload-exists thumbnail" alt="" src="/{{ entity.profile.webPath }}">
+                                                    {% else %}
+                                                        <img alt="" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
+                                                    {% endif %}
+                                                </div>
+                                                <div  class="fileupload-preview fileupload-exists thumbnail"></div>
+                                                <div>
+													<span class="btn btn-file">
+                                                        <span class="fileupload-new">Select image</span>
+													    <span class="fileupload-exists">Change</span>
+                                                        {{ form_widget(form.profile.file) }}
+                                                        {{ form_errors(form.profile.file) }}
+                                                    </span>
+                                                    <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!--/row-->
+                            <div class="form-actions portlet box grey">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-reorder"></i>Bank information</div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="row-fluid">
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" >Bank name</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.profile.bank) }}
+                                            {{ form_errors(form.profile.bank) }}
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label" >Account no</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.profile.accountNo) }}
+                                                {{ form_errors(form.profile.accountNo) }}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                                <div class="span6 ">
+                                    <div class="control-group">
+                                        <label class="control-label" >Branch Address</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                {{ form_widget(form.profile.branch) }}
+                                                {{ form_errors(form.profile.branch) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                            </div>
+                            <!--/row-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-center">
+                                    <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                    <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        #Core_userbundle_user_profile_branch , #Core_userbundle_user_profile_about{
+            resize: none;
+        }
+    </style>
+{% endblock %}
+

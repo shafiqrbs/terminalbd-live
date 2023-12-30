@@ -1,0 +1,95 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            Groups
+            <small></small>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="/" style="color: #333 !important;">Home</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <i class="fa fa-user"></i>
+                <a href="#" style="color: #333 !important;">Groups</a>
+            </li>
+            <li class="pull-right">
+                <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </div>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<!-- END PAGE HEADER-->
+
+<div class="fos_user_group_list">
+
+    <!--BEGIN TABS-->
+    <div class="tabbable tabbable-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="index.html#tab_1_1" style="color: black !important;" data-toggle="tab">All</a></li>
+            <li style="float: right;margin-right: -1px;">
+                <a href="{{ path('fos_user_group_new') }}" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                    Add Group
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content" style="height: auto;background: #eee;">
+            <div class="tab-pane active" id="tab_1_1">
+                <div class="" data-always-visible="1" data-rail-visible="0">
+
+                    <div class="fluid" id="category-list-div">
+                        <div class="form-group">
+                            <div class="col-md-12" style="margin-top: 30px;">
+
+                                <table class="table bold" style="border: 1px solid ghostwhite;" id="user-list-table">
+                                    <thead style="background: #4b8df8;color: #fff;">
+                                    <tr>
+                                        <th class="col-md-5">Name</th>
+                                        <th class="col-md-6">Description</th>
+                                        <th class="col-md-1"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for group in groups %}
+                                        {% if not group.hasRole('ROLE_SUPER_ADMIN') %}
+                                            {% set groupFound = TRUE %}
+                                            {% set bgColor = ["#fff"] %}
+
+                                            <tr style="background: {{ bgColor|join("") }};border-top: 3px solid #eee !important;">
+                                                <td>{{ group.getName() }}</td>
+                                                <td>{{ group.getDescription() }}</td>
+                                                <td>
+                                                    <a href="{{ path('fos_user_group_edit', {'id': group.id }) }}" style="width: 65px;" class="btn default btn-xs"><i
+                                                                class="fa fa-edit"></i> Edit</a>
+                                                    {#<a href="{{ path('fos_user_group_delete', {'id': group.id }) }}" style="width: 65px;" class="btn default btn-xs"><i#}
+                                                                {#class="fa fa-trash-o"></i> Delete</a>#}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if groupFound is defined %}
+                                        <tr>
+                                            <td colspan="2">
+                                                There is no group in the system. Please click <a href="{{ path('fos_user_group_new') }}">here</a> to add new group.
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END TABS-->
+
+</div>

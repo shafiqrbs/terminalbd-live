@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon"  href="{{ asset('assets/img/favicon/favicon.ico') }}">
+    <link href="{{ asset('assets/plugins/font-awesome/css/font-awesome-4.7.0.min.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('assets/print/css/style.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('assets/print/css/menu.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('assets/print/css/print.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('assets/print/css/prescription.css') }}" type="text/css" rel="stylesheet"/>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+</head>
+<title>{{ app.user.globalOption.name }} | MIS Reports</title>
+<body class="body">
+<!-- START: RUBY DEMO HEADER -->
+<div class="ruby-menu-demo-header">
+    {% set apps = app.user.globalOption.siteSetting.appModules %}
+    <!-- ########################### -->
+    <!-- START: RUBY HORIZONTAL MENU -->
+    <div class="ruby-wrapper">
+        <ul class="ruby-menu">
+            <li class="ruby-active-menu-item"><a href="/backend"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+            <li class="ruby-menu-right">
+                <a class='btn-print print'><i class='fa fa-print'></i> Print</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- END: RUBY DEMO HEADER -->
+<div class="row print-header">
+    <div class="col-md-4"></div>
+    <div class="col-md-4 text-center">
+        <p><strong>{{ app.user.globalOption.name }}</strong></p>
+        <p><strong>Name of Prescription</strong></p>
+    </div>
+</div>
+<div id="pdf-area">
+    {% block body %}{% endblock %}
+</div>
+{% javascripts
+'assets/plugins/jquery-1.10.2.min.js'
+'assets/plugins/jquery-migrate-1.2.1.min.js'
+'assets/template/plugin/matchHeight/height-match.js'
+'assets/print/js/kinzi.print.min.js'
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+<script>
+    {% block javascriptBlock %}
+    {% endblock %}
+    function goBack() {
+        window.history.back();
+    }
+</script>
+</body>
+</html>

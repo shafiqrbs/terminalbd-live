@@ -1,0 +1,143 @@
+<style>
+    .container-feature{
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .block-title {
+        margin-top: 10px;
+        text-transform: uppercase;
+        margin-bottom: 0;
+        color: #000;
+        font-size: 11px;
+
+    }
+
+    .list-feature li.even {
+        background:#ddd8ce;
+        margin-left: 1px;
+        margin-right: 1px;
+        padding: 10px;
+    }
+    .list-feature li.odd{
+        background: #ccc;
+        margin-left: 1px;
+        margin-right: 1px;
+        padding: 10px;
+
+    }
+    .start-end-date {
+        color: #008d71 !important;
+        font-weight: normal;
+        text-align: right;
+    }
+
+    .quote-item img{
+        border-radius: 100%;
+        width: 150px;
+        height: 145px;
+    }
+
+    a{
+        color:#000000;
+    }
+    a:hover{
+        color:#008d71!important;
+    }
+
+
+</style>
+<div class="dark-notification">
+    <div class="one-full-responsive one-full-responsive-white" >
+        <div class="accordion" id="section1" >Features<span></span></div>
+        <div class="container container-feature">
+            <ul class="list-feature">
+                {% for block in entity.homePage.homeBlocks %}
+                    <li>
+                        <p class="block-title"><a href="{{ path('mobile',{'subdomain': entity.user.globalOption.subDomain,'slug': block.Menu.menuSlug }) }}"> {{ block.name }}</a></p>
+                        <p>{{ block.content|raw }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% if(entity.homePage.modules) %}
+            {% for row in entity.homePage.modules  %}
+                {% if(row.menuSlug == 'event') %}
+
+                    <div class="accordion" id="section{{ loop.index }}" >Recent Events<span></span></div>
+                    <div class="container container-feature">
+                        <ul class="list-feature" >
+                            {% for event in entity.user.events|slice(0, entity.homePage.showingListing) %}
+                                <li>
+                                    <div class="one-full-responsive one-full-responsive-margin" >
+                                        <div class="float-left" >
+                                            <img class="responsive-image " width="70" src="{{ image(event.webPath) }}">
+                                        </div>
+                                        <div>
+                                            <h5>{{ event.name }}</h5 >
+                                            <h6 class="start-end-date">Date: {{ event.startDate|date('d-m-Y') }}-To-{{ event.endDate|date('d-m-Y') }}</h6>
+                                            <a href="{{ path('mobile_module',{'subdomain': entity.user.globalOption.subDomain,'module': row.moduleClass|lower,'slug':event.slug }) }}"> Read more...</a>
+
+                                        </div>
+                                    </div>
+                                    <div class="decoration"></div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if(row.menuSlug == 'news') %}
+                    <div class="accordion" id="section{{ loop.index }}" >Latest News<span></span></div>
+                    <div class="container container-feature">
+                        <ul class="list-feature" >
+                            {% for news in entity.user.news|slice(0, entity.homePage.showingListing) %}
+                                <li>
+
+                                    <p>
+                                        <img class="responsive-image" src="{{ image(news.webPath) }}">
+                                        <h6 class="start-end-date">{{ news.startDate|date('F j, Y' ) }}</h6>
+                                        <a href="{{ path('mobile_content',{'subdomain': entity.user.globalOption.subDomain,'module': row.moduleClass|lower, 'slug': row.menuSlug }) }}"> {{ news.name }}</a></p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if(row.menuSlug == 'noticeboard') %}
+                    <div class="accordion" id="section{{ loop.index }}" >Notice<span></span></div>
+                    <div class="container container-feature">
+                        <ul class="list-feature" >
+                            {% for noticeboard in entity.user.noticeboards|slice(0, entity.homePage.showingListing) %}
+
+                                <li>
+                                    <h6 class="start-end-date">{{ noticeboard.created|date('F j, Y' ) }}</h6>
+                                    <p>
+                                        <a href="{{ path('mobile_module',{'subdomain': entity.user.globalOption.subDomain,'module': row.moduleClass|lower,'slug':noticeboard.slug }) }}"> {{ noticeboard.name }}</a></p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if(row.menuSlug == 'testimonial' and entity.user.testimonials|length > 0 ) %}
+                    <div class="accordion" id="section{{ loop.index }}" >Says<span></span></div>
+                    <div class="container container-feature">
+                        <ul>
+                            {% for testimonial in entity.user.testimonials|slice(0, entity.homePage.showingListing) %}
+                                <li>
+                                        <img class="responsive-image" src="{{ image(testimonial.webPath) }}" alt="img">
+                                        <h4>{{  testimonial.name }}{% if(testimonial.designation) %},{{ testimonial.designation }}{% endif %}</h4>
+                                        <em>{% if(testimonial.title ) %}<em>{{ testimonial.title }}</em>{% endif %}</em>
+                                        <p>{{ testimonial.content|raw }}</p>
+
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+    </div>
+</div>
+
+

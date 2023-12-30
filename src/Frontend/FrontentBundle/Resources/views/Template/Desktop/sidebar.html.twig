@@ -1,0 +1,9 @@
+{#{link: 'http://{{ globalOption.domain }}',id: '1','iconUrl':'{{ asset('assets/template/plugin/side.toolbar/images/icon-home.png') }}','label':'Home'},
+{link: '{{ path(globalOption.subDomain ~ '_webservice_contact') }}#contact',id: '2','iconUrl':'{{ asset('assets/template/plugin/side.toolbar/images/icon-envelope.png') }}','label':'{{ globalOption.email }}'},
+{link: 'javascript:',id: '3','iconUrl':'{{ asset('assets/template/plugin/side.toolbar/images/icon-sms.png') }}','label':'{{ globalOption.mobile }}'},
+{% if  globalOption.location is defined and globalOption.location is not empty %}
+{link: '{{ path(globalOption.subDomain ~ '_webservice_contact') }}',id: '4','iconUrl':'{{ asset('assets/template/plugin/side.toolbar/images/icon-map.png') }}','label':'{{ globalOption.location.name }}'},
+{% endif %}#}
+{% if cartResult is defined and cartResult is not empty and globalOption.ecommerceConfig.currency is not empty %}
+{link: 'javascript:',class: 'cartUpload',id: '1','iconUrl':'{{ asset('assets/template/plugin/side.toolbar/images/icon-cart.png') }}','label':'{{ globalOption.ecommerceConfig.currency }}&nbsp;{{ cartResult }}'}
+{% endif %}

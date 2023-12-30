@@ -1,0 +1,19 @@
+<div class="clearfixTopMargin" ></div>
+{% for key,entity in pagination  %}
+    <div class=" col-xs-12   col-md-6">
+        <div class="sidebar-serviceBox" data-match-height="module-block" >
+            <div class="service-icon">
+                <i class="fa {% if entity.icon is defined and entity.icon is not empty  %}{{ entity.icon.className }} {% endif %}"></i>
+            </div>
+            <div class="service-Content">
+                <h3 class="title">{{ entity.name }}</h3>
+                <p class="description">{{ entity.content|truncate(180)|raw }}</p>
+                <a  href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'service','slug':entity.slug }) }}" class="read-more pull-right">Read more <i class="fa fa-angle-double-right"></i></a>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+<div class="pagination pull-center"  >
+    {{ knp_pagination_render(pagination) }}
+</div>

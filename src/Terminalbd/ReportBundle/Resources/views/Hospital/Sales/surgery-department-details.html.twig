@@ -1,0 +1,172 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 print-bar">
+            <form action="" method="get">
+                <div class="row">
+                    <div class="col-md-3 margin-top">
+                        <label>Assign Doctor</label>
+                        <select name="doctor" id="doctor" class="search-input select2 span12 m-wrap">
+                            <option value="" >--Assign Doctor--</option>
+                            {% for doctor in assignDoctors %}
+                                <option {% if searchForm.doctor is defined and searchForm.doctor == doctor.id %} selected="selected" {% endif %} value="{{ doctor.id }}" >{{ doctor.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>Services Group</label>
+                        <select name="serviceGroup" id="serviceGroup" class="search-input select2 span12 m-wrap">
+                            <option value="" >--Select Service Group--</option>
+                            {% for item in serviceGroups %}
+                                <option {% if searchForm.serviceGroup is defined and searchForm.serviceGroup == item.id %} selected="selected" {% endif %} value="{{ item.id }}" >{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>Surgery Department</label>
+                        <select name="surgeryDepartment" id="surgeryDepartment" class="search-input select2 span12 m-wrap">
+                            <option value="" >--Select Surgery Department--</option>
+                            {% for item in surgeryDepartment %}
+                                <option {% if searchForm.surgeryDepartment is defined and searchForm.surgeryDepartment == item.id %} selected="selected" {% endif %} value="{{ item.id }}" >{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>Particular</label>
+                        <select name="particular" id="particular" class="search-input select2 span12 m-wrap">
+                            <option value="" >--Select Particular--</option>
+                            {% for item in serviceGroups %}
+                                {% if particulars is defined and particulars[item['id']] is not empty %}
+                                <optgroup label="{{ item.name }}">
+                                    {% for part in particulars[item['id']] %}
+                                        <option {% if searchForm.particular is defined and searchForm.particular == part.id %} selected="selected" {% endif %} value="{{ part.id }}" >{{ part.name }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 margin-top">
+                        <label>Employee</label>
+                        <select class="search-input span12 m-wrap" id="user" name="user">
+                            <option value="">--Select Created User--</option>
+                            {% for employee in employees %}
+                                <option {% if searchForm.user is defined and searchForm.user == employee.id %} selected="selected" {% endif %} value="{{ employee.id }}">{{ employee.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>Process</label>
+                        <select name="process" id="process" class="m-wrap span12">
+                            <option value="" >--Process--</option>
+                            <option value="Admitted" {% if searchForm.process is defined and searchForm.process == 'Admitted' %} selected="selected" {% endif %} >Admitted</option>
+                            <option value="Released"  {% if searchForm.process is defined and searchForm.process == 'Released' %} selected="selected" {% endif %} >Released</option>
+                            <option value="Dead"  {% if searchForm.process is defined and searchForm.process == 'Dead' %} selected="selected" {% endif %} >Death</option>
+                            <option value="Cancel"  {% if searchForm.process is defined and searchForm.process == 'Cancel' %} selected="selected" {% endif %} >Cancel</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>Start Date</label>
+                        <input type="date" class="m-wrap datepicker"  id="startDate" name="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-2 margin-top">
+                        <label>End Date</label>
+                        <input type="date" class="m-wrap datepicker"  id="endDate" name="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-1 margin-top">
+                        <label>&nbsp;</label>
+                        <button class='btn btn-download btn-margin-left' value="search" name="submit" ><i class='fa fa-search'></i> Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="print-area">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size: 16px">{{ option.name }}</strong></p>
+                <p>Name of Report: Diagnostic Invoice</p>
+            </div>
+            <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}
+                <p><strong>Start Date:&nbsp;</strong><strong>{% if searchForm['startDate'] is defined and searchForm['startDate'] is not empty %}{{ searchForm['startDate']|date('d-m-Y') }}{% endif %}</strong>
+                    <strong>End Date:&nbsp;<strong>{% if searchForm['endDate'] is defined and searchForm['endDate'] is not empty %}{{ searchForm['endDate']|date('d-m-Y') }}{% endif %}</strong></strong>
+                </p>
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table even" border="1">
+                    <colgroup>
+                        <col class="w">
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <tbody><tr>
+                        <th>SI.</th>
+                        <th>Created</th>
+                        <th>Updated</th>
+                        <th>Invoice</th>
+                        <th>Patient</th>
+                        <th>Mobile</th>
+                        <th>Assign Doctor</th>
+                        <th>Service Group</th>
+                        <th>Surgery Department</th>
+                        <th>Particular</th>
+                        <th>Process</th>
+                        <th class="text-right">Amount</th>
+                        <th class="text-right">Discount Price</th>
+                    </tr>
+                    {% set subTotal =0 %}
+                    {% set totalDiscountPrice =0 %}
+                    <tbody>
+                        {% for entity in entities %}
+                            {% set subTotal = subTotal + entity.price %}
+                            {% set totalDiscountPrice = (totalDiscountPrice + (entity.discountPrice > 0 ? entity.discountPrice :entity.price * entity.quantity )) %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                <td class="numeric" >{{ entity.invoice }}</td>
+                                <td class="numeric" >{{ entity.customer }}</td>
+                                <td class="numeric" >{{ entity.mobile }}</td>
+                                <td class="numeric" >{{ entity.assignDoctor }}</td>
+                                <td class="numeric" >{{ entity.service }}</td>
+                                <td class="numeric" >{{ entity.surgeryDepartment }}</td>
+                                <td class="numeric" >{{ entity.particular }}</td>
+                                <td class="numeric" >{{ entity.process }}</td>
+                                <th class="text-right" >{{ entity.price|number_format(2) }}</th>
+                                <th class="text-right" >{{ (entity.discountPrice > 0 ? entity.discountPrice : entity.price * entity.quantity)|number_format(2) }}</th>
+                            </tr
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th colspan="11" class="text-right">Grand Total</th>
+                        <th class="text-right">{{ subTotal|number_format(2) }}</th>
+                        <th class="text-right">{{ totalDiscountPrice|number_format(2) }}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="11" class="text-right">Discount Total</th>
+                        <th class="text-right">{{ (subTotal - totalDiscountPrice)|number_format(2) }}</th>
+                        <th class="text-right"></th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

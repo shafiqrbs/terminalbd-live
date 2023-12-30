@@ -1,0 +1,61 @@
+hms_stockout:
+    path:     /
+    defaults: { _controller: "HospitalBundle:StockOut:index" }
+
+hms_stockout_show:
+    path:     /{id}/show
+    defaults: { _controller: "HospitalBundle:StockOut:show" }
+
+hms_stockout_new:
+    path:     /new
+    defaults: { _controller: "HospitalBundle:StockOut:new" }
+
+hms_stockout_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "HospitalBundle:StockOut:edit" }
+
+hms_stockout_update:
+    path:     /{id}/update
+    defaults: { _controller: "HospitalBundle:StockOut:update" }
+    methods:  [POST, PUT]
+
+hms_stockout_status:
+    path:     /{id}/status
+    defaults: { _controller: "HospitalBundle:StockOut:edit" }
+
+hms_stockout_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "HospitalBundle:StockOut:delete" }
+
+hms_stockout_particular_search:
+    path:     /{id}/particular-search
+    defaults: { _controller: "HospitalBundle:StockOut:particularSearch" }
+    options:
+            expose: true
+
+hms_stockout_particular_add:
+    path:     /{invoice}/particular-add
+    defaults: { _controller: "HospitalBundle:StockOut:addParticular" }
+    methods:  POST
+    options:
+            expose: true
+
+hms_stockout_discount_update:
+    path:     /stockout/dicount-update
+    defaults: { _controller: "HospitalBundle:StockOut:invoiceDiscountUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+hms_stockout_approved:
+    path:     /{id}/invoice-approved
+    defaults: { _controller: "HospitalBundle:StockOut:approved" }
+
+
+hms_stockout_particular_delete:
+    path:     /{invoice}/{id}/particular-delete
+    defaults: { _controller: "HospitalBundle:StockOut:invoiceParticularDelete" }
+
+hms_stockout_print_invoice:
+    path:     /{id}/print
+    defaults: { _controller: "HospitalBundle:StockOut:invoicePrint" }

@@ -1,0 +1,99 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="portlet box grey">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-cogs"></i>Site Setting
+
+            </div>
+            <div id="" class="date-tooltip" >
+                <i class="fa fa-calendar"></i>
+                {{ "now"|date("d-F-Y") }}
+            </div>
+        </div>
+        <div>
+
+            <ul class="page-breadcrumb breadcrumb">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" >Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    Site Setting
+                </li>
+            </ul>
+        </div>
+        {% include('flash-message.html.twig') %}
+        <div class="form-group form-group-custom backgroundWhite ">
+            <div class="modal-dialog modal-dialog-form" >
+                <div class="modal-content" >
+
+                    <div class="modal-body ">
+                        <div class="portlet box">
+                            {{ form_start(edit_form) }}
+                            {{ form_row(edit_form._token) }}
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Web theme:</label>
+                                <div class="col-md-9 form-group-error">
+                                    <div class="input-icon">
+                                        {{ form_widget(edit_form.webTheme) }}
+                                        {{ form_errors(edit_form.webTheme) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Mobile theme:</label>
+                                <div class="col-md-9 form-group-error">
+                                    <div class="input-icon">
+                                        {{ form_widget(edit_form.mobileTheme) }}
+                                        {{ form_errors(edit_form.mobileTheme) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Syndicate:</label>
+                                <div class="col-md-9 form-group-error" style="margin-top: 5px">
+                                    <div class="input-icon">
+                                        {{ form_widget(edit_form.syndicates) }}
+                                        {{ form_errors(edit_form.syndicates) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Syndicate Modules:</label>
+                                <div class="col-md-9 form-group-error" style="margin-top: 5px">
+                                    <div class="input-icon">
+                                        {{ form_widget(edit_form.syndicateModules) }}
+                                        {{ form_errors(edit_form.syndicateModules) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_itemName"  class="control-label col-md-2 required">Modules:</label>
+                                <div class="col-md-9 form-group-error" style="margin-top: 5px">
+                                    <div class="input-icon">
+                                        {{ form_widget(edit_form.modules) }}
+                                        {{ form_errors(edit_form.modules) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <label for="item_itemName"  class="control-label col-md-2 required"></label>
+                                <div class="col-md-9">
+                                    {{ form_widget(edit_form.submit) }}{{ form_widget(edit_form.reset) }}
+                                </div>
+                            </div>
+
+                            {{ form_end(edit_form) }}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

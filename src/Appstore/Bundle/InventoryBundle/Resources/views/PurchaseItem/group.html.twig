@@ -1,0 +1,211 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Purchase
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_purchasesimple') }}">Purchase</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Add/Edit purchase</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid" style="position: relative">
+
+            <div class="span12">
+                <div id="dataProces"></div>
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Purchase Information</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="red btn" href="{{ path('inventory_purchasesimple_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a>
+                                <a class="btn yellow" href="{{ path('inventory_purchasesimple_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;Back To</a>
+                                <a class="btn" href="{{ path('inventory_purchasesimple') }}"><i class="icon-th-list"></i>&nbsp;Purchase</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body" >
+
+                        <div class="portlet-body form" >
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <h4>Vendor:</h4>
+                                    <ul class="unstyled">
+                                        <li>{{ entity.vendor.companyName }}</li>
+                                        <li>{{ entity.vendor.name }}</li>
+                                        <li>{{ entity.vendor.mobile }}</li>
+                                        <li>{{ entity.vendor.address }}</li>
+                                        {% if entity.vendor.country %}
+                                        <li>{{ entity.vendor.country.name }}</li>
+                                        {% endif %}
+
+                                    </ul>
+                                </div>
+                                <div class="span4">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Memo/Invoice #:</strong>{{ entity.memo }} {% if  entity.invoice  %}/{{ entity.invoice }}{% endif %}</li>
+                                        <li><strong>Item/Qnt:</strong> {{ entity.totalItem }}/{{ entity.totalQnt }}</li>
+                                        {#<li><strong>Created:</strong> {{ entity.created }}</li>#}
+                                        <li><strong>Received:</strong> {{ entity.receiveDate|date('d-m-Y') }}</li>
+                                        <li><strong>Created:</strong> {{ entity.created|date('d-m-Y') }}</li>
+                                    </ul>
+                                </div>
+                                <div class="span4 invoice-payment">
+                                    <h4>Payment Details:</h4>
+                                    <ul class="unstyled">
+
+                                        <li><strong>Total BDT:</strong> {{ entity.totalAmount|number_format() }}</li>
+                                        <li><strong>Payment BDT:</strong> {{ entity.paymentAmount|number_format() }}</li>
+                                        <li><strong>Due BDT:</strong> {{ entity.dueAmount|number_format() }}</li>
+                                        <li><strong>Commission BDT:</strong> {{ entity.commissionAmount|number_format() }}</li>
+
+
+                                    </ul>
+                                </div>
+                                <div class="span3 image-preview"></div>
+                            </div>
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {% set assuranceTypes =['Grantee','Warranty','No Warranty'] %}
+                            {% set assuranceFromVendors =['1 Month','3 Month','4 Month','5 Month','6 Month','7 Month','8 Month','9 Month','10 Month','11 Month','1 Year',
+                            '1 Year 6 Month','2 Year','2 Year 6 Month','3 Year','3 Year 6 Month',
+                            '4 Year','4 Year 6 Month','5 Year','5 Year 6 Month','Product Life Time','No Warranty'
+                            ] %}
+                            <form name="purchase-attribute" id="purchase-attribute" method="post" action="{{ path('inventory_purchaseitem_multi_insert',{'purchase':entity.id}) }}">
+                            {% for purchaseItem in entity.purchaseItems %}
+
+                                <div class="form-actions portlet box blue">
+                                    <div class="portlet-title">
+                                        <div class="span4">
+                                            <div class="caption"><i class="icon-reorder"></i>&nbsp;{% if purchaseItem.item.masterItem is not empty %}{{ purchaseItem.item.masterItem.name }}{% endif %}</div>
+                                        </div>
+                                        <div class="span8">
+                                            <div class="span3">Purchase: {{ purchaseItem.purchasePrice }}</div>
+                                            <div class="span5">Quantity: {{ purchaseItem.quantity }}</div>
+                                            <div class="span3">Sales:{{ purchaseItem.salesPrice }}</div>
+                                        </div>
+                                   </div>
+                                </div>
+                                <div class="clearfix">&nbsp;</div>
+                               <!--/span-->
+                                <div class="attribute">
+                                <input type="hidden" name="purchaseItem[]" value="{{ purchaseItem.id }}" >
+                                    <div class="row-fluid clone  box blue">
+                                        <div class="row-fluid">
+                                            <div class="span12 ">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName">Serial No</label>
+                                                    <div class="controls">
+                                                        <textarea rows="3" type="text" id="serialNo" name="serialNo[]" class="m-wrap span12" placeholder="Product serial no">{{ purchaseItem.serialNo }}</textarea>
+                                                        <p class="help-block">Using serial no. E.g: 0xxxx,1yyyy,2zzzz</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span3">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName">Assurance Type</label>
+                                                    <div class="controls">
+                                                        <select id="assuranceType" name="assuranceType[]" class="span12 m-wrap">
+                                                            {% for type in assuranceTypes %}
+                                                            <option {% if type == purchaseItem.assuranceType %} selected="selected" {% endif %} value="{{ type }}">{{ type }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="span3">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName">Assurance From Vendor</label>
+                                                    <div class="controls">
+                                                        <select id="assuranceFromVendor" name="assuranceFromVendor[]" class="span12 m-wrap">
+                                                            {% for fromVendor in assuranceFromVendors %}
+                                                            <option {% if fromVendor == purchaseItem.assuranceFromVendor %} selected="selected" {% endif %} value="{{ fromVendor }}">{{ fromVendor }}</option>
+                                                            {% endfor %}
+                                                        </select>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="span3">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName">Assurance To Customer</label>
+                                                    <div class="controls">
+                                                        <select id="assuranceToCustomer" name="assuranceToCustomer[]" class="span12 m-wrap">
+                                                            {% for toCustomer in assuranceFromVendors %}
+                                                                <option {% if toCustomer == purchaseItem.assuranceToCustomer %} selected="selected" {% endif %} value="{{ toCustomer }}">{{ toCustomer }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="span3">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName">Expired Date</label>
+                                                    <div class="controls">
+                                                        <div class="input-icon left">
+                                                            <i class="icon-calendar"></i>
+                                                            <input type="text" id="expiredDate-{{ purchaseItem.id }}" name="expiredDate[]" value="{% if purchaseItem.expiredDate %}{{ purchaseItem.expiredDate|date('d-m-Y') }}{% endif %}" class="m-wrap span12 dateCalendar">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"><br/></div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="form-actions portlet box grey">
+                                <div class="span8" id="message"></div>
+                                <div class="pull-right">
+                                    <button type="reset" class="btn purple action-button"><i class="icon-refresh"></i> Reset</button>
+                                    <button type="submit" id="purchaseBtn" class="btn green action-button addPurchase"><i class="icon-save"></i>&nbsp;Submit</button>
+
+                                </div>
+                            </div>
+                            </form>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $( ".dateCalendar" ).datepicker({
+    dateFormat: "dd-mm-yy",
+    changeMonth: true,
+    changeYear: true,
+    });
+{% endblock %}

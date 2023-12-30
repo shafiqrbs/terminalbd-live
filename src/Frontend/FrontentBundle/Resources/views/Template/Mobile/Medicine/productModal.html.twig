@@ -1,0 +1,112 @@
+<div class="modal-header" style="position: relative">
+    <h5 class="modal-title">{{ product.webName }}</h5>
+    <button type="button" class="close-btn btn btn-sm modal-close-btn" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-xs-12 col-md-12" >
+            <div id='carousel-custom' class='carousel slide' data-ride='carousel'>
+                <div class='carousel-outer'>
+                    <!-- me art lab slider -->
+                    <div class='carousel-inner'>
+                        <div data-match-height="image-carousel" class='item active'>
+                            {% if product.medicine is not empty and product.webPath is empty %}
+                                <img  id="zoom" src="{% if product.medicine.webPath is not empty  %}{{ image(product.medicine.webPath).resize(400,400) }}{% elseif product.medicine.webPath is defined and product.medicine.webPath is not empty %}{{ image(product.medicine.webPath).resize() }}{% endif %}"  data-zoom-image="{% if product.medicine.webPath is not empty  %}{{ image(product.medicine.webPath).resize() }}{% elseif product.medicine.webPath is defined and product.medicine.webPath is not empty %}{{ image(product.medicine.webPath).resize() }}{% endif %}"/>
+                            {% else %}
+                                <img  id="zoom" src="{% if product.webPath is not empty  %}{{ image(product.webPath).resize(400,400) }}{% elseif product.webPath is defined and product.webPath is not empty %}{{ image(product.webPath).resize() }}{% endif %}"  data-zoom-image="{% if product.webPath is not empty  %}{{ image(product.webPath).resize() }}{% elseif product.webPath is defined and product.webPath is not empty %}{{ image(product.webPath).resize() }}{% endif %}"/>
+                            {% endif %}
+
+                        </div>
+                        {% if product.itemGalleries is not empty %}
+                            {% for photo in product.itemGalleries|slice(0,5) %}
+                                <div data-match-height="image-carousel" class='item'>
+                                    <img class="img-responsive" src='{{ image(photo.getAbsolutePath(product.inventoryConfig.globalOption.id,product.id)).resize(400,400) }}' alt=''  data-zoom-image="{{ image(photo.getAbsolutePath(product.inventoryConfig.globalOption.id,product.id)).resize() }}"/>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <!-- sag sol -->
+                    {% if product.itemGalleries is not empty %}
+                        <a class='left custom-carousel-control' href='#carousel-custom' data-slide='prev'>
+                            <span class='glyphicon glyphicon-chevron-left'></span>
+                        </a>
+                        <a class='right custom-carousel-control' href='#carousel-custom' data-slide='next'>
+                            <span class='glyphicon glyphicon-chevron-right'></span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="">
+        <div class="col-xs-12 col-md-12" >
+            <div class="row meta-caption">
+                <div class="col-xs-4 col-md-4"><strong>PRICE</strong></div>
+                <div class="col-xs-3 col-md-3 product-price-lg"><strong class="currency">{{ globalOption.ecommerceConfig.currency }}</strong>&nbsp;{% if product.discount is not empty  %}<strike>{% endif %}{{ product.salesPrice|number_format() }}{% if product.discount is not empty  %}</strike>{% endif %}{% if product.discount is not empty  %} <strong>{{ product.discountPrice|number_format() }}</strong>{% endif %}</div>
+                <div class="col-xs-5 col-md-5">
+                    <form class="addCart" id="sizeLoad">
+                        <div class="row">
+                            <div class="card-read-more">
+                                <div class="input-group">
+              <span class="input-group-btn input-group-btn-custom">
+                  <button type="button" class="btn btn-transparent danger-font btn-new-cart-item"  data-type="minus" data-field="quant-{{ product.id }}" data-url="{{ path(globalOption.subDomain ~ '_webservice_product_medicine_cart',{'product':product.id }) }}">
+                    <span class="glyphicon glyphicon-minus"></span>
+                  </button>
+              </span>
+                                    <input type="text" id="quant-{{ product.id }}" name="quant-{{ product.id }}" class="form-control cart-input input-number" readonly="readonly" value=0 min="1" max="100">
+                                    <span class="input-group-btn">
+                  <button type="button" class="btn btn-transparent  cyan-font btn-new-cart-item" data-type="plus" data-field="quant-{{ product.id }}" data-url="{{ path(globalOption.subDomain ~ '_webservice_product_medicine_cart',{'product':product.id }) }}">
+                      <span class="glyphicon glyphicon-plus"></span>
+                  </button>
+
+              </span></div></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row meta-key-value"><div class="col-xs-4 col-md-4">SKU<span class="meta-key-clone">:</span></div><div class="col-xs-8 col-md-8 "><strong>{{ product.sku  }}</strong></div></div>
+            {% if product.category is defined and product.category is not empty %}
+                <div class="row meta-key-value"><div class="col-xs-4 col-md-4">Category<span class="meta-key-clone">:</span></div><div class="col-xs-8 col-md-8 text-left">{{ product.category.name }}</div></div>
+            {% endif %}
+            {% if product.brand is not empty %}
+                <div class="row meta-key-value"><div class="col-xs-4 col-md-4">Brand<span class="meta-key-clone">:</span></div><div class="col-xs-8 col-md-8 ">{{ product.brand.name }}</div></div>
+            {% endif %}
+            {% if product.country is not empty %}
+                <div class="row meta-key-value"><div class="col-xs-4 col-md-4">Country<span class="meta-key-clone">:</span></div><div class="col-xs-8 col-md-8 ">{{ product.country.name }}</div></div>
+            {% endif %}
+            <div class="row meta-value">
+                <div class="col-xs-12 col-md-12 text-justify">
+                    {% if product.content is not empty %}
+                        {{ product.content|raw }}
+                    {% endif  %}
+                </div>
+            </div>
+            <br/>
+        </div>
+    </div>
+</div>
+<div class="clearfix"><br/></div>
+<div class="">{% if  product.itemMetaAttributes is defined and  product.itemMetaAttributes is not empty or  product.itemKeyValues is defined and product.itemKeyValues is not empty  %}
+        <div class="row meta-caption"><div class="col-xs-10 col-md-10"><strong>Specification</strong></div><div class="col-xs-2 col-md-2 text-right btn btn-success" id="spec"><strong><span class="glyphicon glyphicon-chevron-down"></span></strong></div></div>
+        <div class="" id="showSpec">
+            <div class="col-xs-12 col-md-12">
+                {% if  product.itemMetaAttributes is defined and  product.itemMetaAttributes is not empty %}
+                    {% for attribute in  product.itemMetaAttributes %}
+                        <div class="row meta-key-value"><div class="col-xs-4 col-md-4">{{ attribute.itemAttribute.name }}<span class="meta-key-clone">:</span></div><div class="col-xs-8 col-md-8 ">{{ attribute.value }}</div></div>
+                    {% endfor %}
+                {% endif %}
+                {% if  product.itemKeyValues is defined and product.itemKeyValues is not empty %}
+                    {% for meta in product.itemKeyValues %}
+                        {% if meta.metaKey is not empty and meta.metaValue is empty %}
+                            <div class="row meta-label"><div class="col-xs-12 col-md-12">{{ meta.metaKey|capitalize }}</div></div>
+                        {% elseif meta.metaKey is empty and meta.metaValue is not empty %}
+                            <div class="row meta-value"><div class="col-xs-12 col-md-12">{{ meta.metaValue }}</div></div>
+                        {% else %}
+                            <div class="row meta-key-value"><div class="col-xs-4 col-md-4">{{ meta.metaKey }}<span class="meta-key-clone">:</span></div><div class="col-xs-8 col-md-8 ">{{ meta.metaValue  }}</div></div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>

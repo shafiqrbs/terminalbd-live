@@ -1,0 +1,152 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Sales Invoice # {{ entity.invoice }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_sales') }}">Sales</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Add/Edit sales</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>c
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Sales Details</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('inventory_sales') }}"><i class="icon-th-list"></i> Sales</a>
+                                <a class="btn yellow" href="{{ path('inventory_sales') }}"><i class="icon-plus-sign"></i> Invoice</a>
+                                <a class="btn red" href="{{ path('inventory_sales') }}"><i class="icon-plus-sign"></i> POS</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+
+                                <div class="span4">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+                                        {% if entity.customer is not empty %}<li><strong>Customer #:</strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                                        {% if entity.customer is not empty %}<li><strong>Mobile #:</strong>&nbsp;{{ entity.customer.mobile }}</li>{% endif %}
+                                        {% if entity.customer is not empty %}<li><strong>Address #:</strong>&nbsp;{{ entity.customer.address }}</li>{% endif %}
+                                        {% if entity.customer is not empty and entity.customer.location is not empty   %}<li><strong>Location #:</strong>&nbsp;{{ entity.customer.location.name }}, {{ entity.customer.location.parent.name }}</li>{% endif %}
+                                        <li><strong>Created:</strong>&nbsp;{{ entity.created|date('d-m-Y') }}</li>
+                                    </ul>
+                                </div>
+
+                                <div class="span4 invoice-payment">
+                                    <h4>Payment Details:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Total Quantity:</strong>&nbsp;{{ entity.totalItem }}</li>
+                                        <li><strong>Total item:</strong>&nbsp;{{ entity.totalItem }}</li>
+                                        <li><strong>Payment status</strong>&nbsp;{{  entity.paymentStatus|capitalize }}</li>
+                                    </ul>
+                                </div>
+                                <div class="span4">
+                                    <h4>Payment Method:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Payment Method:</strong>&nbsp;{{ entity.paymentMethod }}</li>
+                                        {% if entity.accountMobileBank is not empty %}<li><strong>Received Mobile:</strong>&nbsp;{{ entity.accountMobileBank.name }}</li>{% endif %}
+                                        {% if entity.paymentMobile is not empty %}<li><strong>Mobile/Transaction:</strong>&nbsp;{{ entity.paymentMobile }}/{{ entity.transactionId }}</li>{% endif %}
+                                        {% if entity.accountBank is not empty %}<li><strong>Received Bank:</strong>&nbsp;{{ entity.accountBank.name }}</li>{% endif %}
+                                        {% if entity.paymentCard is not empty %}<li><strong>Payment Card/No:</strong>&nbsp;{{ entity.paymentCard.name }}/{{ entity.cardNo }}</li>{% endif %}
+                                        {% if entity.bank is not empty %}<li><strong>Bank:</strong>&nbsp;{{ entity.bank.name  }}</li>{% endif %}
+                                        <li><strong>Sales By:</strong>&nbsp;{% if entity.salesBy is defined and entity.salesBy is not empty %}{{ entity.salesBy }}{% endif %}</li>
+                                        <li><strong>Received By:</strong>&nbsp;{% if entity.createdBy is defined and entity.createdBy is not empty %}{{ entity.createdBy }}{% endif %}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid box green">
+                                {% if entity.salesItems is defined and  entity.salesItems is not empty  %}
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                                        <thead class="flip-content ">
+                                        <tr class="head-green">
+                                            <td>&nbsp;&nbsp;<i class="icon-reorder"></i></td>
+                                            <th class="numeric" >Item</th>
+                                            <th class="numeric" >Barcode</th>
+                                            <th class="numeric" >Qnt</th>
+                                            <th class="numeric" >Estimate price</th>
+                                            <th class="numeric" >Sales price</th>
+                                            <th class="numeric" >Sub-total</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for salesItem in entity.salesItems %}
+                                            <tr>
+                                                <td class="numeric" >{{ loop.index }}</td>
+                                                <td class="numeric" >{{ salesItem.item.name }}/{{ salesItem.item.sku }}</td>
+                                                <td class="numeric" >{% if salesItem.purchaseItem %}{{ salesItem.purchaseItem.barcode }} {% else %} {{ salesItem.item.barcode }} {% endif %}</td>
+                                                <td class="numeric" >{{ salesItem.quantity }}</td>
+                                                <td class="numeric" >{{ salesItem.estimatePrice|number_format() }}</td>
+                                                <td class="numeric" >{{ salesItem.salesPrice|number_format() }}</td>
+                                                <td class="numeric" >{{ salesItem.subTotal|number_format(2) }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                        <tfoot>
+                                        <tr><th colspan="6"><span class="pull-right">Sub-Total</span></th><td>{{ entity.subTotal|number_format(2) }}</td></tr>
+                                        <tr><th colspan="6" ><span class="pull-right">Discount</span></th><td>{{ entity.discount|number_format(2) }}</td></tr>
+                                        {% if entity.vat > 0 %}
+                                        <tr><th colspan="6" ><span class="pull-right">VAT/TAX</span></th><td>{{ entity.vat|number_format(2) }}</td></tr>
+                                        {% endif %}
+                                        <tr><th colspan="6" ><span class="pull-right">Grand Total</span></th><td>{{ entity.total|number_format(2) }}</td></tr>
+                                        <tr><th colspan="6" ><span class="pull-right">Receive</span></th><th>{{ entity.payment|number_format(2) }}</th></tr>
+                                        {% if entity.due > 0 %}
+                                        <tr><th colspan="6" ><span class="pull-right">Due</span></th><td>{{ entity.due|number_format(2) }}</td></tr>
+                                        {% endif %}
+                                        </tfoot>
+                                    </table>
+                                {% endif %}
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                           <div class="form-actions portlet box grey">
+                                <div class="span8" id="message"></div>
+
+                                <div class="pull-right" id="action-{{ entity.id }}">
+                                    <a target="_blank"  href="{{ path('inventory_sales_print_invoice',{'invoice':entity.invoice}) }}" class="btn green"><i class="icon-print"></i>&nbsp;Print</a>
+                                    {#<a type="reset" class="btn blue"><i class=" icon-download-alt"></i>&nbsp;Pdf</a>#}
+                                    <span  class="btn blue"><i class=" icon-retweet"></i>&nbsp;{{ entity.process }}</span>
+                                    <span  class="btn yellow"><i class="icon-money"></i>&nbsp;{{ entity.paymentStatus }}</span>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

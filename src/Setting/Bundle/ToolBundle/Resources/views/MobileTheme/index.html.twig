@@ -1,0 +1,94 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    View Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('mobiletheme') }}">Mobile Theme</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Basic Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="tabbable portlet-tabs">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a  href="{{ path('mobiletheme') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                <li class=""><a  href="{{ path('mobiletheme_new') }}"><i class="icon-plus"></i>&nbsp;Add</a></li>
+
+                            </ul>
+                            <div class="tab-content">
+                                <div class="portlet-body flip-scroll">
+                                    {% include('flash-message.html.twig')  %}
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                        <thead class="flip-content ">
+                                        <tr class="head-grey">
+                                            <th class="numeric">Name</th>
+                                            <th class="numeric" >Folder Name</th>
+                                            <th class="numeric" >Action</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% for entity in entities %}
+
+                                            <tr>
+
+                                                <td class="numeric" ><a href="{{ path('mobiletheme_edit',{'id': entity.id })}}">{{ entity.name }}</a></td>
+                                                <td class="numeric" >{{ entity.folderName }}</td>
+                                                <td class="numeric" >
+                                                    {% if( entity.status == 1) %}
+                                                        <a class="btn mini green-stripe btn-action" href="{{ path('mobiletheme_status', { 'id': entity.id}) }}"><span class="badge badge-success">x</span></a>
+                                                    {% else %}
+                                                        <a class="btn mini green-stripe btn-action" href="{{ path('mobiletheme_status', { 'id': entity.id}) }}"><span class="badge badge-important">a</span>    </a>
+                                                    {% endif %}
+                                                    <a class="btn mini green-stripe btn-action" href="{{ path('mobiletheme_edit', { 'id': entity.id }) }}">Edit</a>
+                                                    <a class="btn mini blue-stripe btn-action" href="{{ path('mobiletheme_show', { 'id': entity.id }) }}">View</a>
+                                                    <a class="btn mini red-stripe btn-action confirm" title="Are you sure went to delete ?" href="{{ path('mobiletheme_delete', { 'id': entity.id }) }}" >Delete</a>
+                                                </td>
+                                            </tr>
+
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

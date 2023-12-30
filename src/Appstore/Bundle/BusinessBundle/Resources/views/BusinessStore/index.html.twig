@@ -1,0 +1,137 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Store
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                     <li><a href="#">Business Store</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Business Store</div>
+                        <div class="actions">
+                            <a href="{{ path('business_store_new') }}" class=" btn red"><i class="icon-plus"></i> Add Store</a>
+                            <a  href="{{ path('business_store_ledger_new') }}" class=" btn blue"><i class="icon-money"></i> Receive</a>
+                            <a  href="{{ path('business_store_ledger') }}" class=" btn purple"><i class="icon-list-alt"></i> Ledger</a>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="clearfix"><br/></div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid box green">
+                            <div class="span12" id="particular-table">
+                                <div class="row-fluid" >
+                                    <form class="search-form" action="" method="get" name="itemSearch">
+                                        <div class="row-fluid" style="margin-bottom: 10px">
+                                            <div class="span3">
+                                                <select name="area" id="area" class="m-wrap span12 select2">
+                                                    <option value="" >--Area--</option>
+                                                    {% for area in areas %}
+                                                        <option value="{{ area.id }}" {% if searchForm.area is defined and searchForm.area == area.id %} selected="selected" {% endif %} >{{ area.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="span3">
+                                                <select name="marketing" id="marketing" class="m-wrap span12 select2">
+                                                    <option value="" >--SR--</option>
+                                                    {% for marketing in marketings %}
+                                                        <option value="{{ marketing.id }}" {% if searchForm.marketing is defined and searchForm.marketing == marketing.id %} selected="selected" {% endif %} >{{ marketing.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="span3">
+                                                <select name="customer" id="customer" class="m-wrap span12 select2">
+                                                    <option value="" >--DSR--</option>
+                                                    {% for customer in customers %}
+                                                        <option value="{{ customer.id }}" {% if searchForm.customer is defined and searchForm.customer == customer.id %} selected="selected" {% endif %} >{{ customer.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="span3">
+                                                <div class="controls">
+                                                    <div class="input-append span12">
+                                                        <input type="text" id="name" name="name"  class="m-wrap span8" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.name is defined %}{{ searchForm.name }}{% else %}Store name{% endif %} ">
+                                                        <div class="btn-group">
+                                                            <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </form>
+                                </div>
+                                <table class="table table-bordered table-striped table-condensed table-fixed">
+                                    <thead class="flip-content ">
+                                    <tr class="head-blue">
+                                        <th> S/N</th>
+                                        <th>Store Name</th>
+                                        <th>Mobile</th>
+                                        <th>DSR</th>
+                                        <th>Area</th>
+                                        <th>Address</th>
+                                        <th>Balance</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="invoiceParticulars">
+                                    {% for entity in entities %}
+                                        <tr id="remove-{{ entity.id }}">
+                                            <td  class="">{{ loop.index }}.</td>
+                                            <td class="">{{ entity.name }}</td>
+                                            <td class="">{{ entity.mobileNo }}</td>
+                                            <td class="">{% if entity.customer is defined and entity.customer is not empty %}{{ entity.customer.name }}{% endif %}</td>
+                                            <td class="">{% if entity.area is defined and entity.area is not empty %}{{ entity.area.name }}{% endif %}</td>
+                                            <td class="">{{ entity.address }}</td>
+                                            <td class="">{{ entity.balance|number_format(2) }}</td>
+                                            <td class=""> {% if( entity.status == 1) %}
+                                                    <a class="btn mini blue btn-action" href="{{ path('business_store_status', { 'id': entity.id}) }}"><i class="icon-ok"></i></a>
+                                                {% else %}
+                                                    <a class="btn mini red btn-action" href="{{ path('business_store_status', { 'id': entity.id}) }}">x</a>
+                                                {% endif %}
+                                                <a href="{{ path('business_store_edit', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-edit"></i></a>
+                                                {% if entity.balance is empty %}
+                                                <a title="Are you sure went to delete ?" href="{{ path('business_store_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

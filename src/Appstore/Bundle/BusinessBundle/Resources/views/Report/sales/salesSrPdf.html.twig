@@ -1,0 +1,113 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr td{
+        font-size: 12px;
+        height: 15px;
+        vertical-align: middle;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h2 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    h3 {
+        font-size: 20px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-left{
+        text-align: left!important;
+        display: block;
+        padding-right: 20px;
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+    .numeric{
+        width: 80%;
+    }
+
+</style>
+{% set startDate = searchForm.month is defined ? searchForm.month :"now"|date("d-m-Y") %}
+{% set endDate = searchForm.year is defined ? searchForm.year :"now"|date("d-m-Y") %}
+
+<table class="table">
+    <thead>
+    <tr>
+        <td class="pull-center"><h2>{{ option.name }}</h2></td>
+    </tr>
+    <tr>
+        <th class="pull-center"><h3><strong>DATE RANGE SALES SR SUMMARY STATEMENT</strong></h3></th>
+    </tr>
+    <tr>
+        <th><span class="pull-left" style="width: 50%; float: left">SR NAME: {{ marketing.name }}</span> <span style="float: left; text-align: right" >{{ startDate }} To {{ endDate }}</span></th>
+    </tr>
+    </thead>
+</table>
+<table class="table">
+    <thead>
+    <tr>
+        <th>S/N</th>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Amount</th>
+    </tr>
+    </thead>
+    <tbody id="sales">
+    {% set subTotal=0 %}
+    {% set quantity=0 %}
+    {% for entity in entities %}
+        {% set subTotal = subTotal+entity.amount %}
+        {% set quantity = quantity+entity.quantity %}
+        <tr>
+            <td>{{ loop.index }}.</td>
+            <td>{{ entity.name }}</td>
+            <td>{{ entity.quantity|number_format(2)  }}</td>
+            <td>{{ entity.amount|number_format(2)  }}</td>
+
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot><tr><th colspan="2">Grand Total</th>
+        <th>{{ quantity|number_format(2) }}</th>
+        <th>{{ subTotal|number_format(2) }}</th>
+    </tr>
+    </tfoot>
+</table>
+

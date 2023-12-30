@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Invoice : {{ entity.invoice }}</title>
+    <script>
+        /*        window.print();*/
+    </script>
+    {% block stylesheets %}
+        <link href="{{ asset('assets/css/print-invoice.css') }}" rel="stylesheet">
+    {% endblock %}
+
+</head>
+<body>
+<header class="clearfix">
+    <div id="logo">
+        {% if entity.inventoryConfig.invoicePrintLogo == 1 %}
+            {% if entity.inventoryConfig.webPath is not empty %}   <img style="max-width: 180px; max-height: 60px" src="{{ image(entity.inventoryConfig.webPath).resize(180,60) }}">{% endif %}
+        {% endif %}
+    </div>
+    <div id="company">
+        <h2 class="name">{{ entity.inventoryConfig.globalOption.name }}</h2>
+        <div>{{ entity.inventoryConfig.address|raw }}</div>
+        <div>{{ entity.inventoryConfig.globalOption.hotline }}</div>
+        <div><a href="mailto:{{ entity.inventoryConfig.globalOption.email }}">{{ entity.inventoryConfig.globalOption.email }}</a></div>
+        {% if entity.inventoryConfig.globalOption.domain is not empty %}
+            <div><a href="http://{{ entity.inventoryConfig.globalOption.domain }}">{{ entity.inventoryConfig.globalOption.domain }}</a></div>
+        {% endif %}
+    </div>
+</header>
+<main>
+    <div id="details" class="clearfix">
+        <div id="client">
+            <div class="to">INVOICE TO:</div>
+            <h2 class="name">{{ entity.customer.name }}</h2>
+            <div class="address">{{ entity.customer.address|raw }}</div>
+            <div class="email">{{ entity.customer.mobile }}</div>
+        </div>
+        <div id="invoice">
+            <h1>INVOICE {{ entity.invoice }}</h1>
+            <div class="date">Date of Invoice: {{ entity.updated|date('d-m-Y') }}</div>
+            <div class="email">Payment Mode: {{ entity.paymentMethod }}</div>
+        </div>
+    </div>
+    {% if entity.salesItems is not empty %}
+        <table border="0" cellspacing="0" cellpadding="0">
+            <thead>
+            <tr>
+                <th class="no">#</th>
+                <th class="desc">DESCRIPTION</th>
+                <th class="qty">QUANTITY</th>
+                <th class="unit">UNIT PRICE</th>
+                <th class="total">TOTAL</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for salesItem in entity.salesItems %}
+                <tr>
+                    <td class="no">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}.</td>
+                    <td class="desc"><h3>{{ salesItem.item.name }}{% if salesItem.serialNo %}-{{ salesItem.serialNo }}{% endif %}</h3>
+                        {{ salesItem.item.sku }}
+                        {% if salesItem.serialNo %} - {% if salesItem.purchaseItem %}{{ salesItem.purchaseItem.barcode }} {% else %} {{ salesItem.item.barcode }} {% endif %}
+                            <br>
+                            {{ salesItem.assuranceType }} - {{ salesItem.assuranceToCustomer }}
+                        {% endif %}
+                    </td>
+                    <td class="qty">{{ salesItem.quantity }}</td>
+                    <td class="unit">{{ salesItem.salesPrice|number_format(2) }}</td>
+                    <td class="total">{{ salesItem.subTotal|number_format(2) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="2"></td>
+                <td colspan="2">Sub-Total</td>
+                <td>{{ entity.subTotal|number_format(2) }}</td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+                <td colspan="2">Discount</td>
+                <td>{{ entity.discount|number_format(2) }}</td>
+            </tr>
+            {% if entity.deliveryCharge > 0 %}
+                <tr>
+                    <td colspan="2"></td>
+                    <td colspan="2">Delivery Charge</td>
+                    <td>{{ entity.deliveryCharge|number_format(2) }}</td>
+                </tr>
+            {% endif %}
+            {% if entity.vat > 0 %}
+                <tr>
+                    <td colspan="2"></td>
+                    <td colspan="2">VAT/Tax {{ entity.inventoryConfig.vatPercentage }}</td>
+                    <td>{{ entity.vat|number_format(2) }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td colspan="2"></td>
+                <td colspan="2">Grand Total</td>
+                <td>{{ entity.total|number_format(2) }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="desc">In word TK. ({{ inWard|raw }} only).</td>
+                <td colspan="2">Received</td>
+                <td>{{ entity.payment|number_format(2) }}</td>
+            </tr>
+            {% if entity.due > 0 %}
+                <tr>
+                    <td colspan="2"></td>
+                    <td colspan="2">Receivable</td>
+                    <td>{{ entity.due|number_format(2) }}</td>
+                </tr>
+            {% endif %}
+            </tfoot>
+        </table>
+    {% endif %}
+</main>
+<footer>
+    Invoice was created on a computer and is valid without the signature and seal.
+</footer>
+<script>
+    window.print();
+    setTimeout(function () {
+        window.open('', '_self', '');
+        window.close();
+    }, 2000);
+</script>
+</body>
+</html>
+
+

@@ -1,0 +1,33 @@
+
+<ul class="nav pull-right">
+    {% if app.user.granted("ROLE_DOMAIN") or app.user.granted('ROLE_REPORT') or app.user.granted('ROLE_DOMAIN_ACCOUNTING') %}
+        <li class="" id="header_notification_bar">
+            <a href="{{ path('report_dashboard') }}" target="_blank" class="btn red mini"><i class="icon-bar-chart"></i> MIS Reports</a>
+        </li>
+    {% endif %}
+    {% if app.user.granted("ROLE_DOMAIN") and app.user.granted('ROLE_DOMAIN_WEBSITE_SETTING') %}
+        <li class="" id="header_notification_bar">
+            <a href="{{ path('globaloption_modify') }}" class="btn blue mini"><i class="icon-cogs"></i> Settings</a>
+        </li>
+        <li class="" id="header_notification_bar">
+            <a  href="{{ path('contactpage_modify') }}" class="btn grey mini"><i class="icon-map-marker"></i> Contact</a>
+        </li>
+    {% endif %}
+    {% if(app.user and app.user.globaloption.webmail is not empty) %}
+        <li class="" id="header_notification_bar">
+            <a href="{{ app.user.globaloption.webmail }}" target="_blank" class=""><i class="icon-envelope-alt"></i>&nbsp;Webmail</a>
+        </li>
+    {% endif %}
+    <li class="dropdown user">
+        <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+           data-close-others="true">
+            <span class="username">{{ app.user }}</span>
+            <i class="fa fa-angle-down"></i>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a href="{{ path('domain_edit_profile') }}"><i class="icon-user"></i> My Profile</a></li>
+            <li><a href="{{ path('fos_user_security_logout') }}"><i class="icon-key"></i> Logout</a></li>
+        </ul>
+    </li>
+    <!-- END USER LOGIN DROPDOWN -->
+</ul>

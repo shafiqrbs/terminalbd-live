@@ -1,0 +1,68 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 print-bar">
+            <form name="searchForm" id="searchForm" action="{{ path('hms_report_daily_sales_collection_ajax') }}" method="post">
+
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <label>Received Employee</label>
+                        <select class="search-input select span12 m-wrap" id="user" name="user">
+                            <option value="">--Select Received User--</option>
+                            {% for employee in employees %}
+                                <option {% if searchForm.user is defined and searchForm.user == employee.id %} selected="selected" {% endif %} value="{{ employee.id }}">{{ employee.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="grid-item">
+                        <label>Discounted By</label>
+                        <select class="search-input span12 m-wrap" id="discountedBy" name="discountedBy">
+                            <option value="">--Select discounted By--</option>
+                            {% for employee in discountedUsers %}
+                                <option {% if searchForm.discountedBy is defined and searchForm.discountedBy == employee.name %} selected="selected" {% endif %} value="{{ employee.name }}">{{ employee.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="grid-item">
+                        <label>Start Date</label>
+                        <input type="datetime-local" class="m-wrap datepicker" required="required"  id="startDate" name="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}">
+                    </div>
+                    <div class="grid-item">
+                        <label>End Date</label>
+                        <input type="datetime-local" class="m-wrap datepicker span8 m-wrap" required="required"  id="endDate" name="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}">
+                    </div>
+                    <div class="grid-item">
+                        <div class="col-md-8">
+                            <label>Invoice Mode</label>
+                            <select class="search-input span12 m-wrap" id="mode" name="mode">
+                                <option value="">--Invoice Mode--</option>
+                                {% set modes = {'diagnostic':'Diagnostic','admission':'Admission','visit':'Visit'} %}
+                                {% for key,mode in modes %}
+                                    <option {% if searchForm.mode is defined and searchForm.mode == key %} selected="selected" {% endif %} value="{{ key }}">{{ mode }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4 margin-top-15" >
+                            <button type="button" class='btn btn-download btn-margin-left ajax-btn' value="search" name="submit" ><i class='fa fa-search'></i></button>
+                            <button class="btn purple" onclick="exportExcel()" type="button"><i class="fa fa-file"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <div class="loader loader-double" ></div>
+    <div id="print-area">
+        <div class="col-md-12" id="data-load"></div>
+    </div>
+    <script>
+        function exportExcel() {
+            var table = document.querySelector('#downloadExcel');
+            TableToExcel.convert(table);
+        }
+    </script>
+{% endblock %}
+
+
+

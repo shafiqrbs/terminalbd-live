@@ -1,0 +1,37 @@
+user_password_reset:
+    pattern:  /edit/{id}
+    defaults: { _controller: UserBundle:ManageUser:edit }
+
+docudex_user_manager:
+    pattern:  /{page}
+    defaults: { _controller: UserBundle:ManageUser:index, page: 1 }
+    requirements:
+            page:  \d+
+
+docudex_user_manager_create:
+    pattern:  /new
+    defaults: { _controller: UserBundle:ManageUser:create }
+
+
+
+docudex_user_manager_change_password:
+    pattern:  /change-password/{id}
+    defaults: { _controller: UserBundle:ManageUser:changeUserPassword }
+    methods:  [POST]
+    options:
+            expose: true
+
+docudex_user_manager_delete:
+    pattern:  /delete/{id}
+    defaults: { _controller: UserBundle:ManageUser:delete }
+
+docudex_user_manager_duplicacy_check:
+    pattern:  /check/{type}
+    defaults: { _controller: UserBundle:ManageUser:checkDuplicate }
+    methods:  [POST]
+    options:
+            expose: true
+
+fos_user_group:
+    resource: "group.xml"
+    prefix: /group

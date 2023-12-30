@@ -1,0 +1,126 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">Purchase Item Details</h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Purchase Item Details Item</div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+
+                                <div class="row-fluid">
+                                    <div class="span4">
+                                        <input type="text" id="startDate" name="startDate"  class="span6 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="Start date">
+                                        <input type="text" id="endDate"  name="endDate"  class="span6 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off"  placeholder="End date">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="brandName"  name="brandName"  class="span12 m-wrap select2BrandName" value="{% if searchForm.brandName is defined %}{{ searchForm.brandName }}{% endif %}"  autocomplete="off"  placeholder="Product brand name">
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="vendor" name="vendor"  class="span12 m-wrap select2VendorCompany" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Enter vendor name">
+                                    </div>
+                                    <div class="span2">
+                                        <div class="btn-group">
+                                            <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                            <button class="btn purple" onclick="exportExcel()" type="button"><i class="icon-file"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <table class="table table-bordered table-striped table-condensed flip-content" id="downloadExcel">
+
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric" >S/N</th>
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Brand Name</th>
+                                <th class="numeric" >Created</th>
+                                <th class="numeric" >GRN</th>
+                                <th class="numeric" >Vendor</th>
+                                <th class="numeric" >Purchase Quantity</th>
+                                <th class="numeric" >Purchase price</th>
+                                <th class="numeric" >MRP</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% set totalQuantity = 0 %}
+                            {% set totalPurchasePrice = 0 %}
+                            {% set totalSalesPrice = 0 %}
+                            {% for entity in entities %}
+                                {% set totalQuantity = totalQuantity + entity.quantity %}
+                                {% set totalPurchasePrice = totalPurchasePrice + entity.quantity * entity.purchasePrice  %}
+                                {% set totalSalesPrice = totalSalesPrice + entity.quantity * entity.salesPrice  %}
+                                <tr>
+                                    <td class="numeric" >{{ loop.index }}</td>
+                                    <td class="numeric" >{{ entity.name }}</td>
+                                    <td class="numeric" >{{ entity.brandName }}</td>
+                                    <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                    <td class="numeric" >{{ entity.grn }}</td>
+                                    <td class="numeric" >{{ entity.company }}</td>
+                                    <td class="numeric" >{{ entity.quantity }}</td>
+                                    <td class="numeric" >{{ entity.purchasePrice }}</td>
+                                    <td class="numeric" >{{ entity.salesPrice }}</td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="6"></td>
+                                <td>{{ totalQuantity }}</td>
+                                <td>{{ totalPurchasePrice }}</td>
+                                <td>{{ totalSalesPrice }}</td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        function exportExcel() {
+            var table = document.querySelector('#downloadExcel');
+            TableToExcel.convert(table);
+        }
+    </script>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+        '@MedicineBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}
+
+
+

@@ -1,0 +1,46 @@
+{% extends ':frontend/template:ecommerce-base.html.twig' %}
+{% block body %}
+    <!-- Header Carousel -->
+    <section class="home">
+        <!-- Header Carousel -->
+        {% if globalOption.featureWidgets is defined and globalOption.featureWidgets is not empty and menu.getFeatureWidgetPositionExist('body-top')  %}
+                {% render controller("FrontendBundle:EcommerceWidget:featureTemplateWidget",{'globalOption':globalOption.id,'menu': menu.id,'position':'body-top'}) %}
+        {% endif %}
+        {% if menu.featureWidgets is defined and menu.featureWidgets is not empty and menu.getFeatureWidgetPositionExist('body-top') %}
+            <div class="container">
+                {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu': menu.id,'position':'body-top'}) %}
+            </div>
+        {% endif %}
+        {% if globalOption.featureWidgets is defined and globalOption.featureWidgets is not empty and menu.getFeatureWidgetPositionExist('body-bottom')  %}
+            {% render controller("FrontendBundle:EcommerceWidget:featureTemplateWidget",{'globalOption':globalOption.id,'menu': menu.id,'position':'body-bottom'}) %}
+        {% endif %}
+        {% if menu.featureWidgets is defined and menu.featureWidgets is not empty and menu.getFeatureWidgetPositionExist('body-bottom') %}
+            <div class="container">
+                {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu': menu.id,'position':'body-bottom'}) %}
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@FrontendBundle/Resources/public/template/desktop/css/product.css'
+    '@FrontendBundle/Resources/public/template/desktop/css/medicine.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@FrontendBundle/Resources/public/template/desktop/js/owlcarousel.js'
+    '@FrontendBundle/Resources/public/template/desktop/js/medicine.js'
+    '@FrontendBundle/Resources/public/template/desktop/js/cart.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    {% set  sliderItems = globalOption.ecommerceConfig.owlProductColumn  %}
+    productSliderOwl({{ sliderItems }});
+{% endblock %}

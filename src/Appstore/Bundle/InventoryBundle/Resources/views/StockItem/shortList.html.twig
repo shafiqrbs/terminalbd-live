@@ -1,0 +1,147 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Stock Item Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('item') }}">Stock Items</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Item Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Stock Item lists</div>
+                        <div class="actions">
+                            <a class="btn blue" href="{{ path('item') }}"><i class="icon-th-list"></i>&nbsp; Stock</a>
+                            <a class="btn black" href="{{ path('inventory_stockitem') }}"><i class="icon-th-list"></i>&nbsp; Stock Details</a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid">
+                                        <div class="span3">
+                                            {% set minQnts ={'all':'All Min Qnt','minimum':'Less Min Qnt'} %}
+                                            <select name="minQnt" id="minQnt" class="span12 m-wrap">
+                                                {% for key,value in minQnts %}
+                                                    <option {% if searchForm.minQnt is defined and key == searchForm.minQnt %} selected="selected" {% endif %} value="{{ key }}">{{ value }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="item" name="item"  class="span12 select2Product" value="{% if searchForm.item is defined %}{{ searchForm.item }}{% endif %}"  autocomplete="off" placeholder="Enter item name ">
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="size" name="size"  class="span12 select2Size" value="{% if searchForm.size is defined %}{{ searchForm.size }}{% endif %}"  autocomplete="off" placeholder="Enter size name ">
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="color" name="color"  class="span12 select2Color" value="{% if searchForm.color is defined %}{{ searchForm.color }}{% endif %}"  autocomplete="off" placeholder="Enter color name ">
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row-fluid">
+                                        <div class="span3">
+                                            <input type="text" id="category" name="category"  class="leftMargin span12 select2Category" value="{% if searchForm.category is defined %}{{ searchForm.category }}{% endif %}"  autocomplete="off" placeholder="Product category">
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="vendor" name="vendor"  class="span12 select2Vendor" value="{% if searchForm.vendor is defined %}{{ searchForm.vendor }}{% endif %}"  autocomplete="off" placeholder="Enter vendor name">
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="brand" name="brand"  class="leftMargin span12 select2Brand" value="{% if searchForm.brand is defined %}{{ searchForm.brand }}{% endif %}"  autocomplete="off" placeholder="Product brand name">
+                                        </div>
+                                        <div class="span3">
+                                            <div class="controls">
+                                                <div class="input-append span11">
+                                                    <input type="text" id="skuId" name="sku" class="span11 m-wrap" value="{% if searchForm.sku is defined %}{{ searchForm.sku }}{% endif %}" autocomplete="off" placeholder="Enter sku code">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead>
+                                <tr class="head-green">
+                                    <th class="numeric" >SKU</th>
+                                    <th class="numeric" >SKU Name </th>
+                                    <th class="numeric" >P.Qnt</th>
+                                    <th class="numeric" >Rmn.Qnt</th>
+                                    <th class="numeric" >Min.Qnt</th>
+                                    <th class="numeric" >Unit</th>
+                                </tr>
+                                </thead>
+                                <tbody class="flip-content ">
+                                {% for entity in entities %}
+                                    <tr {% if entity.minQnt >= entity.remainingQuantity    %} class="min-qnt" aria-disabled="true" {% endif %}>
+                                        <td class="numeric" >{{ entity.sku }}</td>
+                                        <td class="numeric" >{{ entity.name }}</td>
+                                        <td class="numeric" >{{ entity.purchaseQuantity }}</td>
+                                        <td class="numeric" >{{ entity.remainingQnt }}</td>
+                                        <td class="numeric" ><a class="editable" data-name="MinQnt" href="#"  data-url="{{ path('inventory_item_web_price') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Add product min quantity">{{ entity.minQnt }}</a></td>
+                                        <td class="numeric" >{% if entity.masterItem.productUnit is not empty %}{{  entity.masterItem.productUnit.name }}{% endif %}</td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+<style>
+    .disabled{
+        opacity: 0.5;
+    }
+    .table-bordered tr.min-qnt td{
+        background-color: #f564558f!important;
+    }
+</style>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/editable.js'
+    '@InventoryBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    ApproveProcess();
+{% endblock %}

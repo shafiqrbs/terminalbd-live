@@ -1,0 +1,109 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">{{ gallery.name }}</h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('gallery') }}">Gallery Image</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">{{ gallery.name }}</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>{{ gallery.name }}</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('gallery_new') }}"><i class="icon-plus"></i>&nbsp;New Gallery</a></li>
+                                    {% if gallery.id > 0  %}
+                                        <li><a  href="{{ path('gallery_show',{'id':gallery.id}) }}"><i class="icon-eye-open"></i>&nbsp;View</a></li>
+                                    {% endif %}
+                                    <li><a href="{{ path('gallery') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            {{ form_start(edit_form) }}
+                            {{ form_row(edit_form._token) }}
+                            <div class="portlet-body flip-scroll">
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                    <thead class="flip-content ">
+                                    <tr class="head-grey">
+                                        <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                        <th>Remove/Image</th>
+                                        <th class="numeric" >Caption/Status/Ordering/Description</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for entity in entitities %}
+                                        <tr>
+                                            <td><input type="checkbox" class="checker popovers" data-trigger="hover" data-content="Are you remove image, Please click here." data-original-title="Remove image" name="removeId[]"  value="{{ entity.id }}"></td>
+                                            <td class="numeric" >
+                                                <div class="fileupload-new thumbnail">
+                                                    <img class="fileupload-preview" alt="" src="{{ image(entity.getAbsolutePath(entity.photoGallery.globalOption.id,entity.photoGallery.id)).resize(100,100) }}">
+                                                </div>
+                                            </td>
+                                            <td class="" >
+                                                <div class="input-icon">
+                                                    <input type="text" id="caption" name="caption[]" required="required" class="span10" placeholder="Enter image caption" value="{{ entity.caption }}">
+                                                    <input type="text" class="span1 popovers" data-trigger="hover" data-placement="left" data-content="Image show ordering" data-original-title="Image Ordering" name="sorting[]" value="{{ entity.sorting }}">
+                                                    <input type="checkbox" class="popovers" data-trigger="hover" data-placement="right" data-content="Image show/hide" data-original-title="Image active" name="status[]" {% if entity.status == 1 %} checked='checked' {% endif %} value="1">
+                                                    <input type="hidden" id="imageId" name="imageId[]" value="{{ entity.id }}">
+                                                    <div class="clearfix"><p></p></div>
+                                                    <textarea type="text" id="description" name="description[]"  style="resize: none" placeholder="Enter image description" class="span12" rows="4" >{{ entity.description }}</textarea>
+
+                                                </div>
+                                            </td>
+
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-center">
+                                    <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                    <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                                </div>
+                            </div>
+                            {{ form_end(edit_form) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+

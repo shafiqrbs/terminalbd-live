@@ -1,0 +1,92 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h2 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+     h3 {
+        font-size: 20px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+{% set month = searchForm.month is defined ? searchForm.month :"now"|date("F") %}
+{% set year = searchForm.year is defined ? searchForm.year :"now"|date("Y") %}
+<table class="table">
+    <thead>
+    <tr>
+        <td class="pull-center" colspan="9"><h2>{{ globalOption.name }}</h2></td>
+    </tr>
+    <tr>
+        <th class="pull-center" colspan="9"><h3><strong>DAY CASH STATEMENT SHEET</strong></h3></th>
+    </tr>
+    <tr class="head-blue">
+        <th width="80">Created</th>
+        <th>Journal</th>
+        <th class="numeric" >Account Head</th>
+        <th class="numeric" >SubAccount Head</th>
+        <th class="numeric" >Narration</th>
+        <th class="numeric" >Debit</th>
+        <th class="numeric" >Credit</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr>
+            <td width="90">{{ entity.created|date('d-m-Y') }}</td>
+            <td>{{ entity.accountRefNo }}</td>
+            <td width="140">{{ entity.accountHead }}</td>
+            <td>{{ entity.subAccountHead }}</td>
+            <td>{{ entity.narration }}</td>
+            <td>{{ entity.debit }}</td>
+            <td>{{ entity.credit }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

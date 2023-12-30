@@ -1,0 +1,34 @@
+{% extends "login.html.twig" %}
+{% trans_default_domain 'FOSUserBundle' %}
+{% block body %}
+    <!-- BEGIN LOGO -->
+    <div class="logo">
+        <img src="../../assets/frontend/img/bdeducations.png" height="80" alt="" />
+    </div>
+    <!-- END LOGO -->
+    <div class="content">
+        <!-- BEGIN FORGOT PASSWORD FORM -->
+            <h3 >Forget Password ?</h3>
+            <p>
+                {{ 'resetting.check_email'|trans({'%email%': email}) }}
+            </p>
+        <!-- END FORGOT PASSWORD FORM -->
+        <div class="form-actions">
+            <button type="button" id="back-btn" class="btn green" onclick="window.location='/login'">
+                <i class="m-icon-swapleft"></i> Login
+            </button>
+            <button type="button" id="back-btn" class="btn blue pull-right" onclick="window.location='{{ path('fos_user_resetting_request') }}'">
+                <i class="m-icon-swapright m-icon-white"></i> Forget Password
+            </button>
+        </div>
+
+    </div>
+    <!-- END LOGIN -->
+    <!-- BEGIN COPYRIGHT -->
+    <div class="copyright">
+        {{ "now"|date('Y') }} &copy; Business Booster Ltd.
+    </div>
+
+    <!-- END COPYRIGHT -->
+{% endblock body %}
+

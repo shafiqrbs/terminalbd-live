@@ -1,0 +1,119 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    h1 , h2 , h3 , h4 , h5 , h6,p{
+        display: block;
+        padding: 0;
+        margin: 0;
+    }
+    h3 {
+        font-size: 24px;
+        line-height: 45px;
+        height: 45px;
+    }
+
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+<table class="table">
+    <thead>
+    <tr><td class="pull-center" colspan="20">{{ globalOption.hospitalConfig.address|raw }}</td></tr>
+    {% set month = searchForm.month is defined ? searchForm.month :"now"|date("F") %}
+    {% set year = searchForm.year is defined ? searchForm.year :"now"|date("Y") %}
+    {% set referred = searchForm.referred is defined ? searchForm.referred :'' %}
+    <tr>
+        <th class="pull-center" colspan="9"><h3><strong>MONTH WISE COMMISSION STATEMENT SHEET: {{ month|capitalize }} , {{ year }}</strong></h3></th>
+    </tr>
+    <tr>
+        <th class="pull-left"  colspan="9">Printed Date: {{ "now"|date("d-m-Y") }}{% if referredEntity is not empty %}, Referred: {{ referredEntity.name }}, {{ referredEntity.mobile }}{% endif %}</span></th>
+    </tr>
+    <th class="numeric" >Date</th>
+    <th class="numeric" >Invoice</th>
+    <th class="numeric" >Invoice Date</th>
+    <th class="numeric" >Customer</th>
+    {% for com in commissionSummary %}
+        <th class="numeric">{{ com.commissionName }}</th>
+    {% endfor %}
+    <th class="numeric" >Sub-Total</th>
+    </thead>
+    <tbody>
+    {% for entity in referredInvoice %}
+        <tr>
+            <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+            <td class="numeric" >{{ entity.invoice }}</td>
+            <td class="numeric" >{{ entity.invoiceDate|date('d-m-y') }}</td>
+            <td class="numeric" >{{ entity.customerName }}</td>
+            {% set commission = 0 %}
+            {% set subCommission = 0 %}
+            {% for com in commissionSummary %}
+                {% set uniqueId = entity.invoiceId~'-'~com.commissionId %}
+                {% set commission = commissions[uniqueId] is defined and commissions[uniqueId] is not empty ? commissions[uniqueId].payment :0 %}
+                {% set subCommission = subCommission + commission %}
+                <td class="numeric" >
+                    {% if commissions[uniqueId] is defined and commissions[uniqueId] is not empty  %}
+                        {{ commissions[uniqueId].payment }}
+                    {% endif %}
+                </td>
+            {% endfor %}
+            <th>{{ subCommission|number_format }}</th>
+        </tr>
+    {% endfor %}
+    </tbody>
+    {% if referredInvoice is not empty %}
+        <tfoot>
+        <tr>
+            <th colspan="4"><span class="pull-right">Grand Total</span></th>
+            {% set totalCommission = 0 %}
+            {% for com in commissionSummary %}
+                {% set totalCommission = totalCommission +  com.payment %}
+                <th class="numeric">{{ com.payment }}</th>
+            {% endfor %}
+            <th>{{ totalCommission|number_format }}</th>
+        </tr>
+        </tfoot>
+    {% endif %}
+</table>

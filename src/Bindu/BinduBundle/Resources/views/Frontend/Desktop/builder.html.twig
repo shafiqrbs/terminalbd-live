@@ -1,0 +1,146 @@
+{% extends ':bindu:base.html.twig' %}
+{% block body %}
+    <div id="tm-page-body">
+        <div id="tm-template-default-fullwidth" class="tm-container">
+            <div class="page-content" style="margin-top: 50px">
+                <div class="page-content-inner tm-content">
+                    <div id="profileTabList" class="tm-wrap" >
+
+
+                        <div class="one-half tabs">
+                            <a href="#design">Design</a>
+                            <a href="#feature">Feature</a>
+                            <a href="#tools">Tools</a>
+                            <a href="#moduleApp">Module & Apps</a>
+                        </div>
+
+                        <div class="one-half last">
+                            <section class="tags">
+                                <ul>
+                                    {% if(entity.subDomain is not empty) %}
+                                    <li>
+                                        <i class="fa fa-gears"></i><a href="javascript:" id="setting">setting</a>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-eye"></i><a target="_blank" href="{{ path('bindu_preview') }}">view Sites</a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </section>
+                        </div>
+                    </div>
+
+                    <div class="tm-row">
+
+                        <div class="tm-wrap">
+
+                            <div class="main-setting"  {% if(entity.subDomain is not null) %} style="display: none" {% endif %}>
+                                <div class="main-setting-inner" >
+                                    <blockquote class="tm-style1">
+                                        <span>Welcome to: {{ entity.name }}</span> {% if(entity.subDomain is not null) %}  <span id="settingMainClose" class="fa-icon"><i class="fa  fa-close"></i></span> {% endif %}
+                                    </blockquote>
+                                    <br/>
+                                    Select from any of the options below to change or customize the look and feel of your mobile site. To edit/add or update content on your mobile site go to the Features and Tools sections. Remember to save changes to your website, click the blue ‘Add to site’ or ‘Update’ buttons.
+                                    <br/><br/>First time? Click here for more instructions.
+                                    <form class="design-form domainFrom" id="optionID"  action="" method="post" >
+                                        <label for="domain">Your domain name<a class="small-text align-right"  href="#"
+                                                                  data-interface="tooltip"
+                                                                  data-position="top"
+                                                                  data-content="Enter the name of your company. This name will appear at the top of every page of your mobile site."
+                                                                  data-shift="10"
+                                                                  data-defineClass = "bord"
+                                                                  data-radius = "0px"
+                                                    >help</a></label>
+                                        <p><span class="fa-icon"><i class="fa  fa-anchor"></i></span><input id="domain" type="text" value="{{ entity.domain }}" placeholder="Enter your existing domain name" name="domain">
+                                        <span>Follow this example:terminalbd.com,kintethako.com, not use http,www etc.</span>
+                                        </p>
+                                        <label for="subDomain">Your sub-domain name<a class="small-text align-right"  href="#"
+                                                                      data-interface="tooltip"
+                                                                      data-position="top"
+                                                                      data-content="Enter the name of your sub-domain name. This name will appear at the top of every page of your mobile site."
+                                                                      data-shift="10"
+                                                                      data-defineClass = "bord"
+                                                                      data-radius = "0px"
+                                                    >help</a></label>
+                                        <p><span class="fa-icon"><i class="fa  fa-anchor"></i></span><input id="subDomain" type="text" value="{{ entity.subDomain }}" placeholder="Enter your chose any sub-domain name" name="subDomain"><span></span>
+                                            <span>Follow this example for subdomain:(google,terminalbd,kintethako)</span>
+                                        </p>
+                                        {#<div class="clear"></div>
+                                        <div class="checkbox block">
+                                            <label >Customize Design</label><input type="checkbox" name="customizeDesign" {% if(entity.customizeDesign == 1) %} checked {% endif %} value="1" />
+                                            <label >SMS Integration</label><input type="checkbox" name="smsIntegration" {% if(entity.smsIntegration == 1) %} checked {% endif %} value="1" />
+                                            <label >Email Integration</label><input type="checkbox" name="emailIntegration" {% if(entity.emailIntegration == 1) %} checked {% endif %} value="1" />
+                                            <label >Is Promotion</label><input type="checkbox" name="promotion" {% if(entity.promotion == 1) %} checked {% endif %} value="1" />
+
+                                        </div>#}
+                                        <div class="clear"></div>
+                                        <p class="align-right" >
+                                             To keep these changes, click&nbsp;&nbsp;&nbsp;<input type="submit" id="optionBtn" class="align-right tm-btn mini" value="Add to site"></p>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="ajax-loading"></div>
+                            <div class="one-half one-half-first ">
+
+                                <div>
+
+                                    <div id="profileTabData" class="both">
+                                        <div id="design" class="tab_content scroll"  data-ui="jscroll-example2" >
+                                            {{ include ('@Bindu/Builder/design.html.twig')}}
+                                        </div>
+                                        <div id="feature" class="tab_content scroll"  data-ui="jscroll-example2">
+                                            {{ include ('@Bindu/Builder/feature.html.twig')}}
+                                        </div>
+                                        <div id="tools" class="tab_content scroll"  data-ui="jscroll-example2">
+                                            {{ include ('@Bindu/Builder/tools.html.twig')}}
+                                        </div>
+                                        <div id="moduleApp" class="tab_content scroll"  data-ui="jscroll-example2">
+                                            {{ include ('@Bindu/Builder/moduleApp.html.twig')}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="one-half last" style="background:#eee;">
+                                <div class="iphone_bg">
+                                    <div class="mobile_wrap">
+                                        {% if(entity.subDomain is not empty) %}
+                                            <iframe id="frame" frameborder="no" border="0" scrolling="no" width="320px" height="568px;" src="{{ path('mobile_home',{'subdomain':entity.subDomain}) }}"></iframe>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if(entity.subDomain ) %}
+                        <div class="tm-wrap create-bottom"></div>
+                    <div class="header-line-center">
+                        <form class="finish" name="finish" action="" method="post">
+                         <input name="status" type="hidden" value="1">
+                        <button class="tm-btn big"><i class="fa fa-check"></i>&nbsp;Finish</button>
+                        </form>
+                    </div>
+                        <div class="tm-wrap create-bottom"></div>
+                    {% endif %}
+
+
+                </div>
+            </div>
+            <!--page-content-->
+        </div>
+        <!--tm-container-->
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BinduBundle/Resources/public/js/webBuilder.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    builderJs();
+{% endblock %}

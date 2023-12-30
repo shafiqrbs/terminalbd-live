@@ -1,0 +1,14 @@
+{% set total = 0 %}
+{% for entity in entities %}
+    {% set total = total + entity.amount  %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <<td class="numeric" >{{ entity.name }}</td>
+        <td class="numeric" >{{ entity.quantity }}</td>
+        <td class="numeric text-right" >{{ entity.amount }}</td>
+    </tr>
+{% endfor %}
+<tr>
+    <td colspan="3">Grand Total Amount</td>
+    <td class="text-right">{{ total|number_format(2) }}</td>
+</tr>

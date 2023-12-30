@@ -1,0 +1,733 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- END PAGE HEADER-->
+        <div class="portlet-body">
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-reorder"></i>MANAGE SALES POS</div>
+                    <div class="actions">
+                        <div class="btn-group">
+                            <a class="btn yellow instantPopup" href="javascript:" data-url="{{ path('medicine_instant_purchase_add') }}" id="instantPurchasePopup" ><i class="icon-circle-arrow-down"></i> Instant Purchase</a>
+                            <a href="javascript:" id="globalMedicine"  data-trigger="hover" data-original-title="Global Medicine" class=" btn purple tooltips"><i class="fa fa-angle-double-down"></i> Search</a>
+                            <a href="javascript:" id="stockShow"  data-trigger="hover" data-original-title="Add stock medicine" class=" btn blue tooltips"><i class="fa fa-angle-double-down"></i> Add Stock</a>
+                            <a href="javascript:" id="genericStockShow"  data-trigger="hover" data-original-title="Generic Stock Medicine" class=" btn red tooltips"><i class="fa fa-angle-double-down"></i> Generic Stock</a>
+                            <a class="btn green" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <i class="icon-tasks"></i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li><a  target="_blank" href="{{ path('medicine_sales_hold') }}">Hold Sales</a></li>
+                                <li><a  target="_blank" href="{{ path('medicine_sales') }}">Sales List </a></li>
+                                <li><a  target="_blank" href="{{ path('medicine_sales_item') }}">Add Sales Return </a></li>
+                                <li> {% if ( app.user.granted("ROLE_DOMAIN_ACCOUNTING_SALES") or  app.user.granted("ROLE_DOMAIN") ) %}
+                                        <a  href="{{ path('report_customer_outstanding') }}" target="_blank">Outstanding </a>
+                                    {% endif %}
+                                </li>
+                                <li><a  href="{{ path('medicine_stock') }}" target="_blank">Stock Item </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    {% include('flash-message.html.twig')  %}
+                    <!-- BEGIN FORM-->
+                    <div class="" id="hide" style="background: #d0dde4">
+                        {{ form_start(stockItemForm) }}
+                        {{ form_row(stockItemForm._token) }}
+                        <div class="row-fluid" >
+                            <!--/span-->
+                            <div class="span5">
+                                <div class="control-group select-error-tooltip">
+                                    <label class="control-label"  for="category" >Name<span class="required">*</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(stockItemForm.name) }}
+                                        {{ form_errors(stockItemForm.name) }}
+                                        <input type="hidden" name="medicineId" id="medicineId" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="name">Brand Name</label>
+                                    <div class="controls">
+                                        <input type="text" id="medicineCompany" name="medicineCompany" list="brands"  class="m-wrap span12 input" placeholder="Brand name" aria-required="true" value="{% if entity.brandName is defined %}{{ entity.brandName }}{% endif %}">
+                                        <datalist id="brands" >
+                                            {% if brands is not empty %}
+                                            {% for item in brands %}
+                                            <option value="{{ item.name }}">
+                                                {% endfor %}
+                                                {% endif %}
+                                        </datalist>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="name"> Opening , Sales & MRP per Unit</label>
+                                    <div class="controls">
+                                        <div class="input-append">
+                                            <div class="input-group">
+                                                {{ form_widget(stockItemForm.openingQuantity) }}
+                                                {{ form_widget(stockItemForm.salesQuantity) }}
+                                                {{ form_widget(stockItemForm.salesPrice) }}
+                                                <button type="submit" class="btn green" id="stockItemCreate"><i class="icon-save"></i> Add Stock</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{ form_end(stockItemForm) }}
+                    </div>
+                    <div class="row-fluid" id="generic-hide">
+                        <div class="span12">
+                            <input type="text" id="select2GenericMedicine" name="select2GenericMedicine"  class="m-wrap span12 input select2GenericMedicine" placeholder="Search medicine name" aria-required="true">
+                        </div>
+                    </div>
+
+                    <div class="loader loader-double" ></div>
+                    <div id="instantPurchaseLoad"></div>
+                    <div id="generic-stock-hide">
+                        <div class="row-fluid" >
+                            <div class="span12">
+                                <input type="text" id="genericStock"   name="genericStock"  class="span12 m-wrap selectStock2Generic" value=""  autocomplete="off"  placeholder="Stock item search by generic name">
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <table class="table table-bordered table-striped table-condensed table-fixed">
+                                    <thead class="flip-content ">
+                                    <tr class="head-green">
+                                        {#<th class="span1">&nbsp;&nbsp;<i class="icon-list"></i> Barcode</th>#}
+                                        <th class="span3">Name</th>
+                                        <th class="span3">Company Name</th>
+                                        <th class="span1">Rack</th>
+                                        <th class="span2">AVG PP</th>
+                                        <th class="span1">MRP</th>
+                                        <th class="span1">Quantity</th>
+                                        <th class="span1">Discount</th>
+                                        <th class="span2">Sub-total</th>
+                                        <th class="span1"><i class="icon-trash"></i></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="genericItems">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if config.inlineSales == 1 %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="input-append input-append-search">
+                                    <div class="input-group">
+                                        <input type="text" id="barcode" autocomplete="off" name="barcode"  class="m-wrap span2 input barcode" placeholder="Barcode" aria-required="true">
+                                        <input type="text" name="search" id="search" placeholder="Search medicine or others item for sales" class="span8 m-wrap" />
+                                        <button class="btn yellow search-clear big"><i class="icon-remove"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="result"></div>
+                    {% endif %}
+                    {% if config.inlineSales != 1 %}
+                        <div class="particular-info" style="padding-left:15px!important" >
+                            <div class="row-fluid ">
+                                {% if config.barcode == 1 %}
+                                    <div class="span2">
+                                        <input type="text" id="barcode" autocomplete="off" name="barcode"  class="m-wrap span12 input barcode" placeholder="Barcode" aria-required="true">
+                                    </div>
+                                {% endif %}
+                                {{ form_start(salesItem) }}
+                                {{ form_row(salesItem._token) }}
+                                <div class="{% if config.barcode == 1 and config.purchaseItem == 1 %}span3{% else %}span5{% endif %} select-error-tooltip"  style="margin-left: 0!important">
+                                    {{ form_widget(salesItem.stockName) }}
+                                    {{ form_errors(salesItem.stockName) }}
+                                </div>
+                                {% if config.purchaseItem == 1 %}
+                                    <div class="span2">
+                                        {{ form_widget(salesItem.purchaseItem) }}
+                                    </div>
+                                {% endif %}
+                                <div class="span5">
+                                    <div class="input-append">
+                                        <div class="input-group">
+                                            <input type="checkbox" class="tooltips hover" data-original-title="For short list" name="salesTemporaryItem[isShort]" id="isShort" value="1">
+                                            {{ form_widget(salesItem.quantity) }}
+                                            {{ form_errors(salesItem.quantity) }}
+                                            {{ form_widget(salesItem.itemPercent) }}
+                                            {{ form_widget(salesItem.salesPrice) }}
+                                            {{ form_errors(salesItem.salesPrice) }}
+
+                                            <button type="submit" class="btn blue" id="addTemporaryItem"> <span class="fa fa-shopping-cart"></span> Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{ form_end(salesItem) }}
+
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                    {% endif %}
+
+                    <div class="row-fluid">
+                        <div class="span12" id="particular-table">
+                            <table class="table table-bordered table-striped table-condensed table-fixed">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    {#<th class="span1">&nbsp;&nbsp;<i class="icon-list"></i> Barcode</th>#}
+                                    <th class="span3">Name</th>
+                                    <th class="span1">Brand Name</th>
+                                    <th class="span1">Rack</th>
+                                    <th class="span1">AVG PP</th>
+                                    <th class="span1">MRP</th>
+                                    <th class="span1">Price</th>
+                                    <th class="span1">Stock</th>
+                                    <th class="span1">Quantity</th>
+                                    <th class="span1">Discount(%)</th>
+                                    <th class="span1">Sub-total</th>
+                                    <th class="span1"><i class="icon-trash"></i></th>
+                                </tr>
+                                </thead>
+                                <tbody id="invoiceParticulars">
+                                {% set avgTotal = 0 %}
+                                {% set totalQuantity = 0 %}
+                                {% if user.medicineSalesTemporary is not empty %}
+                                    {% for item in user.medicineSalesTemporary %}
+                                        {% set totalQuantity = totalQuantity + item.quantity %}
+                                        {% set avgTotal = avgTotal +(item.medicineStock.averagePurchasePrice * item.quantity) %}
+                                        <tr id="remove-{{ item.id }}" {% if item.medicineStock.averagePurchasePrice >= item.medicineStock.salesPrice or item.medicineStock.averagePurchasePrice == 0 %} class="warning" {% endif %}>
+                                            {#<td  class="span1">{% if item.medicinePurchaseItem is not empty %}{{ item.medicinePurchaseItem.barcode }}{% endif %}</td>#}
+                                            <td class="span5">{{ loop.index }}.
+                                                <a data-type="text" class="editableText" data-url="{{ path('medicine_stock_inline') }}" data-type="text" data-pk="{{ item.medicineStock.id }}" data-name="itemName" data-trigger="hover" class="tooltips" data-original-title="" href="javascript:">{{ item.medicineStock.name }}</a>
+                                            </td>
+                                            <td><a  data-type="select" class="editableText" id="BrandName" data-name="BrandName" href="#" data-source="{{ path('medicine_stock_select_brand') }}"  data-url="{{ path('medicine_stock_inline') }}" data-pk="{{ item.medicineStock.id }}" data-value="{% if  item.medicineStock.brandName is not empty %}{{ item.medicineStock.brandName }}{% endif %}" data-original-title="Enter select brand name">{% if  item.medicineStock.brandName is not empty %}{{ item.medicineStock.brandName }}{% endif %}</a>
+                                            <td><a  data-type="select" class="editableText" id="rackNo" data-name="rackNo" href="#" data-source="{{ path('medicine_stock_rack') }}"  data-url="{{ path('medicine_stock_inline') }}" data-pk="{{ item.medicineStock.id }}" data-value="{% if  item.medicineStock.rackNo is not empty %}{{ item.medicineStock.rackNo.id }}{% endif %}" data-original-title="Enter select rack no">{% if  item.medicineStock.rackNo is not empty %}{{ item.medicineStock.rackNo.name }}{% endif %}</a>
+                                            <td class="span1">
+                                                {% if config.salesAvgHide != 1 %}
+                                                    {% if item.medicineStock.averagePurchasePrice >= item.medicineStock.salesPrice or item.medicineStock.averagePurchasePrice == 0 %}
+                                                        <a class="editableText" data-name="AveragePurchasePrice" href="#"  data-url="{{ path('medicine_stock_inline') }}" data-type="text" data-pk="{{ item.medicineStock.id }}" data-original-title="Change purchase avg price">{{ item.medicineStock.averagePurchasePrice }}</a>
+                                                    {% else %}
+                                                        {{ item.medicineStock.averagePurchasePrice|number_format(2) }}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                            <td class="span1">{{ item.estimatePrice }}</td>
+                                            <td class="span1">
+                                                <input type="hidden" name="salesItem[]" value="{{ item.id }}" >
+                                                <input type="hidden" name="estimatePrice-{{ item.id }}" id="estimatePrice-{{ item.id }}" value="{{ item.estimatePrice }}" >
+                                                {% if item.itemPercent is defined and item.itemPercent > 0 %}
+                                                    {{ item.salesPrice|number_format(2) }}
+                                                    <input type="hidden" name="salesPrice-{{ item.id }}" id="salesPrice-{{ item.id }}" value="{{ item.salesPrice }}" >
+                                                {% else %}
+                                                    <input type="text" class=" numeric td-inline-input salesPrice" data-id="{{ item.id }}" autocomplete = "off"  id="salesPrice-{{ item.id }}" name="salesPrice-{{ item.id }}" value="{{ item.salesPrice|number_format(2) }}" >
+                                                {% endif %}
+                                            </td>
+                                            <td class="span1">{{ item.medicineStock.remainingQuantity }}</td>
+                                            <td class="span1">
+                                                <input type="text" class=" numeric td-inline-input quantity" data-id="{{ item.id }}" autocomplete = "off" min="1" max="{{ item.quantity }}"  id="quantity-{{ item.id }}" name="quantity[]" value="{{ item.quantity }}" placeholder="{{ item.quantity }}">
+                                            </td>
+                                            <td class="span1">
+                                                <input type="text" class=" numeric td-inline-input itemPercent" data-id="{{ item.id }}" autocomplete = "off"   id="itemPercent-{{ item.id }}" name="itemPercent-{{ item.id }}" value="{{ item.itemPercent }}" placeholder="{{ item.itemPercent }}">
+                                            </td>
+                                            <th class="" id="subTotal-{{ item.id }}">{{ item.subTotal|number_format(2) }}</th>
+                                            <td class="">
+                                                <div class="btn-group">
+                                                    <a data-id="{{ item.id }}" title="" data-url="{{ path('medicine_sales_temporary_item_update') }}" href="javascript:" class="btn blue mini itemUpdate" ><i class="icon-save"></i></a>
+                                                    <a id="{{ item.id }}"  data-url="{{ path('medicine_sales_temporary_item_delete',{'id': item.id }) }}" href="javascript:" class="btn red mini temporaryDelete" ><i class="icon-trash"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                <tr>
+                                    <td colspan="11" class="span12" style="border: 1px double #000"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7"><span class="pull-right">QTY</span></td>
+                                    <td>{{ totalQuantity }}</td>
+                                    <td><span class="pull-right"><strong>Total TK.</strong> =</span></td>
+                                    <td class=""><strong id="subTotal">{{ result.subTotal|number_format(2) }}</strong></td>
+                                    <td class="span1"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="9" class="span9"><span class="pull-right"><strong>Discount TK.</strong> =</span></td>
+                                    <td class=""><strong class="discount"></strong></td>
+                                    <td class="span1"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="9" class="span9"><span class="pull-right"><strong>Grand-Total TK.</strong> =</span></td>
+                                    <td class=""><strong id="grandTotal">{{ result.subTotal|number_format(2) }}</strong></td>
+                                    <td class="span1"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="9" class="span9"><span class="pull-right"></span></td>
+                                    <td class=""><strong id="profit">{{ (result.subTotal - avgTotal)|number_format(2) }}</strong></td>
+                                    <td class="span1"><a href="javascript:" class="btn mini blue profitBtn"><i class="icon-eye-open"></i> Show</a></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {{ form_start(form) }}
+                    {{ form_row(form._token) }}
+                    <div class="row-fluid">
+                        <div class="span7">&nbsp;</div>
+                        <div class="span5 payment-info">
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">
+                                            <span class="label" >Discount</span>
+                                            <span class="pull-right sales-right">
+                            {{ form_widget(form.discountCalculation) }}
+                            </span>
+                                            <span class="pull-right sales-right">
+                              {{ form_widget(form.discountType) }}
+                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            {{ form_widget(form.transactionMethod) }}
+                                            {{ form_errors(form.transactionMethod) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                            </div>
+                            <div id="cartMethod" class="bankHide">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                {{ form_widget(form.cardNo) }}
+                                                {{ form_errors(form.cardNo) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--/span-->
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                {{ form_widget(form.paymentCard) }}
+                                                {{ form_errors(form.paymentCard) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--/span-->
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                {{ form_widget(form.accountBank) }}
+                                                {{ form_errors(form.accountBank) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--/span-->
+                                </div>
+                            </div>
+                            <div id="bkashMethod" class="mobileBankHide">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                {{ form_widget(form.paymentMobile) }}
+                                                {{ form_errors(form.paymentMobile) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--/span-->
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                {{ form_widget(form.transactionId) }}
+                                                {{ form_errors(form.transactionId) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--/span-->
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                {{ form_widget(form.accountMobileBank) }}
+                                                {{ form_errors(form.accountMobileBank) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--/span-->
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="clearfix"></div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <input type="text" style="margin-left: 0!important;" id="mobile" name="mobile"  class="span10 m-wrap select2TemporaryCustomer" value=""  autocomplete="off" placeholder="Customer mobile no">
+                                    <button class="pull-right btn btn-large green span2  addTemporaryCustomer"><i class="icon-user"></i></button>
+                                </div>
+                            </div>
+                            <div class="row-fluid customer" id="">
+                                <div class="span12 input-append-border">
+                                    <div class="row-fluid">
+                                        <input type="text" id="customerName" name="customerName" class="m-wrap span12 customer-input" autocomplete="off" placeholder="Customer name" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid customer">
+                                <div class="span12 input-append-border">
+                                    <div class="row-fluid">
+                                        <input type="text" id="customerMobile" name="customerMobile" class="m-wrap span12 mobile customer-input" autocomplete="off" placeholder="Customer mobile no" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid customer">
+                                <div class="span12 input-append-border">
+                                    <div class="row-fluid">
+                                        <textarea id="customerAddress" name="customerAddress" class="m-wrap span12 customer-input" rows="2" placeholder="Enter customer address"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName"><span class="label">Previous Due</span> <span class="pull-right sales-right"  style="width: 180px; font-size: 14px; color: #ea9b14" id="outstanding" ></span></label>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                            </div>
+                            <div class="row-fluid ">
+                                <div class="span12 input-append-border">
+                                    <div class="row-fluid">
+                                        {{ form_widget(form.salesBy) }}
+                                        {{ form_errors(form.salesBy) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName"><span class="label" id="balance">Due TK.</span> <span class="pull-right sales-right dueAmount" style="width: 180px; font-size: 40px; color: red"  id="" >{{ result.subTotal|number_format(2) }}</span></label>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" style="height: 50px; line-height: 40px!important;background: red"  for="firstName"><span class="label" style="color: #ffffff!important;">Receivable TK.</span> <span class="pull-right sales-right">{{ form_widget(form.received) }}</span></label>
+                                        <div class="controls">
+                                            {{ form_errors(form.received) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName"><span class="label">Is Hold</span> <span class="pull-right sales-right"  ><input type="checkbox" class="m-wrap checkbox" id="process" name="process" value="Hold"></span></label>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName"><span class="label">Print without Discount</span> <span class="pull-right sales-right"  ><input type="checkbox" class="m-wrap checkbox" id="printWithoutDiscount" name="printWithoutDiscount" value="1"></span></label>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <div class="clearfix">&nbsp;</div>
+                    <div class="form-actions portlet box blue">
+                        <div class="row-fluid">
+                            <div class="span8"></div>
+                            <div class="span4">
+                                <div class="input-append span12">
+                                    <div class="btn-group span11">
+                                        {{ form_widget(form.due) }}
+                                        {{ form_widget(form.discount) }}
+                                        <input type="hidden" id="salesNetTotal" name="salesNetTotal" value="{{ result.subTotal }}">
+                                        <input type="hidden" id="salesSubTotal" name="salesSubTotal" value="{{ result.subTotal }}">
+                                        <input type="hidden" name="buttonType" id="buttonType" value="">
+                                        <button type="button" class="btn salesBtn red big span6" id="receiveBtn" {% if result.subTotal is empty %} disabled="disabled" {% endif %} ><i class="icon-save"></i> SAVE </button>
+                                        {% if config.posPrint == 1 %}
+                                            <button type="button" class="btn salesBtn yellow big span6" id="posBtn" {% if result.subTotal is empty %} disabled="disabled" {% endif %} ><i class="icon-print"></i> POS PRINT</button>
+                                        {% else %}
+                                            <button type="button" class="btn salesBtn yellow big span6" id="regularPrint" {% if result.subTotal is empty %} disabled="disabled" {% endif %} ><i class="icon-print"></i> POS PRINT</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+                    <div style="display: none" class="float-sm">
+                        <div class="fl-fl float-new">
+                            <img src="{{ asset('assets/img/shortcut/N.png')}}">
+                            <a href="javascript:">New Item</a>
+                        </div>
+                        <div class="fl-fl float-add">
+                            <img src="{{ asset('assets/img/shortcut/A.png')}}">
+                            <a href="javascript:">Add Item</a>
+                        </div>
+                        <div class="fl-fl float-tw">
+                            <img src="{{ asset('assets/img/shortcut/S.png')}}">
+                            <a href="javascript:">Save</a>
+                        </div>
+                        <div class="fl-fl float-gp">
+                            <img src="{{ asset('assets/img/shortcut/P.png')}}">
+                            <a href="javascript:">Print</a>
+                        </div>
+                        <div class="fl-fl float-rs">
+                            <img src="{{ asset('assets/img/shortcut/D.png')}}">
+                            <a href="javascript:">Discount</a>
+                        </div>
+                        <div class="fl-fl float-ig">
+                            <img src="{{ asset('assets/img/shortcut/R.png')}}">
+                            <a href="javascript:">Receive Amount</a>
+                        </div>
+                        <div class="fl-fl float-pn">
+                            <img src="{{ asset('assets/img/shortcut/C.png')}}">
+                            <a href="javascript:">Customer</a>
+                        </div>
+
+                    </div>
+                    <!-- END FORM-->
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <style>
+        #result {
+            position: relative;
+            width: 100%;
+            top: -9px;
+            text-align: center;
+            font-size: 14px;
+            color: #0052cc;
+        }
+        .input-append-search{
+            width: 100%!important;
+        }
+        .input-append-search #barcode{
+            border: 5px solid #00b22d !important;
+            height: 54px!important;
+        }
+        .input-append-search #search{
+            width: 82.4%!important;
+            border: 5px solid #0052cc!important;
+            height: 54px!important;
+        }
+
+        .bankHide , .mobileBankHide, #generic-stock-hide, #profit{
+            display: none;
+        }
+        #customerAddress{
+            font-size:14px;
+        }
+        .dialogModal{
+            z-index: 9999!important;
+        }
+        #calBorder, .select2-drop , .select2-drop-mask{
+            z-index: 99999!important;
+        }
+        .select2-container .select2-choice {
+            height: 28px!important;
+            font-size:16px;
+            line-height: 28px;
+            border: 2px solid #0052cc!important;
+        }
+        .select2-container .select2-choice abbr {
+            top: 10px;
+        }
+
+        .select2-search input {
+            border: 2px solid #0052cc!important;
+            height: 32px!important;
+            font-size:14px;
+        }
+        .select2-results .select2-result-label {
+            padding: 3px 7px 4px;
+            margin: 0;
+            cursor: pointer;
+            min-height: 30px;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            font-size: 14px;
+            line-height: 30px;
+            font-weight: bold;
+        }
+        .form-horizontal .payment-info .control-label {
+            float: left;
+            text-align: left;
+            background: #f9f9f9;
+            color: #000;
+            font-weight: bold;
+            line-height: 32px;
+            height: 38px;
+            margin: 0!important;
+            width: 100%;
+            font-size:14px;
+        }
+
+        .numeric input {
+            margin-bottom: 0;
+            min-height: 15px!important;
+            width: 70px;
+            height: 15px!important;
+            border: 1px solid #999;
+            font-size:14px!important;
+            line-height: 15px!important;
+        }
+        .table-striped tbody>tr:nth-child(odd)>td, .table-striped tbody>tr:nth-child(odd)>th {
+            font-size:16px!important;
+        }
+        table td[class*="span"], table th[class*="span"], .row-fluid table td[class*="span"], .row-fluid table th[class*="span"] {
+            font-size:14px!important;
+        }
+        .table th, .table td {
+            font-size:14px;
+        }
+        select.m-wrap, input[type="file"].m-wrap {
+            height: 34px !important;
+            margin-top: 0px;
+            line-height: 34px;
+            font-size:16px!important;
+            border: 2px solid #0052cc!important;
+        }
+
+        .td-inline-input{
+            height: 22px!important;
+            line-height: 22px!important;
+            font-size:16px!important;
+            border: 2px solid #0052cc!important;
+            width: 100px;
+            margin-bottom:0!important;
+        }
+        select.td-inline-input{
+            height: 34px!important;
+            line-height: 34px!important;
+            font-size:16px!important;
+            border: 2px solid #0052cc!important;
+            width: 100px;
+            margin-bottom:0!important;
+        }
+        input[class*="span"].m-wrap {
+            height: 34px!important;
+            background: #ffffff;
+            border: 2px solid #0052cc!important;
+            font-size:16px;
+        }
+        .td-inline-label{
+            height: 15px!important;
+            line-height: 20px!important;
+            min-height: 15px!important;
+            font-size: 13px!important;
+        }
+        .sales-right input[class*="span"]#salesTemporary_received {
+            height: 54px!important;
+            font-size: 41px!important;
+            width: 220px!important;
+        }
+        .sales-right .discount-type {
+            height: 40px!important;
+            border: 2px solid red !important;
+            margin-top: -4px!important;
+            width: auto!important;
+        }
+        .sales-right input[class*="span"].m-wrap {
+            font-weight: bold;
+            margin-top: -4px;
+            text-align: right;
+            border: 2px solid red !important;
+            height: 40px!important;
+        }
+        ul.ui-autocomplete li a {
+            position: relative;
+            height: 32px!important;
+            min-height: 32px!important;
+            line-height:32px!important;
+            text-decoration: none!important;
+            padding-left: 1%!important;
+            display: inline-block;
+            width: 99%!important;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .select2-container .select2-choice .select2-arrow {
+            top:0px;
+        }
+        .sales-right input[class*="span"].initialDiscount{
+            width: 120px!important;
+        }
+        {% if config.printCss is not empty %}
+        {{ config.printCss|raw }}
+        {% endif %}
+    </style>
+    {% if config.posPrint == 1 %}
+        <script>
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "http://localhost.xiidea.net:9432/assets/easy-print-server.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, "script", "xiidea-epp-sdk"));
+
+        </script>
+    {% endif %}
+{% endblock %}
+{% block cssBlock %}
+    <link rel="stylesheet" href="{{ asset('bundles/medicine/css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/medicine/css/invoice.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/medicine/css/sidebar-tooltip.css') }}">
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+        '@MedicineBundle/Resources/public/js/editable.js'
+        '@MedicineBundle/Resources/public/js/temporary-sales.js'
+        '@MedicineBundle/Resources/public/js/approveProcess.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $('.editableText').editable({
+    type: 'text',
+    inputclass: 'span12 m-wrap',
+    placement: 'right',
+    });
+    EditableInit();
+    jqueryTemporaryLoad();
+    jqueryInstantTemporaryLoad();
+    $('#salesTemporaryItem_stockName').focus();
+
+{% endblock %}

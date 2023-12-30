@@ -1,0 +1,36 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>MenuGrouping</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Grouptype</th>
+                <td>{{ entity.menuGroup.name }}</td>
+            </tr>
+            <tr>
+                <th>Sorting</th>
+                <td>{{ entity.sorting }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('menugrouping') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('menugrouping_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends ':frontend/template:ecommerce-base.html.twig' %}
+{% block body %}
+<section class="siteBgColor">
+    <div class="clearfix"></div>
+    <section id="breadcrumb">
+        <div class="container">
+            <ul class="breadcrumb">
+                <li class="home"><a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}"><span class="glyphicon glyphicon-home"></span></a></li>
+                <li class="active"><a href="javascript:void(0);">Customer Register Form</a></li>
+            </ul>
+        </div>
+    </section>
+    <section id="">
+        <div class="container">
+            <div class=" col-xs-6 col-md-6 col-md-offset-3 margin-top">
+                {{ form_start(form) }}
+                {{ form_row(form._token) }}
+                <div class="panel panel-default">
+                    <div class="panel-heading panel-info">
+                        <h4 class="text-left"><strong>SIGN IN</strong></h4>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            {{ form_errors(form.profile.name) }}
+                            <div class="input-group">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                                {{ form_widget(form.profile.name) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_errors(form.profile.mobile) }}
+                            <div class="input-group">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>
+                                {{ form_widget(form.profile.mobile) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+                                {{ form_widget(form.email) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_errors(form.profile.location) }}
+                            <div class="input-group">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-map-marker"></span></span>
+                                {{ form_widget(form.profile.location) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{  form_errors(form.profile.address) }}
+                            <div class="input-group">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-home"></span></span>
+                                {{ form_widget(form.profile.address) }}
+                            </div>
+                        </div>
+                        <div class="checkbox">
+                            {{  form_errors(form.profile.termsConditionAccept) }}
+                            <label>
+                                {{ form_widget(form.profile.termsConditionAccept) }}
+                                I agree to &nbsp;<a target="_blank"  href="{{ path('bindu_page_content',{'slug':'terms-of-service'}) }}">Terms</a>&nbsp;&&nbsp;<a target="_blank" id="PrivacyLink" href="{{ path('bindu_page_content',{'slug':'privacy-policy'}) }}">Privacy</a>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="panel-footer clearfix" >
+                        <button type="submit"  class="btn btn-sm btn-primary pull-right" role="button">Register</button>
+                    </div>
+                </div>
+                {{ form_end(form) }}
+
+            </div>
+        </div>
+    </section>
+</section>
+{% endblock %}

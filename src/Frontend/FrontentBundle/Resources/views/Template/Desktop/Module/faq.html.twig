@@ -1,0 +1,20 @@
+{% if pagination is defined and pagination is not empty  %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel-group" >
+                {% for key,faq in pagination  %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading" >
+                            <h5 class="panel-title">{{ faq.name }}</h5>
+                        </div>
+                        <div  class="panel-collapse">
+                            <div class="panel-body">
+                                {{ faq.content|raw }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endif %}

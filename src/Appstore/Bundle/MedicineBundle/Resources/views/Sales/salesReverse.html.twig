@@ -1,0 +1,92 @@
+<div class="portlet-body form">
+    <div class="row-fluid">
+        <div class="span4">
+            <h4>About:</h4>
+            <ul class="unstyled">
+                {% if entity.customer is not empty %}<li><strong>Customer #:</strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                {% if entity.customer is not empty %}<li><strong>Mobile #:</strong>&nbsp;{{ entity.customer.mobile }}</li>{% endif %}
+                {% if entity.customer is not empty %}<li><strong>Address #:</strong>&nbsp;{{ entity.customer.address }}</li>{% endif %}
+                {% if entity.customer is not empty and entity.customer.location is not empty   %}<li><strong>Location #:</strong>&nbsp;{{ entity.customer.location.name }}, {{ entity.customer.location.parent.name }}</li>{% endif %}
+                <li><strong>Created:</strong>&nbsp;{{ entity.created|date('d-m-Y') }}</li>
+            </ul>
+        </div>
+        <div class="span4 invoice-payment">
+            <h4>Payment Details:</h4>
+            <ul class="unstyled">
+                <li><strong>Total BDT:</strong>&nbsp;{{ entity.netTotal|number_format() }}</li>
+                <li><strong>Payment BDT:</strong>&nbsp;{{ entity.received|number_format() }}</li>
+                {% if entity.discount %}<li><strong>Discount BDT:</strong>&nbsp;{{ entity.discount|number_format() }}</li>{% endif %}
+                {% if entity.due %}<li><strong>Due BDT:</strong>&nbsp;{{ entity.due|number_format() }}</li>{% endif %}
+                <li><strong>Payment status</strong>&nbsp;{{  entity.paymentStatus|capitalize }}</li>
+            </ul>
+        </div>
+        <div class="span4">
+            <h4>Payment Method:</h4>
+            <ul class="unstyled">
+                <li><strong>Process:</strong>&nbsp;{{ entity.process }}</li>
+                <li><strong>Payment Method:</strong>&nbsp;{{ entity.transactionMethod.name }}</li>
+                {% if entity.accountMobileBank is not empty %}<li><strong>Received Mobile:</strong>&nbsp;{{ entity.accountMobileBank.name }}</li>{% endif %}
+                {% if entity.paymentMobile is not empty %}<li><strong>Mobile/Transaction:</strong>&nbsp;{{ entity.paymentMobile }}/{{ entity.transactionId }}</li>{% endif %}
+                {% if entity.accountBank is not empty %}<li><strong>Received Bank:</strong>&nbsp;{{ entity.accountBank.name }}</li>{% endif %}
+                {% if entity.paymentCard is not empty %}<li><strong>Payment Card/No:</strong>&nbsp;{{ entity.paymentCard.name }}/{{ entity.cardNo }}</li>{% endif %}
+                {% if entity.bank is not empty %}<li><strong>Bank:</strong>&nbsp;{{ entity.bank.name  }}</li>{% endif %}
+                <li><strong>Sales By:</strong>&nbsp;{% if entity.salesBy is defined and entity.salesBy is not empty %}{{ entity.createdBy }}{% endif %}</li>
+                <li><strong>Confirmed By:</strong>&nbsp;{% if entity.approvedBy is defined and entity.approvedBy is not empty %}{{ entity.approvedBy }}{% endif %}</li>
+            </ul>
+        </div>
+    </div>
+    {% include('flash-message.html.twig')  %}
+    <div class="row-fluid box green">
+        <table class="table table-bordered table-striped table-condensed table-fixed">
+            <thead class="flip-content ">
+            <tr class="head-blue">
+                <th class="span1">&nbsp;&nbsp;<i class="icon-list"></i> Barcode</th>
+                <th class="span3">Name</th>
+                <th class="span1">Sales Price</th>
+                <th class="span1">Quantity</th>
+                <th class="span1">Sub-total</th>
+            </tr>
+            </thead>
+            <tbody id="">
+            {% if entity.medicineSalesItems is not empty %}
+                {% for item in entity.medicineSalesItems %}
+                    <tr id="remove-{{ item.id }}">
+                        <td  class="span1">{{ loop.index }}</td>
+                        <td class="span3">{{ item.medicineStock.name }}</td>
+                        <td class="span1">{{ item.salesPrice }}</td>
+                        <td class="span1">{{ item.quantity }}</td>
+                        <td class="span1">{{ item.subTotal|number_format }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="5" class="span12" style="border: 1px double #000"></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="span9"><span class="pull-right"><strong>Total TK.</strong> =</span></td>
+                <td class="span2"><strong id="">{{ entity.subTotal|number_format }}</strong></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="span9"><span class="pull-right"><strong>Discount TK.</strong> =</span></td>
+                <td class="span2"><strong id="">{{ entity.discount|number_format }}</strong></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="span9"><span class="pull-right"><strong>Net-Total TK.</strong> =</span></td>
+                <td class="span2"><strong id="">{{ entity.netTotal|number_format }}</strong></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="span9"><span class="pull-right"><strong>Received TK.</strong> =</span></td>
+                <td class="span2"><strong id="">{{ entity.received|number_format }}</strong></td>
+            </tr>
+
+            <tr>
+                <td colspan="4" class="span9"><span class="pull-right"><strong>Due TK.</strong> =</span></td>
+                <td class="span2"><strong id="">{{ entity.due|number_format }}</strong></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+</div>

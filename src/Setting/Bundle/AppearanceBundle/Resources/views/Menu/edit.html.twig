@@ -1,0 +1,229 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN gallery HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="gallery-title">
+                    Form Components
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage menus</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END gallery HEADER-->
+        <!-- BEGIN gallery CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Menu Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li class="active"><a  href="javascript:"><i class="icon-th-list"></i>&nbsp;Manage menu</a></li>
+                                    <li class=""><a  href="{{ path('menu_new') }}"><i class="icon-plus"></i>&nbsp;Add Custom Menu</a></li>
+
+                                    <li class=""><a  href="{{ path('menugrouping') }}"><i class="icon-plus"></i>&nbsp;Add menu grouping</a></li>
+                                    <li class=""><a  href="{{ path('menu_reset') }}"><i class="icon-refresh"></i>&nbsp;Reset Default Menu</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div>
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <!--/row-->
+                            <div class="portlet-body flip-scroll">
+
+                                {% include('flash-message.html.twig')  %}
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+                                    <thead class="flip-content ">
+                                        <tr class="head-grey">
+                                            <td>&nbsp;&nbsp;<i class="icon-list"></i> Menu</td>
+                                            <th class="numeric" >Menu Slug</th>
+                                            <th class="numeric" >Action</th>
+                                            <th class="numeric" >Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for entity in entities %}
+                                        {% if(entity.defaultMenu == 1 ) %}
+                                            <tr>
+                                                <td class="">
+                                                    <input type="hidden" name="slug[]" value="">
+                                                    <input type="hidden" name="id[]" value="{{ entity.id }}">
+                                                    <input type="text" class="m-wrap span12" name="menu[]" value="{{ entity.menu }}"></td>
+                                                <td class="numeric">{{ entity.slug }}</td>
+                                                {% if(entity.slug =='home') %}
+                                                    <td class="numeric"><a href="{{ path('homepage_modify') }}">Click for Edit</a> </td>
+                                                {% else %}
+                                                    <td class="numeric"><a href="{{ path('contactpage_modify') }}">Click for Edit</a> </td>
+                                                {% endif %}
+                                                <td class="numeric">
+                                                    {% if( entity.status == 1) %}
+                                                        <a class="btn mini blue " href="{{ path('menu_status', { 'globalOption':  entity.globalOption.id,'id': entity.id}) }}"><span class="icon-ok"></span></a>
+                                                    {% else %}
+
+                                                        <a class="btn mini red " href="{{ path('menu_status', { 'globalOption':  entity.globalOption.id,'id': entity.id}) }}"><span class="icon-remove"></span></a>
+                                                    {% endif %}
+                                                </td>
+
+                                            </tr>
+                                        {% endif %}
+                                        {% if(entity.syndicate) %}
+                                            <tr>
+                                                <td >
+                                                    <input type="hidden" name="slug[]" value="">
+                                                    <input type="hidden" name="id[]" value="{{ entity.id }}">
+                                                    <input type="text" class="m-wrap span12" name="menu[]" value="{{ entity.menu }}" ></td>
+                                                <td class="numeric">{{ entity.slug }}</td>
+                                                <td class="numeric"><a href="{{ path('syndicatemodule_edit',{ 'id':entity.syndicate.id }) }}">Click for Edit</a> </td>
+                                                <td class="numeric">
+                                                    {% if( entity.status == 1) %}
+                                                        <a class="btn mini blue " href="{{ path('menu_status', { 'globalOption':  entity.globalOption.id,'id': entity.id}) }}"><span class="icon-ok"></span></a>
+                                                    {% else %}
+                                                        <a class="btn mini red " href="{{ path('menu_status', { 'globalOption':  entity.globalOption.id,'id': entity.id}) }}"><span class="icon-remove"></span></a>
+                                                    {% endif %}
+                                                </td>
+
+                                            </tr>
+                                        {% endif %}
+                                        {% if(entity.module) %}
+                                            <tr>
+                                                <td >
+                                                    <input type="hidden" name="slug[]" value="">
+                                                    <input type="hidden" name="id[]" value="{{ entity.id }}">
+                                                    <input type="text" class="m-wrap span12" name="menu[]" value="{{ entity.menu }}"></td>
+                                                <td class="numeric">{{ entity.slug }}</td>
+                                                <td class="numeric"><a href="{{ path(entity.module.moduleClass|lower) }}">Click lists</a> </td>
+                                                <td class="numeric">
+                                                    {% if( entity.status == 1) %}
+                                                        <a class="btn mini blue " href="{{ path('menu_status', { 'globalOption':  entity.globalOption.id,'id': entity.id}) }}"><span class="icon-ok"></span></a>
+                                                    {% else %}
+
+                                                        <a class="btn mini red " href="{{ path('menu_status', { 'globalOption':  entity.globalOption.id,'id': entity.id}) }}"><span class="icon-remove"></span></a>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                        {% if(entity.category) %}
+                                            <tr>
+                                                <td >
+                                                    <input type="hidden" name="slug[]" value="">
+                                                    <input type="hidden" name="id[]" value="{{ entity.id }}">
+                                                    <input type="text" class="m-wrap span12" name="menu[]" value="{{ entity.menu }}"></td>
+                                                <td class="numeric">{{ entity.slug }}</td>
+                                                <td class="numeric"><a href="">Click for Edit</a> </td>
+                                                <td class="numeric">
+                                                    {% if( entity.status == 1) %}
+                                                        <a class="btn mini blue " href="{{ path('menu_status', { 'globalOption':  entity.globalOption.id,'id': entity.id}) }}"><span class="icon-ok"></span></a>
+                                                    {% else %}
+
+                                                        <a class="btn mini red " href="{{ path('menu_status', { 'globalOption':  entity.globalOption.id,'id': entity.id}) }}"><span class="icon-remove"></span></a>
+                                                    {% endif %}
+                                                </td>
+
+                                            </tr>
+                                        {% endif %}
+                                        {% if(entity.page) %}
+                                            <tr>
+                                                <td >
+                                                    <input type="hidden" name="slug[]" value="">
+                                                    <input type="hidden" name="id[]" value="{{ entity.id }}">
+                                                    <input type="text" class="m-wrap span12" name="menu[]" value="{{ entity.menu }}"></td>
+                                                <td class="numeric">{{ entity.slug }}</td>
+                                                <td class="numeric"><a href="{{ path('page_edit',{'id':entity.page.id}) }}">Show page</a> </td>
+                                                <td class="numeric">
+                                                    {% if( entity.status == 1) %}
+                                                        <a class="btn mini blue " href="{{ path('menu_status', { 'globalOption':  entity.globalOption.id,'id': entity.id}) }}"><span class="icon-ok"></span></a>
+                                                    {% else %}
+
+                                                        <a class="btn mini red " href="{{ path('menu_status', { 'globalOption':  entity.globalOption.id,'id': entity.id}) }}"><span class="icon-remove"></span></a>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                        {% if(entity.menuCustom) %}
+                                            <tr>
+                                                <td >
+                                                    <input type="hidden" name="id[]" value="{{ entity.id }}">
+                                                    <input type="hidden" name="slug[]" value="">
+                                                    <input type="text" class="m-wrap span12" name="menu[]" value="{{ entity.menu }}"></td>
+                                                <td class="numeric">{{ entity.slug }}</td>
+                                                <td class="numeric">---</td>
+                                                <td class="numeric">
+                                                    {% if( entity.status == 1) %}
+                                                        <a class="btn mini blue " href="{{ path('menu_status', { 'globalOption':  entity.globalOption.id,'id': entity.id}) }}"><span class="icon-ok"></span></a>
+                                                    {% else %}
+
+                                                        <a class="btn mini red " href="{{ path('menu_status', { 'globalOption':  entity.globalOption.id,'id': entity.id}) }}"><span class="icon-remove"></span></a>
+                                                    {% endif %}
+                                                </td>
+
+                                            </tr>
+                                        {% endif %}
+                                        {% if entity.mode == "custom" %}
+                                        <tr>
+                                            <td >
+                                                <input type="hidden" name="id[]" value="{{ entity.id }}">
+                                                <input type="text" class="m-wrap span12" name="menu[]" value="{{ entity.menu }}"></td>
+                                            <td class="">
+                                                <input type="text" class="m-wrap span12" name="slug[]" value="{{ entity.slug }}"></td>
+                                            <td class="numeric">---</td>
+                                            <td class="numeric">
+                                                {% if( entity.status == 1) %}
+                                                    <a class="btn mini blue " href="{{ path('menu_status', { 'globalOption':  entity.globalOption.id,'id': entity.id}) }}"><span class="icon-ok"></span></a>
+                                                {% else %}
+
+                                                    <a class="btn mini red " href="{{ path('menu_status', { 'globalOption':  entity.globalOption.id,'id': entity.id}) }}"><span class="icon-remove"></span></a>
+                                                {% endif %}
+                                            </td>
+
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-center">
+                                    <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                    <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                                </div>
+                            </div>
+                        {{ form_end(form) }}
+                            <!-- END FORM-->
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+
+
+

@@ -1,0 +1,48 @@
+<table class="table even" border="1" id="downloadExcel">
+    <caption>{% if salesBy is not empty %}Sales By: {{ salesBy.profile.name }}{% endif %} Start To End Date: {{ data['startDateTime']|date('d-m-Y h:i A') }} To {{ data['endDateTime']|date('d-m-Y h:i A') }}</caption>
+    <colgroup>
+        <col class="w">
+        <col>
+        <col>
+        <col>
+        <col>
+        <col>
+    </colgroup>
+    <thead>
+    <tr>
+        <th>SI.</th>
+        <th>Sales By</th>
+        <th>Created</th>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Invoice</th>
+        <th>Mode</th>
+        <th>Method</th>
+        <th class="text-right">Receive</th>
+    </tr>
+    <tbody>
+    {% set balance = 0 %}
+    {% set totalDebit = 0 %}
+    {% set totalCredit = 0 %}
+    {% for entity in entities %}
+        {% set balance = balance + entity.balance %}
+        {% set totalDebit = totalDebit + entity.debit %}
+        {% set totalCredit = totalCredit + entity.credit %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td class="numeric" >{% if entity.createdBy is not empty %}{{ entity.createdBy }}{% endif %}</td>
+            <td class="numeric" >{{ entity.created|date('d-m-Y h:i A') }}</td>
+            <td class="numeric" >{{ entity.name }}</td>
+            <td class="numeric" >{{ entity.mobile }}</td>
+            <td class="numeric" >{{ entity.invoice }}</td>
+            <td class="numeric" >{{ entity.mode }}</td>
+            <td class="numeric" >{{ entity.method }}</td>
+            <td class="text-right" >{{ entity.credit|number_format(2) }}</td>
+        </tr
+    {% endfor %}
+    <tr>
+        <th class="text-right" colspan="8">Grand Balance</th>
+        <th class="text-right">{{ totalCredit|number_format(2) }}</th>
+    </tr>
+    </tbody>
+</table>

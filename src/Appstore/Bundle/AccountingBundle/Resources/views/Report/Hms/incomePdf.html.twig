@@ -1,0 +1,100 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+
+    h1 , h2 , h3 , h4 , h5 , h6,p{
+        display: block;
+        padding: 0;
+        margin: 0;
+    }
+    h3 {
+        font-size: 24px;
+        line-height: 45px;
+        height: 45px;
+    }
+
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+  {{ print|raw }}
+  <table class="table">
+      <thead>
+      <tr>
+          <td class="pull-center" colspan="3">{{ globalOption.hospitalConfig.address|raw }}</td>
+      </tr>
+      <tr>
+          <th class="pull-center" colspan="3"><h3>DATE RANGE INCOME STATEMENT SHEET</h3></th>
+      </tr>
+      <tr>
+          {% set startDate = searchForm.startDate is defined ? searchForm.startDate :'' %}
+          {% set endDate = searchForm.endDate is defined ? searchForm.endDate :'' %}
+          <th colspan="3">
+              <span class="pull-right">Period&nbsp;&nbsp;{{ startDate }} To {{ endDate }}</span>
+          </th>
+      </tr>
+      </thead>
+      <tbody>
+      {% if overview.revenues is not empty %}
+          <tr><th colspan="3">Revenue</th></tr>
+          {% for revenue in overview.revenues %}
+              {% set totalDebit = totalDebit + revenue.amount %}
+              <tr><td>{{ revenue.processHead|capitalize }}</td><td class="numeric" ></td><td class="numeric" >{{ revenue.amount|number_format }}</td></tr>
+          {% endfor %}
+      {% endif %}
+      <tr><td>Purchase Accessories/Medicine</td><td class="numeric" >({{ overview.purchase|number_format }})</td><td></td></tr>
+      <tr><td>Service Vat</td><td class="numeric" >({{ overview.salesVat|number_format }})</td><td></td></tr>
+      <tr><th colspan="3">Operating Expense</th></tr>
+      {% set totalExpense = 0 %}
+      {% for expense in overview.expenditures %}
+          {% set totalExpense = totalExpense + expense.amount  %}
+          <tr><td>{{ expense.name }}</td><td class="numeric" >{{ expense.amount|number_format }}</td><td></td></tr>
+      {% endfor %}
+      <tr><th>Grand Total Expense</th><th class="numeric" >({{ totalExpense|number_format }})</th><td></td></tr>
+      {% set grandTotal = totalDebit - ( totalExpense + overview.salesVat + overview.purchase) %}
+      <tr><th colspan="2"><span class="pull-right">Grand Profit/Loss</span></th><th class="numeric" >{{ grandTotal|number_format }}</th></tr>
+      </tbody>
+  </table>

@@ -1,0 +1,26 @@
+{% if entities is defined and entities is not empty  %}
+    <section class="section-divide" id="testmonial-noticeboard">
+        <div class="testimonial-bg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="testimonial-single-slider" class="owl-carousel">
+                            {% for key,testimonial in entities  %}
+                            <div class="testimonial">
+                                <div class="pic">
+                                    <img src="{{ image(testimonial.webPath).scaleResize(150,150) }}" alt="">
+                                </div>
+                                <p class="description">
+                                    "{{ testimonial.content|raw }} "
+                                </p>
+                                <h3 class="testimonial-title"> {{ testimonial.name }}</h3>
+                                <span class="post">{{ testimonial.designation }}&nbsp;,&nbsp;<em>{{ testimonial.organization }}</em></span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endif %}

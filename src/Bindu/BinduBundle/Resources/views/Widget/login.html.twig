@@ -1,0 +1,27 @@
+<div style="font-size: 12px; line-height: 24px; height: 24px">
+    {% if error is defined and error is not empty %}
+        <strong>Error</strong> &ndash; {{ error }}
+    {% endif  %}
+</div>
+<div>
+    <form class="form-vertical login-form" id="headerLoginForm" action="{{ path("fos_user_security_check") }}" method="post" novalidate="novalidate">
+        <span class="" style="float: right;display: inline-block;width:42%;margin-right: 2px;">
+        <input type="hidden" name="_csrf_token" value="{{ csrfToken }}"/>
+        <input type="text" id="_username" name="_username" required="required" class="" style="border:2px solid #0d8bb3!important; font-size: 12px" placeholder="Enter your user name">
+        <input type="password" id="_password" name="_password" required="required" class="" style="border:2px solid #0d8bb3!important; font-size: 12px" placeholder="Enter your password">&nbsp;&nbsp;<input type="checkbox" id="remember" name="_remember_me" checked="checked" />
+        <button role="button" type="submit"  class="tm-button">Login</button>
+        </span>
+    </form>
+</div>
+<style>
+    #headerLoginForm input[type="text"], #headerLoginForm input[type="password"]{
+        height: 30px;
+    }
+    #headerLoginForm .tm-button {
+        height: 30px;
+        line-height: 10px;
+    }
+</style>
+
+
+

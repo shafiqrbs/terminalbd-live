@@ -1,0 +1,81 @@
+{% if globalOption.featureWidgets is defined and globalOption.featureWidgets is not empty and menu.getFeatureWidgetPositionExist('footer')  %}
+    {% render controller("FrontendBundle:EcommerceWidget:featureTemplateWidget",{'globalOption':globalOption.id,'menu': menu.id,'position':'footer'}) %}
+{% endif %}
+{% if globalOption.featureWidgets is defined and globalOption.featureWidgets is not empty and menu.getFeatureWidgetPositionExist('footer')  %}
+    {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu': menu.id,'position':'footer'}) %}
+{% endif %}
+<section class="footer-menu">
+    {% if globalOption.ecommerceConfig.footerCategory == 1 %}
+        <div class="container social-payment" >
+            <div class="row">
+                <div class="col-sm-12">
+                    <h5><strong>ALL CATEGORIES -</strong></h5>
+                    {% render controller("FrontendBundle:EcommerceWidget:footerProductCategory",{'globalOption':globalOption.id}) %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="container social-payment" id="footer-menu" style="border-bottom:none; margin-bottom: 0; padding-bottom: 0" >
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="bs-callout" >
+                    <h4>About</h4>
+                    <p>
+                        {% render controller("FrontendBundle:TemplateWidget:about",{'globalOption':globalOption.id,'wordlimit':300}) %}
+                    </p>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <h4>{{ globalOption.name }}</h4>
+                {% render controller("FrontendBundle:TemplateWidget:footerMenu",{'globalOption':globalOption.id,'menuGroup':3}) %}
+            </div>
+            <div class="col-sm-3 text-center">
+                <h4>KEEP IN TOUCH</h4>
+                <div class="social-tooltip">
+                    <a data-toggle="tooltip" id="facebook" title="Follow on Facebook" target="_blank" href="http://{{ globalOption.facebookPageUrl }}"><i class="fa fa-facebook fa-fw  "></i></a>
+                    <a data-toggle="tooltip" id="twitter" title="Follow on Twitter" target="_blank" href="http://{{ globalOption.twitterUrl }}"><i class="fa fa-twitter fa-fw  "></i></a>
+                    <a data-toggle="tooltip" id="instagram" title="Follow on Instagram" target="_blank" href="http://{{ globalOption.instagramPageUrl }}"><i class="fa fa-instagram fa-fw  "></i></a>
+                    <a data-toggle="tooltip" id="email" title="Send as an email" target="_blank"  href="mailto:{{ globalOption.email }}"><i class="fa fa-envelope fa-fw  "></i></a>
+                </div>
+                {% if globalOption.templateCustomize.playStore %}
+                    <div style="margin-top:15px">
+                        <a href="https://play.google.com/store/apps/details?id={{ globalOption.templateCustomize.playStore }}"><img style="height: 50px;" src="{{ asset('assets/img/android.png') }}"></a>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-sm-3">
+                <h4>Contact Us</h4>
+                <address>
+                    {% if globalOption.contactPage.address1 is not empty %}
+                        <p style="font-weight: bolder"> <i class="fa fa-home"></i>&nbsp;{{ globalOption.contactPage.address1 }}<br>
+                            {% if globalOption.contactPage.location is defined and globalOption.contactPage.location %}
+                                {{ globalOption.contactPage.location.name }}, {{ globalOption.contactPage.location.parent.name }}
+                            {% endif %}
+                            {% if globalOption.contactPage.postalCode is defined and globalOption.contactPage.postalCode %}
+                                -{{ globalOption.contactPage.postalCode }}
+                            {% endif %}
+                        </p>
+                    {% endif %}
+                    {% if globalOption.contactPage.startHour %}
+                        <i class="fa fa-clock-o"></i>&nbsp;<strong>{{ globalOption.contactPage.startHour }} To {{ globalOption.contactPage.endHour }}</strong>
+                    {% endif %}
+                    {% if globalOption.contactPage.weeklyOffDay is not empty %}
+                        <br><i class="fa fa-calendar-o" aria-hidden="true"></i>&nbsp;<strong>
+                        {% for day in globalOption.contactPage.weeklyOffDay %}
+                            {{ day }}
+                            {% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    </strong>
+                    {% endif %}
+                    <br>
+                    <i class="fa fa-mobile-phone"></i>&nbsp;+ 088&nbsp;<a href="tel:+ 088 {{ globalOption.templateCustomize.contactNo }}" class="contact-call">{{ globalOption.templateCustomize.contactNo }}</a>
+                    {% if globalOption.contactPage.latitude is not empty and globalOption.contactPage.longitude is not empty %}
+                        <i class="fa fa-map-pin"></i>&nbsp;<a target="_blank" href="https://maps.google.com?saddr=Current+Location&daddr={{ globalOption.contactPage.latitude }},{{ globalOption.contactPage.longitude }}">Direction</a>
+                    {% endif %}
+
+                </address>
+            </div>
+
+        </div>
+    </div>
+</section>

@@ -1,0 +1,116 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Barcode print
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_barcode') }}">Barcode</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Barcode print list</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                 <form id="barcode" name="barcode" method="post" action="{{ path('barcode_item_create') }}">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Barcode print lists</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a href="{{ path('inventory_item') }}"><i class="icon-th-list"></i>&nbsp;Item</a>
+                                <button class="btn" type="submit" >Barcode <i class="icon-barcode"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div id="table-print">
+                                <table  class="table table-bordered table-striped table-condensed flip-content ">
+
+                                    <thead class="flip-content ">
+                                    <tr class="head-grey">
+                                        <th class="numeric" ><i class="icon-list"></i></th>
+                                        <th class="numeric" >Name </th>
+                                        <th class="numeric" >Item code</th>
+                                        <th class="numeric" >Sales </th>
+                                        <th class="numeric" >Barcode</th>
+                                        <th class="numeric" >Quantity</th>
+                                        <th class="numeric" >Print Quantity</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% set quantity = 0 %}
+                                    {% for entity in entities %}
+                                        {% set quantity = quantity + entity.remainingQnt %}
+                                        <tr>
+                                            <td class="numeric" >{{ loop.index }}.</td>
+                                            <td class="numeric" >{{ entity.name }}</td>
+                                            <td class="numeric" >{{ entity.sku }}</td>
+                                            <td class="numeric" >{{ entity.salesPrice }}</td>
+                                            <td class="numeric" >{{ entity.barcode }}</td>
+                                            <td class="numeric" >{{ entity.remainingQnt }}</td>
+                                            <td class="numeric" >
+                                                <input type="text" name="barcodeQnt[]" class="span4 numeric barcodeQnt" id="" value="{{ entity.remainingQnt }}" >
+                                                <input type="hidden" name="item[]" value="{{ entity.id }}">
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tr><td colspan="5"><strong class="pull-right" >Total Barcode Print Quantity</strong></td><td><strong>{{ quantity }}</strong></td><th id="total">{{ quantity }}</th></tr>
+                                    </tbody>
+                                </table>
+                            </div><!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-center">
+                                    <button type="submit" class="btn green"><i class="icon-ok"></i> Create Barcode </button>
+                                    <button type="button" class="btn blue print" ><i class="icon-print"></i> Print</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                 </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $(document).on('keyup', ".barcodeQnt", function() {
+        var sum = 0;
+        $(".barcodeQnt").each(function(){
+        sum += +parseFloat($(this).val());
+        });
+        $("#total").html(sum);
+    });
+    $(document).on('click', ".print", function() {
+        var divToPrint= $('#table-print').html();
+        var newWin=window.open('','Print-Window');
+        newWin.document.open();
+        newWin.document.write('<html><title>Barcode-Print</title><head><style>.table table{border-collapse: collapse} .table table th, .table table td{border: 1px solid #000101!important;text-align: left;padding:5px;}.table table td input{border: 1px solid #fff;}</style></head><body class="table" onload="window.print()">'+divToPrint+'</body></html>');
+        newWin.document.close();
+        setTimeout(function(){newWin.close();},100);
+    });
+
+{% endblock %}

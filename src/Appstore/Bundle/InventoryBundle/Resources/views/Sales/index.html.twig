@@ -1,0 +1,184 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Sales Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_sales') }}">Sales</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Sales Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                 <div class="portlet box green tabbable">
+
+                        <div class="portlet-title">
+                            <div class="caption"><i class="icon-reorder"></i>Sales lists</div>
+                            <div class="actions">
+                                <div class="btn-group">
+                                    <a class="btn" href="{{ path('inventory_sales') }}"><i class="icon-th-list"></i> Sales</a>
+                                    {% if config.isPos == 1 %}
+                                    <a class="btn red" href="{{ path('pos_desktop') }}"><i class="icon-plus-sign"></i> POS</a>
+                                    {% endif %}
+                                    {% if config.isInvoice == 1 %}
+                                    <a class="btn yellow" href="{{ path('inventory_salesonline_new') }}"><i class="icon-plus-sign"></i> Invoice</a>
+                                    {% endif %}
+                                    <a class="btn purple" href="{{ path('inventory_sales_empty_delete') }}"><i class="icon-th-list"></i>&nbsp;Delete Empty</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="portlet-body">
+                            <div class="portlet-body flip-scroll">
+                                {% include('flash-message.html.twig')  %}
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid">
+                                        <div class="span3">
+                                            <input type="text" id="customer" name="customer"  class="span12 m-wrap select2Customer" value="{% if searchForm.customer is defined %}{{ searchForm.customer }}{% endif %}"  autocomplete="off" placeholder="Enter customer mobile no ">
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="toUser" name="toUser"  class="span12 m-wrap select2User" value="{% if searchForm.toUser is defined %}{{ searchForm.toUser }}{% endif %}"  autocomplete="off" placeholder="Enter sales user">
+                                        </div>
+                                        <div class="span3">
+                                            <select name="paymentStatus" id="paymentStatus" class="span12 m-wrap">
+                                                <option value="">Payment Status</option>
+                                                <option value="Paid">Paid</option>
+                                                <option value="Due">Due</option>
+                                                <option value="Pending">Pending</option>
+                                            </select>
+                                        </div>
+                                        <div class="span3">
+                                            <select name="transactionMethod" id="transactionMethod" class="span12 m-wrap">
+                                                <option value="">Transaction Method</option>
+                                                {% for method in transactionMethods %}
+                                                    <option {% if searchForm.method is defined and searchForm.method == method.id %} selected="selected" {% endif %} value="{{ method.id }}" >{{ method.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span6">
+                                            <input type="text" id="invoice" name="invoice"  class="span12 m-wrap" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}"  autocomplete="off" placeholder="Enter invoice no ">
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="startDate" name="startDate"  class="span12 m-wrap date-picker" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                        </div>
+                                        <div class="span3">
+                                            <div class="controls">
+                                                <div class="input-append span10">
+                                                    <input type="text" id="endDate" name="endDate"  class="span12 m-wrap date-picker" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+                                    <thead class="flip-content ">
+                                    <tr class="head-green">
+                                        <th class="numeric" >Created</th>
+                                        <th class="numeric" >Invoice</th>
+                                        <th class="numeric" >Device Sales</th>
+                                        <th class="numeric" >Item</th>
+                                        <th class="numeric" >Sub-Total</th>
+                                        <th class="numeric" >Discount</th>
+                                        <th class="numeric" >Net Total</th>
+                                        <th class="numeric" >Payment</th>
+                                        <th class="numeric" >Due</th>
+                                        <th class="numeric" >Sales By</th>
+                                        <th class="numeric" >Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="sales">
+                                        {% for entity in entities %}
+                                            <tr id="salesRemove-{{ entity.id }}">
+                                                <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                                <td class="numeric" >{{ entity.invoice }}</td>
+                                                <td class="numeric" >{{ entity.deviceSalesId }}</td>
+                                                <td class="numeric" >{{ entity.totalItem }}</td>
+                                                <td class="numeric" >{{ entity.subTotal|number_format  }}</td>
+                                                <td class="numeric" >{{ entity.discount|number_format  }}</td>
+                                                <th class="numeric" >{{ entity.total|number_format  }}</th>
+                                                <th class="numeric" >{{ entity.payment|number_format }}</th>
+                                                <td class="numeric" >{{ entity.due|number_format }}</td>
+                                                <td class="numeric" >{% if entity.salesBy %}{{ entity.salesBy.profile.name }}{% endif %}</td>
+                                                <td class="numeric" >
+                                                    {% if entity.salesItems is defined and  entity.salesItems is not empty  %}
+                                                        <a href="{{ path('inventory_sales_show', { 'id': entity.id }) }}" class="btn purple mini" ><i class="icon-eye-open"></i></a>
+                                                        <a  href="javascript:" rel="{{ path('inventory_sales_print',{'code':entity.invoice}) }}"  class="btn green mini print" ><i class="icon-print"></i></a>
+                                                    {% endif %}
+                                                    {% if entity.paymentStatus == "Pending" %}
+                                                        <a href="{{ path('inventory_sales_edit', { 'code': entity.invoice }) }}" class="btn yellow mini" ><i class="icon-pencil"></i></a>
+                                                        <a title="Are you sure went to delete ?" id="{{ entity.id }}" rel="{{ path('inventory_sales_delete', { 'id': entity.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a>
+                                                    {% endif %}
+                                                    {% if entity.paymentStatus == "Due" %}
+                                                        <a href="{{ path('account_sales_due',{'sales':entity.id}) }}" class="btn mini yellow" ><i class="icon-money"></i></a>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <div class="pagination pull-center"  >
+                                    {{ knp_pagination_render(entities) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $( "#search-product" ).hide();
+    $( "#searchToggole" ).click(function() {
+    $( "#search-product" ).slideToggle( "slow" );
+    });
+    ApproveProcess();
+    $('#sales').on("click", ".delete", function() {
+
+        var url = $(this).attr("rel");
+        var id = $(this).attr("id");
+        $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (response) {
+        obj = JSON.parse(response);
+        if ('success' == obj['success']) {
+        $('#salesRemove-' + id).hide();
+        }
+        }
+        })
+    })
+
+{% endblock %}

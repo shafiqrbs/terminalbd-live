@@ -1,0 +1,178 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- END PAGE HEADER-->
+
+
+
+                {#
+                <div class="portlet-body">
+                    <div class="clearfix">&nbsp;</div>
+                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                        <thead class="green">
+                        <tr class="head-red"><th colspan="3">Opening Cash Overview</th></tr>
+                        </thead>
+                        <tbody class="">
+                        <tr>
+                            <th class="numeric span11">Opening</th>
+                            <th class="numeric">{{ (previousSalesTransactionOverview.receive)|number_format }}</th>
+                        </tr>
+                        <tr>
+                            <th class="numeric span11">Received</th>
+                            <th class="numeric">{{ (salesOverview.receive)|number_format }}</th>
+
+                        </tr>
+                        <tr>
+                            <th class="numeric span11">Closing</th>
+                            <th class="numeric">{{ ( salesOverview.receive + previousSalesTransactionOverview.receive)|number_format }}</th>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="clearfix">&nbsp;</div>
+                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                        <thead class="green">
+                        <tr class="head-purple"><th colspan="3">Sales Overview</th></tr>
+                        </thead>
+                        <tbody class="">
+                        <tr>
+                            <th class="numeric span11">Sub-total</th>
+                            <th class="numeric">{{ (salesOverview.subTotal)|number_format }}</th>
+                        </tr>
+                        <tr>
+                            <th class="numeric span11">Discount</th>
+                            <th class="numeric">{{ (salesOverview.discount)|number_format }}</th>
+
+                        </tr>
+                        <tr>
+                            <th class="numeric span11">Vat</th>
+                            <th class="numeric">{{ (salesOverview.vat)|number_format }}</th>
+
+                        </tr>
+                        <tr>
+                            <th class="numeric span11">Net Total</th>
+                            <th class="numeric">{{ (salesOverview.total)|number_format }}</th>
+
+                        </tr>
+                        <tr>
+                            <th class="numeric span11">Received</th>
+                            <th class="numeric">{{ (salesOverview.receive)|number_format }}</th>
+
+                        </tr>
+                        <tr>
+                            <th class="numeric span11">Due</th>
+                            <th class="numeric">{{ salesOverview.due|number_format }}</th>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>#}
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon icon-medkit"></i> Dashboard</div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row-fluid pull-center" >
+                        <div class="span3 responsive" data-tablet="span6" data-desktop="span3">
+                            <div class="dashboard-stat blue">
+                                <a class="visual addPatient" href="javascript:">
+                                    <i class="icon icon-medkit"></i>
+                                </a>
+                                <a class="more addPatient" href="javascript:">
+                                    Add New Patient <i class="m-icon-swapright m-icon-white"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="span3 responsive" data-tablet="span6" data-desktop="span3">
+                            <div class="dashboard-stat purple">
+                                <a class="visual" href="{{ path('dps_invoice') }}">
+                                    <i class="fa fa-users"></i>
+                                </a>
+                                <a class="more" href="{{ path('dps_invoice') }}">
+                                    Patients <i class="m-icon-swapright m-icon-white"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="form-actions portlet box green">
+            <div class="portlet-title">
+                <div class="caption"><i class="icon-money"></i>Toady Sales Overview</div>
+                <div class="actions">
+                    <a target="_blank" href="{{ path('dps_report_today_sales_summary_pdf') }}" class="btn purple"><i class="icon icon-print"></i> Download</a>
+                </div>
+            </div>
+
+            <div class="portlet-body">
+                <div class="clearfix">&nbsp;</div>
+                <table class="table table-bordered table-striped table-condensed flip-content ">
+                    <tbody class="">
+                    <tr>
+                        <th class="numeric span11">Sub-total</th>
+                        <th class="numeric">{{ (salesOverview.subTotal)|number_format }}</th>
+                    </tr>
+                    <tr>
+                        <th class="numeric span11">Discount</th>
+                        <th class="numeric">{{ (salesOverview.discount)|number_format }}</th>
+                    </tr>
+                    <tr>
+                        <th class="numeric span11">Net Total</th>
+                        <th class="numeric">{{ (salesOverview.subTotal - salesOverview.discount)|number_format }}</th>
+
+                    </tr>
+                    <tr>
+                        <th class="numeric span11">Received</th>
+                        <th class="numeric">{{ (salesOverview.payment)|number_format }}</th>
+
+                    </tr>
+                    <tr>
+                        <th class="numeric span11">Due</th>
+                        <th class="numeric">{{ (salesOverview.subTotal - salesOverview.discount - salesOverview.payment)|number_format }}</th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    </div>
+    <style>
+        .dashboard-stat .visual{
+            width: auto;
+            float: none;
+            padding:0;
+            padding-top: 15px;
+            padding-bottom: 15px;
+
+        }
+        .dashboard-stat .visual:hover{
+            text-decoration: none;
+        }
+        .dashboard-stat .more {
+            clear: both;
+            display: block;
+            padding: 5px 10px 5px 10px;
+            text-transform: uppercase;
+            font-size: 16px;
+            color: #fff;
+            opacity:1;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@DoctorPrescriptionBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@DoctorPrescriptionBundle/Resources/public/js/patient.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}

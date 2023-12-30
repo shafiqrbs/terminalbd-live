@@ -1,0 +1,511 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Point of sale
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_sales') }}">Sales</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> Point of sales</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="clearfix">&nbsp;</div>
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>POS Information</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn blue" id="searchProduct" href="javascript:"><i class="icon-search"></i>&nbsp;Search</a>
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('inventory_sales_new') }}"><i class="icon-plus-sign"></i>&nbsp;POS</a></li>
+                                    <li><a href="{{ path('inventory_sales') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="portlet-body">
+                            <div class="portlet-body form">
+                                <!-- END purchase_order HEADER-->
+                                <div id="search-product">
+                                    <div class="row-fluid" style="margin-bottom: 5px">
+                                        <form class="search-form" >
+                                        {% if entity.branches is defined and entity.branches is not empty %}
+                                            <input type="text" id="branchItem" name="branchItem"  class="span12 select2Item" value="{% if searchForm.item is defined %}{{ searchForm.item }}{% endif %}"  autocomplete="off" placeholder="Enter item name ">
+                                            {% else %}
+                                            <input type="text" id="item" name="item" required="required"  class="m-wrap span12 select2Item " >
+                                        {% endif %}
+                                        </form>
+                                    </div>
+                                    <div class="row-fluid" id="branchItemStock">
+                                        {% if entity.branches is defined and entity.branches is empty %}
+                                        <table class="table table-bordered table-striped table-condensed flip-conten" id="stockItemDetails">
+                                            <thead class="flip-content ">
+                                            <tr class="head-green">
+                                                <th class="numeric" ><span class="btn black mini"><i class="icon-barcode"></i></span></th>
+                                                <th class="numeric" >SKU</th>
+                                                <th class="numeric" >GRN</th>
+                                                <th class="numeric" >Remaining Qnt</th>
+                                                <th class="numeric" >Ongoing Qnt</th>
+                                                <th class="numeric" >Current Stock</th>
+                                                <th class="numeric" >Purchase price</th>
+                                                <th class="numeric" >Sales price</th>
+                                                <th class="numeric" >Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="itemDetails"></tbody>
+                                        </table>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row-fluid " id="purchaseItemx">
+                                    <div class="span4"><ul class="unstyled"><li><strong>Estimate Amount #:</strong>&nbsp; {{ todaySalesOverview[0]["subTotal"] }}</li><li><strong>Sales Amount:</strong>&nbsp; {{ todaySalesOverview[0]["total"] }}</li></ul></div>
+                                    <div class="span4"><ul class="unstyled"><li><strong>Due Amount:</strong> &nbsp; {{ todaySalesOverview[0]["totalDue"] }}</li><li><strong>Discount Amount:</strong>&nbsp; {{ todaySalesOverview[0]["totalDiscount"] }}</li></ul></div>
+                                    <div class="span4"><ul class="unstyled"><li><strong>Receive Amount:</strong> &nbsp; {{ todaySalesOverview[0]["total"]-todaySalesOverview[0]["totalDue"] }}</li><li><strong>Total Voucher:</strong>&nbsp;{{ todaySalesOverview[0]["totalVoucher"] }}</li></ul></div>
+                                </div>
+
+                                <div class="clearfix"></div>
+                                <div class="row-fluid">
+                                    <div class="span8" id="barcode-box">
+
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="row-fluid">
+                                                    <div class="span6">
+                                                        <div class="input-prepend input-append span12">
+                                                            <span class="add-on add-on-height"><i class="icon-barcode"></i></span>
+                                                            <input type="text" id="barcode" name="barcode" required="required" class="m-wrap span11" placeholder="Enter product barcode" autocomplete="off">
+                                                            <span class="add-on add-on-height"><i class="icon-search"></i></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="span6" style="margin-left:10px; margin-top:10px ">
+                                                        <input type="text" id="barcodeNo" name="barcodeNo" required="required" class="m-wrap span12"  autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="row-fluid">
+                                            <div class="span12 responsive" data-tablet="span6" data-desktop="span3">
+                                                <div class="dashboard-stat" id="payment-board">
+                                                    <div class="details">
+                                                        <div class="number">TK.<span class="salesTotal">{{ entity.total }}</span></div>
+                                                        <div class="desc">Order no. {{ entity.invoice }}</div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                {{ form_start(form) }}
+                                {{ form_row(form._token) }}
+                                <div class="row-fluid">
+                                    <div class="span8">
+
+                                        <div class="row-fluid">
+                                            <div id="wrongBarcode"></div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+
+                                                <table class="table table-bordered table-hover">
+
+                                                    <thead class="">
+                                                    <tr class="head-blue">
+                                                        <th class="numeric" >S/N</th>
+                                                        <th class="numeric span3">Barcode</th>
+                                                        <th  class="numeric span2">Qnt</th>
+                                                        <th>Price</th>
+                                                        <th>Total</th>
+                                                        <th><i class="icon-trash"></i></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="salesItem" >
+                                                        {% for salesitem in entity.salesItems %}
+                                                        <tr id="remove-{{ salesitem.id }}">
+                                                            <td class="numeric" > {{ loop.index }}</td>
+                                                            <td  class="numeric">
+                                                                {{ salesitem.purchaseItem.barcode }}<br/>
+                                                                <span>{{ salesitem.item.name }}
+                                                                </span>
+                                                            </td>
+                                                            <td class="numeric" ><input type="number" id="quantity-{{ salesitem.id }}" rel="{{ salesitem.id }}" name="quantity[]"  value="{{ salesitem.quantity }}" class="m-wrap span10 quantity" placeholder="{{ salesitem.purchaseItem.quantity }}" min="1" max="{{ salesitem.purchaseItem.quantity }}"></td>
+                                                            <td>
+                                                                <div class="input-prepend">
+                                                                    <span class="add-on">
+                                                                        <input type="hidden" name="estimatePrice" id="estimatePrice-{{ salesitem.id }}" value="{{ salesitem.estimatePrice }}">
+                                                                        <input type="checkbox" {% if salesitem.customPrice == 1 and salesitem.salesPrice != salesitem.estimatePrice %} checked="checked" {% endif %} name="customPrice" rel="{{ salesitem.id }}" id="customPrice-{{ salesitem.id }}" class="customPrice" value="1" >
+                                                                    </span>
+                                                                    <input class="m-wrap span8 numeric salesPrice" {% if salesitem.customPrice != 1 and salesitem.salesPrice == salesitem.estimatePrice %} readonly="readonly" {% endif %} rel="{{ salesitem.id }}" id="salesPrice-{{ salesitem.id }}" type="text" name="salesPrice" value="{{ salesitem.salesPrice }}" placeholder="{{ salesitem.estimatePrice }}">
+                                                                </div>
+                                                            </td>
+                                                            <td><span id="subTotalShow-{{ salesitem.id }}" ><strong>{{ salesitem.subTotal }}</strong></span></td>
+                                                            <td>
+                                                                <a title="Are you sure went to delete ?" id="{{ salesitem.id }}" rel="{{ path('inventory_salesitem_delete',{'sales':entity.id,'salesItem':salesitem.id}) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="clearfix">&nbsp;</div>
+                                    </div>
+                                    <div class="span4" id="payment-info">
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="span12 input-prepend input-append input-append-border">
+                                                    <span class="add-on add-on-custom span3">Sub-Total TK.</span><input class="m-wrap span7 numeric salesTotal disabled-field" readonly="readonly" id="subTotal" type="text" value="{{ entity.subTotal }}">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="span12 input-prepend input-append input-append-border">
+                                                    <span class="add-on add-on-custom span3">VAT/TAX TK.</span><input class="m-wrap span7 numeric disabled-field" readonly="readonly" name="vat" id="vat" type="text" value="{{ entity.vat }}">
+                                                    <input class="m-wrap span9 numeric" name="vat" id="vat" type="hidden">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="span12 input-prepend input-append input-append-border span12">
+                                                    <span class="add-on add-on-custom span3">Due TK.</span><input class="m-wrap span7 numeric disabled-field" type="text" name="dueAmount" readonly="readonly" id="dueAmount" value="{{ entity.due }}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="input-prepend input-append input-append-border span12">
+                                                    <span class="add-on add-on-custom span3">Return TK.</span><input class="m-wrap span7  numeric disabled-field" readonly="readonly" type="text" id="returnAmount" name="returnAmount">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                               <div class="span12 input-append-border">
+                                               {{ form_widget(form.transactionMethod) }}
+                                               {{ form_errors(form.transactionMethod) }}
+                                                </div>
+                                        </div>
+                                        <div id="cartMethod">
+                                            <div class="row-fluid">
+                                                <div class="span12">
+                                                    <div class="input-prepend input-append input-append-border span12">
+                                                        {{ form_widget(form.cardNo) }}
+                                                        {{ form_errors(form.cardNo) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row-fluid">
+                                                <div class="span12 input-append-border">
+                                                    {{ form_widget(form.paymentCard) }}
+                                                    {{ form_errors(form.paymentCard) }}
+                                                </div>
+                                            </div>
+                                            <div class="row-fluid">
+                                                <div class="span12 input-append-border">
+                                                    {{ form_widget(form.accountBank) }}
+                                                    {{ form_errors(form.accountBank) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="bkashMethod">
+                                            <div class="row-fluid">
+                                                <div class="span12 input-append-border">
+                                                    {{ form_widget(form.accountMobileBank) }}
+                                                    {{ form_errors(form.accountMobileBank) }}
+                                                </div>
+                                            </div>
+                                            <div class="row-fluid">
+                                                <div class="span12">
+                                                    <div class="input-prepend input-append input-append-border span12">
+                                                        {{ form_widget(form.paymentMobile) }}
+                                                        {{ form_errors(form.paymentMobile) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row-fluid">
+                                                <div class="span12">
+                                                    <div class="input-prepend input-append input-append-border span12">
+                                                        {{ form_widget(form.transactionId) }}
+                                                        {{ form_errors(form.transactionId) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12 input-append-border">
+                                                {{ form_widget(form.salesBy) }}
+                                                {{ form_errors(form.salesBy) }}
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="span12 input-prepend input-append input-append-border">
+                                                    <span class="add-on add-on-custom span3">Discount TK.</span><input class="m-wrap span7  center-input numeric" name="discount" id="discount" value="{{ entity.discount }}" type="text">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="input-prepend input-append input-append-border span12">
+                                                    <span class="add-on add-on-custom span3">Receive TK.</span><input class="m-wrap span7 numeric" type="text" name="paymentAmount" id="paymentAmount" placeholder="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <a class="btn mini btn-action editable span12"  href="#"  data-url="{{ path('inventory_sales_mobile_update') }}" data-type="text" data-pk="{{ entity.id }}" data-original-title="Enter customer mobile no">{{ entity.mobile }}</a>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="row-fluid">
+                                            <div class="span12 ">
+                                                <div class="box grey">
+                                                    <div class="pull-center">
+                                                        <input type="hidden" name="paymentTotal" id="paymentTotal" value="{{ entity.total }}">
+                                                        <input type="hidden" name="paymentSubTotal" id="paymentSubTotal" value="{{ entity.total }}">
+                                                        {% if entity.inventoryConfig.printer == 'printer' %}
+                                                        <button disabled="disabled" type="submit" class="span10 btn blue paymentBtn"><i class="icon-print"></i>&nbsp;Print</button>
+                                                        {% elseif entity.inventoryConfig.printer == 'pos'  %}
+                                                        <button  rel="{{ path('inventory_sales_print',{'code':entity.invoice}) }}" name="pos"  type="button" class="span10 btn green paymentBtn" id="pos"><i class="icon-print m-icon-white"></i>&nbsp;Pos</button>
+                                                        {% else %}
+                                                        <button disabled="disabled" rel=""  type="submit" class="span10 btn purple paymentBtn" ><i class="icon-ok m-icon-white"></i>&nbsp;Save</button>
+                                                        {% endif %}
+                                                        <a href="{{ path('inventory_sales_reset',{'id':entity.id}) }}"  class="btn yellow"><i class="icon-refresh"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{ form_end(form) }}
+                            <!-- BEGIN FORM-->
+                            <div class="clearfix">&nbsp;</div>
+                            <!--/span-->
+
+                            <!-- END FORM-->
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                <th class="numeric" >Invoice</th>
+                                <th class="numeric" >Date</th>
+                                <th class="numeric" >Item</th>
+                                <th class="numeric" >Sub-Total</th>
+                                <th class="numeric" >Discount</th>
+                                <th class="numeric" >Net Total</th>
+                                <th class="numeric" >Payment</th>
+                                <th class="numeric" >Due</th>
+                                <th class="numeric" >Sales By</th>
+                                <th class="numeric" >Transaction</th>
+                                <th class="numeric" >Action</th>
+                            </tr>
+                            </thead>
+                            <tbody id="sales">
+                            {% for dailySales in todaySales %}
+                                <tr id="salesRemove-{{ dailySales.id }}">
+                                    <td> {% if dailySales.salesItems is defined and  dailySales.salesItems is not empty  %}<span data-trigger="hover" data-original-title="Barcode print" class="btn blue mini toggle badge-custom" id="{{ dailySales.id  }}" ><span>[+]</span></span>{% endif %}</td>
+                                    <td class="numeric" >{{ dailySales.invoice }}</td>
+                                    <td class="numeric" >{{ dailySales.updated|date('d-m-Y') }}</td>
+                                    <td class="numeric" >{{ dailySales.totalItem }}</td>
+                                    <td class="numeric" >{{ dailySales.subTotal|number_format  }}</td>
+                                    <td class="numeric" >{{ dailySales.discount|number_format  }}</td>
+                                    <th class="numeric" >{{ dailySales.total|number_format  }}</th>
+                                    <th class="numeric" >{{ dailySales.payment|number_format }}</th>
+                                    <td class="numeric" >{{ dailySales.due|number_format }}</td>
+                                    <td class="numeric" >{% if dailySales.salesBy %}{{ dailySales.salesBy }}{% endif %}</td>
+                                    <td class="numeric" >{% if dailySales.transactionMethod is not empty %}{{ dailySales.transactionMethod.name }}{% endif %}</td>
+                                    <td class="numeric" >
+                                        {% if dailySales.salesItems is defined and  dailySales.salesItems is not empty  %}
+                                            <a href="{{ path('inventory_sales_show', { 'id': dailySales.id }) }}" class="btn purple mini" ><i class="icon-eye-open"></i></a>
+                                            <a href="{{ path('inventory_sales_print_invoice',{'invoice':dailySales.invoice}) }}" target="_blank" class="btn green mini" ><i class="icon-print"></i></a>
+                                        {% endif %}
+                                        {% if dailySales.paymentStatus == "Pending" %}
+                                            <a href="{{ path('inventory_sales_edit', { 'code': dailySales.invoice }) }}" class="btn yellow mini" ><i class="icon-pushpin"></i></a>
+                                        {% if dailySales.id != entity.id  %}
+                                            <a title="Are you sure went to delete ?" id="{{ dailySales.id }}" rel="{{ path('inventory_sales_delete', { 'id': dailySales.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i></a>
+                                        {% endif %}
+                                        {% endif %}
+                                        {% if dailySales.paymentStatus == "Due" %}
+                                            <a href="{{ path('account_sales_due',{'sales':entity.id}) }}" class="btn mini yellow"><i class="icon-money"></i></a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr id="show-{{ dailySales.id }}" class="showing-overview">
+                                    <td colspan="11">
+                                        {% if dailySales.salesItems is defined and  dailySales.salesItems is not empty  %}
+                                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                                <thead class="flip-content ">
+                                                <tr class="head-green">
+                                                    <td>&nbsp;&nbsp;<i class="icon-reorder"></i></td>
+                                                    <th class="numeric" >Item</th>
+                                                    <th class="numeric" >Barcode</th>
+                                                    <th class="numeric" >Qnt</th>
+                                                    <th class="numeric" >Estimate price</th>
+                                                    <th class="numeric" >Sales price</th>
+                                                    <th class="numeric" >Sub-total</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for salesItem in dailySales.salesItems %}
+                                                    <tr>
+                                                        <td class="numeric" >{{ loop.index }}</td>
+                                                        <td class="numeric" >{{ salesItem.item.name }}/{{ salesItem.item.sku }}</td>
+                                                        <td class="numeric" >{{ salesItem.purchaseItem.barcode }}</td>
+                                                        <td class="numeric" >{{ salesItem.quantity }}</td>
+                                                        <td class="numeric" >{{ salesItem.estimatePrice|number_format() }}</td>
+                                                        <td class="numeric" >{{ salesItem.salesPrice|number_format() }}</td>
+                                                        <td class="numeric" >{{ salesItem.subTotal|number_format() }}</td>
+
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="static" class="modal hide fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-body">
+            <p style="text-align: center; font-weight: bold; color: red; font-size: 15px">Please add receive amount fast.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn green">Okay</button>
+        </div>
+    </div>
+{% if entity.inventoryConfig.printer == 'pos' %}
+    <script>
+
+         (function(d, s, id) {
+             var js, fjs = d.getElementsByTagName(s)[0];
+             if (d.getElementById(id)) return;
+             js = d.createElement(s); js.id = id;
+             js.src = "http://localhost.xiidea.net:9432/assets/easy-print-server.js";
+             fjs.parentNode.insertBefore(js, fjs);
+         }(document, "script", "xiidea-epp-sdk"));
+
+    </script>
+{% endif %}
+<style>
+    .input-append .add-on, .input-prepend input[class*="numeric"]{
+        font-size: 16px !important;
+        font-weight: bold;
+    }
+    .center-input{
+        min-width: 46.5% !important;
+    }
+    #barcode-box{
+        background-color:#2F373E;
+        min-height: 88px;
+        padding:19px;
+    }
+    #search-product{
+        display: none;
+    }
+    .input-append .add-on-height, .input-prepend .add-on-height{
+        height: 40px;
+        min-height: 40px;
+        line-height: 40px;
+    }
+    #barcode{
+        border: 5px solid #fff;
+        height: 50px !important;
+        font-size: 30px;
+        color: #fff;
+    }
+    .add-on-custom{
+        font-weight: bold!important;
+    }
+    .input-prepend input.disabled-field{
+        background: #2F373E!important;
+        color: #fff!important;
+
+    }
+    #payment-board{
+        margin-bottom: 0;
+        padding-bottom: 13px;
+        background: #222;
+    }
+    #payment-info{
+        border: 5px solid #2F373E;
+    }
+    .input-append-border {
+        border-bottom: 1px solid #2F373E;
+    }
+</style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/posprint.js'
+    '@InventoryBundle/Resources/public/js/editable.js'
+    '@InventoryBundle/Resources/public/js/sales.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $( "#searchProduct" ).click(function() {
+        $( "#search-product" ).slideToggle( "slow" );
+    });
+    EditableInit();
+    InventorySales({{ entity.id ? entity.id : 0 }});
+{% endblock %}

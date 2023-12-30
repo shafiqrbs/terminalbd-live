@@ -1,0 +1,103 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    h4 {
+        font-size: 18px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+<table class="table">
+    <thead>
+    <tr><th class="pull-center" colspan="8"><h3>{{ option.name }}</h3></th></tr>
+    <tr><th class="pull-center" colspan="8"><h4>MONTHLY SALES & PROFIT STATEMENT SHEET</h4></th></tr>
+    <tr><td class="pull-right" colspan="8">Created: {{ "now"|date('d-m-Y') }}</td></tr>
+    <tr class="head-green">
+        <th>Date</th>
+        <th>Sales</th>
+        <th>Purchase</th>
+        <th>Profit</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% set month = searchForm.month is defined ? searchForm.month :"now"|date("F") %}
+    {% set year = searchForm.year is defined ? searchForm.year :"now"|date("Y") %}
+    {% set fullDate =  date(year~'-'~month~'-1')|date('Y-m-d') %}
+    {% set month =  date(year~'-'~month~'-1')|date('Y-m-') %}
+    {% set max =  fullDate|date("t") %}
+    {% set sales = 0 %}
+    {% set purchase = 0 %}
+    {% set totalSales = 0 %}
+    {% set totalPurchase = 0 %}
+    {% for i in 1..max %}
+        {% set blackO               = date(month~i)|date('d-m-Y') %}
+        {% set sales                = salesTrans[blackO] is defined and salesTrans[blackO] is not empty ? salesTrans[blackO].salesPrice : 0  %}
+        {% set purchase             = purchaseTrans[blackO] is defined and purchaseTrans[blackO] is not empty ? purchaseTrans[blackO].purchasePrice : 0  %}
+        {% set totalSales = totalSales + sales %}
+        {% set totalPurchase = totalPurchase + purchase %}
+        <tr>
+            <td>{{ blackO }}</td>
+            <td>{{ sales|number_format(2) }}</td>
+            <td>{{ purchase|number_format(2) }}</td>
+            <td>{{ (sales - purchase)|number_format(2) }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+    <tr>
+        <th>Summary</th>
+        <th>{{ totalSales|number_format(2) }}</th>
+        <th>{{ totalPurchase|number_format(2) }}</th>
+        <th>{{ (totalSales - totalPurchase)|number_format(2) }}</th>
+    </tr>
+    </tfoot>
+</table>

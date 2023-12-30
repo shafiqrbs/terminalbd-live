@@ -1,0 +1,226 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    View Details
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('admission') }}">Admission</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Details</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="btn-group pull-right">
+                    {% if entity.id > 0  %}
+                        <a class="btn black" target="_blank" href="{{ path('admission_print',{'id': entity.id}) }}">Print</a>
+                        <a class="btn yellow" target="_blank" href="{{ path('admission_pdf',{'id': entity.id}) }}">PDF</a>
+                        <a class="btn blue" target="_blank" href="{{ path('admission_export',{'id': entity.id}) }}">Export</a>
+                    {% else %}
+                        <a class="btn purple" href="{{ path('admission_import') }}">Import</a>
+                    {% endif %}
+                </div>
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>admission Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="tabbable portlet-tabs">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a  href="{{ path('admission_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;View</a></li>
+                                <li class=""><a  href="{{ path('admission') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                <li><a  href="{{ path('admission_edit',{'id':entity.id}) }}"><i class="icon-edit"></i>&nbsp;Add/Edit</a></li>
+
+                            </ul>
+                            <div class="tab-content">
+                                <div class="portlet-body form form-horizontal">
+                                    {% include('flash-message.html.twig')  %}
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <div class="controls"><strong>Admission Information</strong></div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Title</label>
+                                                <div class="controls control-custom">{{ entity.name }}</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Course</label>
+                                                <div class="controls control-custom">{{ entity.course.name }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Course Level</label>
+                                                <div class="controls control-custom">{{ entity.courseLevel.name }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Fees</label>
+                                                <div class="controls control-custom">{{ entity.tuitionFee }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Qualification</label>
+                                                <div class="controls control-custom">{{ entity.qualification }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Course Duration</label>
+                                                <div class="controls control-custom">{{ entity.coursePeriod }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Class Time</label>
+                                                <div class="controls control-custom">{{ entity.classDuration }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Class Time</label>
+                                                <div class="controls control-custom">{{ entity.classDuration }}</div>
+                                            </div>
+                                        </div>
+                                        {% if entity.branches is defined %}
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Branches</label>
+                                                <div class="controls control-custom">
+                                                    <ul>
+                                                        {% for branch in entity.branches %}
+                                                        <li>{{ branch.name }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Shifting</label>
+                                                <div class="controls control-custom">
+                                                    <ul>
+                                                        {% for shift in entity.shifting %}
+                                                        <li>{{ shift }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Online Registration</label>
+                                                <div class="controls control-custom">{% if entity.isOnlineRegistration == 1 %}Yes {% endif %}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Online Payment</label>
+                                                <div class="controls control-custom">{% if entity.isPayment == 1 %}Yes {% endif %}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Contact Person</label>
+                                                <div class="controls control-custom">{{ entity.name }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Mobile, Phone</label>
+                                                <div class="controls control-custom">{{ entity.mobile }}, {{ entity.phone }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Email</label>
+                                                <div class="controls control-custom">{{ entity.email }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Start/End date</label>
+                                                <div class="controls control-custom">{{ entity.startDate|date('d-m-Y') }} To {{ entity.endDate|date('d-m-Y') }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Open/Close Time</label>
+                                                <div class="controls control-custom">{{ entity.startHour }} To {{ entity.endHour }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Contact</label>
+                                                <div class="controls control-custom">{{ entity.contactPerson }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span11">
+                                            <div class="control-group">
+                                                <label class="control-label" >Address</label>
+                                                <div class="controls control-custom">{{ entity.address }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="span11">
+                                            <div class="control-group">
+                                                <label class="control-label" >Content</label>
+                                                <div class="controls control-custom">{{ entity.content|raw }}</div>
+                                            </div>
+                                        </div>
+                                        {% if(entity.webPath) %}
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" >Attach File</label>
+                                                    <div class="controls control-custom"> <a target="_blank" href="/{{ entity.webPath }}">Click here </a></div>
+                                                </div>
+                                            </div>
+
+                                        {% endif %}
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Status</label>
+                                                <div class="controls control-custom">{% if entity.status == 1 %} Publish {% else %} Un-publish {% endif %}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

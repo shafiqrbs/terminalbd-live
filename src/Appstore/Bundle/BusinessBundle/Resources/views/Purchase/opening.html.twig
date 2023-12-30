@@ -1,0 +1,82 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Opening Stock
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green ">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Opening Stock</div>
+                        <div class="actions">
+                            <a href="{{ path('business_stock') }}"  class="blue btn"><i class="fa fa-th-list"></i> Stock Item</a>
+                            <a href="{{ path('business_purchase') }}"  class="yellow btn"><i class="fa fa-th-list"></i> Purchase</a>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+                        <div class="row-fluid" >
+                            <label class="control-label span3" for="name">Opening Stock Amount</label>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        {{ amount|number_format(2) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid" >
+                            <label class="control-label span3" for="name">Vendor/Supplier</label>
+                            <div class="span8">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        {{ form_widget(form.vendor) }}
+                                        {{ form_errors(form.vendor) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-center">
+                                <button type="submit" class="btn yellow"><i class="icon-refresh-cw"></i> Reset</button>
+                                <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                        <!-- END FORM-->
+                        <div class="clearfix"><br/></div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

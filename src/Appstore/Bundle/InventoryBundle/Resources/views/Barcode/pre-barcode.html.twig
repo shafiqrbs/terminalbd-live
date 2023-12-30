@@ -1,0 +1,94 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Barcode print
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('item') }}">item</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Barcode print list</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                 <form id="barcode" name="barcode" method="post" action="{{ path('barcode_print') }}">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Barcode print lists</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('item_new') }}"><i class="icon-plus-sign"></i>&nbsp;Create</a></li>
+                                    <li><a href="{{ path('item') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <button class="btn" type="submit" >
+                                    Barcode
+                                    <i class="icon-barcode"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="numeric" >Name </th>
+                                    <th class="numeric" >Product code</th>
+                                    <th class="numeric" >Quantity</th>
+                                    <th class="numeric" >Print Quantity</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entity in entities %}
+                                        <tr>
+                                            <td class="numeric" ><a href="{{ path('item_edit',{'id': entity.id })}}">{{ entity.name }}</a></td>
+                                            <td class="numeric" >{{ entity.productCode }}</td>
+                                            <td class="numeric" >{{ entity.quantity }}</td>
+                                            <td class="numeric" >
+                                                <input type="text" name="barcodeQnt[]" class="span4 numeric" id="" value="{{ entity.quantity }}" >
+                                                <input type="hidden" name="item[]" value="{{ entity.id }}">
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                </div>
+                 </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

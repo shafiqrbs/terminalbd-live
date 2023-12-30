@@ -1,0 +1,145 @@
+{% extends ':bindu:base.html.twig' %}
+{% block body %}
+    <div id="tm-page-body">
+        <div id="tm-page-title">
+            <div class="tm-wrap tm-table">
+                <div class="tm-title-captions">
+                    <h2 class="tm-entry-title">{{ app.name }}</h2>
+                </div>
+                <ul class="tm-breadcrumbs">
+                    <li>
+                        <a href="{{ path('bindu_homepage') }}">Home</a>
+                    </li>
+                    <li>
+                        Applications
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="" class="tm-container tm-wrap">
+            <div class="page-content">
+
+                <div class="page-content-inner">
+                    <div class="tm-row" >
+                        <div class="header-double-line-right">
+                            <h1 class="tm-title">{{ app.name }}</h1>
+                        </div>
+                        <div class="tm-content tm-col-12">
+                            {{ app.content|raw }}
+                        </div>
+                        <div class="clear"></div>
+                        <div class="header-line-bottom">
+                            <h2 class="tm-title">PRODUCT PREVIEW</h2>
+                        </div>
+                        <div class="tm-gallery gallery-carousel">
+                            {% if app.photoGallery is defined and app.photoGallery is not empty %}
+                                <ul class="slides">
+                                    {% for gallery in app.photoGallery.galleryImages %}
+                                        <li class=""><a class="thumb" title="You can add caption to pictures." href="{{ image(gallery.getAbsolutePath(app.photoGallery.globalOption.id,app.photoGallery.id)).forceResize(750,500,'#fff') }}" rel="prettyPhoto[pp_gal]"><img style="width: 160px; height: 140px; border: 1px solid #0000001a" src="{{ image(gallery.getAbsolutePath(app.photoGallery.globalOption.id,app.photoGallery.id)).forceResize(160,140,'#fff') }}" alt="{{ gallery.caption }}" ></a></li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                        <div class="clear"></div>
+                        <div class="header-double-line-right" >
+                            <h1 class="tm-title">CLIENT OPINION</h1>
+                        </div>
+                        <div class="clear"></div>
+                        {% if testimonials is not empty %}
+                        <div class="tm-content">
+                            <div id="testimonial-slider" class="owl-carousel">
+                                {% for testimonial in testimonials  %}
+                                <div class="testimonial">
+                                    <div class="pic">
+                                        <img src="{{ image(testimonial.webPath).resize(150,150) }}" alt="">
+                                    </div>
+                                    <p class="description">
+                                       {{ testimonial.content|raw }}
+                                    </p>
+                                    <h3 class="title">{{ testimonial.name }}
+                                        <span class="post"> - {{ testimonial.companyName }}</span>
+                                    </h3>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="clear"></div>
+                        <div class="header-line-center" style="margin-top: 30px">
+                            <h1 class="tm-title">OUR RESPECTABLE CLIENTS</h1>
+                        </div>
+                        <div id="tm-portfolio" class="tm-portfolio-classic">
+                            <div class="tm-content tm-col-4">
+                                {% for entity in entities %}
+                                    <article>
+                                        <div class="client-logo">
+                                            <div class="tm-mask">
+                                                <div class="tm-mask-content">
+                                                    <h3><a href="{% if entity.domain is not empty %}http://www.{{ entity.domain }}{% else %}javascript:{% endif %}">{{ entity.name }}</a></h3>
+                                                    <span class="line"></span>
+                                                    <div class="incategory">
+                                                        <a href="{{ path('bindu_build_syndicate',{'syndicate':entity.syndicateSlug }) }}">{{ entity.syndicateName }}</a>
+                                                    </div>
+                                                    <a class="tm-btn" target="_blank" href="{% if entity.domain is not empty %}http://www.{{ entity.domain }}{% else %}javascript:{% endif %}" >Visit Website</a>
+                                                </div>
+                                            </div>
+                                            <img class="img-ceneter" src="{{ asset('uploads/domain/'~entity.id ~'/customizeTemplate/'~entity.logo) }}">
+                                        </div>
+                                        <div class="org-title" ><strong>{{ entity.name }}</strong></div>
+                                        <ul class="social-networks">
+                                            <li>
+                                                <a target="_blank" href="{% if entity.domain is not empty %}http://www.{{ entity.domain }}{% else %}javascript:{% endif %}" data-title="{% if entity.domain is not empty %}http://www.{{ entity.domain }}{% endif %}" >
+                                                    <i class="fa fa-home"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#" data-title="+88{{ entity.mobile }}">
+                                                    <i class="fa fa-phone"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#" data-title="+88{{ entity.mobile }}">
+                                                    <i class="fa fa-comment"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#" data-title="{{ entity.email }}">
+                                                    <i class="fa fa-envelope"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="last" href="" data-title="{% if  entity.locationName is defined and entity.locationName is not null  %}{{ entity.locationName }},{{ entity.parentName }}{% endif %}">
+                                                    <i class="fa fa-map-pin"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </article>
+                                {% endfor %}
+
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <!--page-content-->
+        </div>
+        <!--tm-container-->
+    </div>
+{% endblock %}
+    {% block documentready %}
+        {{ parent() }}
+        $("#testimonial-slider").owlCarousel({
+            items:2,
+            itemsDesktop:[1000,2],
+            itemsDesktopSmall:[979,1],
+            itemsTablet:[768,1],
+            pagination:false,
+            navigation:true,
+            navigationText:["",""],
+            autoPlay:true
+        });
+    {% endblock %}
+

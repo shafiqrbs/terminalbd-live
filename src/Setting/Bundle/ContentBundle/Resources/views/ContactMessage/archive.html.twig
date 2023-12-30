@@ -1,0 +1,105 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Archive Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('contactmessage') }}">Inbox</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Archive Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="tabbable portlet-tabs">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a  href="{{ path('contactmessage_archive') }}"><i class="icon-th-list"></i>&nbsp;Archive</a></li>
+                                <li class=""><a  href="{{ path('contactmessage') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+
+                            </ul>
+                            <div class="tab-content">
+                                <div class="portlet-body flip-scroll">
+                                    {% include('flash-message.html.twig')  %}
+
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                            <thead class="flip-content ">
+                                            <tr class="head-grey">
+                                                <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+
+                                                <th class="numeric" >Name</th>
+                                                <th class="numeric" >Email</th>
+                                                <th class="numeric" >Created</th>
+                                                <th class="numeric" >Reply Date</th>
+                                                <th class="numeric" >Action</th>
+
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            {% for entity in pagination %}
+                                                <tr>
+                                                    <td><span class="badge badge-warning toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+                                                    <td class="numeric" >{{ entity.name }}</td>
+                                                    <td class="numeric" >{{ entity.email }}</td>
+                                                    <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                                    <td class="numeric" >{{ entity.replyDate|date('d-m-Y') }}</td>
+
+                                                    <td class="numeric" >
+                                                        <a class="btn mini red-stripe btn-action confirm" title="Are you sure went to delete ?" href="{{ path('contactmessage_delete', { 'id': entity.id }) }}" >Delete</a>
+                                                    </td>
+                                                </tr>
+                                                <tr id="show-{{ entity.id }}" class="showing-overview">
+                                                    <td colspan="6">
+                                                        <table class="inner-table">
+                                                            <tr><td><strong>{{ entity.name }}:</strong></td></tr>
+                                                            <tr><td>{{ entity.content|raw }}</td></tr>
+                                                            <tr><td><strong>Reply:</strong></td></tr>
+                                                            <tr><td>{{ entity.reply|raw }}</td></tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                    <div class="pagination" >
+                                        {{ knp_pagination_render(pagination) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% endblock %}

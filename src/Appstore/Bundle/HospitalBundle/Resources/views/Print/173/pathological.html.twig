@@ -1,0 +1,200 @@
+{% extends '::hms-print.html.twig' %}
+{% block body %}
+    <div style="margin-top:{{  entity.hmsInvoice.hospitalConfig.printMarginReportTop }}px;margin-left:{{ entity.hmsInvoice.hospitalConfig.printMarginReportLeft }}px;">
+        {%  if entity.hmsInvoice.hospitalConfig.isPrintReportHeader == 1 %}
+            <table class="table">
+                <tr>
+                    <td>
+                        <div class="span4 title-center text-center">
+                            {{ entity.hmsInvoice.hospitalConfig.address|raw }}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        {% endif %}
+        <table class="table table-border" style="border: 5px solid #c0c5c9!important" >
+            <tr class="print-header">
+                <th colspan="3">
+                    <span class="barcode-left">{{ barcodeInvoice|raw }}</span>
+                    <strong class="title title-center" >{{ entity.particular.category.name }} REPORT</strong>
+                    <span class="barcode-right">{{ barcodeReport|raw }}</span>
+                </th>
+            </tr>
+            <tr>
+                <td style="width: 45%!important;">
+                    <ul class="unstyled">
+                        <li><label>Invoice No:</label> {{ entity.hmsInvoice.invoice }}</li>
+                        <li><label>Patient Name:</label> {{ entity.hmsInvoice.customer.name }}</li>
+                        <li><label>Investigation:</label> {{ entity.particular.name }}</li>
+                        <li><label>Sample:</label> {{ entity.particular.sepcimen }}</li>
+                        <li><label>Ref. By:</label> {% if entity.hmsInvoice.assignDoctor is not empty %}<strong>{{ entity.assignDoctor.name }}</strong>{% endif %}</li>
+                    </ul>
+                </td>
+                <td class="" style="width:20%!important;">
+                    <ul class="unstyled" >
+                        <li><label>Age:</label> {{ entity.hmsInvoice.customer.age }} {{ entity.hmsInvoice.customer.ageType }}</li>
+                        <li><label>Gender:</label> {{ entity.hmsInvoice.customer.gender }} </li>
+                        <li><label>Blood Group:</label> {{ entity.hmsInvoice.customer.bloodGroup }} </li>
+                        <li><label>Mobile:</label> {{ entity.hmsInvoice.customer.mobile }}</li>
+                        {% if entity.hmsInvoice.cabin %}<li><label>Cabin/Bed No:</label>{{ entity.hmsInvoice.cabin.name }} </li>{% endif %}
+                    </ul>
+                </td>
+                <td class="" style="width: 35%!important;">
+                    <ul class="unstyled">
+                        <li><label>Report No:</label> {{ entity.particular.particularCode }}-{{ entity.reportCode }}</li>
+                        <li><label>Invoice Date:</label> {{ entity.hmsInvoice.updated|date('d-m-Y') }}</li>
+                        <li><label>Delivery Date:</label> {{ entity.hmsInvoice.deliveryDateTime }}</li>
+                        <li><label>Coll. Time:</label> {{ entity.collectionDate|date('d-m-Y h:i:s A') }}</li>
+                        <li><label>Coll. By:</label> {{ entity.sampleCollectedBy }}</li>
+                    </ul>
+                </td>
+
+            </tr>
+        </table>
+        {% if entity.particular.reportFormat == 1 %}
+            <table class="table" style="margin-top:20px;min-height:{{  entity.hmsInvoice.hospitalConfig.reportHeight }}px">
+                <tbody>
+                {% if entity.particular.pathologicalReports is defined and  entity.particular.pathologicalReports is not empty  %}
+                    <tr>
+                        <td>
+                            {% if entity.particular.pathologicalReports is not empty %}
+                                {% for item in entity.particular.pathologicalReports %}
+                                    {% if item.children is not empty %}
+                                        <div class="span6" data-match-height="report-block" style="float: left; display:block; margin-bottom:15px!important;">
+                                            <ul class="unstyled span12">
+                                                <li><h2><strong>{{ item.name }}</strong></h2></li>
+                                                {% for child in item.children %}
+                                                    <li><span class="span3" style="display:inline-block;width:180px">{{ child.name }}</span> {% if report is not empty and report[child.id] is defined and report[child.id] is not empty %}{{ report[child.id].result }}{% endif %} {{ child.unit }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if  entity.invoicePathologicalReports is defined and entity.invoicePathologicalReports is not empty %}
+                    <tr><td>&nbsp;</td></tr>
+                    {% for meta in entity.invoicePathologicalReports %}
+                        {% if meta.metaValue is not empty %}
+                            <tr><td><span class="span3" style="display:inline-block">{{ meta.metaKey }}</span>{{ meta.metaValue|raw }}</td></tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                <tr><td>Comment: {{ entity.comment|raw }}</td></tr>
+                </tbody>
+            </table>
+        {% else %}
+            <table class="table table-bordered" style="margin-top:20px;">
+                {% if entity.particular.pathologicalReports is defined and  entity.particular.pathologicalReports is not empty  %}
+                <thead class="flip-content ">
+                <tr class="head-black">
+                    <th class="span3">Name</th>
+                    <th class="span1">Result</th>
+                    <th class="span2">Unit</th>
+                    <th class="span4">Reference</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if entity.particular.pathologicalReports is not empty %}
+                    {% for item in entity.particular.pathologicalReports %}
+                        {% if item.children is not empty %}
+                            <tr id="remove-{{ item.id }}">
+                                <td  class="span12" colspan="5"><strong>{{ item.name }}</strong></td>
+                            </tr>
+                            {% for child in item.children %}
+                                <tr>
+                                    <td  class="span3">{{ child.name }}</td>
+                                    <td class="span1">{% if report is not empty and report[child.id] is defined and report[child.id] is not empty %}{{ report[child.id].result }}{% endif %}</td>
+                                    <td class="span2">{{ child.unit }}</td>
+                                    <td class="span4">{{ child.referenceValue }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% elseif item.parent is empty %}
+                            <tr id="remove-{{ item.id }}">
+                                <td  class="span4">{{ item.name }}</td>
+                                <td class="span1">{% if item.children is empty %}{% if report is not empty and report[item.id] is defined and report[item.id] is not empty %}{{ report[item.id].result }}{% endif %}{% endif %}</td>
+                                <td class="span2">{{ item.unit }}</td>
+                                <td class="span4">{{ item.referenceValue }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {% endif %}
+                {% if  entity.invoicePathologicalReports is defined and entity.invoicePathologicalReports is not empty %}
+                    {% for meta in entity.invoicePathologicalReports %}
+                        {% if meta.metaValue is not empty %}
+                            <tr><td class="numeric span3">{{ meta.metaKey }}</td><td colspan="3">{{ meta.metaValue|raw }}</td></tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                <tr><td class="numeric">Comment: </td><td colspan="3"> {{ entity.comment|raw }}</td></tr>
+                </tbody>
+            </table>
+        {% endif %}
+        <table class="table print-footer" style="position: fixed; bottom: 40px"  >
+            <tr>
+                <td class="left span4">
+                    <ul class="unstyled">
+                        <li>Prepared By</li>
+                        <li><strong>{{ entity.particularPreparedBy.profile.name }}</strong></li>
+                        <li>{% if entity.particularPreparedBy.profile.designation is not empty %}{{ entity.particularPreparedBy.profile.designation.name }}{% endif %}</li>
+                    </ul>
+                </td>
+                <td class="center span4">
+                    <ul class="unstyled">
+                        <li>Printed By</li>
+                        <li><strong>{{ printUser.profile.name }}</strong></li>
+                        <li>{% if entity.particularPreparedBy.profile.designation is not empty %}{{ printUser.profile.designation.name }}{% endif %}</li>
+                    </ul>
+                </td>
+                <td class="span4">
+                    {% if entity.assignDoctor is not empty %}
+                        <ul class="unstyled">
+                            <li><strong>{{ entity.assignDoctor.name }}</strong></li>
+                            <li>{{ entity.assignDoctor.educationalDegree|raw }}</li>
+                            <li>{{ entity.assignDoctor.specialist|raw }}</li>
+                            {% if entity.assignDoctor.category is not empty or entity.assignDoctor.department is not empty %}<li> {% if entity.assignDoctor.category is not empty %}{{ entity.assignDoctor.category.name }}{% endif %} {% if entity.assignDoctor.department is not empty %} ,{{ entity.assignDoctor.department.name }}{% endif %}</li>{% endif %}
+                            <li>{{ entity.assignDoctor.designation }}</li>
+                            <li>{{ entity.assignDoctor.currentJob }}</li>
+                        </ul>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <style>
+        table label{
+            width: 72px;
+            display: inline-block;
+            text-decoration: none;
+            font-size: 11px!important;
+        }
+        table.report-table {
+            display:inline-block;
+            width: 100%;
+        {% if entity.hmsInvoice.hospitalConfig.reportHeight  %}
+            min-height:{{ entity.hmsInvoice.hospitalConfig.reportHeight }}px;
+        {% endif %}
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@HospitalBundle/Resources/public/css/print.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/height-match.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

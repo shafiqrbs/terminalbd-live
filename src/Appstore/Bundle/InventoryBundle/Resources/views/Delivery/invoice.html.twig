@@ -1,0 +1,121 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <script> {{ print|raw }}</script>
+    <div class="container-fluid">
+        <!-- BEGIN inventory_delivery HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="inventory_delivery-title">
+                    Manage Delivery Invoice:{{ entity.branch.name }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_delivery') }}">Manage Delivery</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Delivery Invoice new/edit</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END inventory_delivery HEADER-->
+        <!-- BEGIN inventory_delivery CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Delivery Invoice Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <h4>Invoice Info:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Invoice:</strong>&nbsp;{{ entity.invoice }}</li>
+                                        <li><strong>Total Item:</strong>&nbsp;{{ entity.totalItem }}</li>
+                                        <li><strong>Total Quantity:</strong>&nbsp;{{ entity.totalQuantity }}</li>
+                                        <li><strong>Total Amount:</strong>&nbsp;{{ entity.totalAmount }}</li>
+                                        <li><strong>Process By:</strong>&nbsp;{% if entity.createdBy is defined and entity.createdBy is not empty %}{{ entity.createdBy }}{% endif %}</li>
+                                    </ul>
+                                </div>
+                                <div class="span4">&nbsp;</div>
+                                <div class="span4">
+                                    <h4>Delivered Process:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Delivered:</strong>&nbsp;{{ entity.updated|date('d-m-Y') }}</li>
+                                        <li><strong>Shop Name:</strong>&nbsp;{{ entity.branch.name }}</li>
+                                        <li><strong>Address:</strong>&nbsp;{{ entity.branch.address }}</li>
+                                        <li><strong>Location:</strong>&nbsp;{{ entity.branch.location.name }},{{ entity.branch.location.parent.name }}</li>
+                                        <li><strong>Received By:</strong>&nbsp;{% if entity.approvedBy is defined and entity.approvedBy is not empty %}{{ entity.approvedBy }}{% endif %}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- BEGIN FORM-->
+                            <div class="portlet-body">
+                                <div class="portlet-body flip-scroll">
+
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                        <thead class="flip-content ">
+                                        <tr class="head-blue">
+                                            <th class="numeric" >S/N</th>
+                                            <th class="numeric">Barcode</th>
+                                            <th class="numeric">Name</th>
+                                            <th  class="numeric">Quantity</th>
+                                            <th>Sales Price</th>
+                                            <th>Sub-Total</th>
+                                         </tr>
+                                        </thead>
+                                        <tbody id="deliveryItem">
+                                        {% for item in entity.deliveryItems %}
+                                            <tr>
+                                                <td class="numeric" >{{ loop.index }}</td>
+                                                <td class="numeric">{{ item.purchaseItem.barcode }}</td>
+                                                <td class="numeric">{{ item.item.name }}</td>
+                                                <td  class="numeric">{{ item.quantity }}</td>
+                                                <td>{{ item.salesPrice }}</td>
+                                                <td>{{ item.subTotal }}</td>
+                                                </tr>
+                                        {% endfor %}
+                                        <tr>
+                                            <td colspan="3"><span class="pull-right"><strong>Total Quantity</strong></span></td>
+                                            <td><span class="pull-left" id="totalQuantity">{{ entity.totalQuantity }}</span></td>
+                                            <td><span class="pull-right"><strong id="totalAmount">Total Amount</strong></span></td>
+                                            <td><span class="pull-left"><strong>{{ entity.totalAmount|number_format }}</strong></span></td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- END FORM-->
+                        </div>
+                        <br/>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/print.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}

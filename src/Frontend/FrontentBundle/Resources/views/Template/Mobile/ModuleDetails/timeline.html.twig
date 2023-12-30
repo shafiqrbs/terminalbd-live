@@ -1,0 +1,20 @@
+<div class="bannerPane bannerPane-business-locaton"  {% if details.webPath() is defined and details.webPath() is not empty %} style="background-repeat:no-repeat!important; background-position:center center!important;background:url('{{ image(details.webPath()).resize() }}')" {% endif %} >
+    <div class="overlay"></div>
+    <div class="s-banner-content">
+        {% if globalOption.templateCustomize.mobileShowLogo == 1 %}
+            <a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}" id="mobile-logo">
+                {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+            </a>
+        {% endif %}
+        {{ moduleName }}
+    </div>
+</div>
+<div id="content" class="content-margin">
+    <article>
+        <div class="module-title">
+            <p><i class="fa fa-user"></i>&nbsp;{{ details.name }}</p>
+            <i class="fa fa-at"></i>&nbsp;{{ details.designation }}&nbsp;&nbsp;&nbsp;<i class="fa fa-home"></i>&nbsp;{{ details.title }}
+        </div>
+        <p>{{ details.content|raw }}</p>
+    </article>
+</div>

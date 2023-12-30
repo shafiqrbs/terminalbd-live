@@ -1,0 +1,78 @@
+{% extends ':frontend/template:base.html.twig' %}
+{% block body %}
+<div class="clearfix"></div>
+{% if globalOption.templateCustomize.breadcrumb == 1 %}
+    <section id="breadcrumb">
+        <div class="container">
+            <ul class="breadcrumb">
+                <li class="home"><a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}"><span class="glyphicon glyphicon-home"></span></a></li>
+                <li><a href="javascript:void(0);" class="searchBtnSelector">Search</a></li>
+                <li class="active"><a href="javascript:void(0);">{% if searchForm.keyword is defined %}{{ searchForm.keyword }}{% endif %}</a></li>
+            </ul>
+        </div>
+    </section>
+    <div class="clearfix"></div>
+{% endif %}
+    <section class="contain-section">
+        <div class="container">
+            <div id="catlist">
+                {% if pagination is not empty %}
+                    {% for entity in pagination %}
+
+                        {% if( entity.module.slug == 'blog' ) %}
+                            {% set path =  path(globalOption.subDomain ~ '_webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'blog','slug':entity.slug})  %}
+                        {% elseif( entity.module.slug == 'branch' ) %}
+                            {% set path =  path(globalOption.subDomain ~ '_webservice_module',{'subdomain': globalOption.subDomain,'module': 'branch' })  %}
+                        {% elseif( entity.module.slug == 'client' ) %}
+                            {% set path =  path(globalOption.subDomain ~ '_webservice_module',{'subdomain': globalOption.subDomain,'module': 'client' })  %}
+                        {% elseif( entity.module.slug == 'event' ) %}
+                            {% set path =  path(globalOption.subDomain ~ '_webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'blog','slug':entity.slug})  %}
+                        {% elseif( entity.module.slug == 'faq' ) %}
+                            {% set path =  path(globalOption.subDomain ~ '_webservice_module',{'subdomain': globalOption.subDomain,'module': 'faq' })  %}
+                        {% elseif ( entity.module.slug == 'news') %}
+                            {% set path =  path(globalOption.subDomain ~ '_webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'news','slug':entity.slug})  %}
+                        {% elseif( entity.module.slug == 'noticeboard' ) %}
+                            {% set path =  path(globalOption.subDomain ~ '_webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'noticeboard','slug':entity.slug})  %}
+                        {% elseif( entity.module.slug == 'portfolio' ) %}
+                            {% set path =  path(globalOption.subDomain ~ '_webservice_module',{'subdomain': globalOption.subDomain,'module': 'portfolio'})  %}
+                        {% elseif( entity.module.slug == 'service' ) %}
+                            {% set path =  path(globalOption.subDomain ~ '_webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'service','slug':entity.slug})  %}
+                        {% elseif( entity.module.slug == 'sponsor' ) %}
+                            {% set path =  path(globalOption.subDomain ~ '_webservice_module',{'subdomain': globalOption.subDomain,'module': 'sponsor'})  %}
+                        {% elseif( entity.module.slug == 'team' ) %}
+                            {% set path =  path(globalOption.subDomain ~ '_webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'team','slug':entity.slug})  %}
+                        {% elseif( entity.module.slug == 'testimonial' ) %}
+                            {% set path =  path(globalOption.subDomain ~ '_webservice_module',{'subdomain': globalOption.subDomain,'module': 'testimonial'})  %}
+                        {% elseif( entity.module.slug == 'timeline' ) %}
+                            {% set path =  path(globalOption.subDomain ~ '_webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'timeline','slug':entity.slug})  %}
+                        {% elseif( entity.module.slug == 'products' ) %}
+                            {% set path =  path(globalOption.subDomain ~ '_webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'product','slug':entity.slug})  %}
+                        {% endif %}
+
+                        <dl class="list-grid">
+                            <dd><a href="{{ path }}">{{ entity.name }}</a></dd>
+                            <dd>
+                                <p> {{ entity.content|raw|truncate(150) }}<a class="more-link" href="{{ path }}">Read more <i class="fa fa-angle-double-right"></i></a></p>
+                            </dd>
+                        </dl>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="pagination pull-center"  >
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        </div>
+    </section>
+    <div class="clearfix"></div>
+ {% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@FrontendBundle/Resources/public/template/desktop/js/common.js'
+    '@FrontendBundle/Resources/public/template/desktop/js/corporate.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+

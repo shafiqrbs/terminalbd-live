@@ -1,0 +1,67 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div id="print-area">
+        <div class="row print-header">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size: 16px">{{ option.name }}</strong></p>
+                <p><strong>Name of Report: Customer Outstanding</strong></p>
+            </div>
+            <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table even" border="1">
+                    <colgroup>
+                        <col class="w">
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <tr>
+                        <th class="" ><i class="icon-reorder"></i></th>
+                        <th class="" >Customer Name</th>
+                        <th class="" >Mobile</th>
+                        <th class="text-right" >Sales</th>
+                        <th class="text-right" >Receive</th>
+                        <th class="text-right" >Outstanding</th>
+                    </tr>
+                    <tbody>
+                    {% set balance = 0 %}
+                    {% for entity in entities %}
+                        {% set balance = balance + entity.customerBalance %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td class="numeric" >
+                                <a class="" href="{{ path('report_customer_ledger',{'mobile':entity.customerMobile}) }}">
+                                {{ entity.customerName|capitalize }}
+                                </a>
+                            </td>
+                            <td class="numeric" >{{ entity.customerMobile }}</td>
+                            <td class="text-right" >{{ entity.totalAmount|number_format(2) }}</td>
+                            <td class="text-right" >{{ entity.amount|number_format(2) }}</td>
+                            <td class="text-right" >{{ entity.customerBalance|number_format(2) }}</td>
+                            {#<td class="numeric" >
+                                <a class="btn mini blue" href="{{ path('report_customer_ledger',{'mobile':entity.customerMobile}) }}"><i class="icon-plus-sign"></i> Ledger</a>
+                                <a target="_blank" class="btn mini yellow" href="{{ path('report_customer_ledger_print',{'mobile':entity.customerMobile}) }}"><i class="icon-print"></i> Print</a>
+                            </td>#}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th class="text-right" colspan="5">Grand Balance</th>
+                        <th class="text-right">{{ balance|number_format(2) }}</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

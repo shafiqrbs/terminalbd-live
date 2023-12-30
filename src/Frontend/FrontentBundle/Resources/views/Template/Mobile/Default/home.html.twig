@@ -1,0 +1,49 @@
+{% extends ':mobile:base.html.twig' %}
+{% block body %}
+    {% if(entity.homePage.photoGallery) %}
+        <div class="slider-container">
+            <div class="homepage-slider" data-snap-ignore="true">
+                {% for image in entity.homePage.photoGallery.galleryImages %}
+                    <div>
+                        <div class="overlay"></div>
+                        <div class="homepage-slider-caption">
+                            <p>{{ image.caption }}</p>
+                        </div>
+                        <img src="{{ image(image.webPath).resize(800,600) }}" class="responsive-image" alt="img">
+                    </div>
+                {% endfor %}
+
+            </div>
+            <div class="homepage-slider-controls">
+                <a href="#" class="next-home"></a>
+                <a href="#" class="prev-home"></a>
+            </div>
+        </div>
+    {% endif %}
+<div class="content" style="margin-top: 0!important;">
+    <div class="container">
+        <h3>Welcome: {{ entity.name }}</h3>
+        <div class="decoration"></div>
+        <p class="text_left">{{ entity.homePage.content|raw }}</p>
+        <div class="decoration"></div>
+    </div>
+    <div class="one-responsive">
+       {# {{ include('@Mobile/Module/homeFeature.html.twig')}}#}
+    </div>
+</div>
+
+{% endblock %}
+{% block documentready %}
+
+    $('.modalOpen').click(function(){
+    var id = $(this).attr('id');
+    var inst = $("[data-remodal-id=modal"+id+"]").remodal();
+    inst.open();
+
+    });
+
+{% endblock %}
+
+
+
+

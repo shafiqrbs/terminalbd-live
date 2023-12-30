@@ -1,0 +1,53 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+
+    </div>
+    <div class="loader loader-double" ></div>
+    <div id="print-area">
+        <div class="row print-header">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size:18px">{{ option.name }}</strong></p>
+                <p><strong>Name of Report: Category Stock Reports</strong></p>
+            </div>
+            <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table even" border="1">
+                    <thead class="flip-content ">
+                    <tr class="head-green">
+                        <th class="numeric" ><i class="icon-reorder"></i></th>
+                        <th class="numeric" >Name</th>
+                        <th class="numeric" >Quantity</th>
+                        <th class="numeric text-right" >Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody id="data-load"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $.ajax({
+        url         : '/app-report/mis/inv-category-stock-item-price-ajax-load',
+        type        : 'POST',
+        data        : '',
+        processData : false,
+        contentType : false,
+        beforeSend: function(){
+            $('.loader-double').fadeIn(1000).addClass('is-active');
+        },
+        complete: function(){
+            $('.loader-double').fadeIn(1000).removeClass('is-active');
+        },
+        success: function(response){
+            $('#data-load').html(response);
+        }
+    });
+{% endblock %}
+
+

@@ -1,0 +1,68 @@
+{% set commentID = globalOption.id~'-'~menu.module.slug~'-'~page.id %}
+<div class="page-title-bar">
+    <div class="col-md-12">
+        <div class="btn-group pull-left">
+            <div class="page-title"><span class="glyphicon glyphicon-user"></span>&nbsp;{{ page.name }}, <em>{{ page.designation }}</em></div>
+        </div>
+    </div>
+</div>
+<div class="clearfix"></div>
+
+<div class="row">
+    <div class="col-md-8" data-match-height="event-img" >
+        <h4>Profile</h4>
+        <div>{{ page.content|raw }}</div>
+    </div>
+    <div class="col-md-4" data-match-height="event-img" >
+        <div class="event-sidebar" >
+            <img class="img-responsive"  data-slide-no="0" src="{{ image(page.webPath).scaleResize(512,512,'#000000') }}" alt="{{ page.name }}" />
+            <div class="sidebar-branch">
+                <h5 class="text-center branch-head"><strong>Information</strong></h5>
+                <dl>
+                    <dd><i class="fa fa-mobile"></i> + {{ page.mobile }}</dd>
+                    <dd><i class="fa fa-envelope-o"></i> {{ page.email }}</dd>
+                </dl>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="clearfix"></div>
+    <div class="col-md-8 social-icon-bar" >
+        <ul class="mbm_social" style="margin-top: 8px">
+            <li><a class="social-facebook" target="_blank" href="//www.facebook.com/{{ page.facebook }}">
+                    <i class="fa fa-facebook"></i>
+                    <div class="tooltip"><span>facebook</span></div>
+                </a>
+            </li>
+            <li><a class="social-linkedin" target="_blank" href="//www.linkedin.com/{{ page.linkedIn }}">
+                    <i class="fa  fa-linkedin"></i>
+                    <div class="tooltip"><span>LinkedIn</span></div>
+                </a>
+            </li>
+            <li><a class="social-google-plus" target="_blank" href="//plus.google.com/{{ page.gmail }}">
+                    <i class="fa fa-google-plus"></i>
+                    <div class="tooltip"><span>Google</span></div>
+                </a>
+            </li>
+            <li><a class="social-twitter" target="_blank" href="//twitter.com/{{ page.twitter }}">
+                    <i class="fa fa-twitter"></i>
+                    <div class="tooltip"><span>Twitter</span></div>
+                </a>
+            </li>
+
+        </ul>
+    </div>
+    <div class="col-md-4 text-center social-icon-bar">
+        {#<button class="btn btn-success btn-lg col-md-12">Register</button>#}
+    </div>
+<div class="clearfix"></div>
+
+
+{#
+<div class="blog_post" >
+    {% include 'FOSCommentBundle:Thread:async.html.twig' with {'id': commentID } %}
+    <br/>
+</div>
+#}
+

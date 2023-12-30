@@ -1,0 +1,29 @@
+services:
+#    appstore_restaurant.example:
+#        class: Appstore\Bundle\RestaurantBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+
+    appstore.restaurant.particular.event.listener:
+        class: Appstore\Bundle\RestaurantBundle\EventListener\ParticularListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.restaurant.invoice.event.listener:
+        class: Appstore\Bundle\RestaurantBundle\EventListener\InvoiceListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore.restaurant.purchase.event.listener:
+        class: Appstore\Bundle\RestaurantBundle\EventListener\PurchaseListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    appstore_restaurant_item_import:
+        class: Appstore\Bundle\RestaurantBundle\Importer\ProductExcel
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    appstore.restaurant.item.import.event.listener:
+        class: Appstore\Bundle\RestaurantBundle\Importer\ProductDataReader
+        arguments: [ @phpexcel ]

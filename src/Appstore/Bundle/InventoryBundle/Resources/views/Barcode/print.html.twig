@@ -1,0 +1,30 @@
+{% extends '::base-barcode.html.twig' %}
+{% block body %}
+<style>
+    .grid-print {
+        width: 100%;
+        display: grid;
+        grid-gap: 0;
+    }
+    .grid-print {
+        grid-template-columns: repeat({{ config.barcodePerRow }}, calc(100%/{{ config.barcodePerRow }}));
+        text-align: center;
+    }
+    .item{
+            text-align: center;
+    }
+    .container {
+            grid-template-columns: 100px 50px 100px;
+            grid-template-rows: 80px auto 80px;
+            column-gap: 10px;
+            row-gap: 15px;
+    }
+
+</style>
+<div class="grid-print">
+    {% for barcode in barCoder %}
+        <div class="item" style="padding: 7px; border: 1px solid #636362">{{ barcode|raw }}</div>
+    {% endfor %}
+</div>
+{% endblock %}
+

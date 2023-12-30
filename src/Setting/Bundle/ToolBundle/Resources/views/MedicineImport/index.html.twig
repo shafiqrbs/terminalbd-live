@@ -1,0 +1,87 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Medicine Import Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('medicine_import') }}">Medicine Import</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Medicine Importer Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Medicine Import Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('medicine_import_new') }}"><i class="icon-plus-sign"></i>&nbsp; Create</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Name </th>
+                                    <th class="numeric" >File</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+
+                                        <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.name }}</td>
+                                        <td class="numeric" ><a href="/{{ entity.webPath }}">Download File</a> </td>
+                                        <td class="numeric" >
+                                            {% if entity.progress != 'invalid' %}
+                                                <a title="" href="{{ path('medicine_import_migration', { 'id': entity.id }) }}" class="btn blue mini" ><i class="icon-upload-alt">&nbsp;Import Medicine</i></a>
+                                            {% endif %}
+                                            <a title="Are you sure went to delete ?" href="{{ path('medicine_import_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+

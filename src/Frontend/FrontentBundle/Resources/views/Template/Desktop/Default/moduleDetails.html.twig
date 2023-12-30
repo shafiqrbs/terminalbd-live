@@ -1,0 +1,186 @@
+{% extends ':frontend/template:base.html.twig' %}
+{% block body %}
+    <div class="clearfix"></div>
+    {% if globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'flat-left'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="row">
+                <div class="col-md-6">
+                    <ul class="simple-breadcrumb-left">
+                        <li class=""><span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} হোম {% else %}Home{% endif %}</a></li>
+                        <li class=""><a href="{{ path(globalOption.subDomain ~ '_webservice_module',{'subdomain':globalOption.subDomain,'module': menu.module.slug }) }}"> {{ menu.module.name }}</a></li>
+                        <li class="active">{{ page.name }}</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-right">
+                    <h2 class="title">{{ page.name }}</h2>
+                </div>
+                </div>
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'flat-right'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="row">
+                <div class="col-md-6">
+                    <h2 class="title">{{ page.name }}</h2>
+                </div>
+                <div class="col-md-6">
+                    <ul class="simple-breadcrumb-right">
+                        <li class="active">{{ page.name }}</li>
+                        <li class=""><a href="{{ path(globalOption.subDomain ~ '_webservice_module',{'subdomain':globalOption.subDomain,'module': menu.module.slug }) }}"> {{ menu.module.name }}</a></li>
+                        <li class=""><span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} হোম {% else %}Home{% endif %}</a></li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'center'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="row">
+                <div class="col-md-12 text-center">
+                    <h2 class="title">{{ page.name }}</h2>
+                    <p><span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} হোম {% else %}Home{% endif %}</a> &nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp; <a href="{{ path(globalOption.subDomain ~ '_webservice_module',{'subdomain':globalOption.subDomain,'module': menu.module.slug }) }}"> {{ menu.module.name }}</a> &nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp; {{ page.name }}</p>
+                </div>
+                </div>
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'left'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="row">
+                <div class="col-md-12 text-left">
+                    <h2 class="title">{{ page.name }}</h2>
+                    <p><span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} হোম {% else %}Home{% endif %}</a> &nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp; <a href="{{ path(globalOption.subDomain ~ '_webservice_module',{'subdomain':globalOption.subDomain,'module': menu.module.slug }) }}"> {{ menu.module.name }}</a> &nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp; {{ page.name }}</p>
+                </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="clearfix"></div>
+    <section>
+        <div class="container">
+            {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'header-bottom'}) %}
+            {% endif %}
+        </div>
+    </section>
+    <div class="clearfix"></div>
+    <section class="contain-section">
+        <div class="container">
+            <div class="row">
+                {% if globalOption.templateCustomize.showSidebar == 1 and globalOption.templateCustomize.sidebarPosition == 'left' and menu.featureWidgetExist == 'true' %}
+                    <div class="col-md-3"  >
+                        {% if globalOption.templateCustomize.sidebarTitle is not empty %}
+                            <div class="page-title-bar">
+                                <div class="btn-group pull-left">
+                                    <div class="page-title"><span class="glyphicon glyphicon-tag"></span>&nbsp;{{ globalOption.templateCustomize.sidebarTitle }}</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                            {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'sidebar-top'}) %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <div class="{% if globalOption.templateCustomize.showSidebar == 1 and menu.featureWidgetExist == 'true'  %} col-md-9 {% else %}col-md-12 {% endif %}"  >
+
+                    {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                        {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'body-top'}) %}
+                    {% endif %}
+                    <div class="clearfix"></div>
+                    <div class="row">
+                        <div class="col-md-12" >
+                            {% if ( menu.module.slug == 'news') %}
+                                {{ include('@Frontend/Template/Desktop/ModuleDetails/news.html.twig')}}
+                            {% elseif( menu.module.slug == 'blog' ) %}
+                                {{ include('@Frontend/Template/Desktop/ModuleDetails/blog.html.twig')}}
+                            {% elseif( menu.module.slug == 'branch' ) %}
+                                {{ include('@Frontend/Template/Desktop/ModuleDetails/branch.html.twig')}}
+                            {% elseif( menu.module.slug == 'event' ) %}
+                                {{ include('@Frontend/Template/Desktop/ModuleDetails/event.html.twig')}}
+                            {% elseif( menu.module.slug == 'noticeboard' ) %}
+                                {{ include('@Frontend/Template/Desktop/ModuleDetails/noticeboard.html.twig')}}
+                            {% elseif( menu.module.slug == 'service' ) %}
+                                {{ include('@Frontend/Template/Desktop/ModuleDetails/service.html.twig')}}
+                            {% elseif( menu.module.slug == 'team' ) %}
+                                {{ include('@Frontend/Template/Desktop/ModuleDetails/team.html.twig')}}
+                            {% elseif( menu.module.slug == 'products' ) %}
+                                {{ include('@Frontend/Template/Desktop/ModuleDetails/product.html.twig')}}
+                            {% elseif( menu.module.slug == 'syndicate' ) %}
+                                {{ include('@Frontend/Template/Desktop/ModuleDetails/syndicate.html.twig')}}
+                            {% else %}
+                                {{ include('@Frontend/Template/Desktop/Module/default.html.twig')}}
+                            {% endif %}
+
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                        {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'body-bottom'}) %}
+                    {% endif %}
+
+                </div>
+                {% if globalOption.templateCustomize.showSidebar == 1 and globalOption.templateCustomize.sidebarPosition == 'right' and menu.featureWidgetExist == 'true' %}
+                    <div class="col-md-3">
+                        {% if globalOption.templateCustomize.sidebarTitle is not empty %}
+                            <div class="page-title-bar row">
+                                <div class="col-md-12">
+                                    <div class="btn-group pull-left">
+                                        <div class="page-title"><span class="glyphicon glyphicon-tag"></span>&nbsp;{{ globalOption.templateCustomize.sidebarTitle }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                            {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'sidebar-top'}) %}
+                        {% endif %}
+                        {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                            {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'sidebar-bottom'}) %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </section>
+    <div class="clearfix"></div>
+    <section>
+        <div class="container">
+            {% if menu.featureWidgets is defined and menu.featureWidgets is not empty %}
+                {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu':menu.id,'position':'footer-top'}) %}
+            {% endif %}
+            <div class="clearfix"><br></div>
+        </div>
+    </section>
+    <div class="clearfix"></div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@FrontendBundle/Resources/public/template/desktop/css/sidebar.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@FrontendBundle/Resources/public/template/desktop/js/sidebar.js'
+    '@FrontendBundle/Resources/public/template/desktop/js/page.js'
+    '@FrontendBundle/Resources/public/template/desktop/js/headerfooter.js'
+    '@FrontendBundle/Resources/public/template/desktop/js/corporate.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    {% if globalOption.templateCustomize.showSidebar == 1 and menu.featureWidgetExist == 'true' %}
+        sliderPageOwl(3);
+    {% else %}
+        sliderPageOwl(4);
+    {% endif %}
+    $('#list').click(function(event){event.preventDefault();$('#categories-list .item').addClass('list-group-item');});
+    $('#grid').click(function(event){event.preventDefault();$('#categories-list .item').removeClass('list-group-item');$('#categories-list .item').addClass('grid-group-item');});
+{% endblock %}

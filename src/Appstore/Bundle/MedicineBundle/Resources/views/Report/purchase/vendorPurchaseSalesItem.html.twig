@@ -1,0 +1,164 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Vendor Purchase & Sales Medicine Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#"> Vendor Purchase & Sales Medicine Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i> Vendor Purchase & Sales Medicine Report</div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                    <select name="vendor" id="vendor" class="m-wrap span12">
+                                        {% for vendor in vendors %}
+                                            <option {% if searchForm.vendor is defined and searchForm.vendor ==  vendor.id %} selected="selected" {% endif %} value="{{ vendor.id }}">{{ vendor.companyName }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <select name="endDate" id="endDate" class="m-wrap span12">
+                                                    {% set counts = [1,2,3,4,5,6,7] %}
+                                                    {% for count in counts %}
+                                                        <option {% if searchForm.endDate is defined and searchForm.endDate ==  count %} selected="selected" {% endif %} value="{{ count }}">{{ count }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <table class="table table-bordered" >
+                            <thead>
+                            <tr class="head-green">
+                                <td class="numeric" >Purchase Medicine Ledger</td>
+                                <td class="numeric" >Sales Medicine Ledger</td>
+                            </tr>
+                            </thead>
+                            <tr>
+                                <td width="50%">
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                                        <thead class="flip-content ">
+                                        <tr class="head-blue">
+                                            <th class="numeric" >Created</th>
+                                            <th class="numeric" >Invoice</th>
+                                            <th class="numeric" >Item Name</th>
+                                            <th class="numeric" >Pur. Price</th>
+                                            <th class="numeric" >Sls. Price</th>
+                                            <th class="numeric" >Quantity</th>
+                                            <th class="numeric" >Sub-Total</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% set purchaseTotal = 0 %}
+                                        {% if vendorLedger is not empty %}
+                                            {% for ledger in vendorLedger %}
+                                                {% set purchaseTotal = purchaseTotal + ledger.purchaseSubTotal  %}
+                                                <tr>
+                                                    <td class="numeric" >{{ ledger.medicinePurchase.created|date('d-m-Y') }}</td>
+                                                    <td class="numeric" >{{ ledger.medicinePurchase.grn }}</td>
+                                                    <td class="numeric" >{{ ledger.medicineStock.name }}</td>
+                                                    <td class="numeric" >{{ ledger.purchasePrice|number_format }}</td>
+                                                    <td class="numeric" >{{ ledger.salesPrice|number_format }}</td>
+                                                    <td class="numeric" >{{ ledger.quantity }}</td>
+                                                    <td class="numeric" >{{ ledger.purchaseSubTotal|number_format }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                        </tbody>
+
+                                    </table>
+                                </td>
+                                <td width="50%">
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                                        <thead class="flip-content ">
+                                        <tr class="head-yellow">
+                                            <th class="numeric" >Created</th>
+                                            <th class="numeric" >Invoice</th>
+                                            <th class="numeric" >Item Name</th>
+                                            <th class="numeric" >Pur. Price</th>
+                                            <th class="numeric" >Sls. Price</th>
+                                            <th class="numeric" >Quantity</th>
+                                            <th class="numeric" >Sub-Total</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% set salesTotal = 0 %}
+                                        {% if customerLedger is not empty %}
+                                            {% for ledger in customerLedger %}
+                                                {% set salesTotal = salesTotal + ledger.subTotal %}
+                                                <tr>
+                                                    <td class="numeric" >{{ ledger.medicineSales.created|date('d-m-Y') }}</td>
+                                                    <td class="numeric" >{{ ledger.medicineSales.invoice }}</td>
+                                                    <td class="numeric" >{{ ledger.medicineStock.name }}</td>
+                                                    <td class="numeric" >{{ ledger.purchasePrice|number_format }}</td>
+                                                    <td class="numeric" >{{ ledger.salesPrice|number_format }}</td>
+                                                    <td class="numeric" >{{ ledger.quantity }}</td>
+                                                    <td class="numeric" >{{ ledger.subTotal|number_format }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                           <tfoot>
+                           <tr class="head-red">
+                               <td class="numeric" ><strong>Current Payable BDT.</strong><strong class="pull-right">{{ purchaseTotal|number_format }}</strong></td>
+                               <td class="numeric" ><strong>Current Receivable BDT.</strong><strong class="pull-right">{{ salesTotal|number_format }}</strong></td>
+                           </tr>
+                           </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}

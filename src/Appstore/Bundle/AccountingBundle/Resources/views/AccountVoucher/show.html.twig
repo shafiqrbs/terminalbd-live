@@ -1,0 +1,163 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Bill Voucher GRN # {{ entity.accountRefNo }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_expense_purchase') }}">Bill Voucher</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Bill Voucher</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>c
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Bill Voucher Details</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('account_expense_purchase_new') }}"><i class="icon-plus-sign"></i> Add Bill Voucher</a>
+                                <a class="btn black" href="{{ path('account_expense_purchase') }}"><i class="icon-th-list"></i> Bill Voucher</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+
+                                <div class="span4">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+
+                                        {% if entity.accountVendor is not empty %}<li><strong>Company #:</strong>&nbsp;{{ entity.accountVendor.companyName }}</li>{% endif %}
+                                        {% if entity.accountVendor is not empty %}<li><strong>Vendor #:</strong>&nbsp;{{ entity.accountVendor.name }}</li>{% endif %}
+                                        {% if entity.accountVendor is not empty %}<li><strong>Mobile #:</strong>&nbsp;{{ entity.accountVendor.mobile }}</li>{% endif %}
+                                        <li><strong>Created:</strong>&nbsp;{{ entity.created|date('d-m-Y') }}</li>
+                                    </ul>
+                                </div>
+
+                                <div class="span4 invoice-payment">
+                                    <h4>Payment Details:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Sub-Total BDT:</strong>&nbsp;{{ entity.purchaseAmount|number_format() }}</li>
+                                        <li><strong>Total BDT:</strong>&nbsp;{{ entity.totalAmount|number_format() }}</li>
+                                        <li><strong>Payment BDT:</strong>&nbsp;{{ entity.payment|number_format() }}</li>
+                                        <li><strong>Due BDT:</strong>&nbsp;{{ (entity.totalAmount -entity.payment) |number_format() }}</li>
+                                    </ul>
+
+                                </div>
+                                <div class="span4">
+                                    <h4>Payment Method:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Payment Method:</strong>&nbsp;{% if  entity.TransactionMethod is not empty %}{{ entity.TransactionMethod.name }}{% endif %}</li>
+                                        {% if entity.accountMobileBank is not empty %}<li><strong>Payment Mobile:</strong>&nbsp;{{ entity.accountMobileBank.name }}</li>{% endif %}
+                                        {% if entity.accountBank is not empty %}<li><strong>Bank:</strong>&nbsp;{{ entity.accountBank.name  }}</li>{% endif %}
+                                        <li><strong>Created By:</strong>&nbsp;{% if entity.createdBy is defined and entity.createdBy is not empty %}{{ entity.createdBy }}{% endif %}</li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid box blue">
+                                {% if entity.voucherItems is defined and  entity.voucherItems is not empty  %}
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                                        <thead class="flip-content ">
+                                        <tr class="head-blue">
+                                            <td class="span1">&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                           <th class="span4">Product</th>
+                                           <th class="span4">Category</th>
+                                           <th class="span4">Product Type</th>
+                                           <th class="span4">Item</th>
+                                            <th class="span2">Price</th>
+                                            <th class="span1">Qnt</th>
+                                            <th class="span1">Sub-Total</th>
+                                            <th class="span1">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for item in entity.voucherItems %}
+                                            <tr id="remove-{{ item.id }}">
+                                                <td  class="span1">{{ loop.index }}</td>
+                                                <td>{{ item.productGroup.name }}</td>
+                                                <td>{{ item.productGroup.category.name }}</td>
+                                                <td>{{ item.productGroup.productType|capitalize }}</td>
+                                                <td>{{ item.name }}</td>
+                                                <td>{{ item.price }}</td>
+                                                <td>{{ item.quantity }}</td>
+                                                <td>{{ item.subTotal|number_format }}</td>
+                                                <td>
+                                                    <div class="actions">
+                                                        <div class="btn-group">
+                                                    {% if entity.process != 'approved' %}
+                                                        <a title="Are you sure went to delete ?" href="javascript:" rel="{{ path('voucherattribute_delete', { 'id': item.id }) }}" id="{{  item.id }}"  class="btn red mini purchaseItemDelete" ><i class="icon-trash"></i></a>
+                                                    {% endif %}
+                                                    <a href="{{ path('voucheritem_edit', { 'id': item.id }) }}"  class="btn yellow mini" ><i class="icon-th-list"></i> Add Attribute</a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    Narration : {{ entity.remark|raw }}
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right" id="action-{{ entity.id }}">
+                                    {% if ( entity.process == 'Done') %}
+                                    <a  href="javascript:"  data-url="{{ path('account_voucher_approved',{'id':entity.id}) }}" class="btn blue approve"><i class="icon-refresh"></i>&nbsp;Approve</a>
+                                    {% endif %}
+                                    <span  class="btn green"><i class=" icon-ok"></i>&nbsp;{{ entity.process|capitalize }}</span>
+                                </div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}
+

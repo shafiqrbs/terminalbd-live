@@ -1,0 +1,241 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Sales Return # {{ entity.invoice }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('medicine_sales_return') }}">Sales Return</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Sales Return Details</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i> {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Sales Return Details</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('medicine_sales_return') }}"><i class="icon-th-list"></i> Medicine Return</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+                                        {% if entity.customer is not empty %}<li><strong>Customer #:</strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                                        {% if entity.customer is not empty %}<li><strong>Mobile #:</strong>&nbsp;{{ entity.customer.mobile }}</li>{% endif %}
+                                        {% if entity.customer is not empty %}<li><strong>Address #:</strong>&nbsp;{{ entity.customer.address }}</li>{% endif %}
+                                        {% if entity.customer is not empty and entity.customer.location is not empty   %}<li><strong>Location #:</strong>&nbsp;{{ entity.customer.location.name }}, {{ entity.customer.location.parent.name }}</li>{% endif %}
+                                        <li><strong>Created:</strong>&nbsp;{{ entity.created|date('d-m-Y') }}</li>
+                                    </ul>
+                                </div>
+                                <div class="span4 invoice-payment">
+                                    <h4>Payment Details:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Total BDT:</strong>&nbsp;{{ entity.netTotal|number_format() }}</li>
+                                        <li><strong>Payment BDT:</strong>&nbsp;{{ entity.received|number_format() }}</li>
+                                        {% if entity.discount %}<li><strong>Discount BDT:</strong>&nbsp;{{ entity.discount|number_format() }}</li>{% endif %}
+                                        {% if entity.due %}<li><strong>Due BDT:</strong>&nbsp;{{ entity.due|number_format() }}</li>{% endif %}
+                                        <li><strong>Payment status:</strong>&nbsp;{{  entity.paymentStatus|capitalize }}</li>
+                                        <li><strong>Customer Outstanding:&nbsp;{{  balance|number_format(2) }}</strong></li>
+                                    </ul>
+                                </div>
+                                <div class="span4">
+                                    <h4>Payment Method:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Process:</strong>&nbsp;{{ entity.process }}</li>
+                                        <li><strong>Payment Method:</strong>&nbsp;{{ entity.transactionMethod.name }}</li>
+                                        {% if entity.accountMobileBank is not empty %}<li><strong>Received Mobile:</strong>&nbsp;{{ entity.accountMobileBank.name }}</li>{% endif %}
+                                        {% if entity.paymentMobile is not empty %}<li><strong>Mobile/Transaction:</strong>&nbsp;{{ entity.paymentMobile }}/{{ entity.transactionId }}</li>{% endif %}
+                                        {% if entity.accountBank is not empty %}<li><strong>Received Bank:</strong>&nbsp;{{ entity.accountBank.name }}</li>{% endif %}
+                                        {% if entity.paymentCard is not empty %}<li><strong>Payment Card/No:</strong>&nbsp;{{ entity.paymentCard.name }}/{{ entity.cardNo }}</li>{% endif %}
+                                        {% if entity.bank is not empty %}<li><strong>Bank:</strong>&nbsp;{{ entity.bank.name  }}</li>{% endif %}
+                                        <li><strong>Sales By:</strong>&nbsp;{% if entity.salesBy is defined and entity.salesBy is not empty %}{{ entity.createdBy }}{% endif %}</li>
+                                        <li><strong>Confirmed By:</strong>&nbsp;{% if entity.approvedBy is defined and entity.approvedBy is not empty %}{{ entity.approvedBy }}{% endif %}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% include('flash-message.html.twig')  %}
+                            <form action="{{ path('medicine_sales_return_create') }}" method="post" name="purchaseReturn" id="purchaseReturn">
+                            <div class="row-fluid box green">
+                                <table class="table table-bordered table-striped table-condensed table-fixed">
+                                    <thead class="flip-content ">
+                                    <tr class="head-blue">
+                                        <th class="span1">&nbsp;&nbsp;<i class="icon-list"></i></th>
+                                        <th class="numeric">Name</th>
+                                        <th class="numeric">Price</th>
+                                        <th class="numeric">Quantity</th>
+                                        <th class="numeric">Sub-total</th>
+                                        <th class="numeric" >Return Qnt</th>
+                                        <th class="numeric" >Return price</th>
+                                        <th class="numeric" >Return subTotal</th>
+                                        <th class="numeric" >Adjustment</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="">
+                                    {% if entity.medicineSalesItems is not empty %}
+                                        {% for item in entity.medicineSalesItems %}
+                                            {% if item.medicineSalesReturns is empty %}
+                                                <tr>
+                                                    <td class="span1">{{ loop.index }}.</td>
+                                                    <td class="">{{ item.medicineStock.name }}</td>
+                                                    <td class="">{{ item.salesPrice }}</td>
+                                                    <td class="">{{ item.quantity }}</td>
+                                                    <td class="">{{ item.subTotal|number_format }}</td>
+                                                    <td class="" >
+                                                        <input type="hidden" name="salesItem[]" value="{{ item.id }}" >
+                                                        <input type="number" class="span10 numeric returnQuantity" data-id="{{ item.id }}" autocomplete = "off" min="1" max="{{ item.quantity }}"   id="quantity-{{ item.id }}" name="quantity[]" value="" placeholder="{{ item.quantity }}"></td>
+                                                    <td class="span2" >
+                                                        <input type="number" class="span10 numeric returnPrice" data-id="{{ item.id }}" autocomplete = "off" min="1" max="{{ item.salesPrice }}"  id="price-{{ item.id }}" name="price[]" value="{{ item.salesPrice }}" placeholder="{{ item.salesPrice }}"></td>
+                                                    <td>
+                                                        <span class="itemSubtotal" id="subTotal-{{ item.id }}">0</span>
+                                                    </td>
+                                                    <td><input type="checkbox" name="isAdjustment[{{ item.id }}]" id="isAdjustment-{{ item.id }}" value="1"></td>
+                                                </tr>
+                                             {% else %}
+                                                    <tr>
+                                                        <td  class="">{{ loop.index }}</td>
+                                                        <td class="">{{ item.medicineStock.name }}</td>
+                                                        <td class="">{{ item.salesPrice }}</td>
+                                                        <td class="">{{ item.quantity }}</td>
+                                                        <td class="">{{ item.subTotal|number_format }}</td>
+                                                        <td class="" ></td>
+                                                        <td class="" ></td>
+                                                        <td></td>
+                                                    </tr>
+                                             {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="4"><strong class="pull-right">Sub-Total</strong></td>
+                                        <td><strong>{{ entity.netTotal }}</strong></td>
+                                        <td colspan="2"><strong class="pull-right">Return Sub-Total</strong></td>
+                                        <td>
+                                            <strong class="returnGrandTotal"></strong>
+                                            <input type="hidden" class="returnSubTotal"  id="returnTotal" value="0">
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="reset" id=""  class="btn yellow"><i class="icon-save"></i>&nbsp;Reset</button>
+                                    <button type="button" id="submitBtn"  class="btn green"><i class="icon-save"></i>&nbsp;Save</button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <style>
+        .bankHide , .mobileBankHide{
+            display: none;
+        }
+        .dialogModal{
+            z-index: 9999!important;
+        }
+        #calBorder, .select2-drop , .select2-drop-mask{
+            z-index: 99999!important;
+        }
+        .select2-container .select2-choice {
+            height: 35px!important;
+        }
+        .form-horizontal .payment-info .control-label {
+            float: left;
+            text-align: left;
+            background: #f9f9f9;
+            color: #000;
+            font-weight: bold;
+            line-height: 32px;
+            height: 38px;
+            margin: 0!important;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .numeric input {
+            margin-bottom: 0;
+            min-height: 15px!important;
+            width: 70px;
+            height: 15px!important;
+            border: 1px solid #999;
+            font-size: 13px!important;
+            line-height: 15px!important;
+        }
+
+        .td-inline-input{
+            height: 25px!important;
+            line-height: 13px!important;
+            font-size: 13px!important;
+            border: 2px solid #4d90fe!important;
+            width: 100px;
+            margin-bottom:0!important;
+            padding-bottom: 0!important;
+            padding-top: 0!important;
+        }
+        .td-inline-label{
+            height: 15px!important;
+            line-height: 20px!important;
+            min-height: 15px!important;
+            font-size: 13px!important;
+        }
+        .quantity , .price{
+            margin-bottom: 0!important;
+            height: 25px!important;
+            border: 2px solid red!important;
+            padding-bottom: 0!important;
+            padding-top: 0!important;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@MedicineBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/temporary-sales.js'
+    '@MedicineBundle/Resources/public/js/sales-return.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    jqueryTemporaryLoad();
+{% endblock %}
+

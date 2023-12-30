@@ -1,0 +1,2037 @@
+{#
+
+HEADER STYLE
+
+
+<div class="header-line-center">
+    <h1 class="tm-title tm-title-border">WELCOME TO SHOPONLINE</h1>
+</div>
+<div class="header-line-center-bottom">
+    <h3 class="tm-title">This is title line center bottom</h3>
+</div>
+<div class="header-double-line-right">
+    <h3>About Us</h3>
+</div>#}
+
+{#
+
+<!-- Page Content -->
+<section id="about">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-{% if globalOption.testimonials is defined and globalOption.testimonials is  empty %}12 {% else %}8 {% endif %}">
+                <div class="text-center">
+                    <h2>About Us</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% render controller("FrontendBundle:TemplateWidget:aboutus",{'globalOption':globalOption.id,'wordlimit':400}) %}
+                        </div>
+                        <div class="col-md-3">
+                            {% render controller("FrontendBundle:TemplateWidget:aboutus",{'globalOption':globalOption.id,'wordlimit':200}) %}
+                        </div>
+                        <div class="col-md-3">
+                            {% render controller("FrontendBundle:TemplateWidget:aboutus",{'globalOption':globalOption.id,'wordlimit':200}) %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if globalOption.testimonials is defined and globalOption.testimonials is not empty  %}
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="row">
+                            <h2>Testimonial</h2>
+                            <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="Company about"/>
+                            <div class="col-md-12 text-justify">
+                                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                                    <!-- Wrapper for slides -->
+                                    <div class="carousel-inner" role="listbox">
+                                        {% for testimonial in globalOption.testimonials %}
+                                            <div class="item {% if  loop.index == 1 %} active {% endif %} ">
+                                                <blockquote>
+                                                    <span>{{ testimonial.content|raw|truncate(250) }}</span>
+                                                    <footer>{{ testimonial.name }}<cite title="Source Title">{{ testimonial.designation }}</cite></footer>
+                                                </blockquote>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <!-- Controls -->
+                                    <a class="left " href="#carousel-example-generic" role="button" data-slide="prev">
+                                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="right" href="#carousel-example-generic" role="button" data-slide="next">
+                                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% if globalOption.services is defined and globalOption.services is not empty  %}
+    <section id="services">
+        <div class="orangeback">
+            <div class="container">
+                <div class="text-center homeport2"><h2>Services</h2></div>
+                <div class="row">
+                    <div class="col-md-12 homeservices1">
+                        {% for service in globalOption.services|slice(0,4)  %}
+                            <div class="col-md-3 portfolio-item">
+                                <div class="text-center">
+                                    <a href="javascript:void(0);">
+                                            <span class="fa-stack fa-lg">
+                                              <i class="fa fa-circle fa-stack-2x"></i>
+                                              <i class="fa fa-stack-1x {% if service.icon is defined and service.icon is not empty  %}{{ service.icon.className }} {% endif %}"></i>
+                                            </span>
+                                    </a>
+                                    <h3><a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'service','slug':service.slug }) }}">{{ service.name }}</a></h3>
+                                    <p>{{ service.content|raw|truncate(200) }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="orangeback">
+            <div class="container">
+                <div class="row">
+                    {% for service in globalOption.services|slice(0,4)  %}
+                        <div class="col-md-3 col-sm-6">
+                            <div class="serviceBox">
+                                <div class="service-icon">
+                                    <i class="fa {% if service.icon is defined and service.icon is not empty  %}{{ service.icon.className }} {% endif %}"></i>
+                                </div>
+                                <h3><a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'service','slug':service.slug }) }}">{{ service.name }}</a></h3>
+                                <p>{{ service.content|raw|truncate(200) }}</p>
+                                <a class="read" href="#">Read more</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endif %}
+{% if globalOption.testimonials is defined and globalOption.testimonials is not empty  %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="testimonial-slider" class="owl-carousel">
+
+                    {% for testimonial in globalOption.testimonials %}
+                        <div class="testimonial">
+                            <div class="testimonial-review">
+                                <div class="pic">
+                                    <img src="{{ image(testimonial.webPath).scaleResize(150,150) }}" alt="{{ testimonial.name }}" alt="">
+                                </div>
+                                <h4 class="testimonial-title">
+                                    {{ testimonial.name }}
+                                    <small>{{ testimonial.designation }}</small>
+                                </h4>
+                            </div>
+                            <p class="description">
+                                {{ testimonial.content|raw|truncate(250) }}
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="demo">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                    <div id="testimonial-single-slider" class="owl-carousel">
+                        {% for testimonial in globalOption.testimonials %}
+                            <div class="testimonial">
+                                <div class="pic">
+                                    <img src="{{ image(testimonial.webPath).scaleResize(150,150) }}" alt="">
+                                </div>
+                                <p class="description">
+                                    "{{ testimonial.content|raw|truncate(250) }} "
+                                </p>
+                                <h3 class="testimonial-title"> {{ testimonial.name }}</h3>
+                                <span class="post">{{ testimonial.designation }}</span>
+                                <ul class="testimonial-rating">
+                                    <li class="fa fa-star-o"></li>
+                                    <li class="fa fa-star-o"></li>
+                                    <li class="fa fa-star"></li>
+                                </ul>
+                            </div>
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+<section id="products">
+    <div class="container">
+        <div class="well well-sm">
+            <strong>Latest Product</strong>
+            <div class="btn-group">
+                <a href="#" id="list" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-th-list"></span>List</a>
+                <a href="#" id="grid" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-th"></span>Grid</a>
+            </div>
+        </div>
+        <div id="product" class="row list-group">
+            <div class="item  col-xs-4 col-lg-4">
+                <div class="thumbnail">
+                    <div class="product-preview group list-group-image" >
+                        <img src="http://placehold.it/400x250/000/fff" alt="">
+                        <div class="team-content">
+                            <h3 class="team-prof">
+                                <a href="#">Williamson</a>
+                                <small>Web designer</small>
+                            </h3>
+                            <ul class="social-link">
+                                <li><a href="#" class="fa fa-facebook"></a></li>
+                                <li><a href="#" class="fa fa-google"></a></li>
+                                <li><a href="#" class="fa fa-twitter"></a></li>
+                                <li><a href="#" class="fa fa-instagram"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="caption">
+                        <h4 class="group inner list-group-item-heading">
+                            Product title</h4>
+                        <p class="group inner list-group-item-text">
+                            Product description... Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+                            sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <p class="lead">$21.000</p>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <a class="btn btn-success" href="http://www.jquery2dotnet.com">Add to cart</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item  col-xs-4 col-lg-4">
+                <div class="thumbnail">
+                    <img class="group list-group-image" src="http://placehold.it/400x250/000/fff" alt="" />
+                    <div class="caption">
+                        <h4 class="group inner list-group-item-heading">
+                            Product title</h4>
+                        <p class="group inner list-group-item-text">
+                            Product description... Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+                            sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <p class="lead">
+                                    $21.000</p>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <a class="btn btn-success" href="http://www.jquery2dotnet.com">Add to cart</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item  col-xs-4 col-lg-4">
+                <div class="thumbnail">
+                    <img class="group list-group-image" src="http://placehold.it/400x250/000/fff" alt="" />
+                    <div class="caption">
+                        <h4 class="group inner list-group-item-heading">
+                            Product title</h4>
+                        <p class="group inner list-group-item-text">
+                            Product description... Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+                            sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <p class="lead">
+                                    $21.000</p>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <a class="btn btn-success" href="http://www.jquery2dotnet.com">Add to cart</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item  col-xs-4 col-lg-4">
+                <div class="thumbnail">
+                    <img class="group list-group-image" src="http://placehold.it/400x250/000/fff" alt="" />
+                    <div class="caption">
+                        <h4 class="group inner list-group-item-heading">
+                            Product title</h4>
+                        <p class="group inner list-group-item-text">
+                            Product description... Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+                            sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <p class="lead">
+                                    $21.000</p>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <a class="btn btn-success" href="http://www.jquery2dotnet.com">Add to cart</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item  col-xs-4 col-lg-4">
+                <div class="thumbnail">
+                    <img class="group list-group-image" src="http://placehold.it/400x250/000/fff" alt="" />
+                    <div class="caption">
+                        <h4 class="group inner list-group-item-heading">
+                            Product title</h4>
+                        <p class="group inner list-group-item-text">
+                            Product description... Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+                            sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <p class="lead">
+                                    $21.000</p>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <a class="btn btn-success" href="http://www.jquery2dotnet.com">Add to cart</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item  col-xs-4 col-lg-4">
+                <div class="thumbnail">
+                    <img class="group list-group-image" src="http://placehold.it/400x250/000/fff" alt="" />
+                    <div class="caption">
+                        <h4 class="group inner list-group-item-heading">
+                            Product title</h4>
+                        <p class="group inner list-group-item-text">
+                            Product description... Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+                            sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <p class="lead">
+                                    $21.000</p>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <a class="btn btn-success" href="http://www.jquery2dotnet.com">Add to cart</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+    {% if globalOption.blogs is defined and globalOption.blogs is not empty  %}
+        <section id="bloghome">
+            <div class="container">
+                <div class="text-center"><h2>Latest Blog Posts</h2>
+                    <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+                </div>
+                <div class="row">
+                    <div class="col-md-12 homeport1">
+                        {% for blog in globalOption.blogs|slice(0,3)  %}
+                            <div class="col-md-4 col-sm-12 col-xs-12 portfolio-item">
+                                <figure class="effect-oscar">
+                                    <img src="{{ image(blog.webPath).scaleResize(350,263) }}" alt="{{ blog.title }}" class="img-responsive" />
+                                    <figcaption>
+                                        <h2>{{ blog.title }}</h2>
+                                        <a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'blog','slug':blog.slug }) }}">View more</a>
+                                    </figcaption>
+                                </figure>
+                                <p class="text-center">{{ blog.content|raw|truncate(200) }}</p>
+                                <div class="text-center">
+                                    <a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'blog','slug':blog.slug }) }}" class="btn btn-sm orange">Read More<i class="fa fa-link"></i></a>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+    {% if globalOption.newses is defined and globalOption.newses is not empty  %}
+        <section>
+            <div class="container">
+                <div class="text-center"><h2>Latest News</h2>
+                    <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        {% for news in globalOption.newses|slice(0,4)  %}
+                            <div class="post-slide col-md-3">
+                                <div class="post-img">
+                                    <a href="#"><img src="{{ image(news.webPath).scaleResize() }}" alt="{{ news.name }}" ></a>
+                                </div>
+                                <div class="post-content">
+                                    <h3 class="post-title"><a href="#">{{ news.name }}</a></h3>
+                                    <p class="post-description">
+                                        {{ news.content|raw|truncate(150) }}
+                                    </p>
+                                    <ul class="post-bar">
+                                        <li><i class="fa fa-calendar"></i> {{ news.updated|date('d-F-Y') }} </li>
+                                        {% if news.moduleCategory is defined and news.moduleCategory is not empty %}
+                                            <li>
+                                                <i class="fa fa-folder"></i>
+                                                {% for cat in news.moduleCategory %}
+                                                    <a href="#">{{ cat.name }}</a>
+                                                {% endfor %}
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                    <a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'news','slug':news.slug }) }}" class="btn btn-sm orange">Read More<i class="fa fa-link"></i></a>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-sm-3">
+                <div class="box">
+                    <img src="http://farm3.staticflickr.com/2313/12961315583_922312e1f0.jpg">
+                    <h3 class="title">Web Designer</h3>
+                    <div class="box-content">
+                        <p class="description">
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid consectetur eius in ipsam iusto maiores mollitia, nulla quaerat reiciendis voluptatibus.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-3">
+                <div class="box">
+                    <img src="http://farm3.staticflickr.com/2313/12961315583_922312e1f0.jpg">
+                    <h3 class="title">Web Developer</h3>
+                    <div class="box-content">
+                        <p class="description">
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid consectetur eius in ipsam iusto maiores mollitia, nulla quaerat reiciendis voluptatibus.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-3">
+                <div class="box">
+                    <img src="http://farm3.staticflickr.com/2313/12961315583_922312e1f0.jpg">
+                    <h3 class="title">Web Developer</h3>
+                    <div class="box-content">
+                        <p class="description">
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid consectetur eius in ipsam iusto maiores mollitia, nulla quaerat reiciendis voluptatibus.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-3">
+                <div class="box">
+                    <img src="http://farm3.staticflickr.com/2313/12961315583_922312e1f0.jpg">
+                    <h3 class="title">Web Developer</h3>
+                    <div class="box-content">
+                        <p class="description">
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid consectetur eius in ipsam iusto maiores mollitia, nulla quaerat reiciendis voluptatibus.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3">
+            <a href="#" class="btn btn-lg red">button<i class="fa fa-link"></i></a>
+        </div>
+
+        <div class="col-sm-3">
+            <a href="#" class="btn btn-sm red">button<i class="fa fa-link"></i></a>
+        </div>
+
+        <div class="col-sm-3">
+            <a href="#" class="btn btn-xs red">button<i class="fa fa-link"></i></a>
+        </div>
+    </div>
+</div>
+<section id="faq">
+    <div class="container">
+        <div class="text-center"><h2>Freequently Question & Answer</h2>
+            <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a class="" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Section 1
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lacinia lacinia mauris, at ultricies leo ornare nec. Vivamus eu est vel felis dignissim tempor. Nulla facilisi. Duis molestie tortor ac tempor volutpat. Phasellus nec mi aliquet, sollicitudin neque eget, consectetur libero. Vestibulum sollicitudin sapien libero, egestas tempus eros scelerisque eu.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingTwo">
+                            <h4 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Section 2
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                            <div class="panel-body">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lacinia lacinia mauris, at ultricies leo ornare nec. Vivamus eu est vel felis dignissim tempor. Nulla facilisi. Duis molestie tortor ac tempor volutpat. Phasellus nec mi aliquet, sollicitudin neque eget, consectetur libero. Vestibulum sollicitudin sapien libero, egestas tempus eros scelerisque eu.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingThree">
+                            <h4 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Section 3
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                            <div class="panel-body">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lacinia lacinia mauris, at ultricies leo ornare nec. Vivamus eu est vel felis dignissim tempor. Nulla facilisi. Duis molestie tortor ac tempor volutpat. Phasellus nec mi aliquet, sollicitudin neque eget, consectetur libero. Vestibulum sollicitudin sapien libero, egestas tempus eros scelerisque eu.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% if globalOption.teams is defined and globalOption.teams is not empty  %}
+    <section>
+        <div class="container">
+            <div class="row">
+                {% for team in globalOption.teams|slice(0,4)  %}
+                    <div class="col-md-3">
+                        <div class="our-team">
+                            <div class="pic">
+                                <img src="{{ image(team.webPath).scaleResize(263,200) }}">
+                                <div class="over-layer">
+                                    <ul class="social-links">
+                                        {% if team.facebook is not empty  %}
+                                            <li><a href="https://facebook.com/{{ team.facebook }}"><i class="fa fa-facebook"></i></a></li>
+                                        {% endif %}
+                                        {% if team.twitter is not empty  %}
+                                            <li><a href="https://twitter.com/{{ team.facebook }}"><i class="fa fa-twitter"></i></a></li>
+                                        {% endif %}
+                                        {% if team.gmail is not empty  %}
+                                            <li><a href="https://plus.google.com/{{ team.gmail }}"><i class="fa fa-google-plus"></i></a></li>
+                                        {% endif %}
+                                        {% if team.linkedin is not empty  %}
+                                            <li><a href="https://www.linkedin.com/{{ team.facebook }}"><i class="fa fa-linkedin"></i></a></li>
+                                        {% endif %}
+                                        {% if team.youtube is not empty  %}
+                                            <li><a href="https://www.youtube.com/{{ team.youtube }}"><i class="fa fa-youtube"></i></a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="team-content">
+                                <h4 class="team-title">{{ team.name }}</h4>
+                                <span class="post">{{ team.designation }}</span>
+                            </div>
+                            <a href="#" class="read">CONTACT ME</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <section id="meet-team">
+        <div class="container">
+            <div class="text-center">
+                <h2>Team Members</h2>
+                <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+            </div>
+            <div class="row teamspace">
+                {% for team in globalOption.teams|slice(0,4)  %}
+                    <div class="col-xs-12 col-sm-6 col-md-3">
+                        <div class="team-member">
+                            <div class="team-img">
+                                <img class="img-responsive" src="{{ image(team.webPath).scaleResize(263,200) }}" alt="">
+                            </div>
+                            <div class="team-info">
+                                <h4>{{ team.name }}</h4>
+                                <span>{{ team.designation }}</span>
+                            </div>
+                            <p>{{ team.content|raw|truncate(100) }}</p>
+                            <ul class="social-icons">
+                                {% if team.facebook is not empty  %}
+                                    <li><a href="https://facebook.com/{{ team.facebook }}"><i class="fa fa-facebook"></i></a></li>
+                                {% endif %}
+                                {% if team.twitter is not empty  %}
+                                    <li><a href="https://twitter.com/{{ team.facebook }}"><i class="fa fa-twitter"></i></a></li>
+                                {% endif %}
+                                {% if team.gmail is not empty  %}
+                                    <li><a href="https://plus.google.com/{{ team.gmail }}"><i class="fa fa-google-plus"></i></a></li>
+                                {% endif %}
+                                {% if team.linkedin is not empty  %}
+                                    <li><a href="https://www.linkedin.com/{{ team.facebook }}"><i class="fa fa-linkedin"></i></a></li>
+                                {% endif %}
+                                {% if team.youtube is not empty  %}
+                                    <li><a href="https://www.youtube.com/{{ team.youtube }}"><i class="fa fa-youtube"></i></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+{% endif %}
+    {% if globalOption.portfolios is defined and globalOption.portfolios is not empty  %}
+        <section id="portfolio1">
+            <div class="container">
+                <div class="row">
+                    <div class="text-center">
+                        <h2>Portfolio</h2>
+                        <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+                    </div>
+
+                    <ul class="filter nav nav-pills">
+                        <li data-value="all" ><a class="active" href="#">All</a></li>
+                        {% for category in globalOption.moduleCategories  %}
+                            <li data-value="{{ category.slug }}"><a href="#">{{ category.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+
+                    <ul class="port2">
+                        {% for portfolio in globalOption.portfolios|slice(0,4)  %}
+                            <li data-type="{{ portfolio.moduleCategory.slug }}" data-id="id-{{ portfolio.id }}" class="port3">
+                                <a href="#" id="{{ portfolio.moduleCategory.name }}{{ portfolio.id }}"><img src="{{ image(portfolio.webPath).scaleResize(380,266) }}" alt=""></a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+<div id="location">
+    <div class="row prodmap">
+        <div id="map-canvas-holder" class="map_holder" style="height: 400px;">
+
+        </div>
+    </div>
+</div>
+<section id="contact">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-lg-12">
+                    <div class="text-center color-elements">
+                        <h2>Contact Us</h2>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-8">
+                    <form class="inline" id="contactForm" method="post" novalidate >
+                        <div class="row">
+                            <div class="col-sm-6 height-contact-element">
+                                <div class="form-group">
+                                    <i class="fa fa-user"></i>
+                                    <input type="text" id="name" name="name" required class="form-control custom-labels" placeholder="FULL NAME"  data-trigger="hover" value="">
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 height-contact-element">
+                                <div class="form-group">
+                                    <i class="fa fa-phone"></i>
+                                    <input type="text" name="mobile" class="form-control custom-labels mobile" id="mobile" placeholder="MOBILE" required />
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 height-contact-element">
+                                <div class="form-group">
+                                    <i class="fa fa-comments"></i>
+                                    <input type="text" name="message" class="form-control custom-labels" id="message" placeholder="WHAT'S ON YOUR MIND" required />
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-xs-6 height-contact-element">
+                                <div class="form-group">
+                                    <input type="submit" class="btn btn-md btn-custom btn-noborder-radius" value="Send It"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-xs-6 height-contact-element">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-md btn-noborder-radius btn-custom" name="reset">RESET
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-xs-6 height-contact-element">
+                                <div class="form-group">
+                                    <div id="response_holder"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 contact-msg">
+                                <div id="success"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-5 col-md-3 col-lg-offset-1 col-md-offset-1">
+                    <div class="row">
+                        <div class="col-md-12 height-contact-element">
+                            <div class="form-group">
+                                <i class="fa fa-2x fa-map-marker"></i>
+                                    <span class="text">{{ globalOption.contactPage.address1 }} {% if globalOption.contactPage.thana is defined and globalOption.contactPage.thana %}
+                                            ,{{ globalOption.contactPage.thana.name }}<br>
+                                        {% endif %}
+                                        {% if globalOption.contactPage.district is defined and globalOption.contactPage.district %}
+                                            {{ globalOption.contactPage.district.name }} {% endif %}-{{ globalOption.contactPage.postalCode }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-12 height-contact-element">
+                            <div class="form-group">
+                                <i class="fa fa-2x fa-phone"></i>
+                                <span class="text">{{ globalOption.mobile }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-12 height-contact-element">
+                            <div class="form-group">
+                                <i class="fa fa-2x fa-envelope"></i>
+                                <span class="text"><a href="malito:{{ globalOption.email }}">{{ globalOption.email }}</a></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+{% extends ':template:base.html.twig' %}
+{% block body %}
+    <!-- Header Carousel -->
+    <header id="home" class="carousel slide">
+        <ul class="cb-slideshow">
+            {% set sec = 9 %}
+            {% set foo = 0 %}
+            {% for slide in globalOption.homeSliders|slice(0,6) %}
+                <li><span style="background-image: url({{ image(slide.webPath).resize() }});animation-delay: {{ foo }}s;"></span>
+                    <div class="container" style="animation-delay:{{ foo }}s; ">
+                        <div class="row" style="animation-delay:{{ foo }}s; ">
+                            <div class="col-lg-12" style="animation-delay:{{ foo }}s; ">
+                                <div  class="text-center" style="animation-delay:{{ foo }}s; "><h3>{{ slide.name }}</h3></div>
+                            </div>
+                        </div>
+                        <h4>{{ slide.content|truncate(100)|raw }}</h4>
+                    </div>
+                </li>
+                {% set foo = foo + sec %}
+            {% endfor %}
+        </ul>
+        <div class="intro-scroller">
+            <a class="inner-link" href="#about">
+                <div class="mouse-icon" style="opacity: 1;">
+                    <div class="wheel"></div>
+                </div>
+            </a>
+        </div>
+    </header>
+
+    <!-- Page Content -->
+    <section id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-{% if globalOption.testimonials is defined and globalOption.testimonials is  empty %}12 {% else %}8 {% endif %}">
+                    <div class="text-center">
+                        <h2>About Us</h2>
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% render controller("FrontendBundle:TemplateWidget:aboutus",{'globalOption':globalOption.id,'wordlimit':400}) %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if globalOption.testimonials is defined and globalOption.testimonials is not empty  %}
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <div class="row">
+                                <h2>Testimonial</h2>
+                                <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="Company about"/>
+                                <div class="col-md-12 text-justify">
+                                    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                                        <!-- Wrapper for slides -->
+                                        <div class="carousel-inner" role="listbox">
+                                            {% for testimonial in globalOption.testimonials %}
+                                                <div class="item {% if  loop.index == 1 %} active {% endif %} ">
+                                                    <blockquote>
+                                                        <span>{{ testimonial.content|raw|truncate(250) }}</span>
+                                                        <footer>{{ testimonial.name }}<cite title="Source Title">{{ testimonial.designation }}</cite></footer>
+                                                    </blockquote>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <!-- Controls -->
+                                        <a class="left " href="#carousel-example-generic" role="button" data-slide="prev">
+                                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                        <a class="right" href="#carousel-example-generic" role="button" data-slide="next">
+                                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    {% if globalOption.services is defined and globalOption.services is not empty  %}
+        <section id="services">
+            <div class="orangeback">
+                <div class="container">
+                    <div class="text-center homeport2"><h2>Services</h2></div>
+                    <div class="row">
+                        <div class="col-md-12 homeservices1">
+                            {% for service in globalOption.services|slice(0,4)  %}
+                                <div class="col-md-3 portfolio-item">
+                                    <div class="text-center">
+                                        <a href="javascript:void(0);">
+                                            <span class="fa-stack fa-lg">
+                                              <i class="fa fa-circle fa-stack-2x"></i>
+                                              <i class="fa fa-stack-1x {% if service.icon is defined and service.icon is not empty  %}{{ service.icon.className }} {% endif %}"></i>
+                                            </span>
+                                        </a>
+                                        <h3><a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'service','slug':service.slug }) }}">{{ service.name }}</a></h3>
+                                        <p>{{ service.content|raw|truncate(200) }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="orangeback">
+            <div class="container">
+                    <div class="row">
+                        {% for service in globalOption.services|slice(0,4)  %}
+                            <div class="col-md-3 col-sm-6">
+                                <div class="serviceBox">
+                                    <div class="service-icon">
+                                        <i class="fa {% if service.icon is defined and service.icon is not empty  %}{{ service.icon.className }} {% endif %}"></i>
+                                    </div>
+                                    <h3><a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'service','slug':service.slug }) }}">{{ service.name }}</a></h3>
+                                    <p>{{ service.content|raw|truncate(200) }}</p>
+                                    <a class="read" href="#">Read more</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+    {% if globalOption.blogs is defined and globalOption.blogs is not empty  %}
+        <section id="bloghome">
+            <div class="container">
+                <div class="text-center"><h2>Latest Blog Posts</h2>
+                    <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+                </div>
+                <div class="row">
+                    <div class="col-md-12 homeport1">
+                        {% for blog in globalOption.blogs|slice(0,3)  %}
+                            <div class="col-md-4 col-sm-12 col-xs-12 portfolio-item">
+                                <figure class="effect-oscar">
+                                    <img src="{{ image(blog.webPath).scaleResize(350,263) }}" alt="{{ blog.title }}" class="img-responsive" />
+                                    <figcaption>
+                                        <h2>{{ blog.title }}</h2>
+                                        <a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'blog','slug':blog.slug }) }}">View more</a>
+                                    </figcaption>
+                                </figure>
+                                <p class="text-center">{{ blog.content|raw|truncate(200) }}</p>
+                                <div class="text-center">
+                                    <a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'blog','slug':blog.slug }) }}" class="btn btn-sm red">Read More<i class="fa fa-link"></i></a>
+                                </div>
+
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="post-slide col-md-3">
+                        <div class="post-img">
+                            <a href="#"><img src="http://farm3.staticflickr.com/2313/12961315583_922312e1f0.jpg" alt=""></a>
+                        </div>
+                        <div class="post-content">
+                            <h3 class="post-title"><a href="#">Latest News Post</a></h3>
+                            <p class="post-description">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec elementum mauris. Praesent vehicula gravida dolor, ac efficitur sem sagittis.
+                            </p>
+                            <ul class="post-bar">
+                                <li><i class="fa fa-calendar"></i> June 5, 2016</li>
+                                <li>
+                                    <i class="fa fa-folder"></i>
+                                    <a href="#">Mockup</a>
+                                    <a href="#">Graphics</a>
+                                    <a href="#">Flayers</a>
+                                </li>
+                            </ul>
+                            <a href="#" class="read-more">read more</a>
+                        </div>
+                    </div>
+                    <div class="post-slide col-md-3">
+                        <div class="post-img">
+                            <a href="#"><img src="http://farm8.staticflickr.com/7325/12961167435_91b9e1c243.jpg" alt=""></a>
+                        </div>
+                        <div class="post-content">
+                            <h3 class="post-title"><a href="#">Latest News Post</a></h3>
+                            <p class="post-description">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec elementum mauris. Praesent vehicula gravida dolor, ac efficitur sem sagittis.
+                            </p>
+                            <ul class="post-bar">
+                                <li><i class="fa fa-calendar"></i> June 7, 2016</li>
+                                <li>
+                                    <i class="fa fa-folder"></i>
+                                    <a href="#">Mockup</a>
+                                    <a href="#">Graphics</a>
+                                    <a href="#">Flayers</a>
+                                </li>
+                            </ul>
+                            <a href="#" class="read-more">read more</a>
+                        </div>
+                    </div>
+                    <div class="post-slide col-md-3">
+                        <div class="post-img">
+                            <a href="#"><img src="http://farm3.staticflickr.com/2313/12961315583_922312e1f0.jpg" alt=""></a>
+                        </div>
+                        <div class="post-content">
+                            <h3 class="post-title"><a href="#">Latest News Post</a></h3>
+                            <p class="post-description">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec elementum mauris. Praesent vehicula gravida dolor, ac efficitur sem sagittis.
+                            </p>
+                            <ul class="post-bar">
+                                <li><i class="fa fa-calendar"></i> June 5, 2016</li>
+                                <li>
+                                    <i class="fa fa-folder"></i>
+                                    <a href="#">Mockup</a>
+                                    <a href="#">Graphics</a>
+                                    <a href="#">Flayers</a>
+                                </li>
+                            </ul>
+                            <a href="#" class="read-more">read more</a>
+                        </div>
+                    </div>
+                    <div class="post-slide col-md-3">
+                        <div class="post-img">
+                            <a href="#"><img src="http://farm8.staticflickr.com/7325/12961167435_91b9e1c243.jpg" alt=""></a>
+                        </div>
+                        <div class="post-content">
+                            <h3 class="post-title"><a href="#">Latest News Post</a></h3>
+                            <p class="post-description">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec elementum mauris. Praesent vehicula gravida dolor, ac efficitur sem sagittis.
+                            </p>
+                            <ul class="post-bar">
+                                <li><i class="fa fa-calendar"></i> June 7, 2016</li>
+                                <li>
+                                    <i class="fa fa-folder"></i>
+                                    <a href="#">Mockup</a>
+                                    <a href="#">Graphics</a>
+                                    <a href="#">Flayers</a>
+                                </li>
+                            </ul>
+                            <a href="#" class="read-more">read more</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-3">
+                    <div class="box">
+                        <img src="http://farm3.staticflickr.com/2313/12961315583_922312e1f0.jpg">
+                        <h3 class="title">Web Designer</h3>
+                        <div class="box-content">
+                            <p class="description">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid consectetur eius in ipsam iusto maiores mollitia, nulla quaerat reiciendis voluptatibus.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-3">
+                    <div class="box">
+                        <img src="http://farm3.staticflickr.com/2313/12961315583_922312e1f0.jpg">
+                        <h3 class="title">Web Developer</h3>
+                        <div class="box-content">
+                            <p class="description">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid consectetur eius in ipsam iusto maiores mollitia, nulla quaerat reiciendis voluptatibus.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <div class="box">
+                        <img src="http://farm3.staticflickr.com/2313/12961315583_922312e1f0.jpg">
+                        <h3 class="title">Web Developer</h3>
+                        <div class="box-content">
+                            <p class="description">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid consectetur eius in ipsam iusto maiores mollitia, nulla quaerat reiciendis voluptatibus.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <div class="box">
+                        <img src="http://farm3.staticflickr.com/2313/12961315583_922312e1f0.jpg">
+                        <h3 class="title">Web Developer</h3>
+                        <div class="box-content">
+                            <p class="description">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid consectetur eius in ipsam iusto maiores mollitia, nulla quaerat reiciendis voluptatibus.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+                <a href="#" class="btn btn-lg red">button<i class="fa fa-link"></i></a>
+            </div>
+
+            <div class="col-sm-3">
+                <a href="#" class="btn btn-sm red">button<i class="fa fa-link"></i></a>
+            </div>
+
+            <div class="col-sm-3">
+                <a href="#" class="btn btn-xs red">button<i class="fa fa-link"></i></a>
+            </div>
+        </div>
+    </div>
+    <section id="faq">
+        <div class="container">
+            <div class="text-center"><h2>Freequently Question & Answer</h2>
+                <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a class="" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Section 1
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lacinia lacinia mauris, at ultricies leo ornare nec. Vivamus eu est vel felis dignissim tempor. Nulla facilisi. Duis molestie tortor ac tempor volutpat. Phasellus nec mi aliquet, sollicitudin neque eget, consectetur libero. Vestibulum sollicitudin sapien libero, egestas tempus eros scelerisque eu.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingTwo">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        Section 2
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                <div class="panel-body">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lacinia lacinia mauris, at ultricies leo ornare nec. Vivamus eu est vel felis dignissim tempor. Nulla facilisi. Duis molestie tortor ac tempor volutpat. Phasellus nec mi aliquet, sollicitudin neque eget, consectetur libero. Vestibulum sollicitudin sapien libero, egestas tempus eros scelerisque eu.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingThree">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        Section 3
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                <div class="panel-body">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lacinia lacinia mauris, at ultricies leo ornare nec. Vivamus eu est vel felis dignissim tempor. Nulla facilisi. Duis molestie tortor ac tempor volutpat. Phasellus nec mi aliquet, sollicitudin neque eget, consectetur libero. Vestibulum sollicitudin sapien libero, egestas tempus eros scelerisque eu.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% if globalOption.blogs is defined and globalOption.blogs is not empty  %}
+        <section>
+            <div class="container">
+                <div class="row">
+                    {% for team in globalOption.teams|slice(0,4)  %}
+                    <div class="col-md-3">
+                        <div class="our-team">
+                            <div class="pic">
+                                <img src="{{ image(team.webPath).scaleResize(263,200) }}">
+                                <div class="over-layer">
+                                    <ul class="social-links">
+                                        {% if team.facebook is not empty  %}
+                                            <li><a href="https://facebook.com/{{ team.facebook }}"><i class="fa fa-facebook"></i></a></li>
+                                        {% endif %}
+                                        {% if team.twitter is not empty  %}
+                                            <li><a href="https://twitter.com/{{ team.facebook }}"><i class="fa fa-twitter"></i></a></li>
+                                        {% endif %}
+                                        {% if team.gmail is not empty  %}
+                                            <li><a href="https://plus.google.com/{{ team.gmail }}"><i class="fa fa-google-plus"></i></a></li>
+                                        {% endif %}
+                                        {% if team.linkedin is not empty  %}
+                                            <li><a href="https://www.linkedin.com/{{ team.facebook }}"><i class="fa fa-linkedin"></i></a></li>
+                                        {% endif %}
+                                        {% if team.youtube is not empty  %}
+                                            <li><a href="https://www.youtube.com/{{ team.youtube }}"><i class="fa fa-youtube"></i></a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="team-content">
+                                <h4 class="team-title">{{ team.name }}</h4>
+                                <span class="post">{{ team.designation }}</span>
+                            </div>
+                            <a href="#" class="read">CONTACT ME</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        <section id="meet-team">
+            <div class="container">
+                <div class="text-center">
+                    <h2>Team Members</h2>
+                    <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+                </div>
+                <div class="row teamspace">
+                    {% for team in globalOption.teams|slice(0,4)  %}
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                            <div class="team-member">
+                                <div class="team-img">
+                                    <img class="img-responsive" src="{{ image(team.webPath).scaleResize(263,200) }}" alt="">
+                                </div>
+                                <div class="team-info">
+                                    <h4>{{ team.name }}</h4>
+                                    <span>{{ team.designation }}</span>
+                                </div>
+                                <p>{{ team.content|raw|truncate(100) }}</p>
+                                <ul class="social-icons">
+                                    {% if team.facebook is not empty  %}
+                                        <li><a href="https://facebook.com/{{ team.facebook }}"><i class="fa fa-facebook"></i></a></li>
+                                    {% endif %}
+                                    {% if team.twitter is not empty  %}
+                                        <li><a href="https://twitter.com/{{ team.facebook }}"><i class="fa fa-twitter"></i></a></li>
+                                    {% endif %}
+                                    {% if team.gmail is not empty  %}
+                                        <li><a href="https://plus.google.com/{{ team.gmail }}"><i class="fa fa-google-plus"></i></a></li>
+                                    {% endif %}
+                                    {% if team.linkedin is not empty  %}
+                                        <li><a href="https://www.linkedin.com/{{ team.facebook }}"><i class="fa fa-linkedin"></i></a></li>
+                                    {% endif %}
+                                    {% if team.youtube is not empty  %}
+                                        <li><a href="https://www.youtube.com/{{ team.youtube }}"><i class="fa fa-youtube"></i></a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </section>
+    {% endif %}
+    {% if globalOption.portfolios is defined and globalOption.portfolios is not empty  %}
+        <section id="portfolio1">
+            <div class="container">
+                <div class="row">
+                    <div class="text-center">
+                        <h2>Portfolio</h2>
+                        <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="about">
+                    </div>
+
+                    <ul class="filter nav nav-pills">
+                        <li data-value="all" ><a class="active" href="#">All</a></li>
+                        {% for category in globalOption.moduleCategories  %}
+                            <li data-value="{{ category.slug }}"><a href="#">{{ category.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+
+                    <ul class="port2">
+                        {% for portfolio in globalOption.portfolios|slice(0,4)  %}
+                            <li data-type="{{ portfolio.moduleCategory.slug }}" data-id="id-{{ portfolio.id }}" class="port3">
+                                <a href="#" id="{{ portfolio.moduleCategory.name }}{{ portfolio.id }}"><img src="{{ image(portfolio.webPath).scaleResize(380,266) }}" alt=""></a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+    <div id="location">
+        <div class="row prodmap">
+            <div id="map-canvas-holder" class="map_holder" style="height: 400px;">
+
+            </div>
+        </div>
+    </div>
+    <section id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-lg-12">
+                        <div class="text-center color-elements">
+                            <h2>Contact Us</h2>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8">
+                        <form class="inline" id="contactForm" method="post" novalidate >
+                            <div class="row">
+                                <div class="col-sm-6 height-contact-element">
+                                    <div class="form-group">
+                                        <i class="fa fa-user"></i>
+                                        <input type="text" id="name" name="name" required class="form-control custom-labels" placeholder="FULL NAME"  data-trigger="hover" value="">
+                                        <p class="help-block text-danger"></p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 height-contact-element">
+                                    <div class="form-group">
+                                        <i class="fa fa-phone"></i>
+                                        <input type="text" name="mobile" class="form-control custom-labels mobile" id="mobile" placeholder="MOBILE" required />
+                                        <p class="help-block text-danger"></p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 height-contact-element">
+                                    <div class="form-group">
+                                        <i class="fa fa-comments"></i>
+                                        <input type="text" name="message" class="form-control custom-labels" id="message" placeholder="WHAT'S ON YOUR MIND" required />
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 col-xs-6 height-contact-element">
+                                    <div class="form-group">
+                                        <input type="submit" class="btn btn-md btn-custom btn-noborder-radius" value="Send It"/>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 col-xs-6 height-contact-element">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-md btn-noborder-radius btn-custom" name="reset">RESET
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 col-xs-6 height-contact-element">
+                                    <div class="form-group">
+                                        <div id="response_holder"></div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 contact-msg">
+                                    <div id="success"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-5 col-md-3 col-lg-offset-1 col-md-offset-1">
+                        <div class="row">
+                            <div class="col-md-12 height-contact-element">
+                                <div class="form-group">
+                                    <i class="fa fa-2x fa-map-marker"></i>
+                                    <span class="text">{{ globalOption.contactPage.address1 }} {% if globalOption.contactPage.thana is defined and globalOption.contactPage.thana %}
+                                            ,{{ globalOption.contactPage.thana.name }}<br>
+                                        {% endif %}
+                                        {% if globalOption.contactPage.district is defined and globalOption.contactPage.district %}
+                                            {{ globalOption.contactPage.district.name }} {% endif %}-{{ globalOption.contactPage.postalCode }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-12 height-contact-element">
+                                <div class="form-group">
+                                    <i class="fa fa-2x fa-phone"></i>
+                                    <span class="text">{{ globalOption.mobile }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-12 height-contact-element">
+                                <div class="form-group">
+                                    <i class="fa fa-2x fa-envelope"></i>
+                                    <span class="text"><a href="malito:{{ globalOption.email }}">{{ globalOption.email }}</a></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="follow-us">
+        <div class="container">
+            <div class="text-center height-contact-element">
+                <h2>FOLLOW US</h2>
+            </div>
+            <img class="img-responsive displayed" src="{{ asset('assets/template/desktop/patros/images/short.png') }}" alt="short" />
+            <div class="text-center height-contact-element">
+                <ul class="list-unstyled list-inline list-social-icons">
+                    <li class="active"><a href="#"><i class="fa fa-facebook social-icons"></i></a></li>
+                    <li><a href="#"><i class="fa fa-twitter social-icons"></i></a></li>
+                    <li><a href="#"><i class="fa fa-google-plus social-icons"></i></a></li>
+                    <li><a href="#"><i class="fa fa-linkedin social-icons"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="event">
+        <div class="panel panel-default event">
+            <div class="panel-body">
+                <div class="rsvp col-xs-2 col-sm-2">
+                    <i>18</i>
+                    <i>nov</i>
+                    <div class="hidden-xs">
+                        <span class="fa fa-thumbs-up fa-2x"></span>
+                        <span class="fa fa-thumbs-down fa-2x"></span>
+                    </div>
+                </div>
+                <div class="info col-xs-8 col-sm-7">
+                    Event Title
+                    <div class="visible-xs">Lorem ipsum dolor sit amet, consectetur adipiscing elitero..</div>
+                    <div class="hidden-xs">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#location" aria-controls="location" role="tab" data-toggle="tab">Location</a></li>
+                            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="location">Location</div>
+                            <div role="tabpanel" class="tab-pane" id="profile">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla mattis feugiat sem, eu sagittis libero. Duis non odio ut nibh volutpat tempus eget interdum elit.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="author col-xs-2 col-sm-3">
+                    <div class="profile-image">
+                        <img src="http://api.randomuser.me/portraits/med/men/71.jpg"/>
+                    </div>
+                    <div class="profile hidden-xs">
+                        <strong>Robert White</strong>
+                        <article>Event leader and founder of this group</article>
+                        <div class="links hidden-sm">
+                            <i class="fa fa-github-square fa-2x col-xs-3"></i>
+                            <i class="fa fa-google-plus-square fa-2x col-xs-3"></i>
+                            <i class="fa fa-facebook-square fa-2x col-xs-3"></i>
+                            <i class="fa fa-linkedin-square  fa-2x col-xs-3"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="timeline">
+        <div class="container">
+            <div class="page-header text-center">
+                <h1 id="timeline">Timeline 2.1</h1>
+            </div>
+            <ul class="timeline">
+                <li>
+                    <div class="timeline-badge primary"><a><i class="glyphicon glyphicon-record" rel="tooltip" title="11 hours ago via Twitter" id=""></i></a></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <img class="img-responsive" src="http://lorempixel.com/1600/500/sports/2" />
+
+                        </div>
+                        <div class="timeline-body">
+                            <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
+
+                        </div>
+
+                        <div class="timeline-footer">
+                            <a><i class="glyphicon glyphicon-thumbs-up"></i></a>
+                            <a><i class="glyphicon glyphicon-share"></i></a>
+                            <a class="pull-right">Continuar Lendo</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li  class="timeline-inverted">
+                    <div class="timeline-badge primary"><a><i class="glyphicon glyphicon-record invert" rel="tooltip" title="11 hours ago via Twitter" id=""></i></a></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <img class="img-responsive" src="http://lorempixel.com/1600/500/sports/2" />
+
+                        </div>
+                        <div class="timeline-body">
+                            <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
+
+                        </div>
+
+                        <div class="timeline-footer">
+                            <a><i class="glyphicon glyphicon-thumbs-up"></i></a>
+                            <a><i class="glyphicon glyphicon-share"></i></a>
+                            <a class="pull-right">Continuar Lendo</a>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="timeline-badge primary"><a><i class="glyphicon glyphicon-record" rel="tooltip" title="11 hours ago via Twitter" id=""></i></a></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <img class="img-responsive" src="http://lorempixel.com/1600/500/sports/2" />
+
+                        </div>
+                        <div class="timeline-body">
+                            <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
+
+                        </div>
+
+                        <div class="timeline-footer">
+                            <a><i class="glyphicon glyphicon-thumbs-up"></i></a>
+                            <a><i class="glyphicon glyphicon-share"></i></a>
+                            <a class="pull-right">Continuar Lendo</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li  class="timeline-inverted">
+                    <div class="timeline-badge primary"><a><i class="glyphicon glyphicon-record invert" rel="tooltip" title="11 hours ago via Twitter" id=""></i></a></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-body">
+                            <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
+
+                        </div>
+
+                        <div class="timeline-footer">
+                            <a><i class="glyphicon glyphicon-thumbs-up"></i></a>
+                            <a><i class="glyphicon glyphicon-share"></i></a>
+                            <a class="pull-right">Continuar Lendo</a>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="timeline-badge primary"><a><i class="glyphicon glyphicon-record" rel="tooltip" title="11 hours ago via Twitter" id=""></i></a></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <img class="img-responsive" src="http://lorempixel.com/1600/500/sports/2" />
+
+                        </div>
+                        <div class="timeline-body">
+                            <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
+
+                        </div>
+
+                        <div class="timeline-footer">
+                            <a><i class="glyphicon glyphicon-thumbs-up"></i></a>
+                            <a><i class="glyphicon glyphicon-share"></i></a>
+                            <a class="pull-right">Continuar Lendo</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li  class="timeline-inverted">
+                    <div class="timeline-badge primary"><a><i class="glyphicon glyphicon-record invert" rel="tooltip" title="11 hours ago via Twitter" id=""></i></a></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <img class="img-responsive" src="http://lorempixel.com/1600/500/sports/2" />
+
+                        </div>
+                        <div class="timeline-body">
+                            <p>Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.</p>
+
+                        </div>
+
+                        <div class="timeline-footer primary">
+                            <a><i class="glyphicon glyphicon-thumbs-up"></i></a>
+                            <a><i class="glyphicon glyphicon-share"></i></a>
+                            <a class="pull-right">Continuar Lendo</a>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="timeline-badge primary"><a><i class="glyphicon glyphicon-record invert" rel="tooltip" title="11 hours ago via Twitter" id=""></i></a></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-body">
+                            <p><b>All the credits go to <a href="http://bootsnipp.com/rafamaciel">Rafamaciel</a></b></p>
+                            <p>I only make it responsive and remove the empty spaces to be more like Facebook timeline!</p>
+                        </div>
+
+                        <div class="timeline-footer primary">
+                            <a><i class="glyphicon glyphicon-thumbs-up"></i></a>
+                            <a><i class="glyphicon glyphicon-share"></i></a>
+                            <a class="pull-right">Continuar Lendo</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="clearfix" style="float: none;"></li>
+            </ul>
+        </div>
+    </section>
+    <style>
+
+        .timeline {
+            list-style: none;
+            padding: 20px 0 20px;
+            position: relative;
+        }
+        .timeline:before {
+            top: 0;
+            bottom: 0;
+            position: absolute;
+            content: " ";
+            width: 3px;
+            background-color: #eeeeee;
+            left: 50%;
+            margin-left: -1.5px;
+        }
+        .timeline > li {
+            margin-bottom: 20px;
+            position: relative;
+            width: 50%;
+            float: left;
+            clear: left;
+        }
+        .timeline > li:before,
+        .timeline > li:after {
+            content: " ";
+            display: table;
+        }
+        .timeline > li:after {
+            clear: both;
+        }
+        .timeline > li:before,
+        .timeline > li:after {
+            content: " ";
+            display: table;
+        }
+        .timeline > li:after {
+            clear: both;
+        }
+        .timeline > li > .timeline-panel {
+            width: 95%;
+            float: left;
+            border: 1px solid #d4d4d4;
+            /*border-radius: 2px;*/
+            /*padding: 20px;*/
+            position: relative;
+            -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+        }
+
+        .timeline > li > .timeline-panel:before {
+            position: absolute;
+            top: 26px;
+            right: -15px;
+            display: inline-block;
+            border-top: 15px solid transparent;
+            border-left: 15px solid #ccc;
+            border-right: 0 solid #ccc;
+            border-bottom: 15px solid transparent;
+            content: " ";
+        }
+        .timeline > li > .timeline-panel:after {
+            position: absolute;
+            top: 27px;
+            right: -14px;
+            display: inline-block;
+            border-top: 14px solid transparent;
+            border-left: 14px solid #fff;
+            border-right: 0 solid #fff;
+            border-bottom: 14px solid transparent;
+            content: " ";
+        }
+        .timeline > li > .timeline-badge {
+            color: #fff;
+            width: 24px;
+            height: 24px;
+            line-height: 50px;
+            font-size: 1.4em;
+            text-align: center;
+            position: absolute;
+            top: 16px;
+            right: -12px;
+            /*background-color: #999999;*/
+            z-index: 100;
+            /*
+            border-top-right-radius: 50%;
+            border-top-left-radius: 50%;
+            border-bottom-right-radius: 50%;
+            border-bottom-left-radius: 50%;
+            */
+        }
+        .timeline > li.timeline-inverted > .timeline-panel {
+            float: right;
+        }
+        .timeline > li.timeline-inverted > .timeline-panel:before {
+            border-left-width: 0;
+            border-right-width: 15px;
+            left: -15px;
+            right: auto;
+        }
+        .timeline > li.timeline-inverted > .timeline-panel:after {
+            border-left-width: 0;
+            border-right-width: 14px;
+            left: -14px;
+            right: auto;
+        }
+        .timeline-badge > a {
+            color: #C5C7C5 !important;
+        }
+        .timeline-badge a:hover {
+            color: #000 !important;
+        }
+        .timeline-title {
+            margin-top: 0;
+            color: inherit;
+        }
+        .timeline-body > p,
+        .timeline-body > ul {
+            padding:20px;
+            margin-bottom: 0;
+        }
+        .timeline-body > p + p {
+            margin-top: 5px;
+        }
+        .timeline-footer{
+            padding:20px;
+            background-color:#f4f4f4;
+        }
+        .timeline-footer > a{
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .tooltip{
+
+            position:absolute;
+            z-index:1020;
+            display:block;
+            visibility:visible;
+            padding:5px;
+            font-size:11px;
+            opacity:0;
+            filter:alpha(opacity=0);
+
+        }
+        .tooltip.in{
+            /*opacity:0;
+            filter:alpha(opacity=80);*/
+
+        }
+        .tooltip.top{
+            margin-top:-2px;
+        }
+        .tooltip.right{
+            margin-left:2px;
+        }
+        .tooltip.bottom{
+            margin-top:2px;
+        }
+        .tooltip.left{
+            margin-left:-2px;
+        }
+        .tooltip.top .tooltip-arrow{
+            bottom:0;
+            left:0;
+            margin-left:0;
+            border-left:0 solid transparent;
+            border-right:5px solid transparent;
+            border-top:0 solid #000;
+        }
+        .tooltip.left .tooltip-arrow{
+            bottom:0;
+            left:0;
+            margin-left:0;
+            border-left:0 solid transparent;
+            border-right:5px solid transparent;
+            border-top:0 solid #000;
+        }
+        .tooltip.bottom .tooltip-arrow{
+            bottom:0;
+            left:0;
+            margin-left:0;
+            border-left:0 solid transparent;
+            border-right:5px solid transparent;
+            border-top:0 solid #000;
+        }
+        .tooltip.right .tooltip-arrow{
+            bottom:0;
+            left:0;
+            margin-left:0;
+            border-left:0 solid transparent;
+            border-right:5px solid transparent;
+            border-top:0 solid #000;
+        }
+        .tooltip-inner{
+            width:200px;
+            padding:3px 8px;
+            color:#fff;
+            text-align:center;
+            text-decoration:none;
+            background-color:#313131;
+            -webkit-border-radius:0px;
+            -moz-border-radius:0px;
+            border-radius:0px;
+        }
+        .tooltip-arrow{
+            position:absolute;
+            width:0;
+            height:0;
+        }
+        .timeline > li.timeline-inverted{
+            float: right;
+            clear: right;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        .timeline > li:nth-child(2){
+            margin-top: 60px;
+        }
+        .timeline > li.timeline-inverted > .timeline-badge{
+            left: -12px;
+        }
+
+        @media (max-width: 767px) {
+            ul.timeline:before {
+                left: 40px;
+            }
+
+            ul.timeline > li {
+                margin-bottom: 20px;
+                position: relative;
+                width:100%;
+                float: left;
+                clear: left;
+            }
+            ul.timeline > li > .timeline-panel {
+                width: calc(100% - 90px);
+                width: -moz-calc(100% - 90px);
+                width: -webkit-calc(100% - 90px);
+            }
+
+            ul.timeline > li > .timeline-badge {
+                left: 28px;
+                margin-left: 0;
+                top: 16px;
+            }
+
+            ul.timeline > li > .timeline-panel {
+                float: right;
+            }
+
+            ul.timeline > li > .timeline-panel:before {
+                border-left-width: 0;
+                border-right-width: 15px;
+                left: -15px;
+                right: auto;
+            }
+
+            ul.timeline > li > .timeline-panel:after {
+                border-left-width: 0;
+                border-right-width: 14px;
+                left: -14px;
+                right: auto;
+            }
+
+            .timeline > li.timeline-inverted{
+                float: left;
+                clear: left;
+                margin-top: 30px;
+                margin-bottom: 30px;
+            }
+
+            .timeline > li.timeline-inverted > .timeline-badge{
+                left: 28px;
+            }
+        }
+
+        #accordion .panel-title a:after,
+        #accordion .panel-title a.collapsed:after{
+            background: #E96840;
+        }
+        #accordion .panel-title a {
+            display: block;
+            font-size: 16px;
+            color: #E96840;
+            padding: 17px 40px 17px 65px;
+            background: #fff;
+            border: 1px solid #f3f3f3;
+            border-bottom: none;
+            position: relative;
+            transition: all 0.5s ease 0s;
+        }
+        #accordion .panel-title a.collapsed:after {
+            background: #E96840;
+            color: #ffffff;
+        }
+
+        #accordion .panel-title a:before {
+            content: "";
+            position: absolute;
+            bottom: -11px;
+            left: -1px;
+            border-bottom: 12px solid transparent;
+            border-right: 12px solid #E96840;
+            color: #ffffff;
+        }
+        #accordion .panel-title a.collapsed:hover:after{
+            background: #E96840;
+            color:#fff;
+        }
+        #accordion .panel-body{
+            color:#313131;
+        }
+
+        .event .panel-body {
+            background: #BBDEFB;
+            border: 1px solid #448AFF;
+            padding:0;
+            margin:0;
+            height:86px;
+        }
+        .event .panel-body > div {
+            padding: 0 10px;
+        }
+        .event .panel-body .rsvp {
+            border-left: none;
+            padding: 0;
+            text-align: center;
+            position: relative;
+            background: #64B5F6;
+            color: white;
+            height: 100%;
+        }
+
+        .event .rsvp > div {
+            font-size: 12px;
+            position: absolute;
+            bottom: 0;
+            background: #42A5F5;
+            width: 100%;
+        }
+
+        .event .rsvp i {
+            font-size: 2em;
+            display: block;
+            position:relative;
+            top:17%;
+            margin-bottom:5px;
+        }
+        .event .rsvp i:last-of-type{
+            font-size:1.5em;
+            margin-top:-23px;
+        }
+
+        .event .rsvp span {
+            cursor: pointer;
+            padding: 0 5px;
+            margin: 5px 0;
+            width:45%;
+        }
+        .event .rsvp span:first-of-type{
+            border-right: 1px solid white;
+        }
+        .event .rsvp span:hover{
+            color: #1565C0;
+        }
+
+        .event .info{
+            font-size: 28px;
+        }
+
+        .event .info > div, .event .info > ul{
+            font-size: 12px;
+        }
+
+        .event .author .profile-image {
+            position: absolute;
+            background: white;
+            padding: 3px;
+            width: 5em;
+            border-radius: 50%;
+            border: 1px solid #CCC;
+            box-sizing: content-box;
+            z-index: 1;
+            top:4px;
+        }
+
+        .event .author img {
+            width:100%;
+            border-radius:50%;
+        }
+
+        /* Overwrites */
+        .nav-tabs a {
+            background: #90CAF9;
+            color: white;
+        }
+        .info .nav-tabs li.active a {
+            background-color: #448AFF;
+            color: white;
+        }
+        .info .nav-tabs li:hover a, .info .nav-tabs li.active:hover a {
+            background: #00BCD4;
+            color: white;
+        }
+        .tab-content {
+            background: white;
+            border-radius: 0 10px;
+            padding: 10px;
+        }
+
+        /* Small devices (tablets, 768px and up) */
+        @media (min-width: 768px) {
+            .event .panel-body {
+                height:158px;
+            }
+
+            .event .rsvp {
+                min-height:100%;
+            }
+
+            .event .rsvp i {
+                font-size:4em;
+                top:5%;
+            }
+
+            .event .panel-body .author {
+                position: relative;
+                color: #2196F3;
+                padding:10px;
+                height:100%;
+            }
+            .event .profile {
+                position: relative;
+                z-index: 0;
+                border-left: 2px solid white;
+                top: -5px;
+                padding-left: 55px;
+                height: 100%;
+                left: 10%;
+            }
+            .event .profile strong {
+                display: block;
+                color: white;
+                font:20px bold 'Fredoka One', serif;
+                -webkit-text-stroke-width: .6px;
+                -webkit-text-stroke-color: #448AFF;
+                margin-bottom: 5px;
+            }
+            .event .author .profile i {
+                color:  #448AFF;
+                padding-left: 0;
+            }
+            .event .profile .links {
+                position: absolute;
+                bottom: 0;
+            }
+            .event .profile article {
+                padding:0 41px 0 0;
+            }
+            .event .author .profile i:hover{
+                color:  #00BCD4;
+            }
+            .event .author .profile-image {
+                position: absolute;
+                background: white;
+                padding: 3px;
+                width: 30%;
+                border-radius: 50%;
+                border: 1px solid #CCC;
+                box-sizing: content-box;
+                z-index: 1;
+                top:13px;
+            }
+            .event .author img {
+                width: 100%;
+                border-radius: 50%;
+            }
+        }
+
+        /* Medium devices (desktops, 992px and up) */
+        @media (min-width: 992px) {
+            .event .profile {
+                left: 17%;
+            }
+        }
+
+        /* Large devices (large desktops, 1200px and up) */
+        @media (min-width: 1200px) {  }
+
+    </style>
+  {% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@FrontendBundle/Resources/public/js/common.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    var my_posts = $("[rel=tooltip]");
+
+    var size = $(window).width();
+    for(i=0;i<my_posts.length;i++){
+    the_post = $(my_posts[i]);
+
+    if(the_post.hasClass('invert') && size >=767 ){
+    the_post.tooltip({ placement: 'left'});
+    the_post.css("cursor","pointer");
+    }else{
+    the_post.tooltip({ placement: 'rigth'});
+    the_post.css("cursor","pointer");
+    }
+    }
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+#}

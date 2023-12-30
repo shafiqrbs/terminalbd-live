@@ -1,0 +1,149 @@
+medicine_sales:
+    path:     /
+    defaults: { _controller: "MedicineBundle:Sales:index" }
+
+medicine_sales_hold:
+    path:     /hold
+    defaults: { _controller: "MedicineBundle:Sales:hold" }
+
+medicine_sales_copy:
+    path:     /{id}/copy
+    defaults: { _controller: "MedicineBundle:Sales:copy" }
+
+
+medicine_sales_android:
+    path:     /android
+    defaults: { _controller: "MedicineBundle:Sales:androidSales" }
+
+medicine_sales_android_duplicate_delete:
+    path:     /{android}/android-duplicate-delete
+    defaults: { _controller: "MedicineBundle:Sales:androidDuplicateSalesDelete" }
+
+medicine_sales_android_delete:
+    path:     /{android}/android-delete
+    defaults: { _controller: "MedicineBundle:Sales:androidDelete" }
+
+medicine_sales_android_view:
+    path:     /android
+    defaults: { _controller: "MedicineBundle:Sales:androidSales" }
+
+medicine_sales_android_reprocess:
+    path:     /{device}/android-process
+    defaults: { _controller: "MedicineBundle:Sales:androidSalesProcess" }
+    options:
+            expose: true
+
+medicine_sales_android_process:
+    path:     /{device}/android-process
+    defaults: { _controller: "MedicineBundle:Sales:androidSalesProcess" }
+    options:
+            expose: true
+
+medicine_sales_android_process_salesItem:
+    path:     /{id}/android-process-sales-item
+    defaults: { _controller: "MedicineBundle:Sales:androidItemSalesProcess" }
+    options:
+            expose: true
+
+medicine_device_sales_import:
+    path:      /device-sales-delete-import/{android}
+    defaults: { _controller: "MedicineBundle:Sales:insertGroupApiSalesImport" }
+
+medicine_sales_item:
+    path:     /sales-item
+    defaults: { _controller: "MedicineBundle:Sales:salesItem" }
+
+
+medicine_sales_item_update:
+    path:     /sales-item-update
+    defaults: { _controller: "MedicineBundle:Sales:salesItemUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+medicine_sales_show:
+    path:     /{id}/show
+    defaults: { _controller: "MedicineBundle:Sales:show" }
+
+medicine_sales_print:
+    path:     /{id}/print
+    defaults: { _controller: "MedicineBundle:Sales:posPrint" }
+
+medicine_sales_posprint:
+    path:     /{id}/{mode}/posprint
+    defaults: { _controller: "MedicineBundle:Sales:posPrintUltra" }
+
+medicine_sales_new:
+    path:     /new
+    defaults: { _controller: "MedicineBundle:Sales:new" }
+
+medicine_sales_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "MedicineBundle:Sales:edit" }
+
+medicine_sales_update:
+    path:     /{id}/update
+    defaults: { _controller: "MedicineBundle:Sales:update" }
+    methods:  [POST, PUT]
+
+medicine_sales_status:
+    path:     /{id}/status
+    defaults: { _controller: "MedicineBundle:Sales:edit" }
+
+
+medicine_sales_approve:
+    path:     /{id}/approve
+    defaults: { _controller: "MedicineBundle:Sales:approve" }
+
+medicine_sales_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "MedicineBundle:Sales:delete" }
+
+medicine_sales_stock_search:
+    path:     /{id}/medicine-stock-search
+    defaults: { _controller: "MedicineBundle:Sales:stockSearch" }
+    options:
+            expose: true
+
+
+medicine_sales_item_add:
+    path:     /{invoice}/medicine-add
+    defaults: { _controller: "MedicineBundle:Sales:addMedicine" }
+    methods:  POST
+    options:
+            expose: true
+
+medicine_sales_instant_item:
+    path:     /{sales}/{item}/medicine-instant-sales
+    defaults: { _controller: "MedicineBundle:Sales:instantPurchaseSales" }
+    methods:  POST
+    options:
+            expose: true
+
+
+medicine_sales_discount_update:
+    path:     /dicount-update
+    defaults: { _controller: "MedicineBundle:Sales:invoiceDiscountUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+medicine_sales_approved:
+    path:     /{id}/invoice-approved
+    defaults: { _controller: "MedicineBundle:Sales:approved" }
+
+
+medicine_sales_item_delete:
+    path:     /{invoice}/{id}/sales-item-delete
+    defaults: { _controller: "MedicineBundle:Sales:salesItemDelete" }
+
+medicine_sales_print_invoice:
+    path:     /{id}/print
+    defaults: { _controller: "MedicineBundle:Sales:invoicePrint" }
+
+medicine_sales_inline_update:
+    path:     /sales-created-inline-update
+    defaults: { _controller: "MedicineBundle:Sales:inlineUpdate" }
+    methods:  POST
+    options:
+        expose: true

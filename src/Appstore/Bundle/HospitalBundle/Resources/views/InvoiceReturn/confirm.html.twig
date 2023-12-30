@@ -1,0 +1,304 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Patient Diagnostic Invoice # {{ entity.invoice }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('hms_invoice') }}">Diagnostic</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Diagnostic Patient</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>c
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Invoice Details</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('hms_invoicereturn') }}"><i class="icon-th-list"></i> Diagnostic Return</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+
+                                <div class="span3">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+                                        {% if entity.customer is not empty %}<li><strong>Patient #:</strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                                        {% if entity.customer is not empty %}<li><strong>Mobile #:</strong>&nbsp;{{ entity.customer.mobile }}</li>{% endif %}
+                                        {% if entity.customer is not empty and entity.customer.location is not empty   %}<li><strong>Location #:</strong>&nbsp;{{ entity.customer.location.name }}, {{ entity.customer.location.parent.name }}</li>{% endif %}
+                                        <li><strong>Created:</strong>&nbsp;{{ entity.created|date('d-m-Y') }}</li>
+                                    </ul>
+                                </div>
+
+                                <div class="span3 invoice-payment">
+                                    <h4>Payment Details:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Total BDT:</strong>&nbsp;{{ entity.total|number_format() }}</li>
+                                        <li><strong>Payment BDT:</strong>&nbsp;{{ entity.payment|number_format() }}</li>
+                                        {% if entity.discount %}<li><strong>Discount BDT:</strong>&nbsp;{{ entity.discount|number_format() }}</li>{% endif %}
+                                        {% if entity.due %}<li><strong>Due BDT:</strong>&nbsp;{{ entity.due|number_format() }}</li>{% endif %}
+                                        <li><strong>Payment status</strong>&nbsp;{{  entity.paymentStatus|capitalize }}</li>
+                                    </ul>
+
+                                </div>
+                                <div class="span3">
+                                    <h4>Payment Method:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Invoice Status:</strong>&nbsp;{{ entity.process }}</li>
+                                        <li><strong>Payment Method:</strong>&nbsp;{{ entity.paymentMethod }}</li>
+                                        <li><strong>Received By:</strong>&nbsp;{% if entity.createdBy is defined and entity.createdBy is not empty %}{{ entity.createdBy }}{% endif %}</li>
+                                    </ul>
+                                </div>
+                                <div class="span3">
+                                    <h4>Assign/Referred By:</h4>
+                                    <ul class="unstyled">
+                                            {% if entity.assignDoctor is not empty %}
+                                                <li><strong>Assign Doctor</strong>&nbsp;</li>
+                                                <li>Name:&nbsp;{{ entity.assignDoctor.name }}</li>
+                                                <li>Mobile:&nbsp;{{ entity.assignDoctor.mobile }}</li>
+                                            {% endif %}
+                                            <li><strong>Referred Doctor/Agent</strong>&nbsp;</li>
+                                            {% if entity.referredDoctor is not empty %}
+                                                <li>Name:&nbsp;{{ entity.referredDoctor.name }}</li>
+                                                <li>Mobile:&nbsp;{{ entity.referredDoctor.mobile }}</li>
+                                            {% endif %}
+                                        </ul>
+                                </div>
+                            </div>
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid box green">
+                                {% if entity.invoiceParticulars is defined and  entity.invoiceParticulars is not empty  %}
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                                        <thead class="flip-content ">
+                                        <tr class="head-green">
+                                            <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                            <th class="numeric">Si/No</th>
+                                            <th class="numeric">Code</th>
+                                            <th class="numeric">Particular</th>
+                                            <th class="numeric">Service</th>
+                                            <th class="numeric">Qnt</th>
+                                            <th class="numeric">Amount</th>
+                                            <th class="numeric">Report Progress</th>
+                                            <th class="numeric">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for item in entity.invoiceParticulars %}
+                                            <tr id="remove-{{ item.id }}">
+                                                <td><span class="badge badge-warning toggle badge-custom" id="{{ item.id  }}" ><span>[+]</span></span></td>
+                                                <td  class="numeric">{{ loop.index }}</td>
+                                                <td  class="numeric">{{ item.particular.particularCode }}</td>
+                                                <td class="numeric">{{ item.particular.name }}</td>
+                                                <td class="numeric">{{ item.particular.service.name }}</td>
+                                                <td class="numeric">{{ item.quantity }}</td>
+                                                <td class="numeric">{{ item.subTotal|number_format }}</td>
+                                                <th class="numeric">{% if item.particular.service.id == 1 %}{{ item.process }} By {{ item.particularPreparedBy }}{% endif %}</th>
+                                                <td class="">
+                                                    <div class="btn-group">
+                                                        {% if item.process == 'In-progress' %}
+                                                            <a  data-url="{{ path('hms_invoicereturn_canceled',{'id':item.id}) }}" class="btn red mini confirm"><i class=" icon-refresh"></i>&nbsp;Canceled</a>
+                                                        {% endif %}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <td colspan="9" class="span12" style="border: 1px double #000"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="span9"><span class="pull-right"><strong>Total Amount TK.</strong> =</span></td>
+                                            <td class="span2"><strong id="subTotal">{{ entity.subTotal|number_format }}</strong></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="span9"><span class="pull-right"><strong>Vat/Tax TK.</strong> =</span></td>
+                                            <td class="span2"><strong id="vat">{{ entity.vat|number_format }}</strong></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="span9"><span class="pull-right"><strong>Discount TK.</strong> =</span></td>
+                                            <td class="span2"><strong id="vat">{{ entity.discount|number_format }}</strong>{% if entity.discountType == 'percentage' %} <span class="btn red mini">{{ entity.discountCalculation }}%</span>{% endif %}</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="span9"><span class="pull-right"><strong>Net Total TK.</strong> =</span></td>
+                                            <td class="span2"><strong id="vat">{{ entity.total|number_format }}</strong></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="span9"><span class="pull-right"><strong>Received TK.</strong> =</span></td>
+                                            <td class="span2"><strong id="vat">{{ entity.payment|number_format }}</strong></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td colspan="6" class="span9"><span class="pull-right"><strong>Due TK.</strong> =</span></td>
+                                            <td class="span2"><strong id="vat">{{ entity.due|number_format }}</strong></td>
+                                            <td></td>
+                                            <td></td>
+
+                                        </tr>
+
+                                        </tfoot>
+                                    </table>
+                                {% endif %}
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="form-actions portlet box blue">
+                                <div class="portlet-title">
+                                    <div class="caption"><i class="icon-money"></i>Transaction Information</div>
+                                    <div class="actions">
+                                        <a target="_blank" href="{{ path('hms_invoice_admission_transaction_print',{'invoice':entity.invoice}) }}" class="btn purple"><i class="icon icon-print"></i> Print</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <table class="table table-bordered table-striped table-condensed table-fixed">
+                                        <thead>
+                                        <tr class="head-green">
+                                            <th class="numeric">&nbsp;&nbsp;<i class="icon-list"></i></th>
+                                            <th class="numeric">Created</th>
+                                            <th class="numeric">Payment Method</th>
+                                            <th class="numeric">Discount</th>
+                                            <th class="numeric">Vat/Tax</th>
+                                            <th class="numeric">Total</th>
+                                            <th class="numeric">Payment</th>
+                                            <th class="numeric">Created By</th>
+                                            <th class="numeric">Process</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody id="invoiceTransaction">
+                                        {% set processArr = ['Created','Pending','In-progress'] %}
+                                        {% for transaction in entity.invoiceTransactions %}
+                                            <tr id="delete-{{ transaction.id }}" {% if transaction.process in ['Pending','In-progress'] %} class="yellow-alert" {% endif %}  >
+                                                <td  class="numeric">{{ transaction.transactionCode }}</td>
+                                                <td  class="numeric">{{ transaction.updated|date('d-m-Y') }}</td>
+                                                <td class="numeric">{% if transaction.transactionMethod is not empty %}{{ transaction.transactionMethod.name }}{% endif %}</td>
+                                                <td class="numeric">{{ transaction.discount }}</td>
+                                                <td class="numeric">{{ transaction.vat }}</td>
+                                                <td class="numeric" id="total-{{ transaction.id }}">{{ transaction.total }}</td>
+                                                <td class="numeric">{{ transaction.payment }}</td>
+                                                <td class="numeric">{{ transaction.createdBy }}</td>
+                                                <td class="numeric">{{ transaction.process }}</td>
+
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <td class="numeric" colspan="3"><span class="pull-right"><strong>Total TK.</strong> =</span></td>
+                                            <td class="numeric"><strong class="discountAmount">{{ entity.discount|number_format }}</strong></td>
+                                            <td class="numeric"><strong class="vat">{{ entity.vat|number_format }}</strong></td>
+                                            <td class="numeric"><strong class="">{{ entity.total|number_format }}</strong></td>
+                                            <td class="numeric"><strong class="paymentAmount">{{ entity.payment|number_format }}</strong></td>
+                                            <td class="numeric"></td>
+                                            <td class="numeric"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="numeric" colspan="6"><span class="pull-right"><strong>Due</strong></span></td>
+                                            <td class="numeric"><strong>{{ entity.due|number_format }}</strong></td>
+                                            <td class="numeric"></td>
+                                            <td class="numeric"></td>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            {% if entity.process !='Done' %}
+                                <div class="row-fluid particular-info" >
+                                    <form method="post" name="form" id="form">
+                                        <div class="span12 text-right">
+                                            <div class="input-append span12" style="margin-bottom:0!important">
+                                                <input type="text" class="m-wrap span9" id="remark" name="remark" value=""  placeholder="Canceled remark ">
+                                                <input type="text" class="m-wrap span2" id="payment" name="payment" value="" maxlength="8"  placeholder="Payment amount">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn blue" id="addPayment" data-url="{{ path('hms_invoicereturn_payment',{'id':entity.id}) }}" ><i class="fa fa-save"></i> Payment</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="clearfix">&nbsp;</div>
+                            {% endif %}
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right" id="action-{{ entity.id }}">
+                                    <a target="_blank"  href="{{ path('hms_invoice_print_invoice',{'id':entity.id}) }}" class="btn green"><i class="icon-print"></i>&nbsp;Print</a>
+                                    {% if entity.paymentStatus == "Paid" and entity.process == 'In-progress'  %}
+                                        <a  href="javascript:" data-url="{{ path('hms_invoice_approved',{'id':entity.id}) }}" class="btn purple approve"><i class=" icon-refresh"></i> Waiting for Done</a>
+                                    {% else %}
+                                        <span  class="btn blue"><i class=" icon-retweet"></i>&nbsp;{{ entity.process }}</span>
+                                    {% endif %}
+                                    {% if entity.process == 'Created' %}
+                                    <a  href="{{ path('hms_invoice_edit',{'id':entity.id}) }}" class="btn purple"><i class=" icon-pencil"></i>&nbsp;Manage Patient</a>
+                                    {% endif %}
+                                    <span  class="btn yellow"><i class="icon-money"></i>&nbsp;{{ entity.paymentStatus }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@HospitalBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/editable.js'
+    '@HospitalBundle/Resources/public/js/invoice-return.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+{% endblock %}
+
+

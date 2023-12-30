@@ -1,0 +1,25 @@
+{# default Sliding pagination control implementation #}
+<div class="">
+    <div class="right">
+        <form style="float: left" id="page-form"  name="page-form" method="get" action="">
+        {% if previous is defined %}
+            <a style="float: left" class="btn btn-default btn-sm page-button" href="{{ path(route, query|merge({(pageParameterName): previous})) }}"><span class="glyphicon glyphicon glyphicon-chevron-left"></span>&nbsp;Prev</a>
+        {% else %}
+            <a style="float: left" class="btn btn-default btn-sm page-button" disabled href="javascript:"><span class="glyphicon glyphicon glyphicon-chevron-left"></span>&nbsp;Prev</a>
+        {% endif %}
+        {% if pageCount > 1 %}
+            {% set page = app.request.get('page') %}
+            <select id="page" name="page" class="page-selector"  onchange='this.form.submit()'>
+                <option value="">-- Pager --</option>
+                {% for i in 1..pageCount %}
+                    <option {% if page == i  %} selected="selected" {% endif %} value="{{ i }}"> {{ i }}</option>
+                {% endfor %}
+            </select>
+
+        {% endif %}
+        {% if next is defined %}
+            <a class="btn btn-default btn-sm page-button" href="{{ path(route, query|merge({(pageParameterName): next})) }}">Next&nbsp;<span class="glyphicon glyphicon glyphicon-chevron-right"></span></a>
+        {% endif %}
+        </form>
+    </div>
+</div>

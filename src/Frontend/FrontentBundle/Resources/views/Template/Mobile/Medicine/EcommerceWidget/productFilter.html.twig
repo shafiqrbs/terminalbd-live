@@ -1,0 +1,272 @@
+<div class="row">
+<form class="bs-example" action="{{ path(globalOption.subDomain ~ '_webservice_product_filter') }}"  method="get" data-example-id="input-group-segmented-buttons">
+
+    {% if globalOption.ecommerceConfig.searchCategory == 1 %}
+    <div class="input-group col-xs-12 col-md-12">
+        <select name='category' id='category' class='input-selector item-select col-xs-12 col-md-12' onchange='this.form.submit()'>
+            <option value=''>Filter by Category</option>
+            {{ categoryTree|raw }}
+        </select>
+    </div>
+    {% endif %}
+   {# <div class="input-group">
+        {% if globalOption.templateCustomize.showSidebar == 1 %}
+            <span class="input-group-btn"><button type="button" class="btn btn-warning" id="filter"><span class="fa fa-filter"></span></button></span>
+        {% endif %}
+        <input type="text" name="webName" required="required" id="webName" class="form-control" value="{{ searchForm['webName'] is defined ? searchForm['webName'] :'' }}" placeholder="Find medicine">
+        <span class="input-group-btn"><button type="submit" class="btn btn-info mobile-search-btn"><span class="glyphicon glyphicon-search"></span></button></span>
+
+    </div>#}
+    <div class="sidebar-footer" >
+        <a class="btn btn-warning text-center col-xs-6 col-md-6 mobile-order" href="tel:+88{{ globalOption.hotline }}"><i class="fa fa-phone"></i> ORDER BY PHONE</a>
+        <a type="button" id="upload"  class="btn btn-warning  col-xs-6 col-md-6 upload-pres upload-prescription"> <span class="fa fa-upload"></span> PRESCRIPTION</a>
+    </div>
+    <div id="showFilter" style="display:none;">
+        {% set sortBy = app.request.get('sortBy') %}
+        <select name="sortBy" id="sortBy" class="input-selector item-select col-xs-12 col-md-12"
+                onchange='this.form.submit()'>
+            <option {% if sortBy == '' %} selected="selected" {% endif %} value="">-- Sorting by
+                --
+            </option>
+            <option {% if sortBy == 'product.webName=?=ASC' %} selected="selected" {% endif %}
+                    value="product.webName=?=ASC">Name (A - Z)
+            </option>
+            <option {% if sortBy == 'product.webName=?=DESC' %} selected="selected" {% endif %}
+                    value="product.webName=?=DESC">Name (Z - A)
+            </option>
+            <option {% if sortBy == 'brand.name=?=ASC' %} selected="selected" {% endif %}
+                    value="brand.name=?=ASC">Brand (A - Z)
+            </option>
+            <option {% if sortBy == 'brand.name=?=DESC' %} selected="selected" {% endif %}
+                    value="brand.name=?=DESC">Brand (Z - A)
+            </option>
+            <option {% if sortBy == 'product.salesPrice=?=ASC' %} selected="selected" {% endif %}
+                    value="product.salesPrice=?=ASC">Price (Low &gt; High)
+            </option>
+            <option {% if sortBy == 'product.salesPrice=?=DESC' %} selected="selected" {% endif %}
+                    value="product.salesPrice=?=DESC">Price (High &gt; Low)
+            </option>
+        </select>
+    </div>
+    <div class="clearfix"></div>
+    {% if globalOption.templateCustomize.showSidebar == 1 %}
+    <div id="productFilter">
+        <div class=" panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-top: 1px;">
+            {% if globalOption.ecommerceConfig.sidebarPrice == 1 %}
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                        <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                Price Range
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-4 col-md-4"><input id="priceStart" name="priceStart" type="text" class="col-md-12 form-control" value="{{ searchForm['priceStart'] is defined ? searchForm['priceStart'] :'' }}" placeholder="Min price" /></div>
+                                <div class="col-xs-2 col-md-2 text-center" style="line-height:30px; font-weight: bold; color:#222">To</div>
+                                <div class="col-xs-5 col-md-5"><input id="priceEnd" name="priceEnd" type="text" class="col-md-12 form-control" value="{{ searchForm['priceEnd'] is defined ? searchForm['priceEnd'] :'' }}" placeholder="Max price" /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if globalOption.ecommerceConfig.sidebarCategory == 1 %}
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingCategory">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseCategory" aria-expanded="false" aria-controls="collapseCategory">
+                                Category
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseCategory" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingCategory">
+                        <div class="panel-body">
+                            <div class="treeview">{{ categorySidebar|raw }}</div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if globalOption.ecommerceConfig.sidebarBrand == 1 %}
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingTwo">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Brands
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                        <div class="panel-body">
+                            <div class="row">{{ brandTree|raw }}</div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if globalOption.ecommerceConfig.sidebarSize == 1 %}
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingFour">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                Size/Weight/Dimension
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                        <div class="panel-body"><div class="row">{{ sizeTree|raw }}</div></div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if globalOption.ecommerceConfig.sidebarColor == 1 %}
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingFive">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                Colors
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                        <div class="panel-body"><div class="row">{{ colorTree|raw }}</div></div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if globalOption.ecommerceConfig.sidebarDiscount == 1 %}
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingSix">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                Discount
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+                        <div class="panel-body"> <div class="row"> {{ discountTree|raw }}</div></div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if globalOption.ecommerceConfig.sidebarPromotion == 1 %}
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingSeven">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                                Promotion
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
+                        <div class="panel-body"> <div class="row"> {{ promotionTree|raw }}</div></div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if globalOption.ecommerceConfig.sidebarTag == 1 %}
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingEight">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                                Tags
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
+                        <div class="panel-body"> <div class="row"> {{ tagTree|raw }}</div></div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="panel-heading">
+                <div class="sidebar-footer" >
+                    <button type="submit"  class="btn btn-success col-xs-12 col-md-12" id="filter"><span class="glyphicon glyphicon-filter"></span> FILTER</button>
+                </div>
+            </div>
+        </div><!-- panel-group -->
+    </div>
+    {% endif %}
+</form>
+    <div class="clearfix"></div>
+    <div id="uploadPrescription">
+        <form class="uploader" id="file-upload-form" name="prescription" action="{{ path('order_checkout',{'shop':globalOption.uniqueCode}) }}" method="post" enctype="multipart/form-data">
+            <div class=" panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-top: 1px;">
+            <div class="panel-heading"></div>
+            <div class="row-fluid">
+                <div class="clearfix"></div>
+                 <div id="stockCart">
+                         <table class="table table-hover table-striped table-bordered table-list">
+                             <tbody>
+                             <tr>
+                                 <td class="text-right">
+                                     <div style="height: 70px; margin-bottom: 15px">
+                                         <input id="file-upload" type="file" name="prescriptionFile" accept="image/*" />
+                                         <label for="file-upload" id="file-drag">
+                                             <img id="file-image" src="#" alt="Preview" class="hidden">
+                                             <div id="start">
+                                                 <i class="fa fa-download" aria-hidden="true"></i>
+                                                 <div>Select a file or drag here</div>
+                                                 <div id="notimage" class="hidden">Please select an image</div>
+                                                 <span id="file-upload-btn" class="btn btn-upload">Select a file</span>
+                                             </div>
+                                             <div id="response" class="hidden">
+                                                 <div id="messages"></div>
+                                                 <progress class="progress" id="file-progress" value="0">
+                                                     <span>0</span>%
+                                                 </progress>
+                                             </div>
+                                         </label>
+                                     </div>
+                                     <textarea name="comment" id="comment" rows="5" style="width: 100%; padding: 7px; font-size: 12px" placeholder="Enter order related instruction"></textarea> <p style="font-size: 11px; color: red; line-height: 20px; margin-bottom: 0">*JPG/GIF/PDF/PNG, less than 1MB</p>
+                                 </td>
+                             </tr>
+                             </tbody>
+                         </table>
+                 </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-heading">
+                <div class="sidebar-footer" id="login-footer" >
+                    {% if  app.user %}
+                    <button type="submit"  class="btn btn-warning col-xs-12 col-md-12 take-order"><span class="glyphicon glyphicon-cart"></span> Take Order <span class="glyphicon glyphicon-play"></span></button>
+                    {% else %}
+                    <a href="#login-modal" class="popup-top-anim btn btn-warning col-xs-12 col-md-12 send-prescription"><span class="glyphicon glyphicon-cart"></span>  Send Prescription <span class="glyphicon glyphicon-play"></span></a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    #accordion .panel-title a{
+        font-weight: normal !important;
+    }
+    .input-group{
+        margin-bottom: 0!important;
+    }
+    #priceStart , #priceEnd{
+        height:30px!important;
+        border-radius:0;
+        border: 1px solid #d2d2d2;
+
+    }
+    #accordion .panel-body{
+        background: #FFFFff!important;
+    }
+    #productFilter , #uploadPrescription{
+        display:none;
+    }
+    .btn-warning{
+        background: #ff6a00;
+        color: #ffffff!important;
+    }
+    .dropzone-upload{
+        border-radius: 0px;
+        background-color: #535b5c!important;
+    }
+    .dropzone-mobile{
+        z-index: 999!important;
+    }
+    .dropzone-mobile span{
+        z-index: 999!important;
+    }
+
+</style>

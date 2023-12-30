@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+
+<head>
+    <meta charset="utf-8"/>
+    <title>{{ globalOption.name }}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <meta name="MobileOptimized" content="320">
+    <meta property="og:site_name" content="{{ globalOption.name }}">
+    <meta property="og:title" content="{{ globalOption.name }}">
+    <meta property="og:description" content="-CUSTOMER VALUE-">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{{ image(globalOption.templateCustomize.webPath('logo')).resize() }}"><!-- link to image for socio -->
+    <meta property="og:url" content="{{ globalOption.domain }}">
+    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}">
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+    <script type="application/x-javascript"> addEventListener("load", function() {setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    {% stylesheets filter='cssrewrite'
+    'assets/template/mobile/css/bootstrap.min.css'
+    'assets/template/mobile/css/font-awesome.min.css'
+    'assets/template/mobile/css/jquery.mmenu.all.css'
+    'assets/template/mobile/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+    <!-- web-fonts -->
+    <link href='//fonts.googleapis.com/css?family=Abril+Fatface' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
+    <!-- //web-fonts -->
+    {{ include('frontend/template/mobile/templateCustomize.html.twig')}}
+</head>
+<body >
+{% block cssBlock %}{% endblock %}
+<div class="body-back siteBgColor">
+    <div class="masthead pdng-stn1">
+        <div class="phone-box wrap push" id="home">
+            <div class="menu-notify">
+                <div class="profile-left">
+                    <a href="#mm-menu" class="main-menu"><i class="fa fa-navicon"></i></a>
+                </div>
+                <div class="Profile-mid">
+                    <h5 class="pro-link"><a class="site-name" href="{{ path('mobile_home',{'subdomain':globalOption.subDomain}) }}">{{ globalOption.name }}</a></h5>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <!-- banner -->
+            <div class="details-grid">
+                <div class="details-shade">
+                    <div class="details-right">
+                       {% if globalOption.templateCustomize.webPath('logo') is not empty %} <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize(120) }}" alt=" ">{% endif %}
+                        <h3>Welcome To</h3>
+                     </div>
+                </div>
+            </div>
+            <!-- //banner -->
+            {% block body %}{% endblock %}
+            <!--/footer-->
+            <div class="w3agile">
+                <!-- modal -->
+                <div id="email-modal" class="mfp-hide">
+                    <div class="login-modal">
+                        <div class="booking-info">
+                            <h3><a href="{{ path('mobile_home',{'subdomain':globalOption.subDomain}) }}">{{ globalOption.name }}</a></h3>
+                        </div>
+                        <div class="login-form">
+                            <form action="" id="send-email" name="send-email" method="post">
+                                <div class="input-group ">
+                                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-user"></i></span>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" aria-describedby="basic-addon1">
+                                </div>
+                                <div class="input-group ">
+                                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-mobile"></i></span>
+                                    <input type="text" class="form-control mobile" id="mobile" name="mobile" placeholder="Enter your mobile no" aria-describedby="basic-addon1">
+                                </div>
+                                <div class="input-group ">
+                                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-envelope"></i></span>
+                                    <input type="text" class="form-control" id="email" name="email" placeholder="Enter your mobile no" aria-describedby="basic-addon1">
+                                </div>
+                                <div>
+                                    <textarea class="col-md-12 comment" name="content" id="content" placeholder="Enter any comment"></textarea>
+                                </div>
+                                <p class="text-center"><button class="btn comment col-md-12 label-primary"  type="submit" value="Sign In"><i class="fa fa-send"></i>&nbsp;Send</button></p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div id="sms-modal" class="mfp-hide">
+                    <div class="login-modal">
+                        <div class="booking-info">
+                            <h3><a href="{{ path('mobile_home',{'subdomain':globalOption.subDomain}) }}">{{ globalOption.name }}</a></h3>
+                        </div>
+                        <div class="login-form">
+                            <form action="" id="send-sms" name="send-sms" method="post">
+                                <div class="input-group ">
+                                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-mobile"></i></span>
+                                    <input type="text" class="form-control mobile" name="mobile" id="mobile" placeholder="Enter your mobile no" aria-describedby="basic-addon1">
+                                </div>
+                                <div>
+                                    <textarea class="col-md-12 comment sms-content" name="content" maxlength="140" id="content" placeholder="Enter any comment"></textarea>
+                                </div>
+                                <p class="text-center"><button class="comment btn col-md-12 label-primary"  type="submit" value="Sign In"><i class="fa fa-send"></i>&nbsp;Send</button></p>
+                            </form>
+                          </div>
+                    </div>
+                </div>
+                <!-- //modal -->
+                {% if globalOption.footerSetting.addressIconPage is empty %}
+                <div class="footer-bg" id="mobile-footer">
+                    <ul class="footer-icon">
+                        {% if globalOption.mobile is not empty %}
+                        <li>
+                            <a href="callto://088{{ globalOption.mobile }}" class="hvr-radial-out" data-title="Phone">
+                                <i area-hidden=true class="fa fa-phone"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a href="#sms-modal" class="hvr-radial-out sign-in popup-top-anim" data-title="">
+                                <i class="fa fa-comment"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:" class="scrollToTop" data-title="Top up">
+                                <i class="fa fa-hand-o-up"></i>
+                            </a>
+                        </li>
+                        {% if globalOption.mobile is not empty %}
+                        <li>
+                            <a href="#email-modal" class="hvr-radial-out sign-in popup-top-anim">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a class="last hvr-radial-out"
+                               href="{{ path('mobile_contact',{"subdomain":globalOption.subDomain}) }}" data-title="">
+                                <i class="fa fa-map-marker"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                {% endif %}
+
+            </div>
+            <!--/footer-->
+            <div class="w3agile agileinfo_copy_right">
+                <div class="agileinfo_copy_right_left">
+                    <p>{{ "now"|date("Y") }} &copy; {{ globalOption.name }}. {{ globalOption.footerSetting.copyRight }} | Design by <a href="http:www.umarlimited.com/">UMAR IT LIMITED</a></p>
+                </div>
+                <div class="agileinfo_copy_right_right">
+                    <ul class="social">
+                        <li><a class="social-linkedin" target="_blank" href="https://facebook.com/{{ globalOption.facebookPageUrl }}">
+                                <i></i>
+                                <div class="tooltip"><span>Facebook</span></div>
+                            </a></li>
+                        <li><a class="social-twitter" target="_blank" href="https://twitter.com/{{ globalOption.twitterUrl }}">
+                                <i></i>
+                                <div class="tooltip"><span>Twitter</span></div>
+                            </a></li>
+                        <li><a class="social-google" target="_blank" href="https://plus.google.com/{{ globalOption.googlePlus }}">
+                                <i></i>
+                                <div class="tooltip"><span>Google+</span></div>
+                            </a></li>
+                    </ul>
+                </div>
+                <div class="clearfix"> </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+{% render controller("FrontendBundle:TemplateWidget:mobileMenu",{'globalOption':globalOption.id}) %}
+{% javascripts
+'assets/template/mobile/js/jquery-2.1.4.min.js'
+'assets/template/mobile/js/bootstrap.min.js'
+'assets/template/plugin/jquery-inputmask/jquery.inputmask.bundle.min.js'
+'assets/template/plugin/numeric/jquery.numeric.js'
+'assets/template/plugin/validation/jquery.validate-1.14.0.min.js'
+'assets/template/plugin/validation/jquery-validate.bootstrap-tooltip.min.js'
+'assets/template/mobile/js/bigSlide.js'
+'assets/template/mobile/js/jquery.magnific-popup.js'
+'assets/template/mobile/js/modernizr.custom.js'
+'assets/template/mobile/js/jquery.mmenu.min.all.js'
+'assets/template/mobile/js/jquery.nicescroll.min.js'
+'assets/template/mobile/js/scripts.js'
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% block javascriptBlock %}{% endblock %}
+<script src="//maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDmior4xLqsriysUeQhtdSawc8yjDyaWaw"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#mm-menu").mmenu();
+        $('.popup-top-anim').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in'
+        });
+        $('.scrollToTop').click(function(){
+            $('html, body').animate({scrollTop : 0},800);
+            return false;
+        });
+        $(window).load(function() {
+            $('#gmap_canvas').show();
+        });
+        $(".numeric").numeric();
+        $(".mobile").inputmask("mask", {"mask": "99999-999-999"}); //specifying fn & options
+
+
+        $('.sms-content').keypress(function(e) {
+
+            var tval = $('textarea').val(),
+                    tlength = tval.length,
+                    set = 140,
+                    remain = parseInt(set - tlength);
+            $('#limit').text(remain);
+            if (remain <= 0 && e.which !== 0 && e.charCode !== 0) {
+                $('textarea').val((tval).substring(0, tlength - 1))
+            }
+        })
+
+
+        var validator =  $("#send-email").validate({
+
+            rules: {
+
+                "name": {required: true},
+                "mobile": {required: true},
+                "email": {valid: true},
+                "content": {required: true},
+            },
+
+            messages: {
+
+                "name":"Enter your full name",
+                "mobile":"Enter valid mobile no",
+                "content": "Enter your professional",
+            },
+
+            tooltip_options: {
+
+                "name": {placement:'bottom',html:true},
+                "mobile": {placement:'bottom',html:true},
+                "content": {placement:'bottom',html:true},
+
+            },
+            submitHandler: function(form) {
+
+                $.ajax({
+
+                    url         : $(form).attr( 'action' ),
+                    type        : $(form).attr( 'method' ),
+                    data        : new FormData(form),
+                    processData : false,
+                    contentType : false,
+                    success: function(response) {
+                        if(response == 'valid'){
+
+                        }
+                    },
+                    complete: function(){
+
+                    }
+                });
+            }
+
+        });
+        var validator =  $("#send-sms").validate({
+
+            rules: {
+                "mobile": {required: true},
+                "content": {required: true},
+            },
+
+            messages: {
+                "mobile":"Enter valid mobile no",
+                "content": "Enter your sms text only 160 characters",
+            },
+
+            tooltip_options: {
+                "mobile": {placement:'bottom',html:true},
+                "content": {placement:'bottom',html:true},
+            },
+            submitHandler: function(form) {
+
+                $.ajax({
+
+                    url         : '',
+                    type        : $(form).attr( 'method' ),
+                    data        : new FormData(form),
+                    processData : false,
+                    contentType : false,
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    complete: function(){
+
+                    }
+                });
+            }
+
+        });
+
+        {% block documentready %}
+        {% endblock %}
+
+    });
+</script>
+</body>
+</html>

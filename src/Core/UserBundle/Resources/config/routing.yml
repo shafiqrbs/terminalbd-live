@@ -1,0 +1,107 @@
+homepage:
+    path:     /backend
+    defaults: { _controller: "UserBundle:Default:landing" }
+
+admin:
+    pattern: /admin
+    defaults: { _controller: UserBundle:Default:admin }
+
+vendor:
+    pattern: /vendor
+    defaults: { _controller: UserBundle:Default:vendor }
+
+domain:
+    pattern: /domain
+    defaults: { _controller: UserBundle:Default:domain }
+
+website:
+    pattern: /website
+    defaults: { _controller: UserBundle:Default:website }
+
+customer:
+    pattern: /customer
+    defaults:  { _controller: CustomerBundle:Domain:index }
+
+domain_pendig:
+    pattern: /domain-pendeing
+    defaults: { _controller: UserBundle:Default:pendeing }
+
+domain_suspended:
+    pattern: /domain-suspended
+    defaults: { _controller: UserBundle:Default:suspended }
+
+tutor:
+    pattern: /tutor
+    defaults: { _controller: UserBundle:Default:tutor }
+
+general:
+    pattern: /general
+    defaults: { _controller: UserBundle:Default:general }
+
+landing_page:
+     pattern: /user-admin
+     defaults: { _controller: UserBundle:Default:landing }
+
+
+user_deactive:
+    pattern: /user/deactive/{id}
+    defaults: { _controller: UserBundle:User:userDeactive }
+    requirements:
+          id: \d+
+
+user_active:
+    pattern: /user/active/{id}
+    defaults: { _controller: UserBundle:User:userActive }
+    requirements:
+          id: \d+
+
+username_check:
+    pattern: /username/check
+    defaults: { _controller: UserBundle:User:usernameCheck }
+    options:
+            expose: true
+
+email_check:
+    pattern: /email/check
+    defaults: { _controller: UserBundle:User:emailCheck }
+    options:
+            expose: true
+
+user_auto_search:
+    pattern: /user/search
+    defaults: { _controller: UserBundle:User:autoSearch }
+    options:
+            expose: true
+
+fos_user_security:
+     resource: "@UserBundle/Resources/config/security.xml"
+
+fos_user_profile:
+     resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+     prefix: /profile
+
+fos_user_resetting:
+     resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+     prefix: /resetting
+
+fos_user_change_password:
+     resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+     prefix: /profile
+
+Core_user_group:
+    resource: "@UserBundle/Resources/config/user/user-manage.yml"
+    prefix: /system-users
+
+Core_system_user_group:
+    resource: "@UserBundle/Resources/config/user/system-user-manage.yml"
+    prefix: /users
+
+fos_user_registration:
+    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+    prefix: /signup
+
+user_lock:
+     pattern: /lock
+     defaults: { _controller: UserBundle:Default:lock }
+
+

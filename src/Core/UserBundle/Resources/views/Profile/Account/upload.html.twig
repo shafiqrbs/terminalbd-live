@@ -1,0 +1,39 @@
+<div style="height: auto;" id="accordion2-2" class="accordion collapse">
+    <form action="" id="upload" enctype="multipart/form-data" method="post">
+        <div class="controls">
+            <div class="fileupload-new thumbnail" style="width: 291px; height: 170px;">
+                {%  if(user.profile.webPath('path') is not null )  %}
+                    <img src="{{ image(user.profile.webPath('path')).resize(291,170) }}" alt="" />
+                {% else %}
+                    <img src="http://www.placehold.it/291x170/EFEFEF/AAAAAA&amp;text=no+image" alt="" />
+                {% endif %}
+            </div>
+        </div>
+        <div class="space10"></div>
+        <div class="fileupload fileupload-new" data-provides="fileupload">
+            <div class="input-append">
+                <div class="uneditable-input">
+                    <i class="icon-file fileupload-exists"></i>
+                    <span class="fileupload-preview"></span>
+                </div>
+																		<span class="btn btn-file">
+																		<span class="fileupload-new">Select file</span>
+																		<span class="fileupload-exists">Change</span>
+																		<input type="file" class="default" name="file" />
+																		</span>
+                <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+        <div class="controls">
+            <span class="label label-important">NOTE!</span>
+            <span>You can write some information here..</span>
+        </div>
+        <div class="space10"></div>
+        <div class="submit-btn">
+            <input type="submit" class="btn green" id="profile-submit"  name="submit" value="Upload">
+            <a href="javascript:" class="btn">Cancel</a>
+        </div>
+    </form>
+</div>

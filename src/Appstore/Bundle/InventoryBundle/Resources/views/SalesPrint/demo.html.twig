@@ -1,0 +1,118 @@
+{% extends '::print.html.twig' %}
+{% block body %}
+<div style="margin-top:{{ inventory.printTopMargin }}px;margin-left:{{ inventory.printLeftMargin }}px;">
+<table class="table table-border" >
+        <tr class="print-header">
+            <th colspan="2">
+                <strong class="title">Invoice:{{ entity.invoice }}</strong>
+                <span class="barcode">{{ barcode|raw }}</span>
+            </th>
+        </tr>
+        <tr class="head-black">
+            <th style="padding-left:10px">BILL TO</th><th style="padding-right:10px; text-align: right!important;">TRANSACTION</th>
+        </tr>
+        <tr>
+            <td>
+                <ul class="unstyled">
+                    {% if entity.customer is not empty %}<li><strong>Buyer Name:</strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                    {% if entity.customer is not empty %}<li><strong>Address:</strong>&nbsp;{{ entity.customer.address }}</li>{% endif %}
+                    {% if entity.customer is not empty and entity.customer.location is not empty %}<li style="padding-left: 16px!important;">{{ entity.customer.location.name }}, {{ entity.customer.location.parent.name }}</li>{% endif %}
+                    {% if entity.customer is not empty %}<li><strong>Mobile:</strong>&nbsp;{{ entity.customer.mobile }}</li>{% endif %}
+                </ul>
+            </td>
+            <td class="pull-right">
+                <ul class="unstyled">
+                    <li><strong>Date: </strong>{{ entity.created|date('d-m-Y') }}</li>
+                    <li><strong>Sold By: </strong>{{ entity.salesBy }}</li>
+                    {% if entity.transactionMethod is not empty and entity.payment > 0 %}<li><strong><i class="icon-money"></i>&nbsp;</strong>{{ entity.transactionMethod.name }}</li>{% endif %}
+                    {% if entity.paymentMobile is not empty %}<li><strong><i class="icon-money"></i></strong>&nbsp;{{ entity.paymentMobile }}/{{ entity.transactionId }}</li>{% endif %}
+                    {% if entity.cardNo is not empty %}<li><strong><i class="icon-money"></i>&nbsp;</strong>&nbsp;{{ entity.bank.name  }}/{{ entity.cardNo }}</li>{% endif %}
+                    <li></li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+{% if entity.salesItems is defined and  entity.salesItems is not empty  %}
+    <table class="table table-bordered table-striped">
+        <thead class="flip-content ">
+        <tr class="head-black">
+            <th class="numeric span1" ><i class="icon-reorder"></i> &nbsp;SKU</th>
+            <th class="numeric span8" >Description</th>
+            <th class="numeric span1" >Quantity</th>
+            <th class="numeric span1" >Unit Price</th>
+            <th class="numeric span1" >Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for salesItem in entity.salesItems %}
+            <tr>
+                <td class="numeric" >{{ loop.index }}. {{ salesItem.item.sku }}</td>
+                <td class="numeric" >{{ salesItem.item.name }}{% if salesItem.serialNo %}-{{ salesItem.serialNo }}{% endif %}
+                    {% if salesItem.serialNo %}
+                    <br>
+                    {{ salesItem.assuranceType }} - {{ salesItem.assuranceToCustomer }}
+                    {% endif %}
+                </td>
+                <td class="numeric" >{{ salesItem.quantity }}</td>
+                <td class="numeric" >{{ salesItem.salesPrice|number_format() }}</td>
+                <td class="numeric" >{{ salesItem.subTotal|number_format() }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr><td colspan="4" class="border-left-right-top-bottom border-top"><strong class="pull-right" >Total Amount</strong></td><td><strong>{{ entity.subTotal|number_format() }}</strong></td></tr>
+        {% if entity.discount %}<tr><td colspan="4" class="border-left-right-top-bottom"><strong class="pull-right" >Discount Amount</strong></td><td><strong>{{ entity.discount|number_format() }}</strong></td></tr>{% endif %}
+        {% if entity.vat %}<tr><td colspan="4" class="border-left-right-top-bottom"><strong class="pull-right" >Vat/Tax Amount</strong></td><td><strong>{{ entity.vat|number_format() }}</strong></td></tr>{% endif %}
+        {% if entity.deliveryCharge %}<tr><td colspan="4" class="border-left-right-top-bottom"><strong class="pull-right" >Delivery Charge</strong></td><td><strong>{{ entity.deliveryCharge|number_format() }}</strong></td></tr>{% endif %}
+        <tr><td colspan="4" class="border-left-right-top-bottom"><strong class="pull-right" >Grand Total</strong></td><td><strong>{{ (entity.total + entity.deliveryCharge) |number_format() }}</strong></td></tr>
+        <tr><td colspan="4" class="border-left-right-top-bottom"><strong class="pull-right" >Paid Amount</strong></td><td><strong>{{ entity.payment|number_format() }}</strong></td></tr>
+        {% if entity.due > 0 %}<tr><td class="border-left-right-top-bottom" colspan="4"><strong class="pull-right" >Due Amount</strong></td><td><strong>{{ (entity.due + entity.deliveryCharge) |number_format() }}</strong></td></tr>{% endif %}
+        <tr><td colspan="5" class="border-left-right-top-bottom" style="text-align:right"><strong>In word TK.</strong>({{ inWard|raw }} only).</td></tr>
+        <tr>
+            <td colspan="5" style="border: #ffffff!important;">
+                <div class="approve-box span6" style="font-size: 14px!important;text-align: left!important;">
+                    <span style="display:inline-block;border-top:2px solid #000">Received with good condition by</span>
+                </div>
+                <div class="approve-box span6" style="text-align: right; font-size: 14px!important;">
+                    <span style="display:inline-block;border-top:2px solid #000">Authorized signature</span>
+                </div>
+            </td>
+        </tr>
+        {# <tr>
+             <td colspan="5" style="border: #ffffff!important;">
+                 <div class="span12 text-center">
+                     In Warranty Period Customer will bear carrying Cost. Warranty will be void if seal broken, physical damage/burn or improper use.
+                 </div>
+             </td>
+         </tr>#}
+        {% if inventory.isPrintFooter == 1 %}
+        <tr><td colspan="5" style="text-align:center">{{ portal_power }}</td></tr>
+        {% endif %}
+        </tfoot>
+    </table>
+{% endif %}
+</div>
+<style>
+    .table-bordered tr td.border-left-right-top-bottom{
+    border: #fff!important;
+}
+    .table-bordered tr td.border-left{
+    border: #0000CC!important;
+}
+    .table-bordered tr td.border-right{
+    border: #0000CC!important;
+}
+    .table-bordered tr td.border-top{
+    border: #0000CC!important;
+}
+    .table-bordered tr td.border-bottom{
+    border: #0000CC!important;
+}
+    .table-bordered tr td.border-left-right{
+    border: #0000CC!important;
+}
+    .table-bordered tr td.border-top-bottom{
+    border: #0000CC!important;
+}
+</style>
+{% endblock %}

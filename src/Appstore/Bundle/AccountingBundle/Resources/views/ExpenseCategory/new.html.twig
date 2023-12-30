@@ -1,0 +1,131 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+    <!-- BEGIN category HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="category-title">
+                Expense Category
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li>
+                    <a href="{{ path('expensecategory') }}">Expense Category</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li><a href="#">Expense Category</a></li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END category HEADER-->
+    <!-- BEGIN category CONTENT-->
+    <div class="row-fluid">
+    <div class="span12">
+
+    <div class="portlet box green tabbable">
+
+
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-reorder"></i>Expense Category</div>
+            <div class="actions">
+                <div class="btn-group">
+                    <a class="btn black" href="{{ path('expensecategory') }}"><i class="icon-th-list"></i>&nbsp;Category</a>
+                </div>
+            </div>
+        </div>
+
+
+    <div class="portlet-body">
+        <div class="portlet-body form">
+            {% include('flash-message.html.twig')  %}
+            <!-- BEGIN FORM-->
+            {{ form_start(form) }}
+            {{ form_row(form._token) }}
+            <div class="row-fluid">
+                <!--/span-->
+                <div class="span6">
+                    <div class="control-group">
+                        <label class="control-label"  for="parent" >Account Head<span class="required">*</span></label>
+                        <div class="controls">
+                            <div class="input-icon left">
+                                {{ form_widget(form.accountHead) }}
+                                {{ form_errors(form.accountHead) }}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <!--/span-->
+                <div class="span6">
+                    <div class="control-group">
+                        <label class="control-label"  for="parent" >Parent Category</label>
+                        <div class="controls">
+                            <div class="input-icon left">
+                                {{ form_widget(form.parent) }}
+                                {{ form_errors(form.parent) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span6">
+                    <div class="control-group">
+                        <label class="control-label" for="name">Name<span class="required">*</span></label>
+                        <div class="controls">
+                            <div class="input-icon left">
+                                <i class="icon-font"></i>
+                                {{ form_widget(form.name) }}
+                                {{ form_errors(form.name) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span6">
+                    <div class="control-group">
+                        <label class="control-label" >Status &nbsp; </label>
+                        <div class="controls">
+                            <div class="input-icon left">
+                                {{ form_widget(form.status) }}
+                                {{ form_errors(form.status) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/span-->
+            </div>
+
+
+            <div class="form-actions portlet box grey">
+                <div class="pull-center">
+                    <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                    <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                    {% if(entity.id > 0 ) %}
+                        <a href="{{ path('category_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+                    {% endif %}
+                </div>
+            </div>
+            {{ form_end(form) }}
+            <!-- END FORM-->
+        </div>
+    </div>
+    </div>
+
+    </div>
+    </div>
+    </div>
+{% endblock %}

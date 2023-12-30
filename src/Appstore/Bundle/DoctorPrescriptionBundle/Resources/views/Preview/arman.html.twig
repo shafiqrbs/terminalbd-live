@@ -1,0 +1,512 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<link rel="stylesheet" href="{{ asset('assets/plugins/font-awesome/css/fa-font-awesome.css') }}"/>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script type="text/javascript">
+        window.print();
+        setTimeout(function () {
+            window.open('', '_self', '');
+            window.close();
+        }, 2000);
+    </script>
+</head>
+<div style="margin-top:{{ entity.dmsConfig.printTopMargin }}px;margin-left:{{ entity.dmsConfig.printLeftMargin }}px; width: 880px;">
+    {%  if entity.dmsConfig.isPrintHeader == 1 %}
+        <table class="table">
+            <tr>
+                <td>
+                    <div class="span4  pull-left invoice-logo-space">
+                        {%  if entity.dmsConfig.invoicePrintLogo == 1 %}
+                            {% if entity.dmsConfig.globalOption.templateCustomize.webPath('logo') is not empty %}   <img style="max-width: 180px; max-height: 60px" src="/{{ entity.dmsConfig.globalOption.templateCustomize.webPath('logo') }}">{% endif %}
+                        {%  endif %}
+                    </div>
+                </td>
+                <td class="pull-right">
+                    <div>
+                        <ul class="unstyled">
+                            <li><strong>{{ entity.dmsConfig.globalOption.name }}</strong></li>
+                            <li><i class="icon-phone"></i>&nbsp;{{ entity.dmsConfig.globalOption.mobile }}</li>
+                            {% if  entity.dmsConfig.globalOption.email is not empty %}<li><i class="icon-envelope"></i>&nbsp;{{ entity.dmsConfig.globalOption.email }}</li>{% endif %}
+                            {% if  entity.dmsConfig.globalOption.contactPage.address1 %}<li><i class="icon-home"></i>&nbsp;{{ entity.dmsConfig.globalOption.contactPage.address1 }}</li>{% endif %}
+                            {% if entity.dmsConfig.globalOption.domain is not empty %}<li><i class="icon-link"></i>&nbsp;www.{{ entity.dmsConfig.globalOption.domain }}</li>{% endif %}
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+    <table class="table table-border" style="height:80px" >
+        <tr>
+            <td class="" style="margin-left:80px;width: 400px!important;display:inline-block;margin-top:2px;font-weight: bold">{% if entity.customer is not empty %}{{ entity.customer.name }}{% endif %} , ID. {{ entity.invoice }}</td>
+            <td class="" style="margin-left:35px;width: 80px!important;display:inline-block;margin-top:2px;font-weight: bold">{% if entity.customer is not empty %}{{ entity.customer.age }} {{ entity.customer.ageType }}{% endif %}</td>
+            <td class="" style="margin-left:30px;width: 80px!important;display:inline-block;margin-top:2px;font-weight: bold">{% if entity.customer is not empty %}{{ entity.customer.gender }}{% endif %}</td>
+            <td class="" style="margin-left:15px;width: 90px!important;display:inline-block;margin-top:2px;font-weight: bold">{% if entity.customer is not empty %}{{ entity.updated|date('d-m-Y') }}{% endif %}</td>
+        </tr>
+    </table>
+    <table class="table table-bordered table-striped">
+        <tbody>
+        <tr>
+            <td class="span4">
+                <table class="table">
+
+                    <tr>
+                        <td style="height: 260px; margin-top:60px;display: inline-block;">
+                            <ul class="check-styled">
+                            {% for invoiceParticular in entity.invoiceParticulars %}
+                            {% if invoiceParticular.dmsService is not empty and invoiceParticular.dmsService.slug|trim =='chief-complaints' %}
+                                <li>
+                                    <table>
+                                        <tr>
+                                            <td class="td-label" {% if invoiceParticular.teethNo[0] is empty %} colspan="2" {% endif %} ><i class="fa fa-check" aria-hidden="true"></i> {{ invoiceParticular.metaValue }}</td>
+                                            {% if invoiceParticular.teethNo is not empty and  invoiceParticular.teethNo[0] is not empty %}
+                                                <td style="width:90px">
+                                                    <table class="dms-table">
+                                                        {% set upperLeftTeeths = {1:8,2:7,3:6,4:5,3:4,2:2,1:1} %}
+                                                        {% set upperRightTeeths = {9:1,10:2,11:3,12:4,13:5,14:6,15:7,16:8} %}
+                                                        {% set lowerLeftTeeths = {24:8,23:7,22:6,21:5,20:4,19:3,18:2,17:1} %}
+                                                        {% set lowerRightTeeths = {25:1,26:2,27:3,28:4,29:5,30:6,31:7,32:8} %}
+                                                        <tr>
+                                                            <td class="dms-td dms-td-border-none dms-td-border-bottom">
+                                                                {% for key,value in upperLeftTeeths %}
+                                                                    {% if key in invoiceParticular.teethNo  %}
+                                                                        <span>{{ value }}</span>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </td>
+                                                            <td class="dms-td dms-td-border-bottom dms-td-right">
+                                                                {% for key,value in upperRightTeeths %}
+                                                                    {% if key in invoiceParticular.teethNo  %}
+                                                                        <span>{{ value }}</span>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="dms-td dms-td-border-none">
+                                                                {% for key,value in lowerLeftTeeths %}
+                                                                    {% if key in invoiceParticular.teethNo  %}
+                                                                        <span>{{ value }}</span>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </td>
+                                                            <td class="dms-td dms-td-right">
+                                                                {% for key,value in lowerRightTeeths %}
+                                                                    {% if key in invoiceParticular.teethNo %}
+                                                                        <span>{{ value }}</span>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            {% endif %}
+                                        </tr>
+                                    </table></li>
+                            {% endif %}
+                            {% endfor %}
+                            </ul>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td style="height: 280px;">
+                            <ul class="check-styled">
+                                {% for invoiceParticular in entity.invoiceParticulars %}
+                                    {% if invoiceParticular.dmsService is not empty and invoiceParticular.dmsService.slug|trim =='presenting' %}
+                                       <li>
+                                            <table>
+                                                <tr>
+                                                    <td class="td-label"  {% if invoiceParticular.teethNo[0] is empty %} colspan="2" {% endif %} ><i class="fa fa-check" aria-hidden="true"></i> {{ invoiceParticular.metaValue }}</td>
+                                                    {% if invoiceParticular.teethNo is not empty and  invoiceParticular.teethNo[0] is not empty %}
+                                                    <td style="width:90px">
+                                                        <table class="dms-table">
+                                                            {% set upperLeftTeeths = [8,7,6,5,4,3,2,1] %}
+                                                            {% set upperRightTeeths = {9:1,10:2,11:3,12:4,13:5,14:6,15:7,16:8} %}
+                                                            {% set lowerLeftTeeths = {24:8,23:7,22:6,21:5,20:4,19:3,18:2,17:1} %}
+                                                            {% set lowerRightTeeths = {25:1,26:2,27:3,28:4,29:5,30:6,31:7,32:8} %}
+
+                                                            <tr>
+                                                                <td class="dms-td dms-td-border-none dms-td-border-bottom">
+                                                                    {% for key,value in upperLeftTeeths %}
+                                                                        {% if key in invoiceParticular.teethNo  %}
+                                                                            <span>{{ value }}</span>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                </td>
+                                                                <td class="dms-td dms-td-border-bottom dms-td-right">
+                                                                    {% for key,value in upperRightTeeths %}
+                                                                        {% if key in invoiceParticular.teethNo  %}
+                                                                            <span>{{ value }}</span>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="dms-td dms-td-border-none">
+                                                                    {% for key,value in lowerLeftTeeths %}
+                                                                        {% if key in invoiceParticular.teethNo  %}
+                                                                            <span>{{ value }}</span>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                </td>
+                                                                <td class="dms-td dms-td-right">
+                                                                    {% for key,value in lowerRightTeeths %}
+                                                                        {% if key in invoiceParticular.teethNo %}
+                                                                            <span>{{ value }}</span>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                    {% endif %}
+                                                </tr>
+                                            </table>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+
+                    <tr><td style="height: 160px">
+                            <ul class="styled">
+                                {% for investigations in entity.investigations %}
+                                    <li>{{ investigations.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="">
+                            <ul class="check-styled">
+                                {% for invoiceParticular in entity.invoiceParticulars %}
+                                    {% if invoiceParticular.dmsService is not empty and invoiceParticular.dmsService.slug|trim =='advise' %}
+                                        <li>
+                                            <table>
+                                                <tr>
+                                                    <td class="td-label" {% if invoiceParticular.teethNo[0] is empty %} colspan="2" {% endif %} ><i class="fa fa-check" aria-hidden="true"></i> {{ invoiceParticular.metaValue }}</td>
+                                                    {% if invoiceParticular.teethNo is not empty and  invoiceParticular.teethNo[0] is not empty %}
+                                                        <td style="width:90px">
+                                                            <table class="dms-table">
+                                                                {% set upperLeftTeeths = [8,7,6,5,4,3,2,1] %}
+                                                                {% set upperRightTeeths = {9:1,10:2,11:3,12:4,13:5,14:6,15:7,16:8} %}
+                                                                {% set lowerLeftTeeths = {24:8,23:7,22:6,21:5,20:4,19:3,18:2,17:1} %}
+                                                                {% set lowerRightTeeths = {25:1,26:2,27:3,28:4,29:5,30:6,31:7,32:8} %}
+
+                                                                <tr>
+                                                                    <td class="dms-td dms-td-border-none dms-td-border-bottom">
+                                                                        {% for key,value in upperLeftTeeths %}
+                                                                            {% if key in invoiceParticular.teethNo  %}
+                                                                                <span>{{ value }}</span>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    </td>
+                                                                    <td class="dms-td dms-td-border-bottom dms-td-right">
+                                                                        {% for key,value in upperRightTeeths %}
+                                                                            {% if key in invoiceParticular.teethNo  %}
+                                                                                <span>{{ value }}</span>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="dms-td dms-td-border-none">
+                                                                        {% for key,value in lowerLeftTeeths %}
+                                                                            {% if key in invoiceParticular.teethNo  %}
+                                                                                <span>{{ value }}</span>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    </td>
+                                                                    <td class="dms-td dms-td-right">
+                                                                        {% for key,value in lowerRightTeeths %}
+                                                                            {% if key in invoiceParticular.teethNo %}
+                                                                                <span>{{ value }}</span>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    {% endif %}
+                                                </tr>
+                                            </table></li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+            <td class="span8">
+                <table class="table">
+                    <tr><td><br/><br/><br/></td></tr>
+                    <tr>
+                        <td  class="numeric">
+                            <ul class="unstyled" style="margin-bottom: 50px !important; display: inline-block; margin-top: 40px!important;">
+                                {% for medicine in entity.invoiceMedicines %}
+                                    <li> {{ loop.index }}. {{ medicine.medicine.medicineForm }} {{ medicine.medicine.name }} {{ medicine.medicine.strength }} <br/>
+                                        {{ medicine.medicineQuantity }}  {{ medicine.medicineDose }} - {{ medicine.medicineDoseTime }} - {{ medicine.medicineDuration }} {{ medicine.medicineDurationType }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr><td><strong>Special Advice:</strong><br/><br/></td></tr>
+                    <tr>
+                        <td  class="numeric">
+                            <ul class="unstyled">
+                                {% for special in entity.specialAdvises %}
+                                    <li> {{ loop.index }}. {{ special.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+        </tbody>
+        {#<tfoot>
+        <tr><td colspan="3">&nbsp;</td></tr>
+        <tr><td colspan="3">&nbsp;</td></tr>
+        <tr>
+            <td colspan="3">
+                <div class="span8 left"><div class="text-center">&nbsp;</div></div>
+                <div class="span4 left">
+                    <div class="text-center">{% if entity.assignDoctor is not empty %}
+                            <ul class="unstyled">
+                                <li><strong>{{ entity.assignDoctor.name }}</strong></li>
+                                <li>{{ entity.assignDoctor.educationalDegree|raw }}</li>
+                                <li>{{ entity.assignDoctor.specialist|raw }}</li>
+                                <li>{{ entity.assignDoctor.designation }}</li>
+                                <li>{{ entity.assignDoctor.currentJob }}</li>
+                            </ul>
+                        {% endif %}</div>
+                </div>
+
+            </td>
+        </tr>
+        </tfoot>#}
+    </table>
+
+</div>
+<style>
+    ul{
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    ul li{
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .styled li{
+        list-style: square!important;
+        margin-left: 15px!important;
+        padding-bottom: 5px!important;
+        width: 100%;
+    }
+    .check-styled{
+        margin-left: -15px!important;
+    }
+
+    .check-styled li{
+        padding-bottom:0!important;
+        line-height:35px;
+        height: 35px;
+    }
+    .unstyled li{
+        padding-bottom: 5px!important;
+        font-weight: bold;
+        {% if entity.dmsConfig.bodyFontSize is not empty %}
+            font-size: {{ entity.dmsConfig.bodyFontSize }}!important;
+        {% else %}
+            font-size: 18px;
+        {% endif %}
+    }
+    .print-header .title-center{
+        float: none!important;
+        text-align: center;
+        text-transform: uppercase;
+    }
+    .print-header .barcode-left{
+        float: left;
+        padding-left: 10px;
+    }
+    .print-header .barcode-right{
+        float: right;
+        padding-right: 10px;
+    }
+    .print-footer .left{
+        margin-left: 30px;
+    }
+    .print-footer .center{
+        text-align: center;
+    }
+    .print-footer .right{
+        float: right;
+        padding-right:30px;
+    }
+
+    .left{
+        float: left;
+    }
+    .center{
+        text-align: center;
+    }
+    .right{
+        float: right;
+    }
+
+
+    .table thead tr th.text-right , .table-bordered tr td.text-right{
+        text-align:right!important;
+    }
+    .text-center{
+        text-align:center!important;
+    }
+
+    .span4 {
+        width: 31.623931623931625%;
+    }
+
+    .table thead tr th{
+        {% if entity.dmsConfig.invoiceFontSize is not empty %}
+            font-size: {{ entity.dmsConfig.invoiceFontSize }}!important;
+        {% else %}
+            font-size: 15px;
+        {% endif %}
+    }
+
+    .table td{
+        {% if entity.dmsConfig.invoiceFontSize is not empty %}
+        font-size: {{ entity.dmsConfig.invoiceFontSize }}!important;
+        {% else %}
+            font-size: 15px;
+        {% endif %}
+
+    }
+    .service-group{
+        background-color: #ddddff!important;
+    }
+    table.table{
+        margin-bottom: 0!important;
+    }
+    .table td {
+        line-height: 18px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+    .table-striped tbody>tr:nth-child(odd)>td, .table-striped tbody>tr:nth-child(odd)>th {
+        background-color:#fff!important;
+    }
+    table.table-border{
+        border: 1px solid #fff!important;
+    }
+    .print-header{
+        border: 1px solid #c0c5c9!important;
+    }
+    .head-black{
+        border: 1px solid #c0c5c9!important;
+    }
+    .table-bordered tr td{
+        border: 1px solid #fff!important;
+    }
+
+    .span12{
+        width: 100%
+    }
+    .span9{
+        width:75%
+    }
+    .span8{
+        width:66.66666667%
+    }
+    .span6{
+        width: 50%
+    }
+    .span4{
+        width: 33.33333333%!important;
+    }
+    .span3{
+        width: 25%
+    }
+    .span2{
+        width: 12.50%
+    }
+    .span1{
+        width: 8.33333333%
+    }
+
+    .dms-table {
+
+    }
+    .dms-table tr{
+        height:10px!important;
+        line-height: 10px!important;
+    }
+    .dms-table .dms-td{
+        height: 14px!important;
+        line-height: 6px;
+        padding: 0!important;
+        width:40px;
+        font-size: 12px;
+
+    }
+    .dms-table .dms-td-border-none{
+        border: none!important;
+        text-align:right!important;
+        border-right:1px solid #000!important;
+        padding-right: 2px!important;
+    }
+    .dms-table .dms-td-border-bottom{
+        border-bottom:1px solid #000!important;
+    }
+
+    .dms-td-right{
+        margin-top: -1px;
+        display: inline-block;
+    }
+
+    .table td.td-label{
+        vertical-align: middle;
+        height: 32px;
+        display: inline-block;
+        line-height: 32px;
+        width:140px;
+        {% if entity.dmsConfig.sidebarFontSize is not empty %}
+            font-size: {{ entity.dmsConfig.sidebarFontSize }}!important;
+        {% else %}
+            font-size: 14px;
+        {% endif %}
+    }
+
+
+    .dms-table .dms-td ul.rightTeeth , .dms-table .dms-td ul.leftTeeth{
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    span{
+        display: inline-block;
+        border: 1px solid #000;
+        padding: 2px;
+    }
+
+    .dms-table .dms-td ul.rightTeeth{
+        float:right;
+    }
+    .dms-table .dms-td ul.leftTeeth{
+
+    }
+
+
+
+
+</style>
+</html>

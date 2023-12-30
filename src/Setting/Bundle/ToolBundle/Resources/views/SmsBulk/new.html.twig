@@ -1,0 +1,172 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN syndicate HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="syndicate-title">
+                    Bulk SMS Create
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('smsbulk') }}">Bulk SMS Create</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Form Components</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END syndicate HEADER-->
+        <!-- BEGIN syndicate CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Bulk SMS Create Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red" href="{{ path('smsbulk_new') }}"><i class="icon-plus"></i>&nbsp; Create SMS</a>
+                                <a class="btn" href="{{ path('smsbulk') }}"><i class="icon-th-list"></i>&nbsp;Bulk SMS</a>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Location</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                {{ form_widget(form.location) }}
+                                                {{ form_errors(form.location) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Source To</label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                {{ form_widget(form.sourceTo) }}
+                                                {{ form_errors(form.sourceTo) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12 ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Name <span class="required">*</span></label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.name) }}
+                                                {{ form_errors(form.name) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12 ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Sms Text <span class="required">*</span></label>
+                                        <div class="controls">
+                                            <div class="input-icon left">
+                                                <i class="icon-font"></i>
+                                                {{ form_widget(form.smsText) }}
+                                                {{ form_errors(form.smsText) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12 ">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Bulk Mobile</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.bulkMobile) }}
+                                            {{ form_errors(form.bulkMobile) }}
+                                            <span class="label label-important">NOTE!</span>
+                                            <span>
+                                           Add Bulk mobile no. follow this way. 0171000000,01710000001,,01710000002
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {#<div class="row-fluid">
+
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" >Add excel or csv file.</label>
+                                        <div class="controls">
+                                            <div data-provides="fileupload" class="fileupload fileupload-new">
+                                                <div>
+													<span class="">
+                                                        {{ form_widget(form.file) }}
+                                                        {{ form_errors(form.file) }}
+                                                    </span>
+                                                    <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                                </div>
+                                            </div>
+                                            <span class="label label-important">NOTE!</span>
+                                            <span>Only accept file excel or csv.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>#}
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-center">
+                                    <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                    <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                                    {% if(entity.id > 0 ) %}
+                                        <a href="{{ path('smsbulk_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+ <style>
+     .select2-container-multi .select2-choices .select2-search-field input{
+         height: auto;
+         min-height: 24px;
+         padding:0;
+         line-height: 30px;
+     }
+ </style>
+{% endblock %}

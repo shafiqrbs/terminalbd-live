@@ -1,0 +1,107 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print-dms.css') }}"/>
+<style>
+
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+
+    .report-title-box{
+        height: 40px;
+        line-height: 40px;
+        background-color: #f1f4f8;
+    }
+
+    .report-title{
+        font-size: 20px;
+    }
+
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-left{
+        text-align: left!important;
+        display: block;
+        padding-left: 20px;
+        float: left;
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+        float: right;
+    }
+
+</style>
+<div class="container-fluid">
+    <div class="form-actions portlet box green">
+        <div class="report-title-box">
+            <div class="pull-left report-title">Daily Sales Overview</div><div class="pull-right"> {{ "now"|date("d-F-Y") }}</div>
+        </div>
+        <div class="portlet-body">
+            <div class="clearfix">&nbsp;</div>
+            <table class="table table-bordered table-striped table-condensed flip-content ">
+                <tbody class="">
+                <tr>
+                    <th class="numeric span11">Sub-total</th>
+                    <th class="numeric">{{ (salesOverview.subTotal)|number_format }}</th>
+                </tr>
+                <tr>
+                    <th class="numeric span11">Discount</th>
+                    <th class="numeric">{{ (salesOverview.discount)|number_format }}</th>
+                </tr>
+                <tr>
+                    <th class="numeric span11">Net Total</th>
+                    <th class="numeric">{{ (salesOverview.subTotal - salesOverview.discount)|number_format }}</th>
+
+                </tr>
+                <tr>
+                    <th class="numeric span11">Received</th>
+                    <th class="numeric">{{ (salesOverview.payment)|number_format }}</th>
+
+                </tr>
+                <tr>
+                    <th class="numeric span11">Due</th>
+                    <th class="numeric">{{ (salesOverview.subTotal - salesOverview.discount - salesOverview.payment)|number_format }}</th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+

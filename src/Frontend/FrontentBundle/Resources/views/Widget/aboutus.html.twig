@@ -1,0 +1,35 @@
+{% set count = about.children|length %}
+{% if count == 2 or count > 2   %}
+    {% set limit = 2 %}
+    {% set column = 6 %}
+{% elseif count == 1  %}
+    {% set limit = 1 %}
+    {% set column = 9 %}
+{% else %}
+    {% set limit = 1 %}
+    {% set column = 12 %}
+{% endif %}
+
+{% if about is not null %}
+<div class="col-md-{{ column }}">
+    <h4>&nbsp;</h4>
+    <p>{{ about.content|truncate(150)|raw }}</p>
+    <div class="text-left">
+        <a href="" class="btn btn-sm orange">Read More<i class="fa fa-link"></i></a>
+    </div>
+</div>
+{% for child in about.children|slice(0,limit)  %}
+    <div class="col-md-3">
+        <div class="serviceBox">
+            <div class="service-icon">
+                <i class="fa fa-globe"></i>
+            </div>
+            <div class="service-content">
+                <h3>{{ child.name }}</h3>
+                <div class="line"></div>
+                <p>{{ child.content|truncate(150)|raw }}</p>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+{% endif %}

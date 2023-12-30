@@ -1,0 +1,219 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN inventory_salesreturn_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="inventory_salesreturn_order-title">
+                    Sales Return
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_salesreturn') }}">Sales Return</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Add/Edit Sales Return</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END inventory_salesreturn_order HEADER-->
+        <!-- BEGIN inventory_salesreturn_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Sales Details</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn black" href="{{ path('inventory_salesreturn') }}"><i class="icon-th-list"></i>&nbsp;Sales Return</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+
+                                <div class="span3">
+                                    <h4>About:</h4>
+                                    <ul class="unstyled">
+                                        {% if entity.customer is not empty %}<li><strong>Customer #:</strong>&nbsp;{{ entity.customer.name }}</li>{% endif %}
+                                        <li><strong>Invoice ID:</strong>&nbsp;{{ entity.invoice }}</li>
+                                        <li><strong>Total item:</strong>&nbsp;{{ entity.totalItem }}</li>
+                                        <li><strong>Created:</strong>&nbsp;{{ entity.created|date('d-m-Y') }}</li>
+                                        <li><strong>Created By:</strong>&nbsp;{% if entity.createdBy is defined and entity.createdBy is not empty %}{{ entity.createdBy }}{% endif %}</li>
+                                    </ul>
+                                </div>
+
+                                <div class="span3 invoice-payment">
+                                    <h4>Payment Details:</h4>
+                                    <ul class="unstyled">
+
+                                        <li><strong>Sub-Total BDT:</strong>&nbsp;{{ entity.subTotal|number_format() }}</li>
+                                        <li><strong>Total BDT:</strong>&nbsp;{{ entity.total|number_format() }}</li>
+                                        <li><strong>Discount BDT:</strong>&nbsp;{{ entity.discount|number_format() }}</li>
+                                        <li><strong>Due BDT:</strong>&nbsp;{{ entity.due|number_format() }}</li>
+
+                                    </ul>
+                                </div>
+                                <div class="span3">
+                                    <h4>Payment method:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Payment status</strong>&nbsp;{{  entity.paymentStatus|capitalize }}</li>
+                                        <li><strong>Payment method:</strong>&nbsp;{{ entity.paymentMethod }}</li>
+                                        {% if entity.paymentCard is not empty %}<li><strong>Payment Card:</strong>&nbsp;{{ entity.paymentCard.name }}{% endif %}</li>
+                                        {% if entity.cardNo is not empty %}<li><strong>Cheque/Card no:</strong>&nbsp;{{ entity.cardNo }}</li>{% endif %}
+                                        {% if entity.bank is not empty %}<li><strong>Bank:</strong>&nbsp;{{ entity.bank.name  }}</li>{% endif %}
+
+                                    </ul>
+                                </div>
+                                <div class="span3">
+                                    <h4>Return Sales:</h4>
+                                    <ul class="unstyled">
+                                        <li><strong>Created:</strong>&nbsp;{{ salesReturn.updated|date('d-m-Y') }}</li>
+                                        <li><strong>Created by:</strong>&nbsp;{{ salesReturn.createdBy }}</li>
+                                        <li><strong>Total Item/Quantity:</strong>&nbsp;{{ salesReturn.totalItem }}/{{ salesReturn.totalQuantity }}</li>
+                                        <li><strong>Total Amount:</strong>&nbsp;{{ salesReturn.total }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% include('flash-message.html.twig')  %}
+
+                            <form>
+                                <div class="row-fluid box green">
+                                    {% if entity.salesItems is defined and  entity.salesItems is not empty  %}
+                                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                            <thead class="flip-content ">
+                                            <tr class="head-green">
+                                                <td>&nbsp;&nbsp;<i class="icon-reorder"></i></td>
+                                                <th class="numeric" >Item</th>
+                                                <th class="numeric" >Item SKU</th>
+                                                <th class="numeric" >Barcode</th>
+                                                <th class="numeric" >Sales price</th>
+                                                <th class="numeric" >Sub-total</th>
+                                                <th class="numeric" >Qnt</th>
+                                                <th class="numeric" >Return Qnt</th>
+                                                <th class="numeric" >Return price</th>
+                                                <th class="numeric" >Return subTotal</th>
+                                                <th><i class="icon-cogs"></i></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% if entity.salesItems is not empty %}
+                                                {% for salesItem in entity.salesItems %}
+                                                    <tr>
+                                                        <td class="numeric" >{{ loop.index }}</td>
+                                                        <td class="numeric" >{{ salesItem.item.name }}</td>
+                                                        <td class="numeric" >{{ salesItem.item.sku }}</td>
+                                                        <td class="numeric" >{{ salesItem.purchaseItem.barcode }}</td>
+                                                        <td class="numeric" ><input type="hidden" name="salesPrice" id="salesPrice-{{ salesItem.id }}" value="{{ salesItem.salesPrice }}">{{ salesItem.salesPrice|default|number_format() }}</td>
+                                                        <td class="numeric" >{{ salesItem.subTotal }}</td>
+                                                        <td class="numeric" ><input type="hidden" name="salesQuantity" id="salesQuantity-{{ salesItem.id }}" value="{{ salesItem.quantity }}">{{ salesItem.quantity }}</td>
+                                                        {% if( salesItem.salesReturnItem is defined and salesItem.salesReturnItem is not empty) %}
+                                                            <td class="numeric" >{{ salesItem.salesReturnItem.quantity }}</td>
+                                                            <td class="numeric" >{{ salesItem.salesReturnItem.price }}</td>
+                                                        {% else %}
+                                                            <td class="numeric" ><input type="number" class="numeric td-inline-input quantity" rel="{{ salesItem.id }}" autocomplete = "off" min="1" max="{{ salesItem.quantity }}"  id="quantity-{{ salesItem.id }}" name="quantity" value="1" placeholder="{{ salesItem.quantity }}"></td>
+                                                            <td class="numeric" ><input type="text" class="numeric td-inline-input price" rel="{{ salesItem.id }}" autocomplete = "off" min="1" max="{{ salesItem.salesPrice }}"  id="price-{{ salesItem.id }}" name="price" value="" placeholder="{{ salesItem.salesPrice }}"></td>
+                                                        {% endif %}
+
+                                                        <td class="numeric" >
+                                                            {% if( salesItem.salesReturnItem is defined and salesItem.salesReturnItem is not empty) %}
+                                                            <input type="hidden" name="salesReturnId" id="salesReturn-{{ salesItem.id }}" value="{{ entity.id }}"><span id="returnSubTotal-{{ salesItem.id }}">{{ salesItem.salesReturnItem.subTotal|number_format() }}</span>
+                                                            {% else %}
+                                                            <span id="returnSubTotal-{{ salesItem.id }}"></span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td class="numeric" id="action-{{ salesItem.id }}">
+                                                            {% if( salesItem.salesReturnItem is defined and salesItem.salesReturnItem is not empty) %}
+                                                                <button title="" disabled="disabled" type="button"  class="btn purple mini returnItem" >&nbsp;Returned</button>
+                                                                <a title="Are you sure went to delete ?" id="{{ entity.id }}" rel="{{ path('inventory_salesreturn_item_delete', { 'id': salesItem.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash"></i>&nbsp;Cancel</a>
+                                                            {% else %}
+                                                                <button title="Are you confirm return this item " disabled="disabled" type="button" id="returnbtn-{{ salesItem.id }}" rel="{{ salesItem.id }}" class="btn green mini returnItem" ><i class="icon-retweet"></i>&nbsp;Return</button>
+                                                                <a title="Are you sure went to delete ?" disabled="disabled" id="cancelbtn-{{ salesItem.id }}" id="{{ entity.id }}" rel="{{ path('inventory_salesreturn_item_delete', { 'id': salesItem.id }) }}" href="javascript:" class="btn red mini delete" ><i class="icon-trash">&nbsp;Cancel</i></a>
+                                                            {% endif %}
+
+
+                                                        </td>
+
+                                                    </tr>
+                                                {% endfor %}
+                                                <tr><td colspan="9"><span class="pull-right"><strong>Total Amount</strong></span></td><td><span class="pull-left"><strong id="totalAmount">{{ salesReturn.total|number_format }}</strong></span></td><td></td></tr>
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+                                </div>
+                            </form>
+                            <div class="clearfix">&nbsp;</div>
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+
+                            <div class="form-actions portlet grey box">
+                                <div class="span5" id="message"></div>
+                                <div class="span7 pull-right" id="action-{{ entity.id }}">
+                                    {% if salesReturn.process == 'created' %}
+                                        <div class="controls" style="margin-top: 10px">
+                                            <div class="input-append pull-right">
+                                                <select id="mode" name="mode" class="m-wrap span3"><option value="adjustment">Adjustment</option><option value="payment">Payment</option></select>
+                                                <input style="height: 34px!important; border:1px solid #fff;background-color: #ffffff" type="text" id="salesAdjustmentInvoice" name="salesAdjustmentInvoice"  class="span4 m-wrap" value=""  autocomplete="off" placeholder="Sales adjustment invoice">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit" disabled="disabled" id="paymentBtn"  type="submit"><i class="icon-ok"></i>&nbsp;Submit</button>
+                                                    <a href="{{ path('inventory_salesreturn_delete',{id : salesReturn.id}) }}" class="btn red"><i class="icon-remove"></i>&nbsp;Cancel</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     {% else %}
+                                        <span  class="btn green"><i class="icon-ok"></i>&nbsp;Complete</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        #message{
+            line-height: 50px;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/salesReturn.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    InventorySalesReturnItem({{ salesReturn.id ? salesReturn.id : 0 }});
+{% endblock %}

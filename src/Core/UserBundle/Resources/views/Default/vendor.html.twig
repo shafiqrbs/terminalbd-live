@@ -1,0 +1,42 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Super Admin
+
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="index.html">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('globaloption_modify') }}">{{ user.globalOption.name }}</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Dashboard</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <div id="dashboard">
+            <!-- BEGIN DASHBOARD inventory -->
+            {{ include ('UserBundle:Default/widget:customer.html.twig')}}
+            <!-- END DASHBOARD inventory -->
+            <div class="clearfix"></div>
+            {{ include ('UserBundle:Default/widget:activity.html.twig') }}
+            <div class="clearfix"></div>
+            {{ include ('UserBundle:Default/widget:server.html.twig') }}
+            <div class="clearfix"></div>
+            {{ include ('UserBundle:Default/widget:feed.html.twig') }}
+            <div class="clearfix"></div>
+
+        </div>
+    </div>
+
+{% endblock %}
+

@@ -1,0 +1,186 @@
+{% extends '::base-app.html.twig' %}
+{% block body %}
+    {% if entity.dpsConfig.isPrintHeader == 1 and entity.assignDoctor is defined and entity.assignDoctor.webPath is not empty  %}
+        <div class="print-header-content" style="height: 220px">
+            <img style="width: 100%; height: 220px" src="/{{ entity.assignDoctor.webPath }}">
+        </div>
+    {% endif %}
+    <div id="print-area" style="margin-top: {{ entity.dpsConfig.printTopMargin }}px!important;">
+        <div class="row">
+            <div class="col-md-12" style="margin-left: 0!important;">
+                <table class="collapse table">
+                    <tbody>
+                    <tr>
+                        <td style="width:33.333333%">Patient ID: {{ entity.invoice }}</td>
+                        <td>Name: {% if entity.customer is not empty %}{{ entity.customer.name }}{% endif %}</td>
+                        <td>Gender:{% if entity.customer is not empty %}{{ entity.customer.gender }}{% endif %}</td>
+                        <td>Gender:Age: {% if entity.customer is not empty %}{{ entity.customer.age }} {{ entity.customer.ageType }}{% endif %} </td>
+                    <tr>
+                        <td style="width:33.333333%">Mobile: {% if entity.customer is not empty %}{{ entity.customer.mobile }}{% endif %}</td>
+                        <td colspan="3">Address:{% if entity.customer is not empty %}{{ entity.customer.address }}{% endif %}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4" style="margin-top: 28px!important;">
+                {% for service in services %}
+                    {% if service.id in invoiceServices and  service.serviceShow == 1 and service.servicePosition == 1  %}
+                        <div class="tab-pane" {#style="height:{{ service.serviceHeight }}px"#} >
+                            <h4>{{ service.name|capitalize }}</h4>
+                            <ul class="styled">
+                                {% if service.serviceFormat == 'label-value' %}
+                                    {% for invoiceParticular in entity.invoiceParticulars %}
+                                        {% if invoiceParticular.dpsService is not empty and invoiceParticular.dpsService.slug|trim == service.slug %}
+                                            <li><label>{{ invoiceParticular.metaValue }}</label> : {{ invoiceParticular.diseases|raw }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% elseif service.serviceFormat == 'text-field'  %}
+                                    {% if service.dpsParticulars is not empty %}
+                                        {% for particular in service.dpsParticulars  %}
+                                            {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaValue  is not empty %}
+                                                <li><label>{{ particular.name }}</label> : {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty %}{{ invoiceParticularArr[particular.id].metaValue }}{% endif %}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% elseif service.serviceFormat == 'checkbox-text-field'  %}
+                                    {% if service.dpsParticulars is not empty %}
+                                        {% for particular in service.dpsParticulars  %}
+                                            {% if (invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaValue is not empty) or invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaCheck == particular.id %}
+                                                <li><label>{{ particular.name }}</label> : {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty %}{{ invoiceParticularArr[particular.id].metaValue }}{% endif %}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% elseif service.serviceFormat == 'checkbox'  %}
+                                    {% if service.dpsParticulars is not empty %}
+                                        {% for particular in service.dpsParticulars  %}
+                                            {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaCheck  == particular.id %}
+                                                <li><label>{{ particular.name }}</label></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% elseif service.serviceFormat == 'textarea'  %}
+                                    {% if service.dpsParticulars is not empty %}
+                                        {% for particular in service.dpsParticulars  %}
+                                            {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaValue is not empty %}
+                                                <li>{% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty %}{{ invoiceParticularArr[particular.id].metaValue }}{% endif %}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endif  %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% if entity.investigations is not empty %}
+                    <div class="tab-pane">
+                        <h4>Investigation</h4>
+                        <ul class="styled">
+                            {% for investigations in entity.investigations %}
+                                <li>{{ investigations.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-8" style="padding-left: 30px; height: 650px; margin-left: -1px">
+                <img src="{{ asset('assets/img/customer/rx.png') }}" style="margin-top: 30px;width:44px">
+                <br/>
+                <br/>
+                <ul class="unstyled">
+                    {% for medicine in entity.medicineDoctorPrescribes %}
+                        <li> {{ loop.index }}. {% if medicine.medicine is not empty %}{{ medicine.medicine.medicineForm }}. {{ medicine.medicine.name }} {{ medicine.medicine.strength }}{% else %} {{ medicine.medicineName }}{% endif %} <br/>
+                            {{ medicine.medicineQuantity }}  {{ medicine.medicineDose }} - {{ medicine.medicineDoseTime }} - {{ medicine.medicineDuration }} {{ medicine.medicineDurationType }}
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% for service in services %}
+                    {% if service.id in invoiceServices and  service.serviceShow == 1 and service.servicePosition == 2  %}
+                        <div class="tab-pane" {#style="height:{{ service.serviceHeight }}px"#} >
+                            <h4>{{ service.name|capitalize }}</h4>
+                            <ul class="styled">
+                                {% if service.serviceFormat == 'label-value' %}
+                                    {% for invoiceParticular in entity.invoiceParticulars %}
+                                        {% if invoiceParticular.dpsService is not empty and invoiceParticular.dpsService.slug|trim == service.slug %}
+                                            <li><label>{{ invoiceParticular.metaValue }}</label> : {{ invoiceParticular.diseases|raw }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% elseif service.serviceFormat == 'text-field'  %}
+                                    {% if service.dpsParticulars is not empty %}
+                                        {% for particular in service.dpsParticulars  %}
+                                            {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaValue  is not empty %}
+                                                <li><label>{{ particular.name }}</label> : {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty %}{{ invoiceParticularArr[particular.id].metaValue }}{% endif %}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% elseif service.serviceFormat == 'checkbox-text-field'  %}
+                                    {% if service.dpsParticulars is not empty %}
+                                        {% for particular in service.dpsParticulars  %}
+                                            {% if (invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaValue is not empty) or invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaCheck == particular.id %}
+                                                <li><label>{{ particular.name }}</label> : {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty %}{{ invoiceParticularArr[particular.id].metaValue }}{% endif %}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% elseif service.serviceFormat == 'checkbox'  %}
+                                    {% if service.dpsParticulars is not empty %}
+                                        {% for particular in service.dpsParticulars  %}
+                                            {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaCheck  == particular.id %}
+                                                <li>{{ particular.name }}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% elseif service.serviceFormat == 'textarea'  %}
+                                    {% if service.dpsParticulars is not empty %}
+                                        {% for particular in service.dpsParticulars  %}
+                                            {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaValue is not empty %}
+                                                <li>{% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty %}{{ invoiceParticularArr[particular.id].metaValue }}{% endif %}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endif  %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% if entity.dpsConfig.isPrintHeader == 1 and entity.assignDoctor is defined and entity.assignDoctor.webPath is not empty  %}
+        <div class="print-footer-content">
+            <img width="100%" height="100" src="{{ asset('assets/img/layout/footer.png') }}">
+        </div>
+    {% endif %}
+    <style>
+        .unstyled{
+            width: max-content;
+        }
+        .tab-pane{
+            padding-left: 8px;
+        }
+        h4{
+            padding: 0px;
+            margin: 0px;
+            font-size: 18px;
+            margin-top: 7px;
+            margin-bottom: 5px;
+        }
+    </style>
+{% endblock %}
+ {% block javascriptBlock %}
+     {% if entity.dpsConfig.isPrintHeader == 1 and entity.assignDoctor is defined and entity.assignDoctor.webPath is not empty  %}
+         $('.print').click(function () {
+         $('#print-area').kinziPrint({
+         importCSS: true,
+         header: $('.print-header-content').html(),
+         footer: $('.print-footer-content').html()
+         });
+         });
+     {% else %}
+         $('.print').click(function () {
+         $('#print-area').kinziPrint({
+         importCSS: true
+         });
+         });
+     {% endif %}
+ {% endblock %}

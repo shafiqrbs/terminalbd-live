@@ -1,0 +1,160 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Member Invoice
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i> {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Member Invoice</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn black" href="{{ path('domain_association') }}"><i class="icon-th-list"></i> Member</a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="row-fluid" >
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid" style="margin-bottom: 10px">
+                                    <div class="span3">
+                                        <input class="m-wrap span12 select2Customer search-input" name="mobile" id="mobile" value="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% else %}Member mobile no{% endif %}">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="input-icon left">
+                                            <i class="icon-calendar"></i>
+                                            <input class="m-wrap span12 search-input date-picker" name="createdStart" id="createdStart" value="{% if searchForm.createdStart is defined %}{{ searchForm.createdStart }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.createdStart is defined %}{{ searchForm.createdStart }}{% else %}Start date{% endif %}" >
+                                        </div>
+                                    </div>
+
+                                    <div class="span3">
+                                        <div class="input-icon left">
+                                            <i class="icon-calendar"></i>
+                                            <input class="m-wrap span12 search-input date-picker" name="createdEnd" id="createdEnd" value="{% if searchForm.createdEnd is defined %}{{ searchForm.createdEnd }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.createdEnd is defined %}{{ searchForm.createdEnd }}{% else %}End date{% endif %}">
+                                        </div>
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span12">
+                                                <select name="process" id="process" class="m-wrap span5">
+                                                    <option value="" >--Process--</option>
+                                                    {% set processes =['Created','Hold','In-progress','Done'] %}
+                                                    {% for pro in processes %}
+                                                        <option value="{{ pro }}" {% if searchForm.process is defined and searchForm.process == pro %} selected="selected" {% endif %} >{{ pro }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <input type="text" id="invoice" name="invoice"  class="m-wrap span5" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% else %}Invoice no{% endif %} ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </form>
+                        </div>
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                            <thead class="flip-content ">
+                            <tr class="head-green">
+                                <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                <th class="numeric" >Created</th>
+                                <th class="numeric" >Invoice</th>
+                                <th class="numeric" >Name</th>
+                                <th class="numeric" >Mobile</th>
+                                <th class="numeric" >Payment</th>
+                                <th class="numeric" >End Month</th>
+                                <th class="numeric" >Process</th>
+                                <th class="numeric" >Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for entity in entities %}
+                                <tr id="delete-{{ entity.id }}">
+                                    <td><span class="badge badge-success toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+                                    <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                    <td class="numeric" >{{ entity.invoice }}</td>
+                                    <td class="numeric" >{% if entity.customer is defined and entity.customer is not empty %}{{ entity.customer.name }}{% endif %}</td>
+                                    <td class="numeric" >{% if entity.customer is defined and entity.customer is not empty %}{{ entity.customer.mobile }}{% endif %}</td>
+                                    <td class="numeric" >{{ entity.received }}</td>
+                                    <td class="numeric" > {{ entity.endDate|date("F,y") }}</td>
+                                    <td class="numeric" > {{ entity.process }}</td>
+                                    <td class="numeric" >
+                                        <div class="btn-group">
+                                            {% set processIntArr = ['Hold','Created','Revised','In-progress'] %}
+                                            {% set processDone = ['Done','In-progress'] %}
+                                            {% if entity.process in  processIntArr %}
+                                                <a href="{{ path('domain_association_invoice_edit', { 'id': entity.id }) }}" class="btn purple mini" ><i class="icon-pencil"></i> Edit</a>
+                                                <a  data-id="{{ entity.id }}" data-url="{{ path('business_invoice_delete', { 'id': entity.id }) }}" href="javascript:" class="btn red mini delete tooltips" data-trigger = "hover" data-original-title = "Delete" ><i class="icon-trash"></i> Delete</a>
+                                            {% endif %}
+                                            {% if entity.process in  processDone %}
+                                                <a target="_blank"  href="{{ path('business_invoice_print',{'id':entity.id}) }}"  class="btn green mini"><i class="icon-print"></i> Print</a>
+                                                <a href="{{ path('domain_association_invoice_show', { 'id': entity.id }) }}" class="btn blue mini"><i class="icon-eye-open"></i> View</a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            <tr id="show-{{ entity.id }}" class="showing-overview">
+                                <td colspan="10">
+                                    <table class="table">
+                                        <tr><td class="span3">Remark</td><td>{{ entity.comment }}</td></tr>
+                                        {% if entity.accountBank is not empty %}
+                                            <tr><td>Bank name</td><td>{{ entity.accountBank.name }}</td></tr>
+                                            <tr><td>Account no.</td><td>{{ entity.accountBank.accountNo }}</td></tr>
+                                            <tr><td>Card No.</td><td>{{ entity.cardNo }}</td></tr>
+                                            <tr><td>Payment Card.</td><td>{% if entity.paymentCard is not empty %}{{ entity.paymentCard.name }}{% endif %}</td></tr>
+                                        {% endif %}
+                                        {% if entity.accountMobileBank is not empty %}
+                                            <tr><td>Receive Mobile</td><td>{{ entity.accountMobileBank.name }}</td></tr>
+                                            <tr><td>Payment Mobile</td><td>{{ entity.paymentMobile }}</td></tr>
+                                            <tr><td>PRX ID</td><td>{{ entity.transactionId }}</td></tr>
+                                        {% endif %}
+                                    </table>
+                                </td>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="pagination pull-center" >
+                            {{ knp_pagination_render(entities) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@DomainUserBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="page-title">
+                {{ entity.assignDoctor.userFullName }}
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="{{ path('homepage') }}">Home</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li>
+                    <a href="{{ path('dps_doctor') }}">Doctor</a>
+                    <span class="icon-angle-right"></span>
+                </li>
+                <li><a href="#">Doctor Information</a></li>
+                <li class="pull-right btn blue disabled mini">
+                    <i class="fa fa-calendar"></i>
+                    {{ "now"|date("d-F-Y") }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+
+            <div class="portlet box green">
+
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-reorder"></i>Doctor: {{ entity.assignDoctor.userFullName }}</div>
+                    <div class="actions">
+                        <div class="btn-group">
+                            <a class="btn red" href="{{ path('dps_doctor_new') }}"><i class="icon-plus-sign"></i> Add New Doctor</a>
+                            <a class="btn" href="{{ path('dps_doctor') }}"><i class="icon-th-list"></i> Doctor</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <h4>About:</h4>
+                            <ul class="unstyled">
+                                <li><strong>Name:</strong>&nbsp;  {{ entity.assignDoctor.userFullName }}</li>
+                                <li><strong>Designation:</strong>&nbsp;  {% if entity.designation is not empty %}{{ entity.designation }}{% endif %}</li>
+                                <li><strong>Mobile:</strong>&nbsp;  {% if entity.mobile is not empty %}{{ entity.mobile }}{% endif %}</li>
+                                <li><strong>E-mail:</strong>&nbsp;  {% if entity.email is not empty %}{{ entity.email }}{% endif %}</li>
+                             </ul>
+                        </div>
+                        <div class="span4">
+                            <h4>Personal:</h4>
+                            <ul class="unstyled">
+                                <li><strong>Current Job:</strong>&nbsp;  {% if entity.currentJob is not empty %}{{ entity.currentJob }}{% endif %}</li>
+                            </ul>
+                        </div>
+
+                        <div class="span4">
+                            <h4>Official:</h4>
+                            <ul class="unstyled">
+                                <li><strong>Fee:</strong>&nbsp;  {{ entity.price }}</li>
+                                <li><strong>Room:</strong> {% if entity.room is not empty %}{{ entity.room }}{% endif %}</li>
+                                <li><strong>Assign Operator:</strong> {% if entity.assignOperator is not empty %}{{ entity.assignOperator.fullName }}{% endif %}</li>
+                                <li><strong>Hour:</strong> {% if entity.startHour is not empty %}{{ entity.startHour }}{% endif %} To {% if entity.endHour is not empty %}{{ entity.endHour }}{% endif %}</li>
+                                <li><strong>Off Day:</strong>&nbsp;{% if entity.weeklyOffDay is not empty %}{% for off in  entity.weeklyOffDay %}{{ off }}{% endfor %}{% endif %}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <strong>Educational Degree: </strong>{{ entity.educationalDegree }}
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <strong>Specialist: </strong>{{ entity.specialist }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    </div>
+    <style>
+        .menuDiv div.checker{
+            float: right;
+        }
+    </style>
+{% endblock %}
+{% block documentready %}
+
+    {{ parent() }}
+    NestSortable.init();
+
+    $('#serialize').click(function(){
+
+    serialized = $('ol.singleSortable').nestedSortable('serialize');
+    $.ajax({
+    url: '{{ path('category_sorted') }}',
+    type: "POST",
+    data: serialized
+    }).done(function(data){
+    $('#featureCategory').submit();
+    });
+    })
+
+{% endblock %}
+
+

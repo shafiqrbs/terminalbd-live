@@ -1,0 +1,118 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h2 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+     h3 {
+        font-size: 20px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+{% set date = searchForm.month is defined ? searchForm.month :"now"|date("d-m-Y") %}
+<table class="table">
+    <thead>
+    <tr>
+        <td class="pull-center" colspan="9"><h2>{{ globalOption.name }}</h2></td>
+    </tr>
+    <tr>
+        <th class="pull-center" colspan="9"><h3><strong>DAY WISE PURCHASE,EXPENSE,JOURNAL STATEMENT SHEET: {{ date }}</strong></h3></th>
+    </tr>
+    <tr class="head-green">
+        <th>Process</th>
+        <th>Description</th>
+        <th colspan="3" >
+            <div style="border-bottom: 2px solid #ffffff; text-align: center; font-weight: bold; width: 100%!important;"><span class="span12">Payment</span></div>
+            <div style="width: 100%"><span style="width: 33%; display: inline-block">Cash</span><span style="width: 33%;display: inline-block">Bank</span><span style="width: 33%;display: inline-block">Mobile</span></div>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% set cash = 0 %}
+    {% set bank = 0 %}
+    {% set mobile = 0 %}
+
+    {% for entity in entities %}
+        <tr>
+            <td>{{ entity.processHead }}</td>
+            <td>
+                {% if entity.processHead == 'Expenditure' %}
+                    {% if entity.expenditure.toUser is defined and entity.expenditure.toUser is not empty %} {{ entity.expenditure.toUser.profile.name }}{% endif %}
+                    : {% if entity.expenditure.expenseCategory is defined and entity.expenditure.expenseCategory is not empty %} {{ entity.expenditure.expenseCategory.name }}{% endif %}
+
+                {% elseif entity.processHead == 'Sales' %}
+                    Account Sales : {{ entity.accountRefNo }}
+                    {% if entity.accountSales.remark is not empty  %}
+                        <br/> {{ entity.accountSales.remark }}
+                    {% endif %}
+                {% elseif entity.processHead == 'Purchase' %}
+                    {{  entity.accountPurchase.companyName }} : {{ entity.accountPurchase.processType|capitalize }}
+                {% elseif entity.processHead == 'Journal' and  entity.credit > 0 %}
+                    Journal: {% if  entity.accountJournal is defined and entity.accountJournal.accountHeadDebit is not empty %} {{ entity.accountJournal.accountHeadDebit.name }}{% endif %}: {{ entity.accountRefNo }}
+                    {% if entity.accountJournal.remark is not empty  %}
+                        <br/> {{ entity.accountJournal.remark }}
+                    {% endif %}
+                {% endif %}
+            </td>
+            <td>{% if entity.credit > 0 and entity.transactionMethod.slug == 'cash'  %}{{ entity.credit|number_format }}
+                    {% set cash = cash + entity.credit %}
+                {% endif %}</td>
+            <td>{% if entity.credit > 0 and entity.transactionMethod.slug == 'bank'  %}{{ entity.credit|number_format }}
+                    {% set bank = bank + entity.credit %}
+                {% endif %}</td>
+            <td>{% if entity.credit > 0 and entity.transactionMethod.slug == 'mobile'  %}{{ entity.credit|number_format }}
+                    {% set mobile = mobile + entity.credit %}
+                {% endif %}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot><tr><th colspan="2" style="text-align: right">Grand Total</th><th>{{ cash|number_format }}</th><th>{{ bank|number_format }}</th><th>{{ mobile|number_format }}</th></tr></tfoot>
+
+</table>

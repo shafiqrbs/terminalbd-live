@@ -1,0 +1,279 @@
+{% extends ':frontend/template:base.html.twig' %}
+{% block body %}
+    <div class="clearfix"></div>
+    {% if globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'flat-left'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="row">
+                <div class="col-md-6">
+                    <ul class="simple-breadcrumb-left">
+                        <li class=""><span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} হোম {% else %}Home{% endif %}</a></li>
+                        {% if category is defined and category is not empty %}
+                            <li><a href="{{ path(globalOption.subDomain ~ '_webservice_module',{'subdomain': globalOption.subDomain,'module': category.module.slug }) }}">{{ menu.menu }}</a></li>
+                            <li class="active"><a href="javascript:void(0);">{{ category.name }}</a></li>
+                        {% else %}
+                            <li class="active"><a href="javascript:void(0);">{{ menu.menu }}</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="col-md-6 text-right">
+                    <h2 class="title">{% if category is defined and category is not empty %}{{ category.name }}{% else %}{{ menu.menu }}{% endif %}</h2>
+                </div>
+                </div>
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'flat-right'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="row">
+                <div class="col-md-6">
+                    <h2 class="title">{% if category is defined and category is not empty %}{{ category.name }}{% else %}{{ menu.menu }}{% endif %}</h2>
+                </div>
+                <div class="col-md-6">
+                    <ul class="simple-breadcrumb-right">
+                        {% if category is defined and category is not empty %}
+                            <li class="active"><a href="javascript:void(0);">{{ category.name }}</a></li>
+                            <li><a href="{{ path(globalOption.subDomain ~ '_webservice_module',{'subdomain': globalOption.subDomain,'module': category.module.slug }) }}">{{ menu.menu }}</a></li>
+                        {% else %}
+                            <li class="active"><a href="javascript:void(0);">{{ menu.menu }}</a></li>
+                        {% endif %}
+                        <li class=""><span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} হোম {% else %}Home{% endif %}</a></li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'left'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="row">
+                <div class="col-md-12 text-left">
+                    <h2 class="title">{% if category is defined and category is not empty %}{{ category.name }}{% else %}{{ menu.menu }}{% endif %}</h2>
+                    <p>
+                        <span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} হোম {% else %}Home{% endif %}</a> &nbsp;&nbsp;<i class="fa fa-angle-right"></i>
+                        {% if category is defined and category is not empty %}
+                            <a href="{{ path(globalOption.subDomain ~ '_webservice_module',{'subdomain': globalOption.subDomain,'module': category.module.slug }) }}">{{ menu.menu }}</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;
+                            {{ category.name }}
+                        {% else %}
+                            {{ menu.menu }}
+                        {% endif %}
+                    </p>
+                </div>
+                </div>
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'center'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="row">
+                <div class="col-md-12 text-center">
+                    <h2 class="title">{% if category is defined and category is not empty %}{{ category.name }}{% else %}{{ menu.menu }}{% endif %}</h2>
+                    <p>
+                        <span class="glyphicon glyphicon-home"></span>&nbsp;<a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{% if globalOption.templateCustomize.siteLanguage == 'bangoli' %} হোম {% else %}Home{% endif %}</a> &nbsp;&nbsp;<i class="fa fa-angle-right"></i>
+                        {% if category is defined and category is not empty %}
+                            <a href="{{ path(globalOption.subDomain ~ '_webservice_module',{'subdomain': globalOption.subDomain,'module': category.module.slug }) }}">{{ menu.menu }}</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;
+                            {{ category.name }}
+                        {% else %}
+                            {{ menu.menu }}
+                        {% endif %}
+                    </p>
+                </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="clearfix"></div>
+    <section class="siteBgColor">
+    <div class="clearfix"></div>
+    {% if globalOption.templateCustomize.breadcrumb == 1 %}
+    <section id="breadcrumb">
+        <div class="container">
+            <ul class="breadcrumb">
+                <li class="home"><a href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}"><span class="glyphicon glyphicon-home"></span></a></li>
+                <li class="active"><a href="javascript:void(0);">Product</a></li>
+            </ul>
+        </div>
+    </section>
+    {% endif %}
+    <div class="clearfix"></div>
+
+
+{#    {% if globalOption.featureWidgets is defined and globalOption.featureWidgets is not empty %}
+        <div class="container bodyColor" >
+            {% render controller("FrontendBundle:EcommerceWidget:featureTemplateWidget",{'globalOption':globalOption.id,'menu': menu.id ,'position':'header-bottom'}) %}
+        </div>
+    {% endif %}#}
+    <div class="clearfix"></div>
+    <section>
+        <div class="container bodyColor" >
+            {% if globalOption.templateCustomize.showSidebar == 1 and globalOption.templateCustomize.sidebarPosition == 'left' %}
+            <div class="col-md-3 sidebar-top" >
+                <div class="row">
+                    <div class="col-md-12 paginate">
+                        <div class="btn-group pull-left">
+                            <div class="product-title"><span class="glyphicon glyphicon-filter"></span>&nbsp;REFINE</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="{% if globalOption.templateCustomize.showSidebar == 1 %} col-md-9 {% else %}col-md-12 {% endif %}">
+                <div class="row paginate">
+                    <div class="col-md-6">
+                        <div class="btn-group pull-left">
+                            <div class="product-title"><span class="glyphicon glyphicon-list"></span>&nbsp;{% if titleName is defined and titleName is not empty %}{{ titleName }}{% else %}ALL PRODUCT{% endif %}</div>
+                   </div>
+                    </div>
+                    <div class="col-md-6 navbar-right">
+                        <form class="form-inline">
+                            <div class="form-group paginate-form-group">
+                                <label for="exampleInputName2">Sort By: </label>
+                                {% set sortBy = app.request.get('sortBy') %}
+                                <select name="sortBy" id="sortBy" class="input-selector" onchange='this.form.submit()'>
+                                    <option>-- Position --</option>
+                                    <option {% if sortBy == ''  %} selected="selected" {% endif %} value="" >Default</option>
+                                    <option {% if sortBy == 'product.name=?=ASC'  %} selected="selected" {% endif %} value="product.name=?=ASC">Name (A - Z)</option>
+                                    <option {% if sortBy == 'product.name=?=DESC'  %} selected="selected" {% endif %} value="product.name=?=DESC">Name (Z - A)</option>
+                                    <option {% if sortBy == 'brand.name=?=ASC'  %} selected="selected" {% endif %} value="brand.name=?=ASC">Brand (A - Z)</option>
+                                    <option {% if sortBy == 'brand.name=?=DESC'  %} selected="selected" {% endif %} value="brand.name=?=DESC">Brand (Z - A)</option>
+                                    <option {% if sortBy == 'product.salesPrice=?=ASC'  %} selected="selected" {% endif %} value="product.salesPrice=?=ASC">Price (Low &gt; High)</option>
+                                    <option {% if sortBy == 'product.salesPrice=?=DESC'  %} selected="selected" {% endif %} value="product.salesPrice=?=DESC">Price (High &gt; Low)</option>
+                                </select>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            {% if globalOption.templateCustomize.showSidebar == 1 and globalOption.templateCustomize.sidebarPosition == 'right' %}
+                <div class="col-md-3 sidebar-top" >
+                    <div class="row">
+                        <div class="col-md-12 paginate">
+                            <div class="btn-group pull-left">
+                                <div class="product-title"><span class="glyphicon glyphicon-filter"></span>&nbsp;REFINE RESULTS</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+    <div class="clearfix"></div>
+    <section id="products">
+        <div class="container bodyColor">
+            {% if globalOption.templateCustomize.showSidebar == 1 and globalOption.templateCustomize.sidebarPosition == 'left' %}
+                <div class="col-md-3" data-match-height="body-content" >
+                    {{ include('@Frontend/Template/Desktop/WebsiteWidget/sidebar.html.twig')}}
+                </div>
+            {% endif %}
+            <div class="{% if globalOption.templateCustomize.showSidebar == 1 %} col-md-9 {% else %} col-md-12 {% endif %}" data-match-height="body-content" style="margin-top: 30px"  >
+                <div class="row row-flex">
+                    {% for product in products %}
+                        <div  class="product-item col-xs-{{ globalOption.ecommerceConfig.perColumn }} col-lg-{{ globalOption.ecommerceConfig.perColumn }}">
+                            <div class="product-canvas">
+                                <a data-url="{{ path(globalOption.subDomain ~ '_webservice_product_modal',{'item':product.id }) }}" href="javascript:"  class="btn btn-info preview product-eye"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                <a class="btn btn-warning product-buy" href="{{ path(globalOption.subDomain ~ '_webservice_product_details',{'item':product.slug }) }}"><span class="glyphicon glyphicon-shopping-cart"></span></a>
+                                <a class="img-card" href="{{ path(globalOption.subDomain ~ '_webservice_product_details',{'item':product.slug }) }}">
+                                    <img src="{{ image(product.webPath).resize(500,500, 'white') }}"/>
+                                </a>
+                                <div class="card-content" data-match-height="item-product">
+                                    <a href="{{ path(globalOption.subDomain ~ '_webservice_product_details',{'item':product.slug }) }}">{% if product.masterItem is not empty and  globalOption.ecommerceConfig.showMasterName == 1 %}{{ product.masterItem.name }}&nbsp;-&nbsp;{% endif %}{{ product.webName }}</a>
+                                </div>
+                                <div class="card-read-more text-center">
+                                    <strong class="currency">{{ globalOption.ecommerceConfig.currency }}</strong>&nbsp;{% if product.discount is not empty  %}<strike>{% endif %}{{ product.salesPrice|number_format() }}{% if product.discount is not empty  %}</strike>{% endif %}{% if product.discount is not empty  %} <strong>{{ product.discountPrice|number_format() }}</strong>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="clearfix"></div>
+{#                {% if globalOption.featureWidgets is defined and globalOption.featureWidgets is not empty %}
+                    {% render controller("FrontendBundle:EcommerceWidget:featureTemplateWidget",{'globalOption':globalOption.id, 'menu': menu.id,'position':'body-bottom'}) %}
+                {% endif %}#}
+                <div class="clearfix"></div>
+            </div>
+            {% if globalOption.templateCustomize.showSidebar == 1 and globalOption.templateCustomize.sidebarPosition == 'right' %}
+                <div class="col-md-3" data-match-height="body-content" >
+                    {{ include('@Frontend/Template/Desktop/WebsiteWidget/sidebar.html.twig')}}
+                </div>
+            {% endif %}
+            <div class="clearfix"></div>
+        </div>
+    </section>
+    <div class="clearfix"></div>
+    <section>
+        <div class="container bodyColor" >
+            {% if globalOption.templateCustomize.showSidebar == 1 and globalOption.templateCustomize.sidebarPosition == 'left' %}
+                <div class="col-md-3 sidebar-footer" data-match-height="body-footer" >
+                <div class="row div-vertical-center">
+                    <button  class="btn btn-info ladda-button" id="filter" data-style="zoom-in"><span class="ladda-label">REFINE FILTER</span><span class="ladda-spinner"></span></button>
+                </div>
+            </div>
+            {% endif %}
+            <div class="{% if globalOption.templateCustomize.showSidebar == 1 %} col-md-9 {% else %}col-md-12 {% endif %}" data-match-height="body-footer"  >
+                <div class="row paginate-footer" >
+                    {% if app.request.get('page') is not empty %}
+                    {% set page = app.request.get('page') %}
+                    {% else %}
+                    {% set page = 1 %}
+                    {% endif %}
+                    <div class="col-md-3  navbar-left" style="line-height: 35px"><a href="javascript:">Total no of products: {{ products.getTotalItemCount }} {#out of {{ page * products|length }}#}</a></div>
+                    <div class="col-md-9">
+                        <div class="pull-right">
+                            {{ knp_pagination_render(products) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if globalOption.templateCustomize.showSidebar == 1 and globalOption.templateCustomize.sidebarPosition == 'right' %}
+                <div class="col-md-3 sidebar-footer" data-match-height="body-footer" >
+                    <div class="row div-vertical-center">
+                        <button  class="btn btn-info" id="filter" data-style="zoom-in"><span class="glyphicon glyphicon-filter"></span> FILTER</button>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+    <div class="clearfix"></div>
+{#    {% if globalOption.featureWidgets is defined and globalOption.featureWidgets is not empty %}
+        <div class="container bodyColor">
+            {% render controller("FrontendBundle:EcommerceWidget:featureTemplateWidget",{'globalOption':globalOption.id,'menu': menu.id ,'position':'footer-top'}) %}
+        </div>
+    {% endif %}#}
+    <div class="clearfix"></div>
+    {% if menu.featureWidgets is defined and menu.featureWidgets is not empty and menu.getFeatureWidgetPositionExist('footer-top') %}
+        <div class="container bodyColor">
+            {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu': menu.id,'position':'footer-top'}) %}
+        </div>
+    {% endif %}
+    <div class="clearfix"></div>
+    <!-- Modal -->
+</section>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@FrontendBundle/Resources/public/template/desktop/css/product.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@FrontendBundle/Resources/public/template/desktop/js/e-commerce.js'
+    '@FrontendBundle/Resources/public/template/desktop/js/page.js'
+    '@FrontendBundle/Resources/public/template/desktop/js/product.js'
+    '@FrontendBundle/Resources/public/template/desktop/js/corporate.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    {% if globalOption.templateCustomize.showSidebar == 1 and menu.featureWidgetExist == 'true' %}
+        sliderPageOwl(3);
+    {% else %}
+        sliderPageOwl(4);
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    {{ globalOption.name }} Members
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>{{ globalOption.name }} Lists</div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <form class="search-form" action="" method="get" name="itemSearch">
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <input type="text" id="mobile" name="mobile"  class="span12 m-wrap select2Customer" value="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% endif %}"  autocomplete="off" placeholder="Search Student name/mobile">
+                                </div>
+                                 <div class="span4">
+                                     <select class="m-wrap span12" name="studentBatch" id="studentBatch">
+                                         <option value="">Select a Batch</option>
+                                         {% for batch in batches %}
+                                         <option {% if searchForm.studentBatch is defined and searchForm.studentBatch == batch %} selected="selected" {% endif %} value="{{ batch }}">{{ batch }}</option>
+                                         {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="span4">
+                                    <div class="controls">
+                                        <div class="input-append span9">
+                                            <input type="text" id="name" name="name"  class="m-wrap span12 search-input" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.name is defined %}{{ searchForm.name }}{% else %}Enter Student name{% endif %} ">
+                                            <div class="btn-group">
+                                                <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        {% include('flash-message.html.twig')  %}
+
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-green">
+                                <td class="span2" >Image</td>
+                                <th class="numeric">Name</th>
+                                <th class="numeric">Mobile</th>
+                                <th class="numeric">Batch</th>
+                                <th class="numeric">View</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for entity in entities %}
+                                <tr>
+                                    <td>
+                                        {% if(entity.webPath) %}
+                                        <img class="fileupload-preview fileupload-exists thumbnail" alt="" src="{{ image(entity.webPath).resize(80,80) }}">
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ entity.name }}</td>
+                                    <td class="numeric"><a href="tel:+88 {{ entity.mobile }}"> {{ entity.mobile }}</a></td>
+                                    <td>{{ entity.studentBatch }}</td>
+                                    <td><a class="btn blue" href="{{ path('member_profile',{'shop':entity.globalOption.slug,'customer':entity.customerId}) }}"><i class="icon-eye-open"></i> View</a></td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="pagination pull-center"  >
+                            {{ knp_pagination_render(entities) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <link href="{{ asset('assets/css/pages/timeline.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@DomainUserBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}

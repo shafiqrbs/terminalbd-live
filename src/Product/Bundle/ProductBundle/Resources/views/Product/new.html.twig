@@ -1,0 +1,132 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Form Components
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('product') }}">Product</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Form Components</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="btn-group pull-right">
+                    {% if entity.id > 0  %}
+                        <a class="btn black" target="_blank" href="{{ path('product',{'id': entity.id}) }}">Print</a>
+                        <a class="btn yellow" target="_blank" href="{{ path('product',{'id': entity.id}) }}">PDF</a>
+                        <a class="btn blue" target="_blank" href="{{ path('product',{'id': entity.id}) }}">Export</a>
+                    {% else %}
+                        <a class="btn purple" href="{{ path('blog_import') }}">Import</a>
+                    {% endif %}
+                </div>
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Basic Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="tabbable portlet-tabs">
+                            <ul class="nav nav-tabs">
+                                {% if entity.id > 0  %}
+                                    <li><a  href="{{ path('blog_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;View</a></li>
+                                {% endif %}
+                                <li class=""><a  href="{{ path('product') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                <li class="active"><a  href="javascript:"><i class="icon-edit"></i>&nbsp;Add/Edit</a></li>
+
+
+                            </ul>
+                            <div class="tab-content">
+
+                                <div class="portlet-body form">
+                                    {% include('flash-message.html.twig')  %}
+                                    <!--/row-->
+                                    <div class="row-fluid">
+                                        <div class="span12 ">
+                                            <form action="{{ path('product_create') }}" method="post" name="form" enctype="multipart/form-data" >
+                                                <div id="pluploadUploader">
+                                                    <p>You browser doesn't have Flash, Silverlight, Gears, BrowserPlus or HTML5 support.</p>
+                                                </div>
+                                                <div class="form-actions portlet box grey">
+                                                    <div class="pull-center">
+                                                        {%  set galleryId = app.request.query.get('galleryId') %}
+                                                        <input type="hidden" name="galleryId" value="{{ galleryId }}">
+                                                        <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                                        <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+
+                                                    </div>
+                                                </div>
+
+                                            </form>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- END FORM-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .plupload_filelist_footer{
+            height: 40px;
+        }
+    </style>
+{% endblock %}
+{% block documentready %}
+
+    $("#pluploadUploader").pluploadQueue({
+
+        // General settings
+        runtimes : 'gears,browserplus,html5',
+        url :'{{ path('product_upload') }}',
+        max_file_size : '10mb',
+        chunk_size : '2mb',
+        unique_names : true,
+        sortable: true,
+        // Resize images on clientside if we can
+        resize : {width :1024, height : 1024, quality : 90},
+        // Specify what files to browse for
+        filters : [
+        {title : "Image files", extensions : "jpg,gif,png"},
+        {title : "Zip files", extensions : "zip"}
+        ],
+
+        // Flash settings
+        flash_swf_url : 'theme/scripts/plupload/js/plupload.flash.swf',
+
+        // Silverlight settings
+        silverlight_xap_url : 'theme/scripts/plupload/js/plupload.silverlight.xap'
+
+    });
+
+{% endblock %}
+

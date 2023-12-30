@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>{% if app.user.globaloption is not empty and app.user.globaloption is defined %}{{ app.user.globaloption.name }}{% endif %} | ADMIN PANEL</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}">
+    {% stylesheets filter='cssrewrite'
+
+    'assets/plugins/font-awesome/css/font-awesome.min.css'
+    'assets/print/css/baseprint.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+    {% block cssBlock %}
+    {% endblock %}
+</head>
+<body>
+{% block body %}{% endblock %}
+{#'http://bp.yahooapis.com/2.4.21/browserplus-min.js'#}
+<script type="text/javascript">
+  //  window.print();
+</script>
+{% javascripts
+'assets/plugins/jquery-1.10.2.min.js'
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        Popup($('.invoice')[0].outerHTML);
+        function Popup(data)
+        {
+            window.print();
+        }
+    });
+</script>
+</body>
+</html>

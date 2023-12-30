@@ -1,0 +1,102 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h3 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+     h4 {
+        font-size: 18px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+  <table class="table">
+      <thead>
+      <tr><th class="pull-center" colspan="8"><h3>{{ option.name }}</h3></th></tr>
+      <tr><th class="pull-center" colspan="8"><h4>VENDOR WISE SALES,PURCHASE & PROFIT STATEMENT SHEET</h4></th></tr>
+      <tr><td class="pull-right" colspan="8">Created: {{ "now"|date('d-m-Y') }}</td></tr>
+      <tr>
+          <th class="numeric" >S/N</th>
+          <th class="numeric" >Brand Name</th>
+          <th class="numeric" >Sales(avg)</th>
+          <th class="numeric" >Purchase(avg)</th>
+          <th class="numeric" >Profit(avg)</th>
+          <th class="numeric" >Sales</th>
+          <th class="numeric" >Purchase</th>
+          <th class="numeric" >Profit</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% set purchase = 0 %}
+      {% set sales = 0 %}
+      {% set profit = 0 %}
+      {% set avgPurchase = 0 %}
+      {% set avgSales = 0 %}
+      {% set avgProfit = 0 %}
+      {% for entity in entities %}
+          {% set purchase = purchase + entity.purchase %}
+          {% set sales = sales + entity.sales %}
+          {% set profit = profit + entity.profit %}
+          {% set avgPurchase = avgPurchase + entity.avgPurchase %}
+          {% set avgSales = avgSales + entity.avgSales %}
+          {% set avgProfit = avgProfit + entity.avgProfit %}
+          <tr>
+              <td class="numeric" >{{ loop.index }}</td>
+              <td class="numeric" >{{ entity.name }}</td>
+              <td class="numeric" >{{ entity.avgSales|number_format }}</td>
+              <td class="numeric" >{{ entity.avgPurchase|number_format  }}</td>
+              <td class="numeric" >{{ entity.avgProfit|number_format }}</td>
+              <td class="numeric" >{{ entity.sales|number_format }}</td>
+              <td class="numeric" >{{ entity.purchase|number_format  }}</td>
+              <td class="numeric" >{{ entity.profit|number_format }}</td>
+          </tr>
+      {% endfor %}
+      </tbody>
+      <tfoot><tr><th COLSPAN="2">Grand Total</th><th>{{ avgSales|number_format }}</th><th>{{ avgPurchase|number_format }}</th><th>{{ avgProfit|number_format }}</th><th>{{ sales|number_format }}</th><th>{{ purchase|number_format }}</th><th>{{ profit|number_format }}</th></tr></tfoot>
+  </table>

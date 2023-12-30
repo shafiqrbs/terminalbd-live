@@ -1,0 +1,231 @@
+
+
+
+{% if entities is defined and entities is not empty and module.slug == 'news' %}
+    <div class="">
+        <h4 class="sidebar-title"><i class="fa fa-align-left"></i>&nbsp;Recent News</h4>
+        <hr>
+        {% for entity in entities  %}
+            <div class="media">
+                <a class="pull-left" href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'news','slug':entity.slug }) }}">
+                    <img class="img-responsive media-object" src="{{ image(entity.webPath).resize(80,80) }}" alt="Media Object">
+                </a>
+                <div class="media-body">
+                    <h4 class="media-heading"><a href="{{ path('webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'news','slug':entity.slug }) }}">{{ entity.name }}</a></h4>
+                    {{ entity.content|raw|truncate(100) }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% if entities is defined and entities is not empty and module.slug == 'noticeboard'  %}
+    <div class="">
+        <h4 class="sidebar-title"><i class="fa fa-align-left"></i>&nbsp;Recent Notice</h4>
+        <hr style="margin-bottom:2px;">
+        {% for entity in entities  %}
+            <div class="media">
+                <div class="notice-list">
+                    <div class="post-review">
+                        <div class="post-date">
+                            {{ entity.startDate|date('d') }}
+                            <small>{{ entity.startDate|date('F') }}</small>
+                        </div>
+                        <h5 class="post-title">
+                            <a href="#">{{ entity.name }}</a>
+                        </h5>
+                        <p class="post-description">
+                            {{ entity.content|truncate(200)|raw }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% if entities is defined and entities is not empty and module.slug == 'portfolio' %}
+    <div class="">
+        <h4 class="sidebar-title"><i class="fa fa-align-left"></i>&nbsp;Portfolio</h4>
+        <div class="media">
+            <div class="row">
+                {% for key,portfolio in entities  %}
+                    <div class="col-md-4 col-sm-6" style="margin-bottom: 5px">
+                        <div class="box-sidebar-portfolio">
+                            <a class="thumbnail"><img src="{{ image(portfolio.webPath).resize(171,180) }}" alt=""></a>
+                            <ul class="social-links">
+                                <li><a target="_blank" href="http://{{ portfolio.website }}" class="fa fa-link"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% if entities is defined and entities is not empty and module.slug == 'team' %}
+    <div class="">
+        <h4 class="sidebar-title"><i class="fa fa-align-left"></i>&nbsp;Our Team</h4>
+        <div class="media">
+            <div class="row">
+                {% for key,portfolio in entities  %}
+                    <div class="col-md-6 col-sm-6" style="margin-bottom: 5px">
+                        <div class="box-sidebar-portfolio">
+                            <a class="thumbnail"><img src="{{ image(portfolio.webPath).resize(171,180) }}" alt=""></a>
+                            <ul class="social-links">
+                                <li><a target="_blank" href="http://{{ portfolio.website }}" class="fa fa-link"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% if entities is defined and entities is not empty and module.slug == 'event' %}
+    <div class="">
+        <h4 class="sidebar-title"><i class="fa fa-align-left"></i>&nbsp;Recent Events</h4>
+        <hr style="margin-bottom:2px;">
+        <div class="media">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="event-slider" class="owl-carousel">
+                        {% for entity in entities  %}
+                            <div class="post-slide">
+                                <div class="post-img">
+                                    <img src="{{ image(entity.webPath).resize(320,200) }}" alt="" class="img-responsive">
+                                    <a href="#" class="overlay"><i class="fa fa-plus-square-o"></i></a>
+                                </div>
+
+                                <div class="post-review">
+                                    <ul class="post-comment">
+                                        <li>12<small>sep</small></li>
+                                        <li><i class="fa fa-comments-o"></i><a href="#"><small>2</small></a></li>
+                                    </ul>
+                                    <h3 class="post-title">
+                                        <a href="#">Latest News Post</a>
+                                    </h3>
+                                    <p class="post-description">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus orci elit, at iaculis dui.
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% if entities is defined and entities is not empty and module.slug == 'service'  %}
+    <div class="">
+        <h4 class="sidebar-title"><i class="fa fa-align-left"></i>&nbsp;Our Services</h4>
+        <hr style="margin-bottom:2px;">
+        <div class="media">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="service-slider" class="owl-carousel">
+                        {% for entity in entities  %}
+                            <div class="sidebar-serviceBox">
+                                <div class="service-icon">
+                                    <i class="fa fa-globe"></i>
+                                </div>
+                                <div class="service-Content">
+                                    <h3 class="title">Web Design</h3>
+                                    <p class="description">
+                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam architecto cum dolore dolores fuga libero magni placeat possimus sequi
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% if entities is defined and entities is not empty and module.slug == 'testimonial'  %}
+    <div class="">
+        <h4 class="sidebar-title"><i class="fa fa-align-left"></i>&nbsp;Testimonials</h4>
+        <div class="media">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="testimonial-slider" class="owl-carousel">
+                        {% for entity in entities  %}
+                            <div class="box-sidebar-testimonial">
+                                <div class="content">
+                                    <div class="testimonial-pic">
+                                        <img src="{{ image(entity.webPath).resize(80,80) }}" alt="">
+                                    </div>
+                                    <div class="testimonial-prof">
+                                        <h3 class="testimonial-title">kristiana</h3>
+                                        <span class="testimonial-post">web developer</span>
+                                        <p class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias, omnis!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endif %}
+{% if entities is defined and entities is not empty and module.slug == 'sponsor'  %}
+    <div class="">
+        <h4 class="sidebar-title"><i class="fa fa-align-left"></i>&nbsp;Sponsor</h4>
+        <hr style="margin-bottom:2px;">
+        <div class="media">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="sponsor-slider" class="owl-carousel">
+                        {% for entity in entities  %}
+                            <div class="box-sidebar-portfolio">
+                                <a class="thumbnail"><img src="{{ image(entity.webPath).resize(171,180) }}" alt=""></a>
+                                <ul class="social-links">
+                                    <li><a target="_blank" href="http://{{ entity.website }}" class="fa fa-link"></a></li>
+                                </ul>
+                            </div>
+                            <div class="box-sidebar-portfolio">
+                                <a class="thumbnail"><img src="{{ image(entity.webPath).resize(171,180) }}" alt=""></a>
+                                <ul class="social-links">
+                                    <li><a target="_blank" href="http://{{ entity.website }}" class="fa fa-link"></a></li>
+                                </ul>
+                            </div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% if entities is defined and entities is not empty and module.slug == 'faq'  %}
+    <div class="">
+        <h4 class="sidebar-title"><i class="fa fa-align-left"></i>&nbsp;FAQ</h4>
+        <div class="media">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel-group" id="sidebar-accordion" role="tablist" aria-multiselectable="true">
+                        {% for entity in entities  %}
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="heading-{{ loop.index }}">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{ loop.index }}" aria-expanded="true" aria-controls="collapseOne">
+                                            {{ entity.name }}
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapse-{{ loop.index }}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading-{{ loop.index }}">
+                                    <div class="panel-body">
+                                        <p>{{ entity.content|raw }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endif %}

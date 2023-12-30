@@ -1,0 +1,142 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 print-bar">
+            <form action="" method="get">
+                <div class="row">
+                    <div class="col-md-3 margin-top">
+                        <label>Employee</label>
+                        <select class="search-input span12 m-wrap" id="user" name="user">
+                            <option value="">--Select System User--</option>
+                            {% for employee in employees %}
+                                <option {% if searchForm.user is defined and searchForm.user == employee.id %} selected="selected" {% endif %} value="{{ employee.id }}">{{ employee.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2 margin-top">
+                        <label>Mode</label>
+                        <select class="search-input span12 m-wrap" id="mode" name="mode">
+                            <option value="">--Process All--</option>
+                            {% set mods = ['Sales','Purchase','Expenditure','Journal'] %}
+                            {% for mode in mods %}
+                                <option {% if searchForm.mode is defined and searchForm.mode == mode %} selected="selected" {% endif %}  value="{{ mode }}">{{ mode }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>Start Date</label>
+                        <input type="date" class="m-wrap" id="startDate" name="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>End Date</label>
+                        <input type="date" class="m-wrap" id="endDate" name="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-1 margin-top">
+                        <label>&nbsp;</label>
+                        <button class='btn btn-download btn-margin-left' value="search" name="submit" ><i class='fa fa-search'></i> Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="print-area">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size: 16px">{{ option.name }}</strong></p>
+                <p>Name of Report: User base Sales & Collection</p>
+            </div>
+            <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}
+                <p><strong>Start Date:&nbsp;</strong><strong>{% if data['startDate'] is defined and data['startDate'] is not empty %}{{ data['startDate']|date('d-m-Y') }}{% endif %}</strong>
+                    <strong>End Date:&nbsp;<strong>{% if data['endDate'] is defined and data['endDate'] is not empty %}{{ data['endDate']|date('d-m-Y') }}{% endif %}</strong></strong>
+                </p>
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead class="flip-content">
+                    <tr class="head-red">
+                        <th class="" ><strong>Opening Balance</strong></th>
+                        <th class="" ><strong>Receive</strong></th>
+                        <th class="" ><strong>Payment</strong></th>
+                        <th class="" ><strong>Closing Balance</strong></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr>
+                        <td class="numeric" ><strong>{{ overview.openingBalance|number_format }}</strong></td>
+                        <td class="numeric" ><strong>{{ overview.debit|number_format }}</strong></td>
+                        <td class="numeric" ><strong>{{ overview.credit|number_format }}</strong></td>
+                        <td class="numeric" ><strong>{{ (overview.openingBalance + overview.debit - overview.credit)|number_format }}</strong></td>
+                    </tr>
+
+                    </tbody>
+                </table>
+                <table class="table">
+                    <thead class="flip-content ">
+                    <tr class="head-blue">
+                        <th class="numeric" >Created</th>
+                        <th class="numeric" >Process</th>
+                        <th class="numeric" >Description</th>
+                        <th class="numeric" colspan="3" >
+                            <div class="row-fluid" style="border-bottom: 2px solid #ffffff; text-align: center; font-weight: bold"><span class="span12">Receive</span></div>
+                            <div class="row-fluid"><span class="span4">Cash</span><span class="span4">Bank</span><span class="span4">Mobile</span></div>
+                        </th>
+                        <th class="numeric" colspan="3" >
+                            <div class="row-fluid" style="border-bottom: 2px solid #ffffff; text-align: center; font-weight: bold"><span class="span12">Payment</span></div>
+                            <div class="row-fluid"><span class="span4">Cash</span><span class="span4">Bank</span><span class="span4">Mobile</span></div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                        <tr id="remove-{{ entity.id }}">
+                            <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                            <td class="numeric" >{{ entity.processHead }}</td>
+                            <td class="numeric" >
+                                {% if entity.processHead == 'Expenditure' %}
+                                    Expense: {% if entity.expenditure.category is defined and entity.expenditure.category is not empty %} {{ entity.expenditure.category.accountHead.name }}{% endif %}: {{ entity.accountRefNo }}
+                                    {% if entity.expenditure.remark is not empty  %}
+                                        <br/> {{ entity.expenditure.remark }}
+                                    {% endif %}
+                                {% elseif entity.processHead == 'Sales' %}
+                                    Account Sales : {{ entity.accountRefNo }}
+                                    {% if entity.accountSales.remark is not empty  %}
+                                        <br/> {{ entity.accountSales.remark }}
+                                    {% endif %}
+                                {% elseif entity.processHead == 'Purchase' %}
+                                    Account Purchase : {{ entity.accountRefNo }}
+                                    {% if entity.accountPurchase.remark is not empty  %}
+                                        <br/> {{ entity.accountPurchase.remark }}
+                                    {% endif %}
+                                {% elseif entity.processHead == 'Journal' and  entity.debit > 0 %}
+                                    Journal: {% if entity.accountJournal is defined and entity.accountJournal.accountHeadCredit is not empty %} {{ entity.accountJournal.accountHeadCredit.name }}{% endif %}: {{ entity.accountRefNo }}
+                                    {% if entity.accountJournal.remark is not empty  %}
+                                        <br/> {{ entity.accountJournal.remark }}
+                                    {% endif %}
+                                {% elseif entity.processHead == 'Journal' and  entity.credit > 0 %}
+                                    Journal: {% if  entity.accountJournal is defined and entity.accountJournal.accountHeadDebit is not empty %} {{ entity.accountJournal.accountHeadDebit.name }}{% endif %}: {{ entity.accountRefNo }}
+                                    {% if entity.accountJournal.remark is not empty  %}
+                                        <br/> {{ entity.accountJournal.remark }}
+                                    {% endif %}
+                                {% elseif entity.processHead == 'BalanceTransfer'%}
+                                    Balance Transfer: {% if  entity.balanceTransfer is defined  %} {{ entity.accountHead.name }}{% endif %}: {{ entity.accountRefNo }}
+                                {% endif %}
+                            </td>
+                            <td class="numeric" >{% if entity.debit > 0 and entity.transactionMethod.slug == 'cash'  %}{{ entity.debit|number_format }}{% endif %}</td>
+                            <td class="numeric" >{% if entity.debit > 0 and entity.transactionMethod.slug == 'bank'  %}{{ entity.debit|number_format }}{% endif %}</td>
+                            <td class="numeric" >{% if entity.debit > 0 and entity.transactionMethod.slug == 'mobile'  %}{{ entity.debit|number_format }}{% endif %}</td>
+                            <td class="numeric" >{% if entity.credit > 0 and entity.transactionMethod.slug == 'cash'  %}{{ entity.credit|number_format }}{% endif %}</td>
+                            <td class="numeric" >{% if entity.credit > 0 and entity.transactionMethod.slug == 'bank'  %}{{ entity.credit|number_format }}{% endif %}</td>
+                            <td class="numeric" >{% if entity.credit > 0 and entity.transactionMethod.slug == 'mobile'  %}{{ entity.credit|number_format }}{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

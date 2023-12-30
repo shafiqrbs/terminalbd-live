@@ -1,0 +1,106 @@
+{% extends ':bindu:base.html.twig' %}
+{% block body %}
+    <div id="tm-page-body">
+        <div id="tm-page-title">
+            <div class="tm-wrap tm-table">
+                <div class="tm-title-captions">
+                    <h2 class="tm-entry-title">Contact Us</h2>
+                </div>
+                <ul class="tm-breadcrumbs">
+                    <li>
+                        <a href="{{ path('bindu_homepage') }}">Home</a>
+                    </li>
+                    <li>Contact Us</li>
+                </ul>
+            </div>
+        </div>
+        <div id="" class="tm-container tm-wrap">
+            <div class="page-content">
+                <div class="page-content-inner">
+                    <div class="tm-row" >
+                       <div class="tm-wrap">
+                            <div class="one-third">
+                                <div>
+                                    <ul class="tm-iconlist tm-style1">
+                                        <li>
+                                            <div class="iconlist-entry">
+                                                <div class="iconlist-container">
+                                                    <h3>OFFICE</h3>
+                                                     <div class="iconlist-content">
+                                                        <p>27/3 (1st Floor), Central Road
+                                                         <br>Dhanmondi,Dhaka-1205
+                                                         <br>Bangladesh</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="iconlist-entry">
+                                                <div class="iconlist-container">
+                                                    <h3>COMMUNICATION</h3>
+                                                    <div class="iconlist-content">
+                                                        <div class="col-md-12">
+                                                            <strong><i class="fa fa-hand-o-right"></i>&nbsp;Communication</strong><br>
+                                                            <strong><i class="fa fa-clock-o"></i></strong>&nbsp;10.00 AM To 07.30 PM
+                                                            <br>
+                                                            <strong><i class="fa fa-power-off"></i></strong>&nbsp;Friday<br>
+                                                            <strong><i class="fa fa-mobile"></i></strong>&nbsp;<a href="tel:+ 088 01828148148" class="contact-call">+ 088 01828148148</a><br>
+                                                            <strong><i class="fa fa-envelope"></i></strong>&nbsp;<a href="mailto:terminalbd@gmail.com" class="contact-email">info@terminalbd.com</a><br>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="two-third last" style="width: 62%!important;">
+                                <div id="gmap_canvas" class="gmap" style="height: 450px; width: 100%">
+                                    <div class="Lat">23.741907</div>
+                                    <div class="Lng">90.388156</div>
+                                    <div class="imgMap">{{ asset('assets/img/placeholder.png') }}</div>
+                                    <div class="infoWindow">
+                                        <span><i class="fa fa-home"></i>&nbsp;27/3 (1st Floor), Central Road<br>
+                                                Dhanmondi,Dhaka-1205<br>Bangladesh
+                                                <br><i class="fa fa-clock-o"></i>&nbsp;<strong>10.00 AM To 07.30 PM</strong>
+                                            <br>
+                                            <i class="fa fa-mobile-phone"></i>&nbsp;+ 088&nbsp;<a href="tel:+ 088 01828148148" class="contact-call">01828148148</a>
+                                            <i class="fa fa-map-pin"></i>&nbsp;<a target="_blank" href="https://maps.google.com?saddr=27/3 (1st Floor),Central Road,Dhanmondi,Dhaka-1205,Bangladesh&daddr=23.741907,90.388156">Direction</a>
+                                        </span>
+                                    </div>
+                                    <div class="mapCenter">true</div>
+                                    <div class="Title">Terminalbd.com</div>
+                                    <div class="infoWidth">250</div>
+                                    <div class="mapZoom">15</div>
+                                    <div class="scrollwheel">true</div>
+                                    <div class="disableDoubleClickZoom">false</div>
+                                    <div class="fullscreenControl">true</div>
+                                    <div class="disableOpenURL">false</div>
+                                    <div class="OpenURL">View full map</div>
+                                    <div class="draggable">true</div>
+                                    <div class="disableDefaultUI">false</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!--page-content-->
+        </div>
+        <!--tm-container-->
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@FrontendBundle/Resources/public/js/kmaps.min.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    $('#gmap_canvas').kmaps();
+{% endblock %}

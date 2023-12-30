@@ -1,0 +1,18 @@
+<div class="clearfixTopMargin" ></div>
+<div class="col-md-12 col-xs-12">
+    {% for  entity in pagination %}
+        <div class="testimonial-list grid">
+            <div class="pic">
+                <img src="{{ image(entity.webPath) }}" alt="">
+            </div>
+            <div class="testimonial-list-content">
+                <h3 class="testimonial-list-title">{{ entity.name }}
+                    <small class="post">{{ entity.designation }}</small>
+                    <span class="clearfix"></span>
+                    <span class="web-url"><a target="_blank" href="http://{{ entity.website }}">{{ entity.website }}</a></span>
+                </h3>
+                <p class="description">{{ entity.content|raw }}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>

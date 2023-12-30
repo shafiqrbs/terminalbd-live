@@ -1,0 +1,149 @@
+business_report:
+    resource: "@BusinessBundle/Resources/config/routing/report.yml"
+    prefix:   /report
+
+business_purchase:
+    resource: "@BusinessBundle/Resources/config/routing/purchase.yml"
+    prefix:   /purchase
+
+business_distribution:
+    resource: "@BusinessBundle/Resources/config/routing/distributor.yml"
+    prefix:   /distributor-invoice
+
+business_importer:
+    resource: "@BusinessBundle/Resources/config/routing/itemimporter.yml"
+    prefix:   /item-import
+
+business_purchase_return:
+    resource: "@BusinessBundle/Resources/config/routing/purchasereturn.yml"
+    prefix:   /purchase-return
+
+business_invoice_return:
+    resource: "@BusinessBundle/Resources/config/routing/invoicereturn.yml"
+    prefix:   /invoice-return
+
+business_vendor_stock:
+    resource: "@BusinessBundle/Resources/config/routing/vendorstock.yml"
+    prefix:   /vendor-stock
+
+business_stock_adjustment:
+    resource: "@BusinessBundle/Resources/config/routing/adjustment.yml"
+    prefix:   /stock-adjustment
+
+business_area:
+    resource: "@BusinessBundle/Resources/config/routing/area.yml"
+    prefix:   /area
+
+business_store:
+    resource: "@BusinessBundle/Resources/config/routing/store.yml"
+    prefix:   /store
+
+business_brand:
+    resource: "@BusinessBundle/Resources/config/routing/brand.yml"
+    prefix:   /brand
+
+business_marketing:
+    resource: "@BusinessBundle/Resources/config/routing/marketing.yml"
+    prefix:   /marketing
+
+business_courier:
+    resource: "@BusinessBundle/Resources/config/routing/courier.yml"
+    prefix:   /courier
+
+business_vendor:
+    resource: "@BusinessBundle/Resources/config/routing/vendor.yml"
+    prefix:   /vendor
+
+business_distribution_return:
+    resource: "@BusinessBundle/Resources/config/routing/distributionreturn.yml"
+    prefix:   /distribution-return
+
+business_invoice:
+    resource: "@BusinessBundle/Resources/config/routing/invoice.yml"
+    prefix:   /invoice
+
+business_invoice_association:
+    resource: "@BusinessBundle/Resources/config/routing/invoiceAssociation.yml"
+    prefix:   /invoice-association
+
+business_stock:
+    resource: "@BusinessBundle/Resources/config/routing/stock.yml"
+    prefix:   /stock
+
+business_product:
+    resource: "@BusinessBundle/Resources/config/routing/product.yml"
+    prefix:   /product
+
+business_product_production:
+    resource: "@BusinessBundle/Resources/config/routing/production.yml"
+    prefix:   /product-production
+
+business_stock_transfer:
+    resource: "@BusinessBundle/Resources/config/routing/stock_transfer.yml"
+    prefix:   /stock-transfer
+
+business_damage:
+    resource: "@BusinessBundle/Resources/config/routing/damage.yml"
+    prefix:   /damage
+
+business_category:
+    resource: "@BusinessBundle/Resources/config/routing/category.yml"
+    prefix:   /category
+
+business_wearhouse:
+    resource: "@BusinessBundle/Resources/config/routing/wearhouse.yml"
+    prefix:   /wear-house
+
+business_reverse:
+    resource: "@BusinessBundle/Resources/config/routing/reverse.yml"
+    prefix:   /reverse
+
+business_sales_user:
+    resource: "@BusinessBundle/Resources/config/routing/salesuser.yml"
+    prefix:   /sales-user
+
+
+business_store_ledger:
+    resource: "@BusinessBundle/Resources/config/routing/storeLedger.yml"
+    prefix:   /store-ledger
+
+business_config:
+    resource: "@BusinessBundle/Resources/config/routing/config.yml"
+    prefix:   /config
+
+business_homepage:
+    path:     /dashboard
+    defaults: { _controller: BusinessBundle:Default:index }
+
+business_group_approved:
+    path:      /group/invoice/approved
+    defaults: { _controller: "BusinessBundle:Invoice:invoiceGroupApproved" }
+
+business_android_sales:
+    path:      /android/sales
+    defaults: { _controller: "BusinessBundle:AndroidSales:index" }
+
+business_android_sales_process:
+    path:      /{id}/android/sales-process
+    defaults: { _controller: "BusinessBundle:AndroidSales:androidProcessMysql" }
+    options:
+        expose: true
+
+business_android_sales_delete:
+    path:      /{id}/android/sales-delete
+    defaults: { _controller: "BusinessBundle:AndroidSales:delete" }
+    options:
+        expose: true
+
+business_group_revised:
+    path:     /group/invoice/revised
+    defaults: { _controller: "BusinessBundle:Invoice:invoiceGroupReverse" }
+
+business_stock_migration:
+    path:     /{id}/copy-stock-migration
+    defaults: { _controller: BusinessBundle:Default:copyToBusinessParticular }
+
+business_stock_reset:
+    path:     /stock-reset
+    defaults: { _controller: BusinessBundle:Default:updateRemainingQuantity }
+

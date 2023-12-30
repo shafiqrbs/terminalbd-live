@@ -1,0 +1,179 @@
+<div class="row-fluid">
+    {% if entity.customer is not empty %}
+        {% for service in services %}
+            <div class="tab-pane" >
+                <div class="form-actions portlet box silver">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-list"></i>{{ service.name|capitalize }}</div>
+                    </div>
+                </div>
+                <div class="clearfix">&nbsp;</div>
+                {% if service.serviceFormat == 'label-value' %}
+                    <div class="clearfix">&nbsp;</div>
+                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                        <thead class="flip-content ">
+                        <tr class="head-grey">
+                            <th class="numeric">Procedure</th>
+                            <th class="numeric">Procedure diseases</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for invoiceParticular in entity.invoiceParticulars %}
+                            {% if invoiceParticular.dpsService is not empty and invoiceParticular.dpsService.slug|trim == service.slug %}
+                                <tr>
+                                    <td  class="numeric">{{ invoiceParticular.metaValue }}</td>
+                                    <td class="numeric">{{ invoiceParticular.diseases|raw }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% elseif service.serviceFormat == 'text-field'  %}
+                    {% if service.dpsParticulars is not empty %}
+                        {% for particular in service.dpsParticulars  %}
+                            {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaValue  is not empty %}
+                                <div class="row-fluid">
+                                    <div class="span3"><label>{{ particular.name }}</label></div>
+                                    <div class="span9">{% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty %}{{ invoiceParticularArr[particular.id].metaValue }}{% endif %}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% elseif service.serviceFormat == 'checkbox-text-field'  %}
+                    {% if service.dpsParticulars is not empty %}
+                        {% for particular in service.dpsParticulars  %}
+                            {% if (invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaValue is not empty) or invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaCheck == particular.id %}
+                                <div class="row-fluid">
+                                    <div class="span3"><label><input {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty and invoiceParticularArr[particular.id].metaCheck == particular.id %} checked="checked" {% endif %} type="checkbox" name="" disabled="disabled"> &nbsp;{{ particular.name }}</label></div>
+                                    <div class="span9">{% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty %}{{ invoiceParticularArr[particular.id].metaValue }}{% endif %}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% elseif service.serviceFormat == 'checkbox'  %}
+                    {% if service.dpsParticulars is not empty %}
+                        {% for particular in service.dpsParticulars  %}
+                            {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaCheck  == particular.id %}
+                                <div class="row-fluid">
+                                    <div class="span12"><label><input {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty and invoiceParticularArr[particular.id].metaCheck == particular.id %} checked="checked" {% endif %} type="checkbox" value="1" name="" disabled="disabled"> &nbsp;{{ particular.name }}</label></div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% elseif service.serviceFormat == 'textarea'  %}
+                    {% if service.dpsParticulars is not empty %}
+                        {% for particular in service.dpsParticulars  %}
+                            {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id].metaValue is not empty %}
+                                <div class="row-fluid"><div class="span12"><label>{{ particular.name }}</label></div></div>
+                                <div class="row-fluid">
+                                    <div class="span12">{% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty %}{{ invoiceParticularArr[particular.id].metaValue }}{% endif %}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endif  %}
+                <div class="clearfix">&nbsp;</div>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="form-actions portlet box silver">
+        <div class="portlet-title">
+            <div class="caption"><i class="fa fa-medkit"></i>PRESCRIPTION</div>
+        </div>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+    <div class="row-fluid">
+        <table class="table table-bordered table-striped table-condensed flip-content ">
+            <thead class="flip-content ">
+            <tr class="head-grey">
+                <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                <th class="numeric">Medicine Name</th>
+                <th class="numeric">Quantity</th>
+                <th class="numeric">Dose Time</th>
+                <th class="numeric">Duration</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% set date ='' %}
+            {% for medicine in entity.medicineDoctorPrescribes %}
+                {% if medicine.created|date('d-m-Y') != date %}
+                    {% set date = medicine.created|date('d-m-Y') %}
+                    <tr><th colspan="5">{{ medicine.created|date('d-m-Y') }}</th></tr>
+                {% endif %}
+                <tr id="medicine-{{ medicine.id }}">
+                    <td  class="numeric">{{ loop.index }}.</td>
+                    <td  class="numeric">{{ medicine.medicine.medicineForm }}. {{ medicine.medicine.name }} {{ medicine.medicine.strength }}</td>
+                    <td class="numeric">{{ medicine.medicineQuantity }}</td>
+                    <td class="numeric">{{ medicine.medicineDose }} - {{ medicine.medicineDoseTime }}</td>
+                    <td class="numeric">{{ medicine.medicineDuration }} {{ medicine.medicineDurationType }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+    {% if entity.dpsConfig.showTransaction == 1 %}
+        <div class="clearfix">&nbsp;</div>
+        <div class="form-actions portlet box silver">
+            <div class="portlet-title">
+                <div class="caption"><i class="icon-money"></i>TREATMENT & PLAN</div>
+            </div>
+        </div>
+        <div class="clearfix">&nbsp;</div>
+        <div class="row-fluid">
+            <table class="table table-bordered table-striped table-condensed flip-content ">
+                <thead class="flip-content ">
+                <tr class="head-grey">
+                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                    <th class="numeric">Treatment Particular</th>
+                    <th class="numeric">Appointment Date</th>
+                    <th class="numeric">Price</th>
+                    <th class="numeric">SubTotal</th>
+                    <th class="numeric">Discount</th>
+                    <th class="numeric">Paid</th>
+                    <th class="numeric">Status</th>
+                </tr>
+                </thead>
+                <tbody id="invoiceParticulars">
+                {% for treatment in entity.dpsTreatmentPlans %}
+                    <tr id="remove-{{ treatment.id }}">
+                        <td  class="numeric">{{ loop.index }}</td>
+                        <td  class="numeric">{{ treatment.dpsParticular.particularCode }} - {{ treatment.dpsParticular.name }}</td>
+                        <td  class="numeric">
+                            {% if treatment.status ==1 %}
+                                {{ treatment.appointmentDate|date('d-m-Y') }} {{ treatment.appointmentTime }}
+                            {% else %}
+                                <a  class="btn mini blue-stripe btn-action editable" data-name="AppointmentDate" href="javascript:"  data-url="{{ path('dps_treatment_inline_update') }}" data-value="{{ treatment.appointmentDate|date('d-m-Y') }}" data-format="YYYY-MM-DD" data-viewformat="DD-MM-YYYY" data-template="DD-MM-YYYY" data-type="text" data-pk="{{ treatment.id }}" data-original-title="Change appointment date">{{ treatment.appointmentDate|date('d-m-Y') }}</a>
+                                <a  data-type="select" class="btn mini purple-stripe btn-action editable" id="process" data-name="AppointmentTime" href="#" data-source="{{ path('dps_invoice_appointment_datetime_select') }}"  data-url="{{ path('dps_treatment_inline_update') }}" data-pk="{{ treatment.id }}" data-value="{{ treatment.appointmentTime }}" data-original-title="Change appointment time">{{ treatment.appointmentTime }}</a>
+                            {% endif %}
+                        </td>
+                        <th class="numeric">{{ treatment.price }}</th>
+                        <th class="numeric">{{ treatment.subTotal }}</th>
+                        <th class="numeric">
+                            {% if treatment.status == 1 %}
+                                {{ treatment.discount }}
+                            {% endif %}
+                        </th>
+                        <th class="numeric">
+                            {% if treatment.status ==1 %}
+                                {{ treatment.payment }}
+                            {% endif %}
+                        </th>
+                        <td class="numeric">{% if treatment.status ==1 %}Done{% endif %}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <th class="numeric text-right" colspan="4" ><span class="pull-right">Total Summary</span></th>
+                <th class="numeric">{{ entity.subTotal }}</th>
+                <th class="numeric">{{ entity.discount }}</th>
+                <th class="numeric">{{ entity.payment }}</th>
+                <th class="numeric">{{ entity.due }}</th>
+                </tfoot>
+
+            </table>
+        </div>
+        <div class="clearfix">&nbsp;</div>
+    {% endif %}
+    <div class="clearfix">&nbsp;</div>
+</div>

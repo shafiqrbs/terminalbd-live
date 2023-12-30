@@ -1,0 +1,65 @@
+{% extends ':frontend/template:base.html.twig' %}
+{% block body %}
+<section class="siteBgColor">
+    <div class="clearfix"></div>
+    <div class="clearfix"></div>
+    {% if globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'flat-left'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="col-md-6">
+                    <ul class="simple-breadcrumb-left">
+                        <li class=""><a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">Home</a></li>
+                        <li class="active">{{ menu.menu }}</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-right">
+                    <h2 class="title">SIGN IN</h2>
+                </div>
+
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'flat-right'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="col-md-6">
+                    <h2 class="title">SIGN IN</h2>
+                </div>
+                <div class="col-md-6">
+                    <ul class="simple-breadcrumb-right">
+                        <li class="active">{{ menu.menu }}</li>
+                        <li class=""><a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">Home</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'center'  %}
+
+        <div class="pageheader">
+            <div class="container">
+                <div class="col-md-12 text-center">
+                    <h2 class="title">SIGN IN</h2>
+                    <p><a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}"><span class="glyphicon glyphicon-home"></span> Home</a> &nbsp;&nbsp;<i class="fa fa-angle-right"></i> &nbsp;&nbsp; {{ menu.menu }}</p>
+                </div>
+            </div>
+        </div>
+    {% elseif globalOption.templateCustomize.breadcrumb == 1 and globalOption.templateCustomize.breadcrumbPosition == 'left'  %}
+        <div class="pageheader">
+            <div class="container">
+                <div class="col-md-12 text-left">
+                    <h2 class="title">SIGN IN</h2>
+                    <p><a class="home" href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}"><span class="glyphicon glyphicon-home"></span> Home</a> &nbsp;&nbsp;<i class="fa fa-angle-right"></i> &nbsp;&nbsp; {{ menu.menu }}</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="clearfix"></div><section id="">
+        <div class="container">
+            <div class=" col-xs-6 col-md-6 col-md-offset-3 margin-top">
+
+
+            </div>
+        </div>
+    </section>
+ </section>
+{% endblock %}
+

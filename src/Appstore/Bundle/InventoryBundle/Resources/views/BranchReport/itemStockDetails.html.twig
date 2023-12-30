@@ -1,0 +1,71 @@
+<div class="row-fluid">
+    <div class="span6">
+        <h4>Item Overview:</h4>
+        <ul class="unstyled">
+            <li><strong>Item Name</strong>: {{ entity.masterItem.name }}</li>
+            {% if entity.masterItem.category is defined and entity.masterItem.category is not empty %}<li><strong>Category</strong>: {{ entity.masterItem.category.name }}</li>{% endif %}
+            {% if entity.brand is defined and entity.brand is not empty %}<li><strong>Brand</strong>: {{ entity.brand.name }}</li>{% endif %}
+            {% if entity.vendor is defined and entity.vendor is not empty %}<li><strong>Brand</strong>: {{ entity.vendor.name }}</li>{% endif %}
+            {% if entity.size is defined and entity.size is not empty %}<li><strong>Size/Dimension</strong>: {{ entity.size.name }}</li>{% endif %}
+            {% if entity.color is defined and entity.color is not empty %}<li><strong>Color</strong>: {{ entity.color.name }}</li>{% endif %}
+        </ul>
+    </div>
+</div>
+<table class="table table-bordered table-striped table-condensed flip-content ">
+
+    <thead class="flip-content ">
+    <tr class="head-grey">
+        <th class="numeric" ><i class="icon-reorder"></i></th>
+        <th class="numeric" >Barcode</th>
+        <th class="numeric" >Purchase Date</th>
+        <th class="numeric" >Receive Date</th>
+        <th class="numeric" >Receive Qnt</th>
+        <th class="numeric" >Sales Qnt</th>
+        <th class="numeric" >Sales Return Qnt</th>
+        <th class="numeric" >Ongoing Qnt</th>
+        <th class="numeric" >Return Qnt</th>
+        <th class="numeric" >Remaining Qnt</th>
+        <th class="numeric" >Sales Price</th>
+    </tr>
+    </thead>
+    <tbody >
+    {% set receive = 0 %}
+    {% set salesItem = 0 %}
+    {% set salesReturnItem = 0 %}
+    {% set ongoingItem = 0 %}
+    {% set returnItem = 0 %}
+
+    {% for entity in entities %}
+
+        {%  set receive = receive + entity.receiveQuantity  %}
+        {%  set salesItem = salesItem + stockSalesItem[entity.purchaseItemId]|default(0)  %}
+        {%  set salesReturnItem = salesReturnItem + stockSalesReturnItem[entity.purchaseItemId]|default(0)  %}
+        {%  set ongoingItem = ongoingItem + stockOngoingItem[entity.purchaseItemId]|default(0)  %}
+        {%  set returnItem = returnItem + stockReturnItem[entity.purchaseItemId]|default(0)  %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td class="numeric" >{{ entity.barcode }}</td>
+            <td class="numeric" >{{ entity.purchaseDate|date('d-m-Y') }}</td>
+            <td class="numeric" >{{ entity.deliveryDate|date('d-m-Y') }}</td>
+            <td class="numeric" >{{ entity.receiveQuantity }}</td>
+            <td class="numeric" >{{ stockSalesItem[entity.purchaseItemId]|default() }}</td>
+            <td class="numeric" >{{ stockSalesReturnItem[entity.purchaseItemId]|default() }}</td>
+            <td class="numeric" >{{ stockOngoingItem[entity.purchaseItemId]|default() }}</td>
+            <td class="numeric" >{{ stockReturnItem[entity.purchaseItemId]|default() }}</td>
+            <td class="numeric" >{{ entity.receiveQuantity + stockSalesReturnItem[entity.purchaseItemId]|default(0) - (stockReturnItem[entity.purchaseItemId]|default(0)) -  stockSalesItem[entity.purchaseItemId]|default(0) - stockOngoingItem[entity.purchaseItemId]|default(0) }}</td>
+            <td class="numeric" >{{ entity.salesPrice }}</td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="4"><strong class="pull-right">Total</strong></td>
+        <td class="numeric" >{{ receive }}</td>
+        <td class="numeric" >{{ salesItem }}</td>
+        <td class="numeric" >{{ salesReturnItem }}</td>
+        <td class="numeric" >{{ ongoingItem }}</td>
+        <td class="numeric" >{{ returnItem }}</td>
+        <td class="numeric" >{{ receive + salesReturnItem - salesItem - ongoingItem - returnItem  }}</td>
+        <td></td>
+    </tr>
+
+    </tbody>
+</table>

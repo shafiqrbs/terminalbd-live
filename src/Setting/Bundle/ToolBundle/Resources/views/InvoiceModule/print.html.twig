@@ -1,0 +1,157 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid row-print">
+            <table class="table">
+                <tr>
+                    <td style="width: 66%">
+                        <div class="span4  pull-left invoice-logo-space">
+                            <img style="width: 220px" src="{{ asset('assets/frontend/img/logo.png') }}">
+                        </div>
+                    </td>
+                    <td style="width: 33%">
+                        <div class="span4 pull-right">
+                            <ul class="unstyled">
+                                <li><strong>WWW.TERMINALBD.COM</strong></li>
+                                <li><i class="icon-phone"></i>&nbsp;01828148148</li>
+                                <li><i class="icon-envelope"></i>&nbsp;info@terminalbd.com</li>
+                                <li><i class="icon-home"></i>&nbsp;273/3 (1st Floor),Central Road</li>
+                                <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dhanmondi, Dhaka-1205.</li>
+                                <li><i class="icon-link"></i>&nbsp;www.terminalbd.com</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!-- END purchase_order HEADER-->
+
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box">
+
+                    <div class="portlet-title">
+                        <div class="caption"><strong>Invoice Details</strong></div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+                            <div class="row-fluid">
+                                <table class="table">
+                                    <tr>
+                                        <td style="width:33%">
+                                            <div class="span4">
+                                                <h4>Biil To:</h4>
+                                                <ul class="unstyled">
+                                                    {% if entity.globalOption %}
+                                                        <li><strong><i class="icon-home"></i>&nbsp;</strong>&nbsp;{{ entity.globalOption.name }}</li>
+                                                        <li><strong><i class="icon-phone"></i>&nbsp;</strong>&nbsp;{{ entity.globalOption.mobile }}</li>
+                                                        {% if  entity.globalOption.email  %}
+                                                        <li><strong><i class="icon-envelope"></i>&nbsp;</strong>&nbsp;{{ entity.globalOption.email }}</li>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {% if  entity.name  %}
+                                                        <li><strong><i class="icon-home"></i>&nbsp;</strong>&nbsp;{{ entity.name }}</li>
+                                                        {% endif %}
+                                                        {% if  entity.mobile  %}
+                                                        <li><strong><i class="icon-phone"></i>&nbsp;</strong>&nbsp;{{ entity.mobile }}</li>
+                                                        {% endif %}
+                                                        {% if  entity.address  %}
+                                                            <li><strong><i class=" icon-map-marker"></i>&nbsp;</strong>&nbsp;{{ entity.address }}</li>
+                                                         {% endif %}
+                                                    {% endif %}
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td style="width:33%"></td>
+                                        <td style="width:33%">
+                                            <div class="span4 invoice-payment">
+                                                <h4>Payment Details:</h4>
+                                                <ul class="unstyled">
+                                                    {% if entity.billMonth %}
+                                                    <li><strong>Bill Month:</strong>&nbsp;{{ entity.billMonth }}</li>
+                                                    {% endif %}
+                                                    <li><strong>Total BDT:</strong>&nbsp;{{ entity.totalAmount|number_format() }}</li>
+                                                    <li><strong>Payment BDT:</strong>&nbsp;{{ entity.paidAmount|number_format() }}</li>
+                                                    {% if entity.dueAmount %}<li><strong>Due BDT:</strong>&nbsp;{{ entity.dueAmount|number_format() }}</li>{% endif %}
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                            <div class="clearfix"><br/></div>
+                            <div class="row-fluid box green">
+                                {% if entity.invoiceModuleItems is defined and  entity.invoiceModuleItems is not empty  %}
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                        <thead class="flip-content ">
+                                        <tr class="" style="background: #ddd!important;">
+                                            <th class="numeric" ><strong>S/N</strong></th>
+                                            <th class="numeric" ><strong>Name</strong></th>
+                                            <th class="numeric" ><strong>Amount</strong></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for index,item in entity.invoiceModuleItems %}
+                                            <tr id="remove-{{ item.id }}">
+                                                <td>{{ loop.index }}.</td>
+                                                <td class="numeric" >{{ item.name }}</td>
+                                                <td class="numeric" >{{ item.amount|number_format() }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                        <tfoot>
+                                        <td colspan="2"><strong class="pull-right" >Total Amount</strong></td><td>{{ entity.totalAmount|number_format() }}</td>
+                                        </tfoot>
+                                    </table>
+                                {% endif %}
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="row-fluid">
+                                <table class="table">
+                                    <tr>
+                                        <td style="width:33%">
+                                            <div class="span4">
+                                                <div style="height:50px"></div>
+                                                <h5>Checked By</h5>
+                                            </div>
+                                        </td>
+                                        <td style="width:33%"></td>
+                                        <td style="width:33%">
+                                            <div class="span4">
+                                                <div style="height:50px"></div>
+                                                <h5>Approved By</h5>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@SettingToolBundle/Resources/public/css/print.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    window.print();
+
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    View Details
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('sitesetting') }}">Mobile theme</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Details</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>sitesetting Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="tabbable portlet-tabs">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a  href="{{ path('sitesetting_show',{'id':entity.id}) }}"><i class="icon-eye-open"></i>&nbsp;View</a></li>
+                                <li class=""><a  href="{{ path('sitesetting') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                <li><a  href="{{ path('sitesetting_edit',{'id':entity.id}) }}"><i class="icon-edit"></i>&nbsp;Add/Edit</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="portlet-body form form-horizontal">
+                                    {% include('flash-message.html.twig')  %}
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >&nbsp;</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Web Theme</label>
+                                                <div class="controls control-custom">{{ entity.webTheme.name }}</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" >Mobile Theme</label>
+                                                <div class="controls control-custom">{{ entity.webTheme.name }}</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="span11">
+                                            <div class="control-group">
+                                                <label class="control-label" >Syndicate</label>
+                                                <div class="controls control-custom">
+                                                    {% for synd in entity.syndicates %}
+                                                        {{  synd.name }} <br>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="span11">
+                                            <div class="control-group">
+                                                <label class="control-label" >Syndicate Module</label>
+                                                <div class="controls control-custom">
+                                                    {% for synd in entity.syndicateModules %}
+                                                        {{  synd.name }} <br>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="span11">
+                                            <div class="control-group">
+                                                <label class="control-label" >Module</label>
+                                                <div class="controls control-custom">
+                                                    {% for synd in entity.modules %}
+                                                        {{  synd.name }} <br>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    User Base Sales Report
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">User Base Sales Report</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>User Base Sales Report</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn yellow" href="{{ path('medicine_report_sales_summary') }}"><i class="icon-bar-chart"></i>&nbsp;Sales Overview</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <div class="row-fluid">
+                            <form class="search-form" action="" method="get" name="itemSearch">
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        {% if option.isBranch == 1 %}
+                                        <select name="branch" id="branch" class="span12 m-wrap">
+                                            <option value=""> ---Select Branch --- </option>
+                                            {% for bran in branches %}
+                                                <option {% if searchForm.branch is defined and searchForm.branch == bran.id %} selected="selected" {% endif %} value="{{ bran.id }}">{{ bran.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        {% endif %}
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" id="startDate" name="startDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                    </div>
+                                    <div class="span3">
+                                        <div class="controls">
+                                            <div class="input-append span10">
+                                                <input type="text" id="endDate" name="endDate"  class="span12 m-wrap dateCalendar" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                <div class="btn-group">
+                                                    <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                            <thead class="flip-content ">
+                            <tr class="head-blue">
+                                <th class="numeric" >SalesBy</th>
+                                <th class="numeric" >Sub-Total</th>
+                                <th class="numeric" >Discount</th>
+                                <th class="numeric" >Vat</th>
+                                <th class="numeric" >Net Total</th>
+                                <th class="numeric" >Payment</th>
+                                <th class="numeric" >Due</th>
+                                <th class="numeric" >PurchasePrice</th>
+                                <th class="numeric" >Profit/Loss</th>
+                            </tr>
+                            </thead>
+                            <tbody id="sales">
+                            {% set subTotal=0 %}
+                            {% set discount=0 %}
+                            {% set vat=0 %}
+                            {% set total=0 %}
+                            {% set payment=0 %}
+                            {% set due = 0 %}
+                            {% set purchasePrice = 0 %}
+
+                            {% for entity in entities %}
+                                {% set subTotal = subTotal+entity.subTotal %}
+                                {% set discount = discount+entity.discount %}
+                                {% set vat = vat+entity.vat %}
+                                {% set total = total+entity.total %}
+                                {% set payment = payment+entity.payment %}
+                                {% set due = due + entity.due %}
+                                {% set purchasePrice = purchasePrice + salesPurchasePrice[entity.salesBy] %}
+                                <tr>
+                                    <td class="numeric" >{{ entity.salesBy }}</td>
+                                    <td class="numeric" >{{ entity.subTotal|number_format  }}</td>
+                                    <td class="numeric" >{{ entity.discount|number_format  }}</td>
+                                    <td class="numeric" >{{ entity.vat|number_format  }}</td>
+                                    <th class="numeric" >{{ entity.total|number_format  }}</th>
+                                    <th class="numeric" >{{ entity.payment|number_format }}</th>
+                                    <th class="numeric" >{{ entity.due|number_format }}</th>
+                                    <th class="numeric" >{% if salesPurchasePrice[entity.salesBy] is defined %}{{ salesPurchasePrice[entity.salesBy]|number_format }}{% endif %}</th>
+                                    <th class="numeric" >{% if salesPurchasePrice[entity.salesBy] is defined %}{{ (entity.total-salesPurchasePrice[entity.salesBy])|number_format }}{% endif %}</th>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot><tr><th>Grand</th><th>{{ subTotal|number_format }}</th><th>{{ discount|number_format }}</th><th>{{ vat|number_format }}</th><th>{{ total|number_format }}</th><th>{{ payment|number_format }}</th><th>{{ due|number_format }}</th><th>{{ purchasePrice|number_format }}</th><th>{{ (total-purchasePrice)|number_format }}</th></tr></tfoot>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@InventoryBundle/Resources/public/js/approveProcess.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}

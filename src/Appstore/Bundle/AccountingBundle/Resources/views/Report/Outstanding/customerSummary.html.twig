@@ -1,0 +1,142 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Customer Summary
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_sales_business') }}">Account Sales</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Customer Summary lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Customer Summary</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% set amount = searchForm.amount is defined ? searchForm.amount :'' %}
+                                <a class="btn blue" href="{{ path('report_customer_outstanding') }}"><i class="icon-plus-sign"></i>&nbsp; Outstanding</a>
+                                <a class="btn red" href="{{ path('account_sales_new') }}"><i class="icon-plus-sign"></i>&nbsp; Add Receive</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <form class="search-form" action="" method="get" name="itemSearch">
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                                        <thead class="flip-content">
+                                        <tr class="head-red">
+                                            <th class="" >Sales</th>
+                                            <th class="" >Receive</th>
+                                            <th class="" >Balance</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td class="numeric" ><strong>{{ summary.sales|number_format(2) }}</strong></td>
+                                            <td class="numeric" ><strong>{{ summary.receive|number_format(2) }}</strong></td>
+                                            <td class="numeric" ><strong>{{ summary.balance|number_format(2) }}</strong></td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {#<div class="span3">
+                                    <div class="controls">
+                                        <div class="input-append span11">
+                                            <input type="text" id="amount" name="amount"  class="leftMargin span10  m-wrap" value="{% if searchForm.amount is defined %}{{ searchForm.amount }}{% endif %}"  autocomplete="off" placeholder="Enter till amount">
+                                            <div class="btn-group">
+                                                <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>#}
+                            </div>
+                        </form>
+                        <div class="portlet-body flip-scroll" id="DivIdToPrint">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" ><i class="icon-reorder"></i></th>
+                                    <th class="numeric" >Customer Name</th>
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Sales</th>
+                                    <th class="numeric" >Receive</th>
+                                    <th class="numeric" >Outstanding</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td class="numeric" >{{ entity.name|capitalize }}</td>
+                                        <td class="numeric" >{{ entity.mobile }}</td>
+                                        <th class="numeric" >{{ entity.debit|number_format(2) }}</th>
+                                        <th class="numeric" >{{ entity.credit|number_format(2) }}</th>
+                                        <th class="numeric" >{{ entity.balance|number_format(2) }}</th>
+                                        <th class="numeric" ><a class="btn mini blue" href="{{ path('report_customer_ledger',{'mobile':entity.mobile}) }}"><i class="icon-plus-sign"></i> Ledger</a>
+                                            <a target="_blank" class="btn mini yellow" href="{{ path('report_customer_ledger_print',{'mobile':entity.mobile}) }}"><i class="icon-print"></i> Print</a>
+                                        </th>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .leftMargin {
+            margin-left: 0!important;
+        }
+    </style>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    AccountingApproveProcess();
+    $('#printLedger').on('click', function(e)  {
+    $('#DivIdToPrint').printThis({
+    styles: ['{{ asset('assets/css/print.css') }}'],
+    header: "<h1>Customer Outstanding</h1>"
+    });
+    });
+{% endblock %}
+
+

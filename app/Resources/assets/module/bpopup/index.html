@@ -1,0 +1,47 @@
+<html>
+<head>
+<link href="css/bpopup.css" rel="stylesheet" type="text/css">
+<script src="js/jquery-1.9.1.js"></script>
+<script src="js/jquery.bpopup.min.js"></script>
+<script language="JavaScript" type="text/javascript">
+    // Semicolon (;) to ensure closing of earlier scripting
+    // Encapsulation
+    // $ is assigned to jQuery
+    (function($) {
+
+        // DOM Ready
+        $(function() {
+
+            // Binding a click event
+            // From jQuery v.1.7.0 use .on() instead of .bind()
+            $('#my-button').bind('click', function(e) {
+
+                var self = $(this);
+                $('#element_to_pop_up').bPopup({
+                   contentContainer:'.content',
+                   loadUrl: 'content.php?id='+self.data('bpopup')
+                });
+
+
+            });
+
+
+        });
+
+    })(jQuery);
+</script>
+
+</head>
+<body>
+
+<!-- Button that triggers the popup -->
+<button data-bpopup="010010" class="x-content" id="my-button">POP IT UP</button>
+<span class="button small pop2 x-content" data-bpopup="010010">Pop some text</span>
+<!-- Element to pop up -->
+<div id="element_to_pop_up">
+Content of popup
+    <div class="content"></div>
+<span class="button b-close"><span>X</span></span>
+</div>
+</body>
+</html>

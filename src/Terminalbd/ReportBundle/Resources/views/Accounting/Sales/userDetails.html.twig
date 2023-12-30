@@ -1,0 +1,90 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 print-bar">
+            <form action="" method="get">
+                <div class="row">
+                    <div class="col-md-5 margin-top">
+                        <label>Customer</label>
+                        <select class="search-input span12 m-wrap" id="user" name="user">
+                            <option value="">--Select System User--</option>
+                            {% for employee in employees %}
+                                <option {% if searchForm.user is defined and searchForm.user == employee.id %} selected="selected" {% endif %} value="{{ employee.id }}">{{ employee.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>Start Date</label>
+                        <input type="date" class="m-wrap" id="startDate" name="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>End Date</label>
+                        <input type="date" class="m-wrap" id="endDate" name="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}">
+                    </div>
+                    <div class="col-md-1 margin-top">
+                        <label>&nbsp;</label>
+                        <button class='btn btn-download btn-margin-left' value="search" name="submit" ><i class='fa fa-search'></i> Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="print-area">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size: 16px">{{ option.name }}</strong></p>
+                <p>Name of Report: User base Sales & Collection</p>
+            </div>
+            <div class="col-md-4 text-right">
+                Printed: {{ "now"|date('d-m-Y') }}
+                <p><strong>Start Date:&nbsp;</strong><strong>{% if data['startDate'] is defined and data['startDate'] is not empty %}{{ data['startDate']|date('d-m-Y') }}{% endif %}</strong>
+                    <strong>End Date:&nbsp;<strong>{% if data['endDate'] is defined and data['endDate'] is not empty %}{{ data['endDate']|date('d-m-Y') }}{% endif %}</strong></strong>
+                </p>
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table even" border="1">
+                    <colgroup>
+                        <col class="w">
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <tbody><tr>
+                        <th>SI.</th>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th class="text-right">Sales</th>
+                        <th class="text-right">Receive</th>
+                        <th class="text-right">Balance</th>
+                    </tr>
+                    <tbody>
+                    {% set balance = 0 %}
+                    {% for entity in entities %}
+                        {% set balance = balance + entity.balance %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td class="numeric" >{{ entity.name }}</td>
+                            <td class="numeric" >{{ entity.mobile }}</td>
+                            <td class="text-right" >{{ entity.debit|number_format(2) }}</td>
+                            <td class="text-right" >{{ entity.credit|number_format(2) }}</td>
+                            <td class="text-right" >{{ entity.balance|number_format(2) }}</td>
+                        </tr
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th class="text-right" colspan="5">Grand Balance</th>
+                        <th class="text-right">{{ balance|number_format(2) }}</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

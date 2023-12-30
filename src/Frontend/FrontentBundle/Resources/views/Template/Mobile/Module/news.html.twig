@@ -1,0 +1,26 @@
+<div id="catlist">
+    {% if pagination is not empty %}
+        {% for entity in pagination %}
+            <div class="col-md-12 col-xs-12 list-grid">
+                <dl>
+                    <p><img class="img-responsive" src="{{ image(entity.webPath).resize(310,223) }}" alt="{{ entity.name }}" /></p>
+                    <dd><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'news','slug':entity.slug }) }}"><h4>{{ entity.name }}</h4></a></dd>
+                    <dd><i class="fa fa-user"></i>&nbsp;{{ entity.authorName }} <i class="fa fa-calendar"></i> {{ entity.updated|date('d F, Y') }} </dd>
+                    <dd>
+                        <p> {{ entity.content|truncate(150)|raw }}<a class="more-link" href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'news','slug':entity.slug }) }}">Read more <i class="fa fa-angle-double-right"></i></a></p>
+                    <span><i class="fa fa-tags"></i>
+                        {% for cat in entity.moduleCategory %}
+                            <a href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'subdomain': globalOption.subDomain,'module':'news' ,'slug':cat.slug }) }}">{{ cat.name }}</a>{% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    </span>
+                    </dd>
+                </dl>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+<div class="pagination pull-center"  >
+    {{ knp_pagination_render(pagination) }}
+</div>
+
+

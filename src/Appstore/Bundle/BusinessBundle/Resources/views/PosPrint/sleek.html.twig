@@ -1,0 +1,183 @@
+<html>
+<head>
+    <title>{{ entity.customer.name }}:{{ entity.invoice }}</title>
+    <style>
+        table.posPrint{
+            width: 100%!important;
+            font-family: sans-serif, Arial, Verdana, "Trebuchet MS";
+            collapse: 0;
+            border-collapse: collapse;
+            border: 1px solid #2b2c2d;
+            font-size: 14px;
+        }
+        table.posPrint tr{
+            width: 100% !important;
+        }
+        table.posPrint tr td , table.posPrint tr th{
+            text-align: center;
+            border: 1px solid #2b2c2d;
+        }
+        table.posPrint tr.row-border td , table.posPrint tr.row-border th{
+            text-align: center;
+            border: 1px solid #2b2c2d;
+        }
+        table.posPrint tr:first-child td , table.posPrint tr:first-child th{
+            font-weight: bold;
+            border: 1px solid #2b2c2d;
+        }
+        table.posPrint tr td.left , table.posPrint tr th.left{
+            text-align: left;
+            padding-left: 4px;
+        }
+        table.posPrint tr td.right  , table.posPrint tr th.right{
+            text-align: right;
+            padding-right: 4px;
+        }
+        table.posPrint tr td.border-top{
+            border-top: 2px #dcdfe5 solid;
+        }
+        table label{
+            width: 72px;
+            display: inline-block;
+            text-decoration: none;
+            font-size: 11px!important;
+        }
+        [class*="span"]{
+            flex: 0 0 auto;
+        }
+        .row {
+            --bs-gutter-x: 1.5rem;
+            --bs-gutter-y: 0;
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: calc(var(--bs-gutter-y) * -1);
+        }
+        .span9{
+            width: 74.35897435897436%!important;
+        }
+        .span8{
+            width: 65.81196581196582%!important;
+        }
+        .span6{
+            width: 48.717948717948715%!important;
+        }
+        .span5{
+            width: 41.666667%!important;
+        }
+        .span4{
+            width: 31.623931623931625%!important;
+        }
+        .span3{
+            width: 23.076923076923077%!important;
+        }
+
+        .span2{
+            width: 14.52991452991453%!important;
+        }
+        .span1{
+            width: 5.982905982905983%!important;
+        }
+        .center{
+            text-align: center;
+        }
+        .left{
+            text-align: left;
+        }
+        .right{
+            text-align: right;
+        }
+        .social{
+            position: relative;
+        }
+        .social-icon{
+            position: absolute;
+            top: 2px;
+        }
+        .social-label{
+            display: inline-block;
+            line-height: 28px;
+            margin-left: 32px;
+        }
+        .icon {
+            display: inline-block;
+            line-height: 30px;
+            padding-left: 30px;
+            background-image: url("{{ asset('assets/domain/mobile.png') }}");
+            height: 24px;
+            width: 24px;
+        }
+    </style>
+    {% if printMode == 'print' %}
+        <script type="text/javascript">
+            setTimeout(function () {
+                window.open('', '_self', '');
+                window.close();
+            }, 2000);
+        </script>
+    {% endif %}
+</head>
+<body style="width: 100%; margin: 0 auto;">
+<table class="posPrint">
+    {% if  entity.businessConfig.webPath is defined and entity.businessConfig.webPath('logo') is not empty and entity.businessConfig.invoicePrintLogo == 1 %}
+        <tr>
+            <td colspan="4" class="span12 center logo"><img style="max-width: 380px; max-height: 80px" src="/{{ entity.businessConfig.webPath() }}"></td>
+        </tr>
+    {% endif %}
+    <tr>
+        <th class="span6 left">Name: {{ entity.customer.name }}</th>
+        <th class="span2 center" colspan="3" rowspan="2">INVOICE NO : {{ entity.invoice }}<br/>{{ entity.updated|date('d-m-Y') }}</th>
+    </tr>
+     <tr>
+        <th colspan="" class="span6 left">Phone: {{ entity.customer.mobile }}</th>
+    </tr>
+    <tr>
+        <th class="span6 left" colspan="4">Address: {{ entity.customer.address|raw }}</th>
+    </tr>
+    <tr>
+        <th class="span6 left">Product Name</th>
+        <th class="span2 center">QTY</th>
+        <th class="span2 center">Price</th>
+        <th class="span2 right">Total</th>
+    </tr>
+    {% if entity.businessInvoiceParticulars is not empty %}
+        {% for item in entity.businessInvoiceParticulars %}
+            <tr class="row-border">
+                <td class="span6 left">{{ loop.index }}.{{ item.particular }}</td>
+                <td class="span2 center">{{ item.quantity }}</td>
+                <td class="span2 center">{{ item.price }}</td>
+                <td class="span2 right"><strong>{{ item.subTotal }}</strong></td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+    <tr>
+        <td class="span6 center" rowspan="7">
+            <img height="124px" src="{{ asset('assets/domain/sleek-qr.png') }}">
+        </td>
+        <td colspan="2" class="right">SubTotal</td>
+        <th class="span2 right">{{ entity.subTotal }}</th>
+    </tr>
+    <tr>
+        <td colspan="2" class="right">Discount</td>
+        <th class="span2 right">{{ entity.discount }}</th>
+    </tr>
+    <tr>
+        <td colspan="2" class="right">TOTAl</td>
+        <th class="span2 right">{{ entity.total }}</th>
+    </tr>
+    <tr>
+        <td colspan="3" class="center">FIND US</td>
+    </tr>
+    <tr>
+        <th colspan="3" class="left social">
+            <img class="social-icon" height="24" width="24" src="{{ asset('assets/domain/instagram-icon.png') }}"> <span class="social-label">sleek.bd</span>
+        </th>
+    </tr>
+    <tr>
+        <th colspan="3" class="left social"><img class="social-icon" height="24" width="24" src="{{ asset('assets/domain/mobile.png') }}">  <span class="social-label">+880 187-3358-999</span></th>
+    </tr>
+    <tr>
+        <th colspan="3" class="left social"><img class="social-icon" height="24" width="24" src="{{ asset('assets/domain/mail.png') }}">  <span class="social-label">sleek.bd@gmail.com</span></th>
+    </tr>
+</table>
+</body>
+</html>

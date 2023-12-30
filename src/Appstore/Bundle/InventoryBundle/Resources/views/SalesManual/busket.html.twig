@@ -1,0 +1,122 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Create Invoice/Bill
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('inventory_salesmanual_add') }}">Create Invoice/Bill</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Barcode print list</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                 <form id="barcode" name="barcode" method="post" action="{{ path('inventory_salesmanual_new') }}">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Create Invoice/Bill</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn blue" href="{{ path('inventory_salesmanual_add') }}" target="_blank" data-close-others="true">
+                                    <i class="icon-shopping-cart"></i>&nbsp;Add New Sales
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" ><span class="btn black mini"><i class="icon  icon-shopping-cart"></i></span></th>
+                                    <th class="numeric" >Name </th>
+                                    <th class="numeric" >SKU</th>
+                                    <th class="numeric" >Purchase </th>
+                                    <th class="numeric" >Sales </th>
+                                    <th class="numeric" >Sales Price</th>
+                                    <th class="numeric" >Stock Qnt</th>
+                                    <th class="numeric" >Ongoing Qnt</th>
+                                    <th class="numeric" >Sales Qnt</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% set quantity = 0 %}
+                                    {% set salesPrice = 0 %}
+                                    {% for entity in entities %}
+                                        {% set salesPrice = salesPrice + entity.salesPrice %}
+                                        {% set quantity = quantity + entity.quantity %}
+                                        <tr>
+                                            <td><input {% if entity.id in selected %} checked="checked" {% endif %}  data-id="{{ entity.id }}"  type="checkbox" name="item[]" value="{{ entity.id }}" class="check tooltips item" data-trigger="hover" data-original-title="Add sales"  >&nbsp</td>
+                                            <td class="numeric" >{{ entity.item.name }}</td>
+                                            <td class="numeric" >{{ entity.item.sku }}</td>
+                                            <td class="numeric" >{{ entity.purchasePrice }}</td>
+                                            <td class="numeric" >{{ entity.salesPrice }}</td>
+                                            <td class="numeric" >
+                                                <input type="text" name="salesPrice[]" class="span12" id="" value="{{ entity.salesPrice }}" >
+                                            </td>
+                                            <td class="numeric" >{{ entity.itemStock }}</td>
+                                            <td class="numeric" >{{ ongoingItem[entity.id]|default('') }}</td>
+                                            <td class="numeric" >
+                                                <input type="text" name="quantity[]" class="span8" id="" value="{{ entity.itemStock - ongoingItem[entity.id]|default(0) }}" >
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tr><td colspan="6"><strong class="pull-right" >Total Amount</strong></td><td class="numeric" ><strong>{{ salesPrice }}</strong></td><td class="numeric" ><strong>Quantity</strong></td><td class="numeric"><strong>{{ quantity }}</strong></td></tr>
+                                </tbody>
+                            </table>
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green"><i class="icon-ok"></i>&nbsp;Create</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                 </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+
+    var itemArr = $.cookie('items') ? $.cookie('items').split(',') : [];
+
+    $('body').on('change', 'input.item', function(el) {
+        var val = $(this).val();
+        if($(this).prop('checked')) {
+            itemArr.push(val);
+        }else{
+            var index = itemArr.indexOf(val);
+            if (index > -1) {
+                itemArr.splice(index, 1);
+            }
+        }
+        $.cookie('items', itemArr, {path: '/'});
+        location.reload();
+    });
+
+{% endblock %}

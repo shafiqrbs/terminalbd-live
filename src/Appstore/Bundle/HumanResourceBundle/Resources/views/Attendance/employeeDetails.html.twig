@@ -1,0 +1,177 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                  {{ user.profile.name }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('attendance') }}"> {{ user.profile.name }}</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green ">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Leave for {{ user.profile.name }}</div>
+                        <div class="actions">
+                            <a href="javascript:" id="show"  data-trigger="hover" data-original-title="Add accessories" class=" btn red tooltips"><i class="fa fa-angle-double-down"></i> Add Leave</a>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        <div class="hide" id="hide">
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="row-fluid" >
+                                <!--/span-->
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label"  for="category" >Leave Type<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.leaveSetup) }}
+                                            {{ form_errors(form.leaveSetup) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span2">
+                                    <div class="control-group">
+                                        <label class="control-label"  for="category" >Start Date<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.startDate) }}
+                                            {{ form_errors(form.startDate) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span2">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">End Date<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.endDate) }}
+                                            {{ form_errors(form.endDate) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="button" class="btn green confirmSubmit"><i class="icon-save"></i> Save</button>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                        </div>
+                        <!-- END FORM-->
+                        <div class="clearfix"><br/></div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="fa fa-sign-out"></i>List of Leave</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Leave Year</th>
+                                    <th class="numeric" >Leave Type</th>
+                                    <th class="numeric" >Start to End Date</th>
+                                    <th class="numeric" >No of Day</th>
+                                    <th class="numeric" ></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.year }}</td>
+                                        <td class="numeric" >{{ entity.leaveSetup.name }}</td>
+                                        <td class="numeric" >{{ entity.startDate|date('d-m-Y') }} To {{ entity.endDate|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.noOffDay }}</td>
+                                        <td class="numeric" >
+                                            {% if entity.approvedBy is not empty %}{{ entity.approvedBy }}
+                                            {% else %}
+                                                <a href="javascript:" class="btn mini blue confirm" data-url="{{ path('attendance_leave_approve',{'id':entity.id}) }}"><i class="fa fa-refresh"></i> Waiting for approve</a>
+                                                <a href="javascript:" class="btn mini red confirm" data-url="{{ path('attendance_leave_delete',{'id':entity.id}) }}"><i class="fa fa-close"></i> Cancel</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box purple">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="fa fa-sign-out"></i>Monthly Attendance</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Month Name</th>
+                                    <th class="numeric" >Working Day</th>
+                                    <th class="numeric" >Present Day</th>
+                                    <th class="numeric" >Weekend</th>
+                                    <th class="numeric" >Absence</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for attendance in monthWiseAttendance %}
+                                    <tr>
+                                        <td class="numeric" >{{ attendance.month }},{{ attendance.year }}</td>
+                                        <td class="numeric" >{{ attendance.totalDay }}</td>
+                                        <td class="numeric" >{{ attendance.present }}</td>
+                                        <td class="numeric" >{{ attendance.weekend }}</td>
+                                        <td class="numeric" >{{ attendance.totalDay - attendance.present - attendance.weekend }}</td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="clearfix"><br/></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HumanResourceBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

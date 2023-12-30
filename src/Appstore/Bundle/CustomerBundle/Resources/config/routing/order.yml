@@ -1,0 +1,86 @@
+order:
+    path:     /
+    defaults: { _controller: "CustomerBundle:Order:index" }
+
+shoppingbag_to_order:
+    path:     /shopping-bag-to-order
+    defaults: { _controller: "CustomerBundle:Order:wishToOrder" }
+
+wishlist_to_cart:
+    path:     /wishlist-to-order
+    defaults: { _controller: "CustomerBundle:Order:wishToOrder" }
+
+
+order_to_cart:
+    path:     /inbox-to-order
+    defaults: { _controller: "CustomerBundle:Order:cartToOrder" }
+
+order_checkout:
+    path:     /cart-to-order
+    defaults: { _controller: "CustomerBundle:Order:cartToOrder" }
+
+order_cart:
+    path:     /order-cart
+    defaults: { _controller: "CustomerBundle:Order:cart" }
+
+order_payment:
+    path:     /{id}/payment
+    defaults: { _controller: "CustomerBundle:Order:payment" }
+
+order_process:
+    path:      /{id}/order-process
+    defaults: { _controller: "CustomerBundle:Order:processConfirm" }
+
+order_show:
+    path:      /{id}/order-show
+    defaults: { _controller: "CustomerBundle:Order:show" }
+
+order_delete:
+    path:      /{id}/order-delete
+    defaults: { _controller: "CustomerBundle:Order:delete" }
+
+order_item_update:
+    path:      /{order}/{id}/order-item-update
+    defaults: { _controller: "CustomerBundle:Order:itemUpdate" }
+
+order_item_delete:
+    path:      /{order}/{id}/order-item-delete
+    defaults: { _controller: "CustomerBundle:Order:itemDelete" }
+
+order_print_invoice:
+    path:     /{invoice}/invoice-print
+    defaults: { _controller: "CustomerBundle:Order:print" }
+
+order_ajax_payment:
+    path:      /{id}/order-payment
+    defaults: { _controller: "CustomerBundle:Order:paymentProcess" }
+    methods:  [POST]
+
+order_payment_delete:
+    path:      /{id}/order-payment-delete
+    defaults: { _controller: "CustomerBundle:Order:paymentDelete" }
+
+order_attach_download:
+    path:      /{id}/attach-download
+    defaults: { _controller: "CustomerBundle:Order:downloadAttachFile" }
+
+medicine_customer_order_stock_search:
+    path:     /order-stock-product-search
+    defaults: { _controller: "CustomerBundle:Order:autoSearch" }
+    options:
+            expose: true
+
+order_item_stock_details:
+    path:     /order-stock-item-search
+    defaults: { _controller: "CustomerBundle:Order:stockDetails" }
+    options:
+            expose: true
+
+medicine_order_item:
+    path:    /{id}/customer-order-item-add
+    defaults: { _controller: "CustomerBundle:Order:itemAdd" }
+    methods:  POST
+    options:
+            expose: true
+
+

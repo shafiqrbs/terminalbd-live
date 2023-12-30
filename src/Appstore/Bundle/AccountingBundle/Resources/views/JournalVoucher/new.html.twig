@@ -1,0 +1,326 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN account_journal HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="account_journal-title">
+                    Journal Double Entry
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_double_entry') }}">Journal Voucher Entry</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Journal Voucher Entry</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END account_journal HEADER-->
+        <!-- BEGIN account_journal CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Journal Voucher Entry Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('account_double_entry') }}"><i class="icon-th-list"></i>&nbsp; Voucher Entry</a>
+                                {% if app.user.granted("ROLE_SUPER_ADMIN") or app.user.granted("ROLE_DOMAIN_ACCOUNTING_JOURNAL") or app.user.granted("ROLE_DOMAIN_ACCOUNTING") %}
+                                <a target="_blank" class="btn blue" href="{{ path('accounthead_new') }}"><i class="icon-plus-sign"></i>&nbsp; New Sub-head</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+                        <div class="row-fluid">
+                            <div class="span8">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="transactionMethod">Voucher Type</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.voucherType) }}
+                                                {{ form_errors(form.voucherType) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Voucher No</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.voucherNo) }}
+                                                {{ form_errors(form.voucherNo) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Created Date</label>
+                                            <div class="controls">
+                                                <input type="date" class="m-wrap span12 customer-input"  name="created" id="created"  value="" ></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid" style="background:#5b5b54">
+                            <div class="span3"><label class="inline-label"><strong>Account Head</strong></label></div>
+                            <div class="span3"><label class="inline-label">Sub-account Head</label></div>
+                            <div class="span3"><label class="inline-label">Narration</label></div>
+                            <div class="span1"><label class="inline-label">Debit</label></div>
+                            <div class="span1"><label class="inline-label">Credit</label></div>
+                            <div class="span1"><a href="javascript:" class="btn blue  addmore"><i class="icon-plus"></i> Add</a></div>
+                        </div>
+                        <div class="row-fluid clone-block" id="clone-block">
+                            <div class="clone">
+                                <div class="row-fluid inline-row-fluid">
+                                    <div class="span3">
+                                        <input type="hidden" id="journalItem" name="journalItem[]" value="">
+                                        <select required="required" class="search-input span12 inline-select accountHead" id="accountHead" name="accountHead[]">
+                                            <option value=""  >Choose Account Head</option>
+                                            {% for account in accountHead %}
+                                                {% if heads[account.id] is defined and heads[account.id] is not empty %}
+                                                    <optgroup label="{{ account.name }}">
+                                                        {% for head in heads[account.id] %}
+                                                            <option {% if searchForm.accountHead is defined and searchForm.accountHead == head.id %} selected="selected" {% endif %} value="{{ head.id }}">{{ head.name }}</option>
+                                                        {% endfor %}
+                                                    </optgroup>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <select class="subAccountHead inline-select span12 " id="subAccountHead" name="subAccountHead[]">
+                                            <option value="0">--Choose Sub-account Head--</option>
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" name="narration[]" id="narration" class="inline-text span12" placeholder="Enter narration" value="">
+                                    </div>
+                                    <div class="span1">
+                                        <div class="btn-group">
+                                        <input type="text" name="debit[]" id="debit" class="debit number inline-text span12 removeZero" placeholder="Dr. amount" value="0">
+                                        </div>
+                                    </div>
+                                    <div class="span1">
+                                        <div class="btn-group">
+                                            <input type="text" name="credit[]" id="credit" class="credit number inline-text span12 removeZero" placeholder="Cr. amount" value="0">
+                                        </div>
+                                    </div>
+                                    <div class="span1">
+                                        <a href="javascript:"  class="btn yellow remove hidden"><i class="icon-trash"></i></a>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="clone" id="added100">
+                                <div class="row-fluid inline-row-fluid" >
+                                    <div class="span3">
+                                        <input type="hidden" id="journalItem" name="journalItem[]" value="">
+                                        <select required="required" class="search-input  span12 inline-select accountHead" id="accountHead" name="accountHead[]">
+                                            <option value=""  >Choose Account Head</option>
+                                            {% for account in accountHead %}
+                                                {% if heads[account.id] is defined and heads[account.id] is not empty %}
+                                                    <optgroup label="{{ account.name }}">
+                                                        {% for head in heads[account.id] %}
+                                                            <option {% if searchForm.accountHead is defined and searchForm.accountHead == head.id %} selected="selected" {% endif %} value="{{ head.id }}">{{ head.name }}</option>
+                                                        {% endfor %}
+                                                    </optgroup>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <select class="subAccountHead  inline-select  span12" id="subAccountHead" name="subAccountHead[]">
+                                            <option value="0">--Choose Sub-account Head--</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="span3">
+                                        <input type="text" name="narration[]" id="narration" class="span12 inline-text span12" placeholder="Enter narration" value="">
+                                    </div>
+                                    <div class="span1">
+                                            <input type="text" name="debit[]" id="debit" class="debit span12 number inline-text removeZero" placeholder="Dr. amount" value="0">
+
+                                    </div>
+                                    <div class="span1">
+                                            <input type="text" name="credit[]" id="credit" class="credit span12 number inline-text removeZero" placeholder="Cr. amount" value="0">
+                                    </div>
+                                    <div class="span1"></div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        {% set totalDebit = 0 %}
+                        {% set totalCredit = 0 %}
+                        {% if  entity.accountJournalItems is defined and  entity.accountJournalItems is not empty %}
+                        {% for item in entity.accountJournalItems %}
+                            {% set totalDebit = totalDebit + item.debit %}
+                            {% set totalCredit = totalCredit + item.credit  %}
+                            <div class="row-fluid" style="background: #f1eded; border-bottom: 2px #5a5856 solid" >
+                                <div class="span3">
+                                    <input type="hidden" id="journalItem" name="journalItem[]" value="{{ item.id }}">
+                                    <select required="required" class="search-input select2  span12 m-wrap accountHead" id="accountHead" name="accountHead[]">
+                                        <option value=""  >Choose Account Head</option>
+                                        {% for account in accountHead %}
+                                            {% if heads[account.id] is defined and heads[account.id] is not empty %}
+                                                <optgroup label="{{ account.name }}">
+                                                    {% for head in heads[account.id] %}
+                                                        <option {% if item.accountHead is defined and item.accountHead.id == head.id %} selected="selected" {% endif %} value="{{ head.id }}">{{ head.name }}</option>
+                                                    {% endfor %}
+                                                </optgroup>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="span3">
+                                    <select class="subAccountHead select2  span12 m-wrap" id="subAccountHead" name="subAccountHead[]">
+
+                                        <option value="">--Choose Sub-account Head--</option>
+                                        {% if item.accountHead is defined and item.accountSubHead is not empty and heads[item.accountHead.id] is not empty %}
+                                            {% for sub in heads[item.accountHead.id] %}
+                                                <option {% if sub.id == item.accountSubHead.id %} selected="selected" {% endif %}  value="{{ sub.id }}">{{ sub.name }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+
+                                    </select>
+                                </div>
+                                <div class="span3">
+                                    <input type="text" name="narration[]" id="narration" class="m-wrap span12" placeholder="Enter narration" value="{{ item.narration|raw }}">
+                                </div>
+                                <div class="span1">
+                                    <div class="btn-group">
+                                        <input type="number" name="debit[]" id="debit" class="debit m-wrap span4 removeZero" placeholder="Dr. amount" value="{{ item.debit }}">
+                                    </div>
+                                </div>
+                                <div class="span1">
+                                    <div class="btn-group">
+                                        <input type="number" name="credit[]" id="credit" class="credit m-wrap span4 removeZero" placeholder="Cr. amount" value="{{ item.credit }}"><a href="javascript:" data-url="{{ path('account_double_entry_item_delete',{'id':item.id}) }}"  class="btn red approve"><i class="icon-trash"></i></a>
+                                    </div>
+                                </div>
+
+                            </div>
+                            </div>
+                        {% endfor %}
+                        {% endif %}
+                        <div class="row-fluid" style="background:#5b5b54">
+                            <div class="span9 text-right"><label class="inline-label"><strong>Amount Total</strong></label></div>
+                            <div class="span1"><label class="inline-label"><strong class="totalDebit">{{ totalDebit }}</strong></label></div>
+                            <div class="span1"><label class="inline-label"><strong  class="totalCredit">{{ totalCredit }}</strong></label></div>
+                            <div class="span1"><a href="javascript:" class="btn blue  addmore"><i class="icon-plus"></i> Add</a></div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <label class="" for="firstName"><strong>Description</strong></label>
+                        </div>
+                        <div class="row-fluid">
+                            <textarea type="text" id="remark" name="remark"  class="m-wrap inline-textarea span12" placeholder="Enter Journal Remark" value="{{ entity.remark }}"></textarea>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/span-->
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-right">
+                                <input type="hidden" id="totalDebit" name="totalDebit" class="totalDebit" value="{{ entity.amount }}">
+                                <input type="hidden" id="totalCredit" name="totalCredit" class="totalCredit" value="{{ entity.amount }}">
+                                <button type="submit" disabled="disabled" id="submitBtn"  class="btn green"><i class="icon-save"></i>&nbsp;Save & Print</button>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                        <!-- END FORM-->
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .inline-row-fluid{
+            background: #f1eded;
+            border-bottom: 2px #cac6c2 solid;
+            margin-bottom: 2px;
+            padding-bottom: 2px;
+        }
+        .inline-label{
+            padding: 16px 4px;
+            font-weight: bold;
+            line-height: 0px;
+            color: #fff;
+            text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+            white-space: nowrap;
+            vertical-align: baseline;
+        }
+         .inline-textarea {
+            border: 2px solid #645e5e !important;
+        }
+        .inline-text {
+            height: 36px!important;
+            border: 2px solid #645e5e !important;
+            margin-top: 1px!important;
+        }
+        .number {
+            height: 36px!important;
+            border: 2px solid #645e5e !important;
+            margin-top: 1px!important;
+        }
+        .inline-select{
+            margin-left: 0!important;
+            width: 100%;
+            height:36px;
+            border: 2px solid #645e5e;
+        }
+        .select2-search{
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .select2-search input{
+            border: 1px solid #35aa47!important;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@AccountingBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    '@AccountingBundle/Resources/public/js/common.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    AccountingApproveProcess();
+    CommonJs();
+{% endblock %}

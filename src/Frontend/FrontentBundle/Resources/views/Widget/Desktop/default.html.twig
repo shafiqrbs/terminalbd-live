@@ -1,0 +1,80 @@
+<!-- HEADER -->
+<div class="joosa top_section">
+    <header id="header">
+        <!-- Top header bar -->
+        <div id="topHeader">
+
+            <div class="wrapper">
+
+                <div class="top_contact_info">
+
+                    <div class="container">
+
+                        <div class="date_wrap">
+                            <script type="text/javascript">
+                                var mydate=new Date()
+                                var year=mydate.getYear()
+                                if (year < 1000)
+                                    year+=1900
+                                var day=mydate.getDay()
+                                var month=mydate.getMonth()
+                                var daym=mydate.getDate()
+                                if (daym<10)
+                                    daym="0"+daym
+                                var montharray=new Array("January","February","March","April","May","June","July","August","September","October","November","December")
+                                document.write("<b class='date'>"+montharray[month]+" "+daym+", "+year+"</b>")
+                            </script>
+                        </div><!-- end date -->
+
+                        <ul class="tci_list">
+
+                            {# <li class="empty"><a href="#"><i class="fa fa-comment"></i> live chat</a></li>#}
+                            <li class="empty"><a href="mailto:{{ entity.email }}"><i class="fa fa-envelope"></i> {{ entity.email }}</a></li>
+                            <li class="empty"><i class="fa fa-headphones"></i> {{ entity.mobile }}</li>
+                            {#                  <li class="empty two"><a href="#">Login</a> |</li>
+                                              <li class="empty two"><a href="#">Signup</a> |</li>
+                                              <li class="empty two"><a href="#">Contact</a></li>#}
+                            <li class="space"></li>
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                            <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                            <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+                            <li></li>
+                        </ul>
+
+                    </div>
+
+                </div><!-- end top contact info -->
+
+            </div>
+
+        </div>
+        <div id="trueHeader">
+            <div class="wrapper">
+                <div class="container">
+                    <!-- Logo -->
+                    {% if(entity.templateCustomize) %}
+                        <div class="logo_main"><a href="{{ entity.subDomain }}" id="logo" style="background:url('{{ image(entity.templateCustomize.webPath('logo')).resize() }}')"></a></div>
+                    {% endif %}
+                    <!-- Menu -->
+                    <div class="menu_main">
+                        <div class="joosa top_links">&nbsp;</div>
+                        <nav id="access" class="access" role="navigation">
+                            <div id="menu" class="menu">
+                                {{ menuTree|raw }}
+                            </div>
+                        </nav>
+                    </div><!-- end nav menu -->
+                </div>
+            </div>
+        </div>
+    </header>
+</div><!-- end header -->
+<div class="clearfix mar_top13"></div>
+<style>
+    #trueHeader #logo{
+        background-repeat: no-repeat!important;
+        background-position: center center!important;
+        background-size: 100% !important;
+    }
+</style>

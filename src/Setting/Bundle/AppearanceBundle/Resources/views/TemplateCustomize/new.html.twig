@@ -1,0 +1,1778 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN templatecustomize HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="templatecustomize-title">
+                    Template Customize
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Template Customize</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END templatecustomize HEADER-->
+        <!-- BEGIN templatecustomize CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Template Customize Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn purple" target="_blank" href="http://www.htmlcsscolor.com">Color Plate</a>
+                                <a class="btn blue" href="{{ path('globaloption_modify') }}">
+                                    <i class="icon-cogs"></i>
+                                    Setting
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+
+                        <!--/row-->
+
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" >Website Language</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.siteLanguage) }}
+                                                {{ form_errors(form.siteLanguage) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Sidebar Position</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.sidebarPosition) }}
+                                                {{ form_errors(form.sidebarPosition) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            {{ form_widget(form.showLogin) }}
+                                            {{ form_errors(form.showLogin) }}
+                                            Show Login
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            {{ form_widget(form.otpLogin) }}
+                                            {{ form_errors(form.otpLogin) }}
+                                            Login with OTP
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            {{ form_widget(form.showSidebar) }}
+                                            {{ form_errors(form.showSidebar) }}
+                                            Sidebar
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            {{ form_widget(form.contactForm) }}
+                                            {{ form_errors(form.contactForm) }}
+                                            Show Contact Form
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            {{ form_widget(form.registrationForm) }}
+                                            {{ form_errors(form.registrationForm) }}
+                                            Show Registration Form
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="span4">
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" >Box Shadow</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.boxShadow) }}
+                                                {{ form_errors(form.boxShadow) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Box Shadow Color</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.boxShadowColor) }}
+                                                {{ form_errors(form.boxShadowColor) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            {{ form_widget(form.showSearch) }}
+                                            {{ form_errors(form.showSearch) }}
+                                            Show Search
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            {{ form_widget(form.footerBlock) }}
+                                            {{ form_errors(form.footerBlock) }}
+                                            Footer Block
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            {{ form_widget(form.showNewsLetter) }}
+                                            {{ form_errors(form.showNewsLetter) }}
+                                            Newsletter Box
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            {{ form_widget(form.sidebarTooltip) }}
+                                            {{ form_errors(form.sidebarTooltip) }}
+                                            Sidebar Tooltip
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="span4">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Sidebar Title</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.sidebarTitle) }}
+                                                {{ form_errors(form.sidebarTitle) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" >Pagination</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    {{ form_widget(form.pagination) }}
+                                                    {{ form_errors(form.pagination) }}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Home Page Manage</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span8">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Site Welcome</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.siteTitle) }}
+                                        {{ form_errors(form.siteTitle) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Font Size</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.siteTitleSize) }}
+                                        {{ form_errors(form.siteTitleSize) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Title Color</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.siteTitleColor) }}
+                                        {{ form_errors(form.siteTitleColor) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Site Slogan</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-text"></i>
+                                            {{ form_widget(form.siteSlogan) }}
+                                            {{ form_errors(form.siteSlogan) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Home Bg Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.homeBgColor) }}
+                                            {{ form_errors(form.homeBgColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Home Anchor Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.homeAnchorColor) }}
+                                            {{ form_errors(form.homeAnchorColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Home Anchor Color Hover</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.homeAnchorColorHover) }}
+                                            {{ form_errors(form.homeAnchorColorHover) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Site Manage</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Site Font Size</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+
+                                            {{ form_widget(form.siteFontSize) }}
+                                            {{ form_errors(form.siteFontSize) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Site Background Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.siteBgColor) }}
+                                            {{ form_errors(form.siteBgColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Button Bg Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.buttonBgColor) }}
+                                            {{ form_errors(form.buttonBgColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Button Bg Color Hover</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.buttonBgColorHover) }}
+                                            {{ form_errors(form.buttonBgColorHover) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span3 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Site Title Bg Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.siteTitleBgColor) }}
+                                            {{ form_errors(form.siteTitleBgColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Sub Page Bg Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.subPageBgColor) }}
+                                            {{ form_errors(form.subPageBgColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Anchor Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.anchorColor) }}
+                                            {{ form_errors(form.anchorColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Anchor Color Hover</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.anchorHoverColor) }}
+                                            {{ form_errors(form.anchorHoverColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span4 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Site Font Family</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(form.siteFontFamily) }}
+                                            {{ form_errors(form.siteFontFamily) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Site H1</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(form.siteH1TextSize) }}
+                                            {{ form_errors(form.siteH1TextSize) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Site H2</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+
+                                            {{ form_widget(form.siteH2TextSize) }}
+                                            {{ form_errors(form.siteH2TextSize) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Site H3</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            {{ form_widget(form.siteH3TextSize) }}
+                                            {{ form_errors(form.siteH3TextSize) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Site H4</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+
+                                            {{ form_widget(form.siteH4TextSize) }}
+                                            {{ form_errors(form.siteH4TextSize) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!--/row-->
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="form-actions portlet box grey">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Header/Body/Border</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Top Bg Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.topBgColor) }}
+                                            {{ form_errors(form.topBgColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Header Bg Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.headerBgColor) }}
+                                            {{ form_errors(form.headerBgColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Body Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.bodyColor) }}
+                                            {{ form_errors(form.bodyColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Sidebar Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.sidebarColor) }}
+                                            {{ form_errors(form.sidebarColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Header Border Height</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.headerBorderHeight) }}
+                                        {{ form_errors(form.headerBorderHeight) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Header Border Color</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.headerBorderColor) }}
+                                        {{ form_errors(form.headerBorderColor) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Body Font Size</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.contentFontSize) }}
+                                        {{ form_errors(form.contentFontSize) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Body Content Line Height</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.contentLineHeight) }}
+                                        {{ form_errors(form.contentLineHeight) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Border Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.borderColor) }}
+                                            {{ form_errors(form.borderColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Border Color Hover</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.borderColorHover) }}
+                                            {{ form_errors(form.borderColorHover) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Content Align</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.contentAlign) }}
+                                        {{ form_errors(form.contentAlign) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Placeholder Color</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.placeholderColor) }}
+                                        {{ form_errors(form.placeholderColor) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="form-actions portlet box green">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Manage Header Menu</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Menu Top Margin/Sticky</label>
+                                    <div class="controls">
+                                        <div class="span6">
+                                            {{ form_widget(form.menuTopMargin) }}
+                                            {{ form_errors(form.menuTopMargin) }}
+                                        </div>
+                                        <div class="span6">
+                                            {{ form_widget(form.stickyMenuTopMargin) }}
+                                            {{ form_errors(form.stickyMenuTopMargin) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Menu Position</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.menuPosition) }}
+                                        {{ form_errors(form.menuPosition) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Menu Letter</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.menuLetter) }}
+                                        {{ form_errors(form.menuLetter) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Menu Font Size</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.menuFontSize) }}
+                                        {{ form_errors(form.menuFontSize) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">&nbsp;</label>
+                                    <div class="controls">
+                                        Menu Bold {{ form_widget(form.menuBold) }}
+                                        {{ form_errors(form.menuBold) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!--/row-->
+                        <!--/row-->
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Sticky Bg Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.stickyBgColor) }}
+                                            {{ form_errors(form.stickyBgColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Menu Bg Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.menuBgColor) }}
+                                            {{ form_errors(form.menuBgColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Menu Bg Color Hover</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.menuBgColorHover) }}
+                                            {{ form_errors(form.menuBgColorHover) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Menu li A</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.menuLiAColor) }}
+                                            {{ form_errors(form.menuLiAColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Menu li A:hover</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.menuLiAHoverColor) }}
+                                            {{ form_errors(form.menuLiAHoverColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Sub Menu Width (px)</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.subMenuWidth) }}
+                                        {{ form_errors(form.subMenuWidth) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Menu Sub-bg Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.subMenuBgColor) }}
+                                            {{ form_errors(form.subMenuBgColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Menu Sub-bg Color Hover</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.subMenuBgColorHover) }}
+                                            {{ form_errors(form.subMenuBgColorHover) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Manage Top Bar</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    {{ form_widget(form.topBar) }}
+                                    Show Top-bar
+                                </div>
+                                <div class="control-group">
+                                    {{ form_widget(form.contactButton) }}
+                                    Show Contact
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Contact Icon</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.topIconPosition) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Text Position</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.topTextPosition) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Contact Email</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.contactEmail) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    {{ form_widget(form.showCalendar) }}
+                                    {{ form_errors(form.showCalendar) }}
+                                    Show Calender
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    {{ form_widget(form.showEmail) }}
+                                    {{ form_errors(form.showEmail) }}
+                                    Show Email
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    {{ form_widget(form.showMobile) }}
+                                    {{ form_errors(form.showMobile) }}
+                                    Show Mobile
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Contact No</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.contactNo) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Text Or Button</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.topBarContent) }}
+                                        <p><input disabled="disabled" class="span12 m-wrap" value='<div class="quote-button-box"><a href="/contact" class="quote-btn">Ask For Quote</a></div>'></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                       <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Add Social Icons</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">&nbsp;</label>
+                                    <div class="controls">
+                                    {{ form_widget(form.showSocialIcon) }}
+                                    {{ form_errors(form.showSocialIcon) }}
+                                    Social Icon
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Icon Position</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.socialIconPosition) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Icon Type</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.socialIconType) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Email Address</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.globalOption.email) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Webmail URL</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.globalOption.webMail) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Facebook URL</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.globalOption.facebookPageUrl) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Twitter URL</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.globalOption.twitterUrl) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Youtube URL</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.globalOption.youtube) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Google Plus URL</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.globalOption.googlePlus) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Linkedin URL</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.globalOption.linkedin) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Instagram URL</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.globalOption.instagramPageUrl) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label"  for="firstName">Skype URL</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.globalOption.skype) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="clearfix">&nbsp;</div>
+
+                        <!--/row-->
+                        <div class="form-actions portlet box purple">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Manage Mobile Template</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">{{ form_widget(form.mobileLogin) }} Mobile Login</label>
+                                    <label class="control-label" for="firstName">{{ form_widget(form.mobileShowLogo) }} Logo Show</label>
+                                    <div class="control-label">{{ form_widget(form.mobileHomeShowLogo) }}  Logo Show Home</div>
+                                    <div class="controls">{{ form_widget(form.mobileFooter) }}</div>
+                                </div>
+                            </div>
+                            <div class="span10">
+                                <div class="row-fluid">
+                                    <div class="span2">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Header Bg</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-magic"></i>
+                                                    {{ form_widget(form.mobileHeaderBgColor) }}
+                                                    {{ form_errors(form.mobileHeaderBgColor) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span2">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Menu Bg</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-magic"></i>
+                                                    {{ form_widget(form.mobileMenuBgColor) }}
+                                                    {{ form_errors(form.mobileMenuBgColor) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span2">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Menu Bg Hover</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-magic"></i>
+                                                    {{ form_widget(form.mobileMenuBgColorHover) }}
+                                                    {{ form_errors(form.mobileMenuBgColorHover) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span2">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Menu Anchor</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-magic"></i>
+                                                    {{ form_widget(form.mobileMenuLiAColor) }}
+                                                    {{ form_errors(form.mobileMenuLiAColor) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span2">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Menu Anchor Hover</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-magic"></i>
+                                                    {{ form_widget(form.mobileMenuLiAHoverColor) }}
+                                                    {{ form_errors(form.mobileMenuLiAHoverColor) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span2">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Footer Bg</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-magic"></i>
+                                                    {{ form_widget(form.mobileFooterBgColor) }}
+                                                    {{ form_errors(form.mobileFooterBgColor) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span2">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Footer Icon Bg</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-magic"></i>
+                                                    {{ form_widget(form.mobileFooterAnchorBg) }}
+                                                    {{ form_errors(form.mobileFooterAnchorBg) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span2">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Footer Icon Color</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-magic"></i>
+                                                    {{ form_widget(form.mobileFooterAnchorColor) }}
+                                                    {{ form_errors(form.mobileFooterAnchorColor) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span2">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Footer Icon Color Hover</label>
+                                            <div class="controls">
+                                                <div class="input-icon left">
+                                                    <i class="icon-magic"></i>
+                                                    {{ form_widget(form.mobileFooterAnchorColorHover) }}
+                                                    {{ form_errors(form.mobileFooterAnchorColorHover) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--/row-->
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="form-actions portlet box yellow">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Manage Footer Menu</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Footer Bg Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.footerBgColor) }}
+                                            {{ form_errors(form.footerBgColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Footer Text Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.footerTextColor) }}
+                                            {{ form_errors(form.footerTextColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Footer Anchor Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.footerAnchorColor) }}
+                                            {{ form_errors(form.footerAnchorColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Footer Anchor Color Hover</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.footerAnchorColorHover) }}
+                                            {{ form_errors(form.footerAnchorColorHover) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!--/row-->
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="form-actions portlet box grey">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Carousel</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Desktop Home Carousel Height</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.carouselHeight) }}
+                                        {{ form_errors(form.carouselHeight) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Mobile Feature/Carousel Height</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.mobileCarouselHeight) }}
+                                        {{ form_errors(form.mobileCarouselHeight) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Slider Position</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.sliderPosition) }}
+                                        {{ form_errors(form.sliderPosition) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Slider Position Top/Bottom(%)</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-font"></i>
+                                            {{ form_widget(form.sliderTopBottomPosition) }}
+                                            {{ form_errors(form.sliderTopBottomPosition) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Slider Position Left/Right(%)</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-font"></i>
+                                            {{ form_widget(form.sliderLeftRightPosition) }}
+                                            {{ form_errors(form.sliderLeftRightPosition) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="form-actions portlet box grey">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Breadcrumb</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">&nbsp;</label>
+                                    <div class="controls">
+                                    {{ form_widget(form.breadcrumb) }}
+                                    {{ form_errors(form.breadcrumb) }}Breadcrumb
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Breadcrumb Position</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.breadcrumbPosition) }}
+                                        {{ form_errors(form.breadcrumbPosition) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Breadcrumb Height</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.breadcrumbHeight) }}
+                                        {{ form_errors(form.breadcrumbHeight) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Breadcrumb Font Size</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.breadcrumbFontSize) }}
+                                        {{ form_errors(form.breadcrumbFontSize) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row-fluid">
+
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Breadcrumb Bg</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.breadcrumbBg) }}
+                                            {{ form_errors(form.breadcrumbBg) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Breadcrumb Home</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.breadcrumbHome) }}
+                                        {{ form_errors(form.breadcrumbHome) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Breadcrumb Active Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.breadcrumbActiveBg) }}
+                                            {{ form_errors(form.breadcrumbActiveBg) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Breadcrumb Font Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.breadcrumbColor) }}
+                                            {{ form_errors(form.breadcrumbColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {#<div class="span3">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Breadcrumb Border Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.breadcrumbBorderColor) }}
+                                            {{ form_errors(form.breadcrumbBorderColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>#}
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Breadcrumb Image</div>
+                                <div class="pull-right">Remove Breadcrumb Image<input type="checkbox" class="checkbox" id="removeHeaderImage" name="removeHeaderImage" value="1"></div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="row-fluid" >
+
+                            <div class="span8">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <div data-provides="fileupload" class="fileupload fileupload-new">
+                                            <div style="height:250px;" class="fileupload-new  span12">
+                                                {% if(entity.webPath('headerBgImage') is defined and entity.webPath('headerBgImage') is not empty ) %}
+                                                    <img class="large-image span12" alt="" src="/{{ entity.webPath('headerBgImage') }}">
+                                                {% else %}
+                                                    <img alt="" src="http://www.placehold.it/1024x250/EFEFEF/AAAAAA&amp;text=no+image">
+                                                {% endif %}
+                                            </div>
+                                            <div  class="fileupload-preview fileupload-exists thumbnail"></div>
+                                            <div>
+													<span class="btn btn-file">
+                                                        <span class="fileupload-new">Select image</span>
+													    <span class="fileupload-exists">Change</span>
+                                                        <input type="file" name="headerBgImage" id="headerBgImage">
+                                                    </span>
+                                                <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                            </div>
+                                        </div>
+                                        <span class="label label-important">NOTE!</span>
+                                        <span> Image size must be use 1024px x 250 px or more</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <div data-provides="fileupload" class="fileupload fileupload-new">
+                                            <div style="height:250px;" class="fileupload-new  span12">
+                                                {% if(entity.webPath('bgImage') is defined and entity.webPath('bgImage') is not empty ) %}
+                                                    <img class="large-image span12" alt="" src="/{{ entity.webPath('bgImage') }}">
+                                                {% else %}
+                                                    <img alt="" src="http://www.placehold.it/1024x250/EFEFEF/AAAAAA&amp;text=no+image">
+                                                {% endif %}
+                                            </div>
+                                            <div  class="fileupload-preview fileupload-exists thumbnail"></div>
+                                            <div>
+													<span class="btn btn-file">
+                                                        <span class="fileupload-new">Select image</span>
+													    <span class="fileupload-exists">Change</span>
+                                                        <input type="file" name="bgImage" id="bgImage">
+                                                    </span>
+                                                <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                            </div>
+                                        </div>
+                                        <span class="label label-important">NOTE!</span>
+                                        <span> Image size must be use 1024px x 250 px or more</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="form-actions portlet box green">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Divider</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Border width <span class="required">(%)</span></label>
+                                    <div class="controls">
+                                        {{ form_widget(form.dividerBorderWidth) }}
+                                        {{ form_errors(form.dividerBorderWidth) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Font Size</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.dividerFontSize) }}
+                                        {{ form_errors(form.dividerFontSize) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Font Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.dividerFontColor) }}
+                                            {{ form_errors(form.dividerFontColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Border</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.dividerBorder) }}
+                                        {{ form_errors(form.dividerBorder) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">After Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.dividerAfterColor) }}
+                                            {{ form_errors(form.dividerAfterColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Before Color</label>
+                                    <div class="controls">
+                                        <div class="input-icon left">
+                                            <i class="icon-magic"></i>
+                                            {{ form_widget(form.dividerBeforeColor) }}
+                                            {{ form_errors(form.dividerBeforeColor) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box red">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Meta Tags & Keywords</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Meta Title</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.websiteTitle) }}
+                                        {{ form_errors(form.websiteTitle) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Meta Tags</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.metaKeyword) }}
+                                        {{ form_errors(form.metaKeyword) }}
+                                        <span class="label label-important">NOTE!</span>
+                                        <span>Every meta key word use must be comma separator</span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Meta Description</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.metaDescription) }}
+                                        {{ form_errors(form.metaDescription) }}
+                                        <span class="label label-important">NOTE!</span>
+                                        <span>Meta description using the website summary</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Logo & Favicon</div>
+                                <div class="pull-right">Remove logo<input type="checkbox" class="checkbox" id="removeLogo" name="removeLogo" value="1">Remove Favicon<input type="checkbox" class="checkbox" id="removeFavicon" name="removeFavicon" value="1"></div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <!--/row-->
+                        <div class="row-fluid" >
+                            <div class="span4">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <div data-provides="fileupload" class="fileupload fileupload-new">
+                                            <div style="width: 200px; height: 150px;" class="fileupload-new thumbnail">
+                                                {% if(entity.webPath('logo') is defined and entity.logo) %}
+                                                    <img class="fileupload-preview fileupload-exists thumbnail" alt="" src="/{{ entity.webPath('logo') }}">
+                                                {% else %}
+                                                    <img alt="" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
+                                                {% endif %}
+                                            </div>
+                                            <div  class="fileupload-preview fileupload-exists thumbnail"></div>
+                                            <div>
+													<span class="btn btn-file">
+                                                        <span class="fileupload-new">Select image</span>
+													    <span class="fileupload-exists">Change</span>
+                                                        <input type="file" name="logoFile" id="logoFile">
+                                                    </span>
+                                                <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                            </div>
+                                        </div>
+                                        <span class="label label-important">NOTE!</span>
+                                        <span> Logo image must be less then  280px x 50 px and extension .png. please follow this link <a href="http://resizeyourimage.com" target="_blank">Image Resizer</a></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div  class="span4">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Logo Width</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.logoWidth) }}
+                                                {{ form_errors(form.logoWidth) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName">Logo Height</label>
+                                            <div class="controls">
+                                                {{ form_widget(form.logoHeight) }}
+                                                {{ form_errors(form.logoHeight) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <div data-provides="fileupload" class="fileupload fileupload-new">
+                                            <div style="width:150px; height: 150px;" class="fileupload-new thumbnail">
+                                                {% if(entity.webPath('favicon') is defined  and entity.favicon ) %}
+                                                    <img class="fileupload-preview fileupload-exists thumbnail" alt="" src="/{{ entity.webPath('favicon') }}">
+                                                {% else %}
+                                                    <img alt="" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
+                                                {% endif %}
+                                            </div>
+                                            <div  class="fileupload-preview fileupload-exists thumbnail"></div>
+                                            <div>
+													<span class="btn btn-file">
+                                                        <span class="fileupload-new">Select image</span>
+													    <span class="fileupload-exists">Change</span>
+                                                        <input type="file" name="faviconFile" id="faviconFile">
+                                                    </span>
+                                                <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                            </div>
+                                        </div>
+                                        <span class="label label-important">NOTE!</span>
+                                        <span> Favicon image must be 16px x 16 px and extension .ico, Please follow this link <a target="_blank" href="http://www.favicon-generator.org/">Favicon Generate</a></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/span-->
+
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box green">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>CSS for Desktop & Mobile</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+
+                        <!--/span-->
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label"  for="siteCssStyle">Desktop Customization CSS</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.siteCssStyle) }}
+                                        <p>Site related all css add here.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group">
+                                    <label class="control-label"  for="siteCssStyle">Mobile Customization CSS</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.cssStyleMobile) }}
+                                        <p>Site related all css add here.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box purple">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-reorder"></i>Chatting Plugin</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="row-fluid" >
+                            <div  class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Google Analytic</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.googleAnalytic) }}
+                                        {{ form_errors(form.googleAnalytic) }}
+                                        <p class="help">Analytic ID ie. UA-0000000000-1</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div  class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Facebook Pixel</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.facebookPixel) }}
+                                        {{ form_errors(form.facebookPixel) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div  class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">FB Messenger ID</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.fbMessenger) }}
+                                        {{ form_errors(form.fbMessenger) }}
+                                        <p class="help">Please click here for <a target="_blank" href="https://www.facebook.com">Messenger</a>. 1030015557079724</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid" >
+
+                            <div  class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Tawk ID</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.tawk) }}
+                                        {{ form_errors(form.tawk) }}
+                                        <p class="help">Please click here for <a target="_blank" href="https://www.tawk.to">Tawk</a> 5962f3f71dc79b329518d6af</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div  class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Live Chat ID</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.liveChat) }}
+                                        {{ form_errors(form.liveChat) }}
+                                        <p class="help">Please click here for <a target="_blank" href="https://www.mylivechat.com">Live Chat</a> 92294809</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div  class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Powr ID</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.powr) }}
+                                        {{ form_errors(form.powr) }}
+                                        <p class="help">Please click here for <a target="_blank" href="https://www.powr.io/">Powr</a> 831f3803_1586566370</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid" >
+                            <div  class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Play Store ID</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.playStore) }}
+                                        {{ form_errors(form.playStore) }}
+                                        <p class="help"><a target="_blank" href="https://play.google.com/store">Play Store</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div  class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Apple Store</label>
+                                    <div class="controls">
+                                        {{ form_widget(form.appleStore) }}
+                                        {{ form_errors(form.appleStore) }}
+                                        <p class="help"><a target="_blank" href="https://www.apple.com/ios/app-store/">Apple Store</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-center">
+                                <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                <a href="{{ path('templatecustomize_reset',{'id':entity.id}) }}" type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</a>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                        <!-- END FORM-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .large-image{
+            height:220px;
+            width:100%;
+        }
+    </style>
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+    $('#cp2').colorpicker({
+        format: 'hex'
+    });
+{% endblock %}
+

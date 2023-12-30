@@ -1,0 +1,122 @@
+<div id="loginModal" class="modal-content  col-xs-12 col-md-12">
+    <form class="register" id="commentform" action="{{ path("fos_user_security_check") }}" method="post" novalidate="novalidate">
+        <div class="modal-header">
+            <h4 class="modal-title">LOGIN</h4>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" name="_csrf_token" value="{{ csrfToken }}"/>
+            <div class="panel-body">
+                <span id="error"></span>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>
+                        <input type="text" id="_username" name="_username" required="required" class="form-control" placeholder="Enter your mobile no">
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                        <input type="password" id="_password" name="_password" required="required" class="form-control secured" autocomplete="off" placeholder="Enter your password">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="checkbox" id="remember_me" name="_remember_me" value="on" /> Remember me!
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit"  class="btn btn-sm btn-primary pull-right" role="button">Log in</button>
+        </div>
+        <div class="modal-footer">
+            <div class="" style="text-align: left">
+                <div class="forget-password">
+                    <h4>Forgot your password ?</h4>
+                    <span>No worries, click <a href="javascript:" onclick="showPrompt();" id="forget-password" data-url="{{ path(globalOption.subDomain ~ '_webservice_reset_password') }}"> here </a>to reset your password.</span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div><!-- /.modal-content -->
+<!-- Modal -->
+<div id="registerModal" class="modal-content  col-xs-12 col-md-12" style="display: none">
+    <div class="modal-header">
+        <h4 class="modal-title">SIGN IN</h4>
+    </div>
+    {{ form_start(form) }}
+    {{ form_row(form._token) }}
+    <div class="modal-body">
+        <div class="panel-body" style="height: 290px;">
+            <div class="form-group">
+                {{ form_errors(form.profile.name) }}
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                    {{ form_widget(form.profile.name) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_errors(form.profile.mobile) }}
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>
+                    {{ form_widget(form.profile.mobile) }}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+                    {{ form_widget(form.email) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_errors(form.profile.location) }}
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-map-marker"></span></span>
+                    {{ form_widget(form.profile.location) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{  form_errors(form.profile.address) }}
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-home"></span></span>
+                    {{ form_widget(form.profile.address) }}
+                </div>
+            </div>
+            <div class="checkbox">
+                {{  form_errors(form.profile.termsConditionAccept) }}
+                <label>
+                    {{ form_widget(form.profile.termsConditionAccept) }}
+                    I agree to &nbsp;<a target="_blank"  href="{{ path('bindu_page_content',{'slug':'terms-of-service'}) }}">Terms</a>&nbsp;&&nbsp;<a target="_blank" id="PrivacyLink" href="{{ path('bindu_page_content',{'slug':'privacy-policy'}) }}">Privacy</a>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit"  class="btn btn-sm btn-primary pull-right" role="button">Register</button>
+    </div>
+    {{ form_end(form) }}
+</div><!-- /.modal-content -->
+<!-- Modal -->
+<div id="forget-password" class="modal-content  col-xs-12 col-md-12" style="background: #222; display: none">
+    <form class="register" id="commentform" action="{{ path("fos_user_security_check") }}" method="post" novalidate="novalidate">
+        <div class="modal-header">
+            <h4 class="modal-title">Reset Password</h4>
+        </div>
+        <div class="modal-body">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>
+                        <input type="text" id="_username" name="_username" required="required" class="form-control" placeholder="Enter your mobile no">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+                    <span style="text-align: left; display:block; float: left">Click here for
+                    <a href="javascript:" class="login-preview" id="register-btn1">Login</a></span>
+            <button type="submit"  class="btn btn-sm btn-primary pull-right" role="button">Send</button>
+        </div>
+    </form>
+</div><!-- /.modal-content -->

@@ -1,0 +1,60 @@
+<div class="row-fluid">
+<div class="span12">
+<div class="clearfix">&nbsp;</div>
+<form name="instantPurchase" method="post" action="{{ path('medicine_instantpurchase_item_add') }}" class="form-horizontal" id="instantPurchase" novalidate="novalidate">
+    <div class="row-fluid particular-info">
+        <div class="span4">
+            <input type="text" id="vendor" name="vendor" required="required" class="m-wrap span12 input select2Vendor" placeholder="Search vendor name" aria-required="true">
+        </div>
+        <div class="span8">
+            <input type="hidden" name="medicineId" id="medicineId">
+            <input type="text" id="medicineBrand" name="medicineBrand" required="required" class="m-wrap span12 input select2InstantMedicine" placeholder="Search medicine name" aria-required="true">
+        </div>
+    </div>
+    <div class="row-fluid particular-info">
+        <div class="span4">
+            <input type="text" id="medicineCompany" name="medicineCompany" list="brands"  class="m-wrap span12 input" placeholder="Brand name" aria-required="true">
+            <datalist id="brands" >
+                {% if brands is not empty %}
+                    {% for item in brands %}
+                        <option value="{{ item.name }}">
+                    {% endfor %}
+                {% endif %}
+            </datalist>
+        </div>
+        <div class="span3">
+            <input type="text" id="rackNo" name="rackNo" list="racks"  class="m-wrap span12 input" placeholder="Rack no" aria-required="true">
+            <datalist id="racks" >
+                {% if racks is not empty %}
+                    {% for item in racks %}
+                        <option value="{{ item.name }}">
+                    {% endfor %}
+                {% endif %}
+            </datalist>
+        </div>
+        <div class="input-append span5 pull-right">
+            <div class="input-group">
+                <input type="text" id="purchaseQuantity" name="purchaseQuantity" required="required" class="m-wrap span3 form-control input-number input" placeholder="Purchase QTY" aria-required="true">
+                <input type="text" id="salesQuantity" name="salesQuantity" class="m-wrap span3 form-control input-number input" placeholder="Sales QTY" aria-required="true">
+                <input type="text" id="salesPrice" name="salesPrice" class="m-wrap span3 input" placeholder="MRP" aria-required="true">
+                <button type="submit" class="btn green" id="addInstantPurchase" > <span class="fa fa-save"></span> Add</button>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="clearfix">&nbsp;</div>
+</div>
+</div>
+<style>
+    .td-input{
+        height: 25px!important;
+        padding: 0!important;
+        min-height: 25px!important;
+    }
+    .ui-autocomplete{
+        z-index: 99999!important;
+    }
+    .ul.ui-autocomplete{
+        background-color:#4d90fe!important;
+    }
+</style>

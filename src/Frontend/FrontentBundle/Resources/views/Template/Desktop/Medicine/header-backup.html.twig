@@ -1,0 +1,142 @@
+<nav class="navbar navbar-inverse ">
+    {% if globalOption.ecommerceConfig.menuType == 'Sidebar' %}
+        {{ include('FrontendBundle:Template/Desktop/Menu:sidebar.html.twig')}}
+    {% endif %}
+    <section id="header" class="sticky" style="margin-bottom: 8px">
+        <div class="container">
+            <div class="navbar-header">
+                <div class="col-md-2" id="logo-area">
+                    {% if globalOption.ecommerceConfig.menuType == 'Sidebar' %}   <button id="showLeft" class="btn btn-primary"><i class="fa fa-bars"></i> </button> {% endif %}
+                    <a class="img-logo"
+                       href="{{ path(globalOption.subDomain ~ '_ecommercesubdomain') }}">{% if globalOption.templateCustomize.webPath('logo') is not empty %}
+                            <img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize() }}"
+                                 alt="{{ globalOption.name }}" />{% else %}{{ globalOption.name }}{% endif %}</a>
+                </div>
+                <div class="col-md-3" >
+                    <img style="margin-top: 15px; height: 40px" src="{{ asset('assets/logo/alshefa/alshefa-mobile.png') }}">
+                </div>
+                <div class="bs-example-form col-md-7 text-left" style="padding-right: 0!important;">
+                    {% if globalOption.templateCustomize.showSearch == 1 %}
+                    <form class="action bs-example" action="{{ path(globalOption.subDomain ~ '_webservice_product_search') }}"  method="get" >
+                        <div class='input-group search-box' style="width: 100%" >
+                            <div class="input-group" style="width: 100%">
+                                <input style="float: right; width: 97%" type="text" id="webName" name="webName" required="required" class="form-control serarch-keyword search-field col-md-12 col-lg-12" value="{{ searchForm['webName'] is defined ? searchForm['webName'] :'' }}" placeholder="Product name,category,brand etc">
+                                <span class="input-group-btn">
+                                    <span id="item-qnt" class="totalItem">{{ cart.contents|length }}</span>
+                                               <button class="btn btn-group btn-group-search search-box-bg" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                              <a  href="javascript:" id="prescriptionUpload" data-toggle="tooltip" data-original-title="View Shopping Items"  class="btn btn-warning"> <span  class="fa fa-upload"></span> Prescription</a>
+                                    {% if app.user %}
+                                        <a href="javascript:" data-action="{{ path(globalOption.subDomain ~ '_webservice_logout') }}" type="button" data-toggle="tooltip" title="System Logout" class="btn logout btn-group btn-danger" ><span class="fa fa-sign-in"></span></a>
+                                        <a href="{{ path('domain_customer_homepage',{'shop':globalOption.slug}) }}" data-toggle="tooltip" title="Go To Your Order Panel" type="button" class="btn btn-group btn-primary" ><span class="glyphicon glyphicon-user"></span></a>
+                        {% else %}
+                                        <a type="button" class="btn btn-group btn-primary login-preview"  data-toggle="tooltip" title="System Login" ><span class="glyphicon glyphicon-lock"></span></a>
+                                    {% endif %}
+                         </span>
+
+                            </div>
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </section>
+    {% if globalOption.ecommerceConfig.menuType == 'Mega' or globalOption.ecommerceConfig.menuType == 'Dropdown' %}
+    <div class="clearfix"></div>
+    <section id="menu-bar" >
+          <div class="container">{{ include('FrontendBundle:Template/Desktop/Menu:menu.html.twig')}}</div>
+    </section>
+    <div class="clearfix"></div>
+    {% endif %}
+    <style>
+        .action{
+            width: 100%!important;
+        }
+        #searchResult {
+            list-style: none;
+            padding: 0;
+            width: 88%;
+            position: absolute;
+            margin: 0;
+            top: 35px;
+            left: -15px!important;
+            max-height:220px;
+            overflow-y: scroll;
+            z-index: 999999999;
+            background: #f5f5f5;
+        }
+
+        #searchResult li{
+            background: #eeeeee;
+            padding: 4px;
+            margin-bottom: 1px;
+        }
+
+        #searchResult li:nth-child(even){
+            background: #f5f5f5;
+        }
+
+        #searchResult li:hover{
+            cursor: pointer;
+            background-color:#FF5400;
+            color: #ffffff;
+        }
+        #item-qnt {
+            position: absolute;
+            top: -12px;
+            right: 40px;
+            font-size: 9px;
+            background: red;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            text-align: center;
+            line-height: 18px;
+            color: #fff;
+            font-weight: bold;
+            z-index: 99;
+        }
+    </style>
+    <div class="clearfix"></div>
+    {% if globalOption.featureWidgets is defined and globalOption.featureWidgets is not empty and menu.getFeatureWidgetPositionExist('header')  %}
+        {% render controller("FrontendBundle:EcommerceWidget:featureTemplateWidget",{'globalOption':globalOption.id,'menu': menu.id,'position':'header'}) %}
+    {% endif %}
+    {% if globalOption.featureWidgets is defined and globalOption.featureWidgets is not empty and menu.getFeatureWidgetPositionExist('header')  %}
+        {% render controller("FrontendBundle:WebsiteWidget:featureWidget",{'globalOption':globalOption.id, 'menu': menu.id,'position':'header'}) %}
+    {% endif %}
+</nav>
+<style>
+
+    .bs-example-form {
+        display : flex;
+        align-items : center;
+    }
+
+    .rounded-list ol > li p:before
+    {
+        background: #e47911!important;
+    }
+
+    .fixed-top{
+        z-index: 99999;
+        width: 100%;
+    }
+
+    .input-group-field {
+        border-radius: 0!important;
+    }
+    .search-field{
+        font-size: 13px;
+    }
+    .search-select {
+        height: 34px;
+        padding: 3px 10px;
+        line-height: 1.5;
+        border: none;
+        background-color: #F9FAFA;
+        border-radius:0!important;
+        border-right:1px solid #d0dde4!important;
+    }
+
+</style>

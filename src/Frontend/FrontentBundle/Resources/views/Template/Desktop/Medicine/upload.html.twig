@@ -1,0 +1,184 @@
+<div class="row-fluid">
+    <div class="col-xs-12 col-md-12" id="prescription-content">
+        <div class="col-xs-12 col-md-12">
+            <div class="modal-header" style="height: 52px">
+                <h4 class="modal-title">PRESCRIPTION</h4>
+                <a href="javascript:" class="close-btn btn btn-danger btn-sm" data-dismiss="modal" style="position: relative; float: right; top: -36px"><i class="glyphicon glyphicon-remove"></i></a>
+            </div>
+            <form name="stockItemForm" method="post" action="{{ path(globalOption.subDomain ~ '_webservice_stock_item_create') }}" enctype="multipart/form-data" id="stockItemForm" class="register" novalidate="novalidate">
+                <div class="modal-body">
+                    <div class="">
+                        <div class="panel-body">
+
+                            <div class="clearfix"></div>
+                            <div class="row">
+                                <div class="col-xs-7 col-md-7">
+                                    <input class="select2StockMedicine form-control" autocomplete="off" name="itemName" id="itemName"  placeholder="Search your medicine..." style="border-radius:0!important; margin-left: -30px">
+                                    <input type="hidden" name="stockId" id="stockId">
+                                    <ul id="searchResult"></ul>
+                                </div>
+                                <div class="col-xs-5 col-md-5">
+                                    <div class="input-group">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-transparent" aria-label="Bold" id="salesPrice"></button></div>
+
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-transparent danger-font btn-number-stock text-center" data-type="minus" data-field="itemQuantity">
+                                                <span class="glyphicon glyphicon-minus"></span>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control text-center input-number" value="1" min="1" max="1000"  id="itemQuantity" name="itemQuantity">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-transparent danger-font btn-number-stock" data-type="plus" data-field="itemQuantity">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
+                                            <button type="button" id="unit" class="btn btn-transparent">Unit</button> <button type="submit" class="btn btn-warning " id="stockSubmit" data-url="{{ path(globalOption.subDomain ~ '_webservice_stock_item_create') }}"><span class="glyphicon glyphicon-shopping-cart"></span> Add</button>
+                                        </div>
+                                    </div><!-- /.input-group -->
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="clearfix"></div>
+            <div>
+                <form class="" id="prescription" name="prescription" action="{{ path('order_checkout',{'shop':globalOption.uniqueCode}) }}" method="post" enctype="multipart/form-data">
+                    <div class="clearfix"></div>
+                    <div class="row">
+                        <div class="col-xs-offset-3 col-xs-6 col-md-6">
+                            <div style="height: 70px">
+                                <input type="file" id="prescriptionFile" name="prescriptionFile" class="dropzone"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"><br/></div>
+                    <div id="stockCart">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <table class="table table-hover table-striped table-bordered table-list">
+                                    <thead>
+                                    <tr style="background-color:#ff6a00; color:#ffffff">
+                                        <th>Product Name</th>
+                                        <th class="text-center">Price(MRP)</th>
+                                        <th>Quantity</th>
+                                        <th class="text-left">SubTotal</th>
+                                        <th class="text-left"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for product in cart.contents %}
+                                        <tr id="item-remove-{{ product.id }}">
+                                            <td class="col-sm-6 col-md-6">
+                                                <div class="media">
+                                                    <div class="media-body">
+                                                        <h5 class="media-heading">{{ product.name }}</h5>
+                                                        {% if product.brand is not empty %}<h5 class="media-heading"> by {{ product.brand }}</h5>{% endif %}
+
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="col-sm-1 col-md-1 text-center">
+                                                <strong>{{ globalOption.ecommerceConfig.currency }}
+                                                    &nbsp;{{ product.price }}</strong></td>
+                                            <td class="col-sm-3 col-md-3 text-center">
+                                                <form class="addCart">
+                                                    <div class="input-group">
+                                            <span class="input-group-btn">
+                                               <button type="button"  class="btn btn-transparent btn-number-cart"
+                                                       data-type="minus" data-field="quantity" data-id="{{ product.rowid }}"
+                                                       data-url="{{ path(globalOption.subDomain ~ '_webservice_product_medicine_cart_update',{'cartid': product.rowid}) }}"
+                                                       data-text="{{ product.id }}" data-title="{{ product.price }}">
+                                                        <span class="glyphicon glyphicon-minus"></span>
+                                               </button>
+                                            </span><input type="text" name="quantity-{{ product.rowid }}" id="quantity-{{ product.rowid }}"  class="form-control input-number" value="{{ product.quantity }}"
+                                                          min="1" max="100" style="width: 75px!important;">
+                                                        <span class="input-group-btn">
+                                              <button type="button" class="btn btn-transparent btn-number-cart"
+                                                      data-type="plus" data-field="quantity"
+                                                      data-id="{{ product.rowid }}"
+                                                      data-url="{{ path(globalOption.subDomain ~ '_webservice_product_medicine_cart_update',{'cartid': product.rowid}) }}"
+                                                      data-text="{{ product.id }}" data-title="{{ product.price }}">
+                                                      <span class="glyphicon glyphicon-plus"></span>
+                                              </button>
+                                            </span>
+                                                        {% if product.productUnit is not empty %}
+                                                            <span class="input-group-btn">
+                                                        <button type="button"  class="btn btn-transparent">{{ product.productUnit }}</button>
+                                                    </span>
+                                                        {% endif %}
+                                                        <span class="input-group-btn">
+
+                                            </span>
+
+                                                    </div>
+                                                </form>
+                                            </td>
+                                            <td class="col-sm-1 col-md-1 text-left">
+                                                {{ globalOption.ecommerceConfig.currency }} <strong
+                                                        id="btn-total-{{ product.rowid }}">{{ product.price * product.quantity }}</strong>
+                                            </td>
+                                            <td> <button id="{{ product.rowid }}"
+                                                         data-url="{{ path(globalOption.subDomain ~ '_webservice_product_cart_remove',{'cartid':product.rowid}) }}"
+                                                         class="btn btn-transparent hunger-remove-cart">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </button></td>
+
+                                        </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
+                                        <td colspan="2" class="text-left col-sm-1 col-md-1"><strong>{{ globalOption.ecommerceConfig.currency }} <span class="cartTotal">{{ cart.total }}</span></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-right"><h5><strong>Coupon Code</strong></h5></td>
+                                        <td colspan="2"  class="text-left col-sm-1 col-md-1"><input type="text"
+                                                                                                    style="width:150px; border-radius:0"
+                                                                                                    class="form-control"
+                                                                                                    name="couponCode"
+                                                                                                    id="couponCode"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-right"><strong>Grand Total</strong></td>
+                                        <td colspan="2"  class="col-sm-1 col-md-1 text-left">
+                                            <strong>{{ globalOption.ecommerceConfig.currency }} <span class="cartTotal">{{ cart.total }}</span></strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-right"></td>
+                                        <td colspan="2"  class="text-left">
+                                            {% if app.user %}
+                                                <button type="submit" class="btn btn-success">
+                                                    Take Order <span class="glyphicon glyphicon-play"></span>
+                                                </button>
+                                            {% else %}
+                                                <button type="button" class="btn search-box-bg login-preview">
+                                                    Login & Take Order <span class="glyphicon glyphicon-play"></span>
+                                                </button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5">
+                                            <ul>
+                                                <li>File must be JPG, GIF, PDF or PNG, less than 1MB</li>
+                                                <li>Please file attach afetr login, dont forget it.</li>
+                                            </ul>
+                                        </td>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="clearfix"></div>
+
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>

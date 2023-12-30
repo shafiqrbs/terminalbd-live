@@ -1,0 +1,114 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Application Pricing
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('applicationpricing') }}">Application Pricing</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Application Pricing Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Application Pricing Information</div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Price Monthly</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="head-green">
+                                    <th class="numeric" colspan="2" >App Module</th>
+                                </tr>
+                                {% for app in apps %}
+                                    <tr>
+                                        <td class="numeric" >{{ app.name }}</td>
+                                        <td class="numeric" >
+                                            <a href="#" class="editable" data-name="price" data-type="text"  data-pk="{{ app.id }}"  data-url="{{ path('applicationpricing_inline_app') }}" data-original-title="Select domain status"> {{ app.price }}</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr class="head-green">
+                                   <th class="numeric" colspan="2" >Module</th>
+                                </tr>
+                                {% for module in modules %}
+                                    <tr>
+                                        <td class="numeric" >{{ module.name }}</td>
+                                        <td class="numeric" >
+                                            <a href="#" class="editable" data-name="price" data-type="text"  data-pk="{{ module.id }}"  data-url="{{ path('applicationpricing_inline_module') }}" data-original-title="Select domain status"> {{ module.price }}</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr class="head-green">
+                                    <th class="numeric" colspan="2" >Syndicate</th>
+                                </tr>
+                                {% for syndicate in syndicates %}
+                                    <tr>
+                                        <td class="numeric" >{{ syndicate.name }}</td>
+                                        <td class="numeric" >
+                                            <a href="#" class="editable" data-name="price" data-type="text"  data-pk="{{ syndicate.id }}"  data-url="{{ path('applicationpricing_inline_syndicate') }}" data-original-title="Select domain status"> {{ syndicate.price }}</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+<style>
+    .head-green th{
+        background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #35aa47 0%, #35aa47 100%) !important;
+    }
+</style>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@SettingToolBundle/Resources/public/js/editable.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+{% endblock %}
+
+

@@ -1,0 +1,22 @@
+<div id="catlist">
+    {% if pagination is not empty %}
+        {% for entity in pagination %}
+            <dl class="entity-list">
+                <dt><a href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'subdomain': globalOption.subDomain,'module': 'noticeboard','slug':entity.slug }) }}">{{ entity.name }}</a></dt>
+                <dd><i class="fa fa-calendar"></i> {{ entity.startDate|date('d F, Y') }} To {{ entity.endDate|date('d F, Y') }} </dd>
+                <dd>
+                    <p> {{ entity.content|raw|truncate(250) }}<a class="more-link" href="{{ path(globalOption.subDomain ~ '_webservice_module_page',{'module': 'noticeboard','slug':entity.slug }) }}">Read more <i class="fa fa-angle-double-right"></i></a></p>
+                    {% if entity.webPath is not empty %}<span><i class="fa fa-cloud-download"></i>  <a target="_blank" href="{{ entity.webPath }}">Download</a>{% endif %}
+
+                </span>
+                </dd>
+            </dl>
+        {% endfor %}
+    {% endif %}
+</div>
+<div class="pagination pull-center"  >
+    {{ knp_pagination_render(pagination) }}
+</div>
+
+
+

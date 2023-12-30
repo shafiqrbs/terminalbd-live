@@ -1,0 +1,214 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Patient Admission Invoice
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Patient Admission View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Admission Invoice</div>
+                        <div class="actions">
+                            <a class="btn red" href="{{ path('hms_invoice_admission_new') }}"><i class="icon-plus-sign"></i> New Admission</a>
+                            <a class="btn yellow" href="{{ path('hms_invoice_admission_empty_delete') }}"><i class="icon-trash"></i> Empty Delete</a>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid" >
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid" style="margin-bottom: 10px">
+                                        <div class="span3">
+                                            <div class="input-icon left">
+                                                <i class="icon-user"></i>
+                                                <input class="m-wrap span12 search-input" name="name" id="name" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.name is defined %}{{ searchForm.name }}{% else %}Patient ID{% endif %}">
+                                            </div>
+                                        </div>
+                                        <div class="span3">
+                                            <div class="input-icon left">
+                                                <i class="icon-phone"></i>
+                                                <input class="m-wrap span12 search-input" name="mobile" id="mobile" value="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% else %}Patient mobile{% endif %}">
+                                            </div>
+                                        </div>
+
+                                        <div class="span3">
+                                            <div class="input-icon left">
+                                                <i class="icon-calendar"></i>
+                                                <input class="m-wrap span12 search-input date-picker" name="created" id="created" value="{% if searchForm.created is defined %}{{ searchForm.created }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.created is defined %}{{ searchForm.created }}{% else %}Created Date{% endif %}" >
+                                            </div>
+                                        </div>
+
+                                        <div class="span3">
+                                            <div class="input-icon left">
+                                                <i class="icon-calendar"></i>
+                                                <input class="m-wrap span12 search-input date-picker" name="deliveryDate" id="deliveryDate" value="{% if searchForm.deliveryDate is defined %}{{ searchForm.deliveryDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.deliveryDate is defined %}{{ searchForm.deliveryDate }}{% else %}Delivery Date{% endif %}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="row-fluid">
+                                        <div class="span3">
+                                            <select name="doctor" id="doctor" class="m-wrap span12">
+                                                <option value="" >--Assign Doctor--</option>
+                                                {% for doctor in assignDoctors %}
+                                                    <option {% if searchForm.doctor is defined and searchForm.doctor == doctor.id %} selected="selected" {% endif %} value="{{ doctor.id }}" >{{ doctor.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="span3">
+                                            <select name="referred" id="referred" class="m-wrap span12">
+                                                <option value="" >--Patient Referred--</option>
+                                                {% for referred in referredDoctors %}
+                                                    <option {% if searchForm.referred is defined and searchForm.referred == referred.id %} selected="selected" {% endif %} value="{{ referred.id }}" >{{ referred.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="span3">
+                                            <select name="process" id="process" class="m-wrap span12">
+                                                <option value="" >--Process--</option>
+                                                <option value="In-progress" {% if searchForm.process is defined and searchForm.process == 'In-progress' %} selected="selected" {% endif %} >In-progress</option>
+                                                <option value="Done"  {% if searchForm.process is defined and searchForm.process == 'Done' %} selected="selected" {% endif %} >Done</option>
+                                                <option value="Cancel"  {% if searchForm.process is defined and searchForm.process == 'Cancel' %} selected="selected" {% endif %} >Cancel</option>
+                                            </select>
+                                        </div>
+                                        <div class="span3">
+                                            <div class="controls">
+                                                <div class="input-append span11">
+                                                    <input type="text" id="invoice" name="invoice"  class="m-wrap span10" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% else %}Patient invoice no{% endif %} ">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <table class="table table-bordered table-striped table-condensed flip-content ">
+                                    <thead class="flip-content">
+                                    <tr class="head-red">
+                                        <th class="numeric" ><strong>Net Total Tk.</strong></th>
+                                        <th class="numeric" ><strong>{{ invoiceOverview.netTotal|number_format }}</strong></th>
+                                        <th class="numeric" ><strong>Received Tk.</strong></th>
+                                        <th class="numeric" ><strong>{{ invoiceOverview.netPayment|number_format }}</strong></th>
+                                        <th class="numeric" ><strong>Due Tk.</strong></th>
+                                        <th class="numeric" ><strong>{{ invoiceOverview.netDue|number_format }}</strong></th>
+                                        <th class="numeric" ><strong>Commission Tk.</strong></th>
+                                        <th class="numeric" ><strong>{{ invoiceOverview.netCommission|number_format }}</strong></th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Invoice No</th>
+                                    <th class="numeric" >Name</th>
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Net Total</th>
+                                    <th class="numeric" >Payment</th>
+                                    <th class="numeric" >Due</th>
+                                    <th class="numeric" >Status</th>
+                                    <th class="numeric" >Process</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in entities %}
+                                    <tr id="delete-{{ entity.id }}">
+                                        <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.invoice }}</td>
+                                        <td class="numeric" >{% if entity.customer is defined and entity.customer is not empty %}{{ entity.customer.name }}{% endif %}</td>
+                                        <td class="numeric" >{% if entity.customer is defined and entity.customer is not empty %}{{ entity.customer.mobile }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.total }}</td>
+                                        <td class="numeric" >{{ entity.payment }}</td>
+                                        <td class="numeric" >{{ entity.due }}</td>
+                                        <td class="numeric" >{{ entity.paymentStatus }}</td>
+                                        <td class="numeric" >
+                                            {% if entity.payment > 0 and entity.total > 0 and entity.process == 'In-progress' %}
+                                            {% if ( app.user.granted("ROLE_DOMAIN")  or app.user.granted("ROLE_DOMAIN_MANAGER"))  %}
+                                                <a  data-type="select" class="btn mini purple-stripe btn-action editable" id="process" data-name="process" href="#" data-source="{{ path('hms_invoice_status_select') }}"  data-url="" data-pk="{{ entity.id }}" data-value="{% if entity.process is not empty %}{{ entity.process }}{% endif %}" data-original-title="Enter invoice process">{% if entity.process is not empty %}{{ entity.process }}{% endif %}</a>
+                                            {% endif %}
+                                            {% else %}
+                                            {{ entity.process }}
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric" >
+                                            <div class="btn-group">
+                                                <a class="btn blue mini" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                                    Action
+                                                    <i class="icon-tasks"></i>
+                                                </a>
+                                                <ul class="dropdown-menu pull-right action">
+                                                    {% set processArr = {'In-progress': 'In-progress' ,'Created':'Created','Revised':'Revised'} %}
+                                                    {% set PaymentArr = {'In-progress': 'In-progress' ,'Due':'Due'} %}
+                                                    {% if entity.process in  processArr|keys and entity.paymentStatus == 'Pending' or entity.process =='Created' and entity.paymentStatus == 'Due' %}
+                                                        <li><a href="{{ path('hms_invoice_admission_edit', { 'id': entity.id }) }}" class="btn green  " ><i class="icon-pencil"></i> Edit & Update</a></li>
+                                                        <li><a title="Are you sure went to delete ?" id="{{ entity.id }}" data-url="{{ path('hms_invoice_delete', { 'id': entity.id }) }}" href="javascript:" class="btn red  delete tooltips" data-trigger = "hover" data-original-title = "Delete" ><i class="icon-trash"></i> Delete</a></li>
+                                                    {% elseif entity.paymentStatus in  PaymentArr|keys and  entity.process == 'In-progress' %}
+                                                        <li><a  href="{{ path('hms_invoice_admission_print_invoice',{'id':entity.id}) }}"  class="btn blue"><i class="icon-print"></i> Print</a></li>
+                                                        <li><a  href="{{ path('hms_invoice_admission_confirm',{'id':entity.id}) }}"  class="btn yellow" ><i class=" icon-truck"></i> Release</a></li>
+                                                    {% endif %}
+                                                    <li><a href="{{ path('hms_invoice_admission_show', { 'id': entity.id }) }}" class="btn purple"><i class="icon-eye-open"></i> View</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@InventoryBundle/Resources/public/css/jquery-ui.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/approveProcess.js'
+    '@HospitalBundle/Resources/public/js/editable.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+

@@ -1,0 +1,90 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="print-bar">
+            <form action="" method="get">
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <label>Start Date</label><br/>
+                        <input type="datetime-local" class="m-wrap span12 datepicker" required="required"  id="startDate" name="startDate" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}">
+                    </div>
+                    <div class="grid-item">
+                        <label>End Date</label><br/>
+                        <input type="datetime-local" class="m-wrap span12 datepicker m-wrap" required="required"  id="endDate" name="endDate" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}">
+                    </div>
+                    <div class="grid-item">
+                        <div class="col-md-12 margin-top-15" >
+                            <button type="submit" class='btn btn-download btn-margin-left ajax-btn' value="search" name="submit" ><i class='fa fa-search'></i></button>
+                            <button class="btn purple" onclick="exportExcel()" type="button"><i class="fa fa-file"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="print-area" class="downloadExcel">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size: 16px">{{ option.name }}</strong></p>
+                <p>Name of Report: User base Sales & Collection</p>
+            </div>
+            <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}
+                <p><strong>Start Date:&nbsp;</strong><strong>{% if searchForm['startDate'] is defined and searchForm['startDate'] is not empty %}{{ searchForm['startDate']|date('d-m-Y h:i A') }}{% endif %}</strong>
+                    <strong>End Date:&nbsp;<strong>{% if searchForm['endDate'] is defined and searchForm['endDate'] is not empty %}{{ searchForm['endDate']|date('d-m-Y h:i A') }}{% endif %}</strong></strong>
+                </p>
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table even" border="1">
+                    <colgroup>
+                        <col class="w">
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <tbody>
+                    <tr class="head-green">
+                        <th>SI.</th>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th class="text-right">Sales</th>
+                        <th class="text-right">Receive</th>
+                    </tr>
+                    <tbody>
+                    {% set totalCredit = 0 %}
+                    {% set totalDebit = 0 %}
+                    {% for entity in entities %}
+                        {% set totalCredit = totalCredit + entity.credit %}
+                        {% set totalDebit = totalDebit + entity.debit %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td class="numeric" >{{ entity.name }}</td>
+                            <td class="numeric" >{{ entity.mobile }}</td>
+                            <td class="text-right" >{{ entity.debit|number_format(2) }}</td>
+                            <td class="text-right" >{{ entity.credit|number_format(2) }}</td>
+                        </tr
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th class="text-right" colspan="3">Grand Balance</th>
+                        <th class="text-right">{{ totalDebit|number_format(2) }}</th>
+                        <th class="text-right">{{ totalCredit|number_format(2) }}</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        function exportExcel() {
+            var table = document.querySelector('.downloadExcel');
+            TableToExcel.convert(table);
+        }
+    </script>
+{% endblock %}

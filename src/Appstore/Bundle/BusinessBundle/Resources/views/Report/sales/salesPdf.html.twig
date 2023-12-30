@@ -1,0 +1,125 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h2 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    h3 {
+        font-size: 20px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+{% set startDate = searchForm.month is defined ? searchForm.month :"now"|date("d-m-Y") %}
+{% set endDate = searchForm.year is defined ? searchForm.year :"now"|date("d-m-Y") %}
+
+<table class="table">
+    <thead>
+    <tr>
+        <td class="pull-center" colspan="13"><h2>{{ globalOption.name }}</h2></td>
+    </tr>
+    <tr>
+        <th class="pull-center" colspan="13"><h3><strong>DATE RANGE SALES STATEMENT SHEET: {{ startDate }} To {{ endDate }}</strong></h3></th>
+    </tr>
+    <tr>
+        <td colspan="13">
+            <table class="table table-bordered table-striped table-condensed flip-content ">
+                <thead class="flip-content">
+                <tr class="head-red">
+                    <th class="numeric" ><strong>Sales Amount</strong></th>
+                    <th class="numeric" ><strong>Purchase Amount</strong></th>
+                    <th class="numeric" ><strong>Profit/Loss</strong></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="numeric" ><strong>{{ cashOverview.total|number_format }}</strong></td>
+                    <td class="numeric" ><strong>{{ purchaseSalesPrice.totalPurchase|number_format }}</strong></td>
+                    <td class="numeric" ><strong>{{ (cashOverview.total - (cashOverview.totalVat + purchaseSalesPrice.totalPurchase))|number_format }}</strong></td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr class="head-blue">
+        <th class="numeric" >Created</th>
+        <th class="numeric" >Invoice</th>
+        <th class="numeric" >SalesBy</th>
+        <th class="numeric" >Transaction</th>
+        <th class="numeric" >Process</th>
+        <th class="numeric" >Sub-Total</th>
+        <th class="numeric" >Discount</th>
+        <th class="numeric" >Vat</th>
+        <th class="numeric" >Net Total</th>
+        <th class="numeric" >Payment</th>
+        <th class="numeric" >Due</th>
+        <th class="numeric" >Purchase</th>
+        <th class="numeric" >Profit/Loss</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr id="salesRemove-{{ entity.id }}">
+            <td class="numeric" >{{ entity.created|date('d-m-Y') }}</td>
+            <td class="numeric" >{{ entity.invoice }}</td>
+            <td class="numeric" >{{ entity.salesBy }}</td>
+            <td class="numeric" >{{ entity.transactionMethod }}</td>
+            <td class="numeric" >{{ entity.process }}</td>
+            <td class="numeric" >{{ entity.subTotal|number_format  }}</td>
+            <td class="numeric" >{{ entity.discount|number_format  }}</td>
+            <td class="numeric" >{{ entity.vat|number_format  }}</td>
+            <th class="numeric" >{{ entity.total|number_format  }}</th>
+            <th class="numeric" >{{ entity.payment|number_format }}</th>
+            <td class="numeric" >{{ entity.due|number_format }}</td>
+            <td class="numeric" >{{ purchasePrice[entity.id]|number_format }}</td>
+            <th class="numeric" >{{ (entity.total - purchasePrice[entity.id])|number_format }}</th>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

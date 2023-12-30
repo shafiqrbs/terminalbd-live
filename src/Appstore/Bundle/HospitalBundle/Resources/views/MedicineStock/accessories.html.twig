@@ -1,0 +1,216 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Accessories Stock
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('medicine_stock') }}">Manage Accessories Stock</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green ">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Accessories Stock</div>
+                        <div class="actions">
+                            <a href="{{ path('medicine_stock') }}"  class=" btn"><i class="fa fa-th-list"></i> Accessories Stock</a>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <!-- BEGIN FORM-->
+                        <div>
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="row-fluid" >
+                                <!--/span-->
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label"  for="name" >Name<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.name) }}
+                                            {{ form_errors(form.name) }}
+                                            <input type="hidden" id="medicineId" name="medicineId" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" >
+                                <!--/span-->
+                                <div class="span9">&nbsp;</div>
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">RackNo <span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.rackNo) }}
+                                            {{ form_errors(form.rackNo) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" >
+                                <!--/span-->
+                                <div class="span9">&nbsp;</div>
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Item Brand</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.accessoriesBrand) }}
+                                            {{ form_errors(form.accessoriesBrand) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" >
+                                <!--/span-->
+                                <div class="span9">&nbsp;</div>
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Item Unit<span class="required">*</span></label>
+                                        <div class="controls">
+                                            {{ form_widget(form.unit) }}
+                                            {{ form_errors(form.unit) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" >
+                                <div class="span9">&nbsp;</div>
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Purchase Price</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.purchasePrice) }}
+                                            {{ form_errors(form.purchasePrice) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" >
+                                <div class="span9">&nbsp;</div>
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">MRP</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.salesPrice) }}
+                                            {{ form_errors(form.salesPrice) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" >
+                                <div class="span9">&nbsp;</div>
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">No Discount   {{ form_widget(form.noDiscount) }}
+                                            {{ form_errors(form.noDiscount) }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" >
+                                <!--/span-->
+                                <div class="span9">&nbsp;</div>
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" for="name">Min/Max Quantity</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.minQuantity) }}
+                                            {{ form_errors(form.minQuantity) }}
+                                            {{ form_widget(form.maxQuantity) }}
+                                            {{ form_errors(form.maxQuantity) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" >
+                                <!--/span-->
+                                <div class="span9">&nbsp;</div>
+                                <div class="span3">
+                                    <div class="row-fluid">
+                                        <div class="control-group">
+                                            <label class="control-label" >Feature image</label>
+                                            <div class="controls">
+                                                <div data-provides="fileupload" class="fileupload fileupload-new">
+                                                    <div  class="fileupload-new thumbnail">
+                                                        {% if(entity.webPath) %}
+                                                            <img class="fileupload-preview fileupload-exists" alt="" src="{{ image(entity.webPath).resize(250,150) }}">
+                                                        {% else %}
+                                                            <img alt="" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
+                                                        {% endif %}
+                                                    </div>
+                                                    <div  class="fileupload-preview fileupload-exists thumbnail"></div>
+                                                    <div>
+                                            <span class="btn btn-file">
+                                                <span class="fileupload-new">Select image</span>
+                                                <span class="fileupload-exists">Change</span>
+                                                {{ form_widget(form.file) }}
+                                                {{ form_errors(form.file) }}
+                                            </span>
+                                                        <a data-dismiss="fileupload" class="btn fileupload-exists" href="#">Remove</a>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green"><i class="icon-save"></i> Save</button>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                        </div>
+                        <!-- END FORM-->
+                        <div class="clearfix"><br/></div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@MedicineBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/editable.js'
+    '@MedicineBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+{% endblock %}

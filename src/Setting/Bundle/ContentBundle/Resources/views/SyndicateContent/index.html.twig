@@ -1,0 +1,61 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <div class="portlet box grey">
+        <div class="portlet-title">
+            <div class="caption"><i class="icon-cogs"></i>Syndicate Content
+
+            </div>
+            <div id="" class="date-tooltip" >
+                <i class="fa fa-calendar"></i>
+                {{ "now"|date("d-F-Y") }}
+            </div>
+        </div>
+        <div>
+            <ul class="page-breadcrumb breadcrumb">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" >Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li><a href="javascript:" >Syndicate Content</a></li>
+                <li class="pull-right custom-pull-right" >
+                    <a class="btn purple-stripe active">Listing <i class="icon-headphones"></i></a>
+                </li>
+            </ul>
+        </div>
+        {% include('flash-message.html.twig')  %}
+        <div class="form-group form-group-custom backgroundWhite ">
+            <div class="tabbable tabbable-custom" >
+                <table class="table table-striped table-bordered table-hover table-full-width dataTable" >
+                    <thead class="header">
+                    <tr>
+                        <th>Syndicate name </th>
+                        <th>Parent </th>
+                        <th class="col-md-3">Action</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% if(user.siteSetting.getSyndicates) %}
+                        {% for entity in user.siteSetting.getSyndicates %}
+                            <tr>
+                                <td>{{ entity.name }}</td>
+                                <td>{{ entity.parent.name }}</td>
+                                <td>
+                                    <a class="btn mini green-stripe btn-action" href="{{ path('syndicatecontent_edit', { 'id': entity.id }) }}">Edit</a>
+                                    <a class="btn mini blue-stripe btn-action" href="{{ path('syndicatecontent_show', { 'id': entity.id }) }}">View</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+

@@ -1,0 +1,106 @@
+{% set salesQnt = 0 %}
+{% set returnQnt = 0 %}
+{% set damageQnt = 0 %}
+{% set spoilQnt = 0 %}
+{% set bonusQnt = 0 %}
+{% set totalQnt = 0 %}
+{% for item in entity.businessInvoiceParticulars %}
+
+    {% set salesQnt = salesQnt + item.quantity %}
+    {% set returnQnt = returnQnt + item.returnQnt %}
+    {% set damageQnt = damageQnt + item.damageQnt %}
+    {% set spoilQnt = spoilQnt + item.spoilQnt %}
+    {% set bonusQnt = bonusQnt + item.bonusQnt|default(0) %}
+    {% set totalQnt = totalQnt + item.totalQuantity %}
+
+    <tr id="remove-{{ item.id }}">
+        <td  class="">{{ loop.index }}.
+        </td>
+        <td class="">{{ item.particular }}</td>
+        <td class="">{{ item.businessParticular.remainingQuantity }}</td>
+        <td>{% if item.businessParticular.unit is not empty %}{{ item.businessParticular.unit.name }}{% endif %}</td>
+        <td class="">
+            <input type="text" class="remove-value numeric td-inline-input-qnt salesPrice" data-id="{{ item.id }}" id="salesPrice-{{ item.id }}" name="salesPrice" value="{{ item.price }}" placeholder="{{ item.price }}">
+        </td>
+        <td class="">
+            <input type="number" class="remove-value numeric td-inline-input-qnt salesQuantity" data-id="{{ item.id }}"  autocomplete = "off" min="1" max="{{ item.quantity }}"  id="salesQuantity-{{ item.id }}" name="quantity[]" value="{{ item.quantity }}" placeholder="{{ item.quantity }}"></td>
+
+        <td class="">
+            <input type="number" class="remove-value numeric td-inline-input-qnt returnQuantity" data-id="{{ item.id }}"  autocomplete = "off" min="1" max="{{ item.quantity }}"  id="returnQuantity-{{ item.id }}" name="quantity[]" value="{{ item.returnQnt }}" placeholder="{{ item.returnQnt }}">
+        </td>
+        <td class="">
+            <input type="number" class="remove-value numeric td-inline-input-qnt damageQuantity" data-id="{{ item.id }}"  autocomplete = "off" min="1" max="{{ item.quantity }}"  id="damageQuantity-{{ item.id }}" name="quantity[]" value="{{ item.damageQnt }}" placeholder="{{ item.damageQnt }}">
+        </td>
+        <td class="">
+            <input type="number" class="remove-value numeric td-inline-input-qnt spoilQuantity" data-id="{{ item.id }}"  autocomplete = "off" min="1" max="{{ item.quantity }}"  id="spoilQuantity-{{ item.id }}" name="quantity[]" value="{{ item.spoilQnt }}" placeholder="{{ item.spoilQnt }}">
+        </td>
+        <td class="">
+            <strong id="totalQuantity-{{ item.id }}">{{ item.totalQuantity }}</strong>
+        </td>
+        <td class="">
+            <strong id="subTotal-{{ item.id }}">{{ item.subTotal |number_format(2)}}</strong>
+        </td>
+        {% if entity.businessConfig.tloCommission == 1 %}
+            <td>
+                <select id="tloMode-{{ item.id }}" name="tloMode-{{ item.id }}" style="margin-bottom: 0!important;border: 2px solid red!important; height: 28px!important;" class="m-wrap discount-type span12">
+                    {% set tloModes = {flat:'Flat',multiply:'Multiply',percent:'(%)'} %}
+                    {% for key,mode  in tloModes  %}
+                        <option {% if item.tloMode is not empty and key == item.tloMode %} selected {% endif %} value="{{ key }}">{{ mode }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td class="">
+                <input type="number" class="remove-value numeric td-inline-input-qnt tloPrice" data-id="{{ item.id }}"  autocomplete = "off"   id="tloPrice-{{ item.id }}" name="tloPrice[]" value="{{ item.tloPrice }}" placeholder="{{ item.tloPrice }}">
+            </td>
+            <td class="tloPrice-{{ item.id }}">
+                {{ item.TloTotal }}
+            </td>
+        {% endif %}
+        {% if entity.businessConfig.srCommission == 1 %}
+            <td>
+                <select id="tloMode-{{ item.id }}" name="tloMode-{{ item.id }}" style="margin-bottom: 0!important;border: 2px solid red!important; height: 28px!important;" class="m-wrap discount-type span12">
+                    {% set tloModes = {flat:'Flat',multiply:'Multiply',percent:'(%)'} %}
+                    {% for key,mode  in tloModes  %}
+                        <option {% if item.tloMode is not empty and key == item.tloMode %} selected {% endif %} value="{{ key }}">{{ mode }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td class="">
+                <input type="number" class="remove-value numeric td-inline-input-qnt srCommission" data-id="{{ item.id }}"  autocomplete = "off"   id="srCommission-{{ item.id }}" name="srCommission[]" value="{{ item.srCommission }}" placeholder="{{ item.srCommission }}">
+            </td>
+            <td class="srCommissionTotal-{{ item.id }}">
+                {{ item.srCommissionTotal }}
+            </td>
+        {% endif %}
+        <td class="">
+            <input type="number" class="remove-value numeric td-inline-input-qnt bonusQuantity" data-id="{{ item.id }}" autocomplete = "off" min="1" max="{{ item.quantity }}"  id="bonusQuantity-{{ item.id }}" name="quantity[]" value="{{ item.bonusQnt }}" placeholder="{{ item.bonusQnt }}">
+        </td>
+        <td>
+            <a id="{{ item.id }}" data-id="{{ item.id }}"  data-url="{{ path('business_invoice_distribution_delete',{'invoice': entity.id ,'id': item.id }) }}" href="javascript:" class="btn red mini distributionDelete" ><i class="icon-trash"></i></a>
+        </td>
+    </tr>
+{% endfor %}
+<tr>
+    <td colspan="16" class="" style="border: 1px double #000"></td>
+</tr>
+<tr>
+    <td colspan="5" class=""><span class="pull-right"><strong>Total Amount TK.</strong> =</span></td>
+    <td class=""><strong class="salesQnt">{{ salesQnt }}</strong></td>
+    <td class=""><strong class="returnQnt">{{ returnQnt }}</strong></td>
+    <td class=""><strong class="damageQnt">{{ damageQnt }}</strong></td>
+    <td class=""><strong class="spoilQnt">{{ spoilQnt }}</strong></td>
+    <td class=""><strong class="totalQnt">{{ totalQnt }}</strong></td>
+    <td class=""><strong class="subTotal">{{ entity.subTotal|number_format(2) }}</strong></td>
+    {% if entity.businessConfig.tloCommission == 1 %}
+        <td class=""></td>
+        <td class=""></td>
+        <td class=""><strong class="tloPrice">{{ entity.tloPrice|number_format(2) }}</strong></td>
+    {% endif %}
+    {% if entity.businessConfig.srCommission == 1 %}
+        <td class=""></td>
+        <td class=""></td>
+        <td class=""><strong class="srCommission">{{ entity.srCommission|number_format(2) }}</strong></td>
+    {% endif %}
+    <td class=""><strong class="bonusQnt">{{ bonusQnt }}</strong></td>
+    <td class=""></td>
+</tr>

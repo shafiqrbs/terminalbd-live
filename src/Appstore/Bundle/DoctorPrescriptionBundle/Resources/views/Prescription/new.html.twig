@@ -1,0 +1,591 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN category HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="row-fluid">
+                    <div class="span8">
+                        <h3 class="category-title">Patient ID #  <strong>{{ entity.invoice }}</strong></h3>
+                    </div>
+                    {% if  entity.customer is not empty %}
+                        <div class="span4">
+                            <ul class="unstyled">
+                                <li>Doctor: {% if entity.hmsAssignDoctor is not empty %} {{ entity.hmsAssignDoctor.name }}{% endif %}</li>
+                                <li>Visit Type: {{ entity.visitType }}</li>
+                                <li>Patient Name: {{ entity.customer.name }}</li>
+                                <li>Mobile: {{ entity.customer.mobile }}</li>
+                                <li>Gender: {{ entity.customer.gender }}, Age: {{ entity.customer.age }} {{ entity.customer.ageType }}</li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('dps_prescription') }}">Patients</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Patient Prescription</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END category HEADER-->
+        <!-- BEGIN category CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Patient Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('dps_prescription') }}"><i class="icon-th-list"></i> Patients</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <!--BEGIN TABS-->
+                                    <div class="tabbable tabbable-custom tabs-left">
+                                        <!-- Only required for left/right tabs -->
+                                        <ul class="nav nav-tabs tabs-left">
+                                            <li><a href="#tab_patient_overview" data-url="{{ path('dps_invoice_patient_load',{'id':entity.id}) }}" id="patientOverview" data-toggle="tab">Patient Overview</a></li>
+                                            <li  class="active" ><a href="#tab_patient_info" data-toggle="tab">Patient Information</a></li>
+                                            {% if entity.customer is not empty %}
+                                                {% for service in services %}
+                                                    {% if service.status == 1 %}
+                                                    <li class=""><a href="#tab-{{ service.slug }}" data-toggle="tab" class="saveButton">{{ service.name }}</a></li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane tab-height " id="tab_patient_overview" >
+                                                <div class="form-actions portlet box blue">
+                                                    <div class="portlet-title">
+                                                        <div class="caption"><i class="icon-reorder"></i>PATIENT PROFILE</div>
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix">&nbsp;</div>
+                                                <div class="row-fluid" >
+                                                    <div class="span12">
+                                                        <div class="row-fluid">
+                                                            <div class="span8 profile-info">
+                                                                {% if entity.customer is not empty %}<h1>{{ entity.customer.name }}</h1>{% endif %}
+                                                                <ul class="unstyled inline">
+                                                                    {% if entity.customer is not empty and entity.customer.location is not empty %}<li><i class="icon-map-marker"></i>{{ entity.customer.location.id }}</li>{% endif %}
+                                                                    <li><i class="icon-calendar"></i> {{ entity.created|date('d-F-Y') }}</li>
+                                                                    {% if entity.customer is not empty %}<li><i class="icon-phone"></i> {{ entity.customer.mobile }}</li>{% endif %}
+                                                                </ul>
+                                                            </div>
+                                                            <!--end span8-->
+                                                            <div class="span4">
+                                                                <div class="portlet sale-summary">
+                                                                    <div class="portlet-title">
+                                                                        <div class="caption"><i class="icon-user"></i> Profile</div>
+                                                                    </div>
+                                                                    <div class="portlet-body">
+                                                                        <ul class="unstyled">
+                                                                            <li>
+                                                                                <span class="sale-info">Doctor: </span>
+                                                                                <span class="sale-num"> {% if entity.hmsAssignDoctor is not empty %} {{ entity.hmsAssignDoctor.name }}{% endif %}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <span class="sale-info">Gender: </span>
+                                                                                <span class="sale-num"> {% if entity.customer is not empty %} {{ entity.customer.gender }}{% endif %}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <span class="sale-info">Age:</span>
+                                                                                <span class="sale-num">{% if entity.customer is not empty %} {{ entity.customer.age }} {{ entity.customer.ageType }} {% endif %}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <span class="sale-info"><i class="icon-home"></i> Address:</span>
+                                                                                <span class="sale-num">
+                                                                                    {% if entity.customer is not empty %} {{ entity.customer.address }} {% endif %}
+                                                                                    {% if entity.customer is not empty and entity.customer.location is not empty %} {{ entity.customer.location.name }},{{ entity.customer.location.parent.name }} {% endif %}
+                                                                                </span>
+                                                                            </li>
+
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!--end span4-->
+                                                        </div>
+                                                        <!--end row-fluid-->
+                                                        <div class="clearfix">&nbsp;</div>
+                                                        <div class="tabbable tabbable-custom tabbable-custom-profile">
+                                                            <div id="patientLoad"></div>
+                                                        </div>
+                                                    </div>
+                                                    <!--end span9-->
+                                                </div>
+                                                <div class="clearfix">&nbsp;</div>
+                                            </div>
+                                            <div class="tab-pane active tab-height" id="tab_patient_info">
+                                                <div class="form-actions portlet box blue">
+                                                    <div class="portlet-title">
+                                                        <div class="caption"><i class="icon-user"></i>PATIENT INFORMATION</div>
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix">&nbsp;</div>
+                                                <p>ADDING PATIENT INFORMATION</p>
+                                                <div class="row-fluid">
+                                                    <div class="span12 patient-info">
+                                                        <div class="row-fluid customer-add">
+                                                            <div class="span4">
+                                                                <div class="control-group">
+                                                                    <label class="control-label red" for="firstName"><span>Patient Name</span>:<strong> {{ entity.customer.name }}</strong></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="span4">
+                                                                <div class="row-fluid">
+                                                                    <div class="span12">
+                                                                        <label class="control-label red" for="firstName"><span>Mobile no</span>:<strong> {{ entity.customer.mobile }}</strong></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="span4">
+
+                                                                <div class="row-fluid">
+                                                                    <div class="span12">
+                                                                        <div class="control-group">
+                                                                            <label class="control-label red" for="firstName"><span>Gender & Age Group</span></label>
+                                                                            <div class="controls span3">
+                                                                                {{ form_widget(form.customer.gender) }}
+                                                                            </div>
+                                                                            <div class="controls span3">
+                                                                                {{ form_widget(form.customer.ageGroup) }}
+                                                                            </div>
+                                                                            <div class="controls span3">
+                                                                                {{ form_widget(form.customer.age) }}
+                                                                            </div>
+                                                                            <div class="controls span3">
+                                                                                {{ form_widget(form.customer.ageType) }}
+                                                                                {{ form_errors(form.customer.ageType) }}
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row-fluid">
+                                                                    <div class="span12">
+                                                                        <div class="control-group">
+                                                                            <label class="control-label red" for="firstName"><span>BloodGroup,Pressure & Weight</span><span class="required">*</span></label>
+                                                                            <div class="controls span4">
+                                                                                {{ form_widget(form.customer.bloodGroup) }}
+                                                                            </div>
+                                                                            <div class="controls span4">
+                                                                                {{ form_widget(form.customer.bloodPressure) }}
+                                                                            </div>
+                                                                            <div class="controls span4">
+                                                                                {{ form_widget(form.customer.weight) }}
+                                                                            </div>
+                                                                            <div class="clearfix"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row-fluid">
+                                                                    <div class="span12">
+                                                                        <div class="control-group">
+                                                                            <label class="control-label red" for="firstName"><span>Diseases Profile</span></label>
+                                                                            <div class="controls">
+                                                                                {{ form_widget(form.hmsDiseasesProfile) }}
+                                                                                {{ form_errors(form.hmsDiseasesProfile) }}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row-fluid">
+                                                                    <div class="span12">
+                                                                        <div class="control-group">
+                                                                            <label class="control-label red" for="firstName"><span>Address</span></label>
+                                                                            <div class="controls">
+                                                                                {{ form_widget(form.customer.address) }}
+                                                                                {{ form_errors(form.customer.address) }}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix">&nbsp;</div>
+                                            </div>
+                                            {% if entity.customer is not empty %}
+                                                {% for service in services %}
+                                                    {% if service.status == 1 %}
+                                                     <div class="tab-pane tab-height" id="tab-{{ service.slug }}" >
+                                                        <div class="form-actions portlet box blue">
+                                                            <div class="portlet-title">
+                                                                <div class="caption"><i class="icon-th-list"></i>{{ service.name|upper }}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="clearfix">&nbsp;</div>
+                                                        {% if service.serviceFormat == 'label-value' %}
+                                                            <div class="clearfix">&nbsp;</div>
+                                                            <div class="row-fluid" id="">
+                                                                <div class="span4"><input type="text" name="procedure" id="procedure" class="span12 m-wrap autoProcedure" placeholder="Enter patient chief complaints particular"  ></div>
+                                                                <div class="span7"><input type="text" name="diseases" id="diseases" class="span12 m-wrap autoDiseases" placeholder="Enter patient procedure diseases"  ></div>
+                                                                <div class="span1" style="margin-top: -10px">
+                                                                    <button type="button"  class="btn blue addProcedure" id="" data-id="{{ service.slug }}" data-tab="tab-{{ service.slug }}"  data-url="{{ path('dps_invoice_particular_procedure',{'invoice':entity.id,'service':service.slug}) }}" ><i class="icon-save"></i> Save</button>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="clearfix">&nbsp;</div>
+                                                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                                            <thead class="flip-content ">
+                                                            <tr class="head-grey">
+                                                                <th class="numeric">Created</th>
+                                                                <th class="numeric">Procedure</th>
+                                                                <th class="numeric">Procedure Diseases</th>
+                                                                <th class="numeric">Action</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody id="procedure-{{ service.slug }}">
+                                                            {% for invoiceParticular in entity.invoiceParticulars %}
+                                                                {% if invoiceParticular.dpsService is not empty and invoiceParticular.dpsService.slug|trim == service.slug %}
+                                                                    <tr id="remove-{{ invoiceParticular.id }}">
+                                                                        <td  class="numeric">{{ invoiceParticular.created|date('d-m-Y') }}</td>
+                                                                        <td  class="numeric">{{ invoiceParticular.metaValue }}</td>
+                                                                        <td class="numeric">{{ invoiceParticular.diseases|raw }}</td>
+                                                                        <td class="numeric">
+                                                                            <a href="javascript:" class="btn red mini particularDelete" data-id="{{ invoiceParticular.id }}" data-tab="{{ service.slug }}" id="{{ invoiceParticular.id }}" data-url="{{ path('dps_invoice_particular_delete',{'invoice':entity.invoice , 'id':invoiceParticular.id}) }}" ><i class="icon-trash"></i></a>
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                        {% elseif service.serviceFormat == 'text-field'  %}
+                                                            {% if service.dpsParticulars is not empty %}
+                                                                {% for particular in service.dpsParticulars  %}
+                                                                    <div class="row-fluid">
+                                                                        <div class="span3"><label>{{ particular.name }}</label></div>
+                                                                        <div class="span9">
+                                                                            <div class="form-control">
+                                                                                <input type="hidden" id="metaKey" name="metaKey[]" value="{{ particular.id }}">
+                                                                                <input type="text" class="m-wrap span12 wrap-custom autoMetaValue" name="metaValue[]" value="{% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty %}{{ invoiceParticularArr[particular.id].metaValue }}{% endif %}">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        {% elseif service.serviceFormat == 'checkbox-text-field'  %}
+                                                            {% if service.dpsParticulars is not empty %}
+                                                                {% for particular in service.dpsParticulars  %}
+                                                                    <div class="row-fluid">
+                                                                        <div class="span3"><label><input {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty and invoiceParticularArr[particular.id].metaCheck == particular.id %} checked="checked" {% endif %} type="checkbox" value="{{ particular.id }}" name="metaCheck[]"> &nbsp;{{ particular.name }}</label></div>
+                                                                        <div class="span9">
+                                                                            <div class="form-control">
+                                                                                <input type="hidden" id="metaKey" name="metaKey[]" value="{{ particular.id }}">
+                                                                                <input type="text" class="m-wrap span12 wrap-custom autoMetaValue" name="metaValue[]" value="{% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty %}{{ invoiceParticularArr[particular.id].metaValue }}{% endif %}">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        {% elseif service.serviceFormat == 'checkbox'  %}
+                                                            {% if service.dpsParticulars is not empty %}
+                                                                {% for particular in service.dpsParticulars  %}
+                                                                    <div class="row-fluid">
+                                                                        <input type="hidden" value="" name="metaValue[]">
+                                                                        <input type="hidden" id="metaKey" name="metaKey[]" value="{{ particular.id }}">
+                                                                        <div class="span12"><label><input {% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty and invoiceParticularArr[particular.id].metaCheck == particular.id %} checked="checked" {% endif %} type="checkbox" value="{{ particular.id }}" name="metaCheck[]"> &nbsp;{{ particular.name }}</label></div>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                         {% elseif service.serviceFormat == 'textarea'  %}
+                                                            {% if service.dpsParticulars is not empty %}
+                                                                {% for particular in service.dpsParticulars  %}
+                                                                    <div class="row-fluid"><div class="span12"><label><strong>{{ particular.name }}</strong></label></div></div>
+                                                                    <div class="row-fluid">
+                                                                        <div class="span12">
+                                                                            <input type="hidden" id="metaKey" name="metaKey[]" value="{{ particular.id }}">
+                                                                            <textarea  class="m-wrap span12 autoMetaValue" rows="6" name="metaValue[]">{% if invoiceParticularArr is not empty and invoiceParticularArr[particular.id] is defined and invoiceParticularArr[particular.id] is not empty %}{{ invoiceParticularArr[particular.id].metaValue }}{% endif %}</textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                         {% elseif service.serviceFormat == 'file'  %}
+                                                            <div class="clearfix">&nbsp;</div>
+                                                            <div class="row-fluid" id="">
+                                                                <div class="span4">
+                                                                    <input type="text" name="investigation" id="investigation" class="investigation span12 m-wrap" placeholder="Enter type investigation name">
+                                                                    <input type="hidden" name="dpsService" id="dpsService" value="{{ service.id }}">
+                                                                </div>
+                                                                <div class="span8">
+                                                                    <div class="fileupload fileupload-new" data-provides="fileupload">
+                                                                        <div class="input-append span12">
+                                                                            <div class="uneditable-input">
+                                                                                <i class="icon-file fileupload-exists"></i>
+                                                                                <span class="fileupload-preview"></span>
+                                                                            </div>
+                                                                            <span class="btn yellow btn-file">
+                                                                            <span class="fileupload-new">Select File</span>
+                                                                            <span class="fileupload-exists">Change</span>
+                                                                            <input type="file" name="file" id="file"  class="default span12">
+                                                                            </span><a href="#" class="btn red fileupload-exists" data-dismiss="fileupload">Remove</a>
+                                                                            <button type="button"  class="btn blue addInvestigation" id="" data-id="{{ service.slug }}" data-tab="tab-{{ service.slug }}"  data-url="{{ path('dps_invoice_investigation_procedure',{'invoice':entity.id,'service':service.slug}) }}" ><i class="icon-save"></i> Upload</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearfix">&nbsp;</div>
+                                                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                                                        <thead class="flip-content ">
+                                                                        <tr class="head-grey">
+                                                                            <th class="numeric">Date</th>
+                                                                            <th class="numeric">Investigation Name</th>
+                                                                            <th class="numeric">Upload File</th>
+                                                                            <th class="numeric">Action</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody id="procedure-{{ service.slug }}">
+                                                                        {% for invoiceParticular in entity.invoiceParticulars %}
+                                                                            {% if invoiceParticular.dpsService is not empty and invoiceParticular.dpsService.slug|trim == service.slug %}
+                                                                                <tr id="remove-{{ invoiceParticular.id }}">
+                                                                                    <td  class="numeric">{{ invoiceParticular.created|date('d-m-Y') }}</td>
+                                                                                    <td  class="numeric">{{ invoiceParticular.metaValue }}</td>
+                                                                                    <td  class="numeric"><a target="_blank" href="/{{ invoiceParticular.webPath }}">View Image</a></td>
+                                                                                    <td class="numeric">
+                                                                                        <a href="javascript:" class="btn red mini particularDelete" data-id="{{ invoiceParticular.id }}" data-tab="{{ service.slug }}" id="{{ invoiceParticular.id }}" data-url="{{ path('dps_invoice_particular_delete',{'invoice':entity.invoice , 'id':invoiceParticular.id}) }}" ><i class="icon-trash"></i></a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                        </tbody>
+                                                                    </table>
+                                                         {% endif  %}
+                                                        <div class="clearfix">&nbsp;</div>
+                                                    </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% if entity.customer is not empty %}
+                                    <div class="clearfix">&nbsp;</div>
+                                        {% if entity.dpsConfig.investigation == 1 %}
+                                            <div class="row-fluid">
+                                                <div class="span12">
+                                                    <div class="form-actions portlet box blue">
+                                                        <div class="portlet-title">
+                                                            <div class="caption"><i class="icon-reorder"></i>Patient Investigation</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix">&nbsp;</div>
+                                            <div class="row-fluid">
+                                                <div class="span12">
+                                                    {{ form_widget(form.investigations, {'attr': {'class': 'form-control-select select2'}}) }}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        <div class="clearfix">&nbsp;</div>
+                                        <div class="form-actions portlet box green">
+                                            <div class="portlet-title">
+                                                <div class="caption"><i class="icon-reorder"></i>Prescription Medicines</div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix">&nbsp;</div>
+                                        <div class="row-fluid particular-info">
+                                            <div class="span6">
+                                                <div class="form-control">
+                                                    <input type="text" id="medicine" name="medicine"  class="span12 m-wrap select2Medicine" value="{% if searchForm.toUser is defined %}{{ searchForm.toUser }}{% endif %}"  autocomplete="off" placeholder="Search medicine brand">
+                                                    <input type="hidden" name="medicineId" id="medicineId">
+                                                </div>
+                                            </div>
+                                            <div class="span6">
+                                                <input type="text" id="generic" name="generic"  class="span12 m-wrap select2Generic" value="{% if searchForm.toUser is defined %}{{ searchForm.toUser }}{% endif %}"  autocomplete="off" placeholder="Search generic name">
+                                                <input type="hidden" name="genericId" id="genericId">
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="row-fluid particular-info" >
+                                                <div class="span6">
+                                                    <div class="input-append span12" style="margin-bottom:0!important">
+                                                        <input class="m-wrap span4" list="medicineQuantities" id="medicineQuantity" name="medicineQuantity" placeholder="Medicne Quantity" />
+
+                                                        <datalist id="medicineQuantities">
+                                                            {% for attribute in attributes %}
+                                                                {% if attribute.parent == 'medicine-quantity' %}
+                                                                    <option>{% if entity.dpsConfig.medicineUsage == 1 %}{{ attribute.name }}{% else %}{{ attribute.nameBn }}{% endif %}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </datalist>
+                                                        <select class="m-wrap span4" id="medicineDose" name="medicineDose">
+                                                            <option value="">--Medicine Dose--</option>
+                                                            {% for attribute in attributes %}
+                                                                {% if attribute.parent == 'medicine-dose' %}
+                                                                    <option value="{{ attribute.id }}">{% if entity.dpsConfig.medicineUsage == 1 %}{{ attribute.name }}{% else %}{{ attribute.nameBn }}{% endif %}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                        <select class="m-wrap span4" id="medicineDoseTime" name="medicineDoseTime" >
+                                                            <option value="">--Medicine Dose Time--</option>
+                                                            {% for attribute in attributes %}
+                                                                {% if attribute.parent == 'medicine-dose-time' %}
+                                                                    <option value="{{ attribute.id }}">{% if entity.dpsConfig.medicineUsage == 1 %}{{ attribute.name }}{% else %}{{ attribute.nameBn }}{% endif %}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+
+                                                    </div>
+                                                </div>
+                                                <div class="span6">
+                                                    <div class="input-group input-append input-group">
+                                                                    <span class="input-group-btn">
+                                                                                <input type="text" style="text-align: center; font-weight: bold" class="m-wrap span6 form-control " id="medicineDuration" name="medicineDuration">
+
+                                                                    </span>
+                                                        <select class="m-wrap span6" id="medicineDurationType" name="medicineDurationType">
+                                                            <option value="">--Medicine Duration--</option>
+                                                            {% for attribute in attributes %}
+                                                                {% if attribute.parent == 'medicine-duration-type' %}
+                                                                    <option value="{{ attribute.id }}">{% if entity.dpsConfig.medicineUsage == 1 %}{{ attribute.name }}{% else %}{{ attribute.nameBn }}{% endif %}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                        <button type="button" class="btn blue"  id="addPrescriptionParticular" data-url="{{ path('dps_invoice_medicine_add',{'invoice':entity.id}) }}" ><i class="icon-plus"></i> Add Medicine</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix">&nbsp;</div>
+                                        <div class="row-fluid">
+                                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                                <thead class="flip-content ">
+                                                <tr class="head-grey">
+                                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                                    <th class="numeric">Medicine Name</th>
+                                                    <th class="numeric">Quantity</th>
+                                                    <th class="numeric">Dose Time</th>
+                                                    <th class="numeric">Duration</th>
+                                                    <th class="numeric">Action</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="invoiceMedicine">
+
+                                                {% set date ='' %}
+                                                {% for medicine in entity.medicineDoctorPrescribes %}
+                                                    {% if medicine.created|date('d-m-Y') != date %}
+                                                        {% set date = medicine.created|date('d-m-Y') %}
+                                                        <tr><th colspan="6">{{ medicine.created|date('d-m-Y') }}</th></tr>
+                                                    {% endif %}
+                                                    <tr id="medicine-{{ medicine.id }}">
+                                                        <td  class="numeric">{{ loop.index }}.</td>
+                                                        <td  class="numeric">{% if medicine.medicine is not empty %}{{ medicine.medicine.medicineForm }}. {{ medicine.medicine.name }} {{ medicine.medicine.strength }}{% else %} {{ medicine.medicineName }}{% endif %}</td>
+                                                        <td class="numeric">{{ medicine.medicineQuantity }}</td>
+                                                        <td class="numeric">{{ medicine.medicineDose }} - {{ medicine.medicineDoseTime }}</td>
+                                                        <td class="numeric">{{ medicine.medicineDuration }} {{ medicine.medicineDurationType }}</td>
+                                                        <td class="numeric">
+                                                            <a  href="javascript:" data-url="{{ path('dps_invoice_medicine_delete',{'id':medicine.id}) }}" data-id="{{ medicine.id }}" id="{{ medicine.id }}"  class="btn red mini deleteMedicine"> <i class="icon-trash"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="clearfix">&nbsp;</div>
+                                        <div class="form-actions portlet box grey">
+                                        <div class="pull-right">
+                                            <input type="hidden" id="patient" name="patient" value="{% if entity.customer is not empty %}{{ entity.customer.id }}{% endif %}">
+                                            <input type="hidden" id="invoice" name="invoice" data-action="" value="{{ entity.id }}">
+                                            <input type="hidden" name="invoiceId" id="invoiceId" value="{{ entity.id }}" >
+                                            <div class="action">
+                                                {{ form_widget(form.process) }}
+                                                {{ form_errors(form.process) }}
+                                                <div class="btn-group">
+                                                    {% if entity.customer is not empty %}
+                                                    <button class='btn green'><i class='icon-save'></i>&nbsp;Save</button>
+                                                    <a target="_blank"  href='{{ path('dps_description_preview',{'id':entity.id}) }}' class='btn blue'><i class='icon-eye-open'></i>&nbsp; Preview</a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">&nbsp;</div>
+                                    {% endif %}
+                                    <!--END TABS-->
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="loader loader-double" ></div>
+ <style>
+     .form-horizontal .patient-info .control-label {
+         float: left;
+         text-align: left;
+         background: #1e7b85;
+         color: #fff;
+         margin: 0!important;
+         width: 99.5%;
+         font-size: 14px;
+         border: 1px solid #1e7b85;
+     }
+     .tabbable-custom > .tab-content {
+         min-height: 350px;
+     }
+     .checkbox-custom{
+         color:red;
+         border:1px solid #FFF;
+         background-image:url("{{ asset('assets/img/tooth.png') }}");
+         background-size: 24px 24px;
+         background-repeat: no-repeat;
+     }
+     .btn-ajax-loading {
+         position:inherit;
+     }
+ </style>
+
+{% endblock %}
+
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@DoctorPrescriptionBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@DoctorPrescriptionBundle/Resources/public/js/patient.js'
+    '@DoctorPrescriptionBundle/Resources/public/js/invoice.js'
+    '@DoctorPrescriptionBundle/Resources/public/js/editable.js'
+    '@DoctorPrescriptionBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    EditableInit();
+    $("select.multi-select2").multiSelect();
+    $('#addParticular').attr("disabled", true);
+    $('.leftFormatTeeth li div , .rightFormatTeeth li div').removeClass('checker');
+{% endblock %}

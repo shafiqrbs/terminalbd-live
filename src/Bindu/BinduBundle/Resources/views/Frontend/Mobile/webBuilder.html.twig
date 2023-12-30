@@ -1,0 +1,76 @@
+{% extends ':bindu/mobile:base.html.twig' %}
+{% block body %}
+
+        <div class="bannerPane bannerPane-webbuilder">
+            <div class="overlay"></div>
+            <div class="s-banner-content">
+                <div><img width="100" src="{{ asset('assets/frontend/img/logo.png') }}" /></div>
+				<div class="page-title"> WEb SITE BUILDER</div>
+            </div>
+        </div>
+    <div id="content" style="background:#131e2d" >
+
+		{{ form_start(form) }}
+		{{ form_row(form._token) }}
+		<div>
+			{{ form_errors(form.globalOption.name) }}
+			<p><span class="fa-icon"><i class="fa  fa-building-o"></i></span>
+				{{ form_widget(form.globalOption.name) }}
+			</p>
+		</div>
+																																																																																											<div>
+			{{ form_errors(form.profile.mobile) }}
+			<p><span class="fa-icon"><i class="fa  fa-mobile-phone"></i></span>
+				{{ form_widget(form.profile.mobile) }}<span id="checking"></span>
+			</p>
+		</div>
+		<p style="color: #ffffff; text-align: left">Next enter the relevant information below to populate your site.</p>
+
+		<div>
+			{{ form_errors(form.globalOption.syndicate) }}
+			<p>{{ form_widget(form.globalOption.syndicate) }}</p>
+		</div>
+		<div>
+			{{ form_errors(form.globalOption.location) }}
+			<p> {{ form_widget(form.globalOption.location) }}</p>
+		</div>
+
+			{{ form_errors(form.globalOption.status) }}
+			<p>
+				{{ form_widget(form.globalOption.status) }}
+		<span style="color: #ffffff">&nbsp;I agree to &nbsp;<a class="anchor-white"  id="TosLink" href="#terms-modal">Terms&nbsp;&&nbsp;Privacy</a></span>	</p>
+
+		<div><p class="form-suphobmit" style="text-align:center"><input id="signup" class="tm-btn dark small" type="submit" value="CREATE SITE" name="submit"></p></div>
+		{{ form_end(form) }}
+		<div class="clear"></div>
+    </div>
+	<div class="remodal" data-remodal-id="terms-modal" role="dialog" aria-labelledby="modal1Title" aria-describedby="modal1Desc">
+		<div>
+			<h2 id="modal1Title">Terms & Condition</h2>
+			<p id="modal1Desc">
+				TERMINALBD.COM
+				 is committed to protecting the privacy of individuals who visit the Salesforce.org’s Web site (“Visitors”), individuals who register to use the Services as defined below (“Customers”), and individuals who register to attend the Salesforce.org’s corporate events (“Attendees”). This Privacy Statement describes Salesforce.org’s privacy practices in relation to the use of the Salesforce.org’s Web site (as defined below) and the related salesforce.com, inc. (“SFDC”) applications and services (the “Services”) made available by Salesforce.org as an authorized reseller of SFDC.
+				If you have questions or complaints regarding Salesforce.org’s Privacy Statement or associated practices, please contact us at SFDOLegal@salesforce.com.
+				1. Web sites covered
+
+				This Privacy Statement covers the information practices of Web sites that link to this Privacy Statement, including: http://www.salesforce.org (referred to as “Salesforce.org’s Web site”).
+
+				Salesforce.org’s Web site may contain links to other Web sites. The information practices or the content of such other Web sites is governed by the privacy statements of such other Web sites. Salesforce.org encourages you to review the privacy statements of other Web sites to understand their information practices.
+			</p>
+		</div>
+	</div>
+{% endblock %}
+{% block documentready %}
+
+	$('#commentform').validate({
+	rules: {
+	'Core_userbundle_user[globalOption][name]': {
+	required: true
+	}
+	},
+	submitHandler: function(form) {
+	form.submit();
+	}
+	});
+
+{% endblock %}

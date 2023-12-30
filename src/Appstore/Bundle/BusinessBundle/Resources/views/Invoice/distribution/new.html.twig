@@ -1,0 +1,879 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN category HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="category-title">
+                    Customer Invoice #  <strong>{{ entity.invoice }}</strong>
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('business_invoice') }}">Customer Invoice</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Customer Invoice</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END category HEADER-->
+        <!-- BEGIN category CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Invoice Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn black" href="{{ path('business_invoice') }}"><i class="icon-th-list"></i> Invoice</a>
+                                <a class="btn red" href="{{ path('business_invoice_new') }}"><i class="icon-plus-sign"></i> New Invoice</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {% include('flash-message.html.twig')  %}
+                        <div class="clearfix"></div>
+                        {% if entity.businessConfig.showStock == 1 %}
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <form class="" id="distributionInvoice" name="stockInvoice" action="{{ path('business_invoice_distribution',{'id':entity.id}) }}" method="post">
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <table class="table table-bordered table-striped table-condensed table-fixed">                                      <thead class="flip-content ">
+
+                                                    <tr class="head-blue">
+                                                        <th style="width: 30%">Item Name</th>
+                                                        <th>Remain</th>
+                                                        <th>Unit</th>
+                                                        <th>Quantity</th>
+                                                        <th>Price</th>
+                                                        <th>Sales</th>
+                                                        <th>Sub-total</th>
+                                                        {% if entity.businessConfig.tloCommission == 1 %}
+                                                        <th>TLO Mode</th>
+                                                        <th>TLO Price</th>
+                                                        {% endif %}
+                                                        {% if entity.businessConfig.srCommission == 1 %}
+                                                        <th>Mode</th>
+                                                        <th>SR Commission</th>
+                                                        {% endif %}
+                                                        <th>Bonus Qnt</th>
+                                                        <th>&nbsp;</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="">
+                                                            <select id="particular" name="particular" class="span12 m-wrap select2">
+                                                                <option value="">--- Select Stock Product ---- </option>
+                                                                {% for particular in particulars %}
+                                                                    {% if returnQty[particular.id] is defined and returnQty[particular.id] is not empty  %}
+                                                                        {% set remaining = particular.remainingQuantity - returnQty[particular.id] %}
+                                                                    {% else %}
+                                                                        {% set remaining = particular.remainingQuantity %}
+                                                                    {% endif %}
+                                                                    <option value="{{ particular.id }}">{{ particular.particularCode }} - {{ particular.name }} => {{ remaining }} {{ particular.unit }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </td>
+                                                        <td id="remainQnt"></td>
+                                                        <td id="unit"></td>
+                                                        <td class="">
+                                                            <input type="text" class="numeric td-inline-input-qnt"  autocomplete="off"  id="quantity" name="quantity" value="" placeholder="0">
+                                                        </td>
+                                                        <td id="">
+                                                            <input type="text" class="numeric td-inline-input-qnt"  autocomplete="off"  id="salesPrice" name="salesPrice" value="" placeholder="0">
+                                                        </td>
+                                                        <td class="">
+                                                            <strong id="totalQuantity">0</strong>
+                                                        </td>
+                                                        <td class="">
+                                                            <strong id="subTotal">0.00</strong>
+                                                        </td>
+                                                        {% if entity.businessConfig.tloCommission == 1 %}
+                                                        <td>
+                                                            <select id="tloMode" name="tloMode" style="margin-bottom: 0!important;border: 2px solid red!important; height: 28px!important;" class="m-wrap discount-type span12">
+                                                                <option value="flat">Flat</option>
+                                                                <option value="multiply">Multiply</option>
+                                                                <option value="percent">(%)</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="numeric td-inline-input-qnt"  autocomplete="off"  id="tloPrice" name="tloPrice" value="" placeholder="0">
+                                                        </td>
+                                                        {% endif %}
+                                                        {% if entity.businessConfig.srCommission == 1 %}
+                                                        <td>
+                                                            <select id="tloMode" name="tloMode" style="margin-bottom: 0!important;border: 2px solid red!important; height: 28px!important;" class="m-wrap discount-type span12">
+                                                                <option value="flat">Flat</option>
+                                                                <option value="multiply">Multiply</option>
+                                                                <option value="percent">(%)</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="numeric td-inline-input-qnt"  autocomplete="off"  id="srCommission" name="srCommission" value="" placeholder="0">
+                                                        </td>
+                                                        {% endif %}
+                                                        <td>
+                                                            <input type="number" class="numeric td-inline-input-qnt"   id="bonusQuantity" name="bonusQuantity" value="" placeholder="0">
+                                                        </td>
+                                                        <td class="">
+                                                            <div class="input-group">
+                                                                <button type="submit" class="btn blue" id="addDistribution" ><i class="icon-save"></i> Add</button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12" id="particular-table">
+                                    <table class="table table-bordered table-striped table-condensed table-fixed">
+                                        <thead>
+                                        <tr>
+                                            <th class="">S/N</th>
+                                            <th>Particular</th>
+                                            <th>Remain</th>
+                                            <th>Unit</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Ret.Qnt</th>
+                                            <th>Dmg.Qnt</th>
+                                            <th>Spoil.Qnt</th>
+                                            <th>Sales</th>
+                                            <th>Sub-total</th>
+                                            {% if entity.businessConfig.tloCommission == 1 %}
+                                                <th>TLO Mode</th>
+                                                <th>TLO</th>
+                                                <th>Sub-TLO</th>
+                                            {% endif %}
+                                            {% if entity.businessConfig.srCommission == 1 %}
+                                                <th>Mode</th>
+                                                <th>SR Commission</th>
+                                                <th>Total Commission</th>
+                                            {% endif %}
+                                            <th>Bonus Qnt</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="invoiceParticulars">
+                                        {% set salesQnt = 0 %}
+                                        {% set returnQnt = 0 %}
+                                        {% set damageQnt = 0 %}
+                                        {% set spoilQnt = 0 %}
+                                        {% set bonusQnt = 0 %}
+                                        {% set totalQnt = 0 %}
+                                        {% for item in entity.businessInvoiceParticulars %}
+
+                                            {% set salesQnt = salesQnt + item.quantity %}
+                                            {% set returnQnt = returnQnt + item.returnQnt %}
+                                            {% set damageQnt = damageQnt + item.damageQnt %}
+                                            {% set spoilQnt = spoilQnt + item.spoilQnt %}
+                                            {% set bonusQnt = bonusQnt + item.bonusQnt|default(0) %}
+                                            {% set totalQnt = totalQnt + item.totalQuantity %}
+
+                                            <tr id="remove-{{ item.id }}">
+                                                <td  class="">{{ loop.index }}.
+                                                </td>
+                                                <td class="">{{ item.particular }}</td>
+                                                <td class="">{{ item.businessParticular.remainingQuantity }}</td>
+                                                <td>{% if item.businessParticular.unit is not empty %}{{ item.businessParticular.unit.name }}{% endif %}</td>
+                                                <td class="">
+                                                    <input type="text" class="remove-value numeric td-inline-input-qnt salesPrice" data-id="{{ item.id }}" id="salesPrice-{{ item.id }}" name="salesPrice" value="{{ item.price }}" placeholder="{{ item.price }}">
+                                                </td>
+                                                <td class="">
+                                                    <input type="number" class="remove-value numeric td-inline-input-qnt salesQuantity" data-id="{{ item.id }}"  autocomplete = "off" min="1" max="{{ item.quantity }}"  id="salesQuantity-{{ item.id }}" name="quantity[]" value="{{ item.quantity }}" placeholder="{{ item.quantity }}"></td>
+
+                                                <td class="">
+                                                    <input type="number" class="remove-value numeric td-inline-input-qnt returnQuantity" data-id="{{ item.id }}"  autocomplete = "off" min="1" max="{{ item.quantity }}"  id="returnQuantity-{{ item.id }}" name="quantity[]" value="{{ item.returnQnt }}" placeholder="{{ item.returnQnt }}">
+                                                </td>
+                                                <td class="">
+                                                    <input type="number" class="remove-value numeric td-inline-input-qnt damageQuantity" data-id="{{ item.id }}"  autocomplete = "off" min="1" max="{{ item.quantity }}"  id="damageQuantity-{{ item.id }}" name="quantity[]" value="{{ item.damageQnt }}" placeholder="{{ item.damageQnt }}">
+                                                </td>
+                                                <td class="">
+                                                    <input type="number" class="remove-value numeric td-inline-input-qnt spoilQuantity" data-id="{{ item.id }}"  autocomplete = "off" min="1" max="{{ item.quantity }}"  id="spoilQuantity-{{ item.id }}" name="quantity[]" value="{{ item.spoilQnt }}" placeholder="{{ item.spoilQnt }}">
+                                                </td>
+                                                <td class="">
+                                                    <strong id="totalQuantity-{{ item.id }}">{{ item.totalQuantity }}</strong>
+                                                </td>
+                                                <td class="">
+                                                    <strong id="subTotal-{{ item.id }}">{{ item.subTotal |number_format(2)}}</strong>
+                                                </td>
+                                                {% if entity.businessConfig.tloCommission == 1 %}
+                                                <td>
+                                                    <select id="tloMode-{{ item.id }}" name="tloMode-{{ item.id }}" style="margin-bottom: 0!important;border: 2px solid red!important; height: 28px!important;" class="m-wrap discount-type span12">
+                                                        {% set tloModes = {flat:'Flat',multiply:'Multiply',percent:'(%)'} %}
+                                                        {% for key,mode  in tloModes  %}
+                                                            <option {% if item.tloMode is not empty and key == item.tloMode %} selected {% endif %} value="{{ key }}">{{ mode }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                                <td class="">
+                                                    <input type="number" class="remove-value numeric td-inline-input-qnt tloPrice" data-id="{{ item.id }}"  autocomplete = "off"   id="tloPrice-{{ item.id }}" name="tloPrice[]" value="{{ item.tloPrice }}" placeholder="{{ item.tloPrice }}">
+                                                </td>
+                                                <td class="tloPrice-{{ item.id }}">
+                                                    {{ item.TloTotal }}
+                                                </td>
+                                                {% endif %}
+                                                {% if entity.businessConfig.srCommission == 1 %}
+                                                    <td>
+                                                        <select id="tloMode-{{ item.id }}" name="tloMode-{{ item.id }}" style="margin-bottom: 0!important;border: 2px solid red!important; height: 28px!important;" class="m-wrap discount-type span12">
+                                                            {% set tloModes = {flat:'Flat',multiply:'Multiply',percent:'(%)'} %}
+                                                            {% for key,mode  in tloModes  %}
+                                                                <option {% if item.tloMode is not empty and key == item.tloMode %} selected {% endif %} value="{{ key }}">{{ mode }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td class="">
+                                                        <input type="number" class="remove-value numeric td-inline-input-qnt srCommission" data-id="{{ item.id }}"  autocomplete = "off"   id="srCommission-{{ item.id }}" name="srCommission[]" value="{{ item.srCommission }}" placeholder="{{ item.srCommission }}">
+                                                    </td>
+                                                    <td class="srCommissionTotal-{{ item.id }}">
+                                                        {{ item.srCommissionTotal }}
+                                                    </td>
+                                                {% endif %}
+                                                <td class="">
+                                                    <input type="number" class="remove-value numeric td-inline-input-qnt bonusQuantity" data-id="{{ item.id }}" autocomplete = "off" min="1" max="{{ item.quantity }}"  id="bonusQuantity-{{ item.id }}" name="quantity[]" value="{{ item.bonusQnt }}" placeholder="{{ item.bonusQnt }}">
+                                                </td>
+                                                <td>
+                                                    <a id="{{ item.id }}" data-id="{{ item.id }}"  data-url="{{ path('business_invoice_distribution_delete',{'invoice': entity.id ,'id': item.id }) }}" href="javascript:" class="btn red mini distributionDelete" ><i class="icon-trash"></i></a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        <tr>
+                                            <td colspan="16" class="" style="border: 1px double #000"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="5" class=""><span class="pull-right"><strong>Total Amount TK.</strong> =</span></td>
+                                            <td class=""><strong class="salesQnt">{{ salesQnt }}</strong></td>
+                                            <td class=""><strong class="returnQnt">{{ returnQnt }}</strong></td>
+                                            <td class=""><strong class="damageQnt">{{ damageQnt }}</strong></td>
+                                            <td class=""><strong class="spoilQnt">{{ spoilQnt }}</strong></td>
+                                            <td class=""><strong class="totalQnt">{{ totalQnt }}</strong></td>
+                                            <td class=""><strong class="subTotal">{{ entity.subTotal|number_format(2) }}</strong></td>
+                                            {% if entity.businessConfig.tloCommission == 1 %}
+                                            <td class=""></td>
+                                            <td class=""></td>
+                                            <td class=""><strong class="tloPrice">{{ entity.tloPrice|number_format(2) }}</strong></td>
+                                            {% endif %}
+                                            {% if entity.businessConfig.srCommission == 1 %}
+                                            <td class=""></td>
+                                            <td class=""></td>
+                                            <td class=""><strong class="srCommission">{{ entity.srCommission|number_format(2) }}</strong></td>
+                                            {% endif %}
+                                            <td class=""><strong class="bonusQnt">{{ bonusQnt }}</strong></td>
+                                            <td class=""></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="span8" style="margin-top:20px;" id="particular-table">
+                                {% if entity.businessConfig.salesReturn  == 1 %}
+                                <div class="form-actions portlet box green">
+                                    <div class="portlet-title">
+                                        <div class="caption"><i class="icon-reorder"></i>Sales Return Item</div>
+                                    </div>
+                                    <div class="portlet-body form">
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <form class="stockInvoice" id="salesReturnForm" name="salesReturnForm" action="{{ path('business_invoice_distribution_invoice_return',{'invoice':entity.id}) }}" method="post">
+                                                    <div class="row-fluid">
+                                                        <div class="span12">
+                                                            <div class="row-fluid particular-info" >
+                                                                <div class="span6" >
+                                                                    <div class="row-fluid">
+                                                                        <div class="span12" >
+                                                                            <select id="returnItem" name="returnItem" class="span12 m-wrap select2 input" style="margin-left: 15px">
+                                                                                <option value="">--- Select Stock Product ---- </option>
+                                                                                {% for particular in particulars %}
+                                                                                    <option value="{{ particular.id }}">{{ particular.name }} => BDT. {{ particular.salesPrice }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="span2">
+                                                                    <select class="span12 m-wrap input" name="itemProcess" id="itemProcess">
+                                                                        {% set itemProcesses = ['Stock-Return','Damage-Return','Damage'] %}
+                                                                        {% for itemProcesse in itemProcesses %}
+                                                                            <option value="{{ itemProcesse }}">{{ itemProcesse }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+                                                                <div class="span4">
+                                                                    <div class="input-append span12" style="margin-bottom:0!important">
+                                                                        <div class="input-group">
+                                                                            <input type="number" class="m-wrap span4 form-control input-number input" id="quantity" name="quantity" value="1" min="1">
+                                                                            <input type="text" class="m-wrap span3 form-control input-number input" id="salesPrice" name="salesPrice" placeholder="Price" value="" min="">
+                                                                            <button type="button" class="btn yellow"  id="unit" >Unit</button>
+                                                                            <button type="submit" class="btn blue" id="addReturnItem" ><i class="icon-save"></i> Add</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12" >
+                                                <table class="table table-bordered table-striped table-condensed table-fixed">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="">S/N</th>
+                                                        <th>Item Name</th>
+                                                        <th>Unit</th>
+                                                        <th>Price</th>
+                                                        <th>Quantity</th>
+                                                        <th>SubTotal</th>
+                                                        <th>Mode</th>
+                                                        <th></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="salesReturnItem">
+                                                    {% if entity.invoiceReturnItems is not empty %}
+                                                        {% set subTotal = 0 %}
+                                                        {% for item in entity.invoiceReturnItems %}
+                                                            {% set subTotal = subTotal + item.subTotal %}
+                                                            <tr id="remove-{{ item.id }}">
+                                                                <td  class="">{{ loop.index }}.
+                                                                    <input type="hidden" id="salesPrice-{{ item.id }}" name="salesPrice" value="{{ item.price }}">
+                                                                </td>
+                                                                <td class="">{{ item.particular.name }}</td>
+                                                                <td>{% if item.particular.unit is not empty %}{{ item.particular.unit.name }}{% endif %}</td>
+                                                                <td class="">{{ item.price }}</td>
+                                                                <td class="">{{ item.quantity }}</td>
+                                                                <td class="salesReturnSubTotal-{{ item.id }}">{{ (item.quantity * item.price) }}</td>
+                                                                <td>{{ item.itemProcess }}</td>
+                                                                <td>
+                                                                    {% if item.status != 1 %}
+                                                                    <a id="{{ item.id }}" data-id="{{ item.id }}"  data-url="{{ path('business_invoice_distribution_return_item_delete',{'invoice': entity.id ,'id': item.id }) }}" href="javascript:" class="btn red mini returnItemDelete" ><i class="icon-trash"></i></a>
+                                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                        <tr>
+                                                            <td colspan="7" class="" style="border: 1px double #000"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="5" class=""><span class="pull-right"><strong>Total Amount TK.</strong> =</span></td>
+                                                            <td class=""><strong>{{ entity.salesReturn|number_format(2) }}</strong></td>
+                                                            <td class=""></td>
+                                                            <td class=""></td>
+                                                        </tr>
+                                                    {% endif %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="clearfix">&nbsp;</div>
+                                {% if entity.businessConfig.storeLedger  == 1 %}
+                                <div  class="form-actions portlet box blue">
+                                    <div class="portlet-title">
+                                        <div class="caption"><i class="icon-reorder"></i>Store Due/Receive</div>
+                                    </div>
+                                    <div class="portlet-body form">
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                    <div class="row-fluid">
+                                                        <div class="span12">
+                                                            <form class="storeLedgerForm"  id="storeLedgerForm" name="storeLedgerForm" action="{{ path('business_invoice_distribution_store_create') }}" method="post">
+                                                                <div class="row-fluid particular-info" id="storeLedger" style="display: none">
+                                                                    <div class="span4">
+                                                                        <select class="span12 m-wrap input select2" name="dsm">
+                                                                            <option value="">Select DSM</option>
+                                                                            {% for customer in customers %}
+                                                                                <option value="{{ customer.id }}">{{ customer.name }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="span2" >
+                                                                        <select name="area" id="area" class="span12 m-wrap">
+                                                                            <option>--Select area</option>
+                                                                            {% if areas is not empty %}
+                                                                                {% for area in areas %}
+                                                                                    <option value="{{ area.id }}">{{ area.name }}</option>
+                                                                                {% endfor %}
+                                                                            {% endif %}
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="span3" >
+                                                                        <input type="text" class="m-wrap span12 form-control input" id="store" name="store" placeholder="Store name" value="">
+                                                                    </div>
+                                                                    <div class="span3">
+                                                                        <div class="input-append span12" style="margin-bottom:0!important">
+                                                                            <div class="input-group">
+                                                                                <input type="text" class="m-wrap span6 mobile form-control input-number input" id="storeMobile" name="storeMobile" placeholder="Mobile no" value="" >
+                                                                                <button type="submit" class="btn green" id="" ><i class="icon-save"></i> Create</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                            <form class="storeForm" id="storeForm" name="storeForm" action="{{ path('business_invoice_distribution_store_payment',{'invoice':entity.id}) }}" method="post">
+                                                                <div class="row-fluid particular-info" >
+                                                                <div class="span6" >
+                                                                    <div class="row-fluid">
+                                                                        <div class="span12" >
+                                                                            <select name="store" id="store" class="span12 m-wrap" >
+                                                                                <option>--Select a store</option>
+                                                                                {% if areas is not empty %}
+                                                                                    {% for area in areas %}
+                                                                                        <optgroup label="{{ area.name }}">
+                                                                                            {% if area.stores is not empty %}
+                                                                                                {% for store in area.stores %}
+                                                                                                    <option value="{{ store.id }}">{{ store.name }}</option>
+                                                                                                {% endfor %}
+                                                                                            {% endif %}
+                                                                                        </optgroup>
+                                                                                    {% endfor %}
+                                                                                {% endif %}
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="span1">
+                                                                    <button type="button" class="btn yellow" id="storeOutstanding">0</button>
+                                                                </div>
+                                                                <div class="span2">
+                                                                    <select class="span12 m-wrap input" name="transactionType" id="transactionType">
+                                                                        {% set paymentModes = ['Due','Receive','Adjustment'] %}
+                                                                        {% for mode in paymentModes %}
+                                                                            <option value="{{ mode }}">{{ mode }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+                                                                <div class="span3">
+                                                                    <div class="input-append span12" style="margin-bottom:0!important">
+                                                                        <div class="input-group">
+                                                                            <input type="text" class="m-wrap span5 form-control input-number input" id="amount" name="amount" placeholder="Amount" value="" min="">
+                                                                            <button type="submit" class="btn blue" id="addPayment" ><i class="icon-save"></i> Save</button>
+                                                                            <button type="button" class="btn purple" id="addStore" ><i class="icon-user"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <div class="span12" >
+                                                <table class="table table-bordered table-striped table-condensed table-fixed">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="">S/N</th>
+                                                        <th>Customer Name</th>
+                                                        <th>Mode</th>
+                                                        <th>Due</th>
+                                                        <th>Receive</th>
+                                                        <th></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="storeLedgerItem">
+                                                    {% set totalDebit = 0 %}
+                                                    {% set totalCredit = 0 %}
+                                                    {% for ledger in entity.storeLedgers %}
+                                                        {% set totalDebit = totalDebit + ledger.debit %}
+                                                        {% set totalCredit = totalCredit + ledger.credit %}
+                                                        <tr id="remove-{{ ledger.id }}">
+                                                            <td class="">{{ loop.index }}</td>
+                                                            <td class="">{{ ledger.store.name }}</td>
+                                                            <td class="">{{ ledger.transactionType }}</td>
+                                                            <td class="">{{ ledger.debit }}</td>
+                                                            <td class="">{{ ledger.credit }}</td>
+                                                            <td>
+                                                                {% if ledger.status != 1 %}
+                                                                <a id="{{ ledger.id }}" data-id="{{ ledger.id }}"  data-url="{{ path('business_invoice_distributor_ledger_delete',{'invoice': entity.id ,'id': ledger.id }) }}" href="javascript:" class="btn red mini ledgerDelete" ><i class="icon-trash"></i></a>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    <tr>
+                                                        <td colspan="6" class="" style="border: 1px double #000"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3" class=""><span class="pull-right"><strong>Total Amount TK.</strong> =</span></td>
+                                                        <td class=""><strong>{{ totalDebit|number_format(2) }}</strong></td>
+                                                        <td class=""><strong>{{ totalCredit|number_format(2) }}</strong></td>
+                                                        <td class=""></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+                            <div class="span4 payment-info" style="margin-top:20px">
+                                <div class="form-actions portlet box purple">
+                                    <div class="portlet-title">
+                                        <div class="caption"><i class="icon-reorder"></i>Sales Information</div>
+                                    </div>
+                                    <div class="portlet-body form">
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName">
+                                                        <span class="label">Invoice No</span>
+                                                        <span class="pull-right sales-right"><input type="text" class="m-wrap span12 customer-input"  name="invoice" id="invoice"  value="{{ entity.invoice }}" ></span></label>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="row-fluid div-select2">
+                                            <div class="span12 input-append-border">
+                                                <select class="span10 m-wrap input select2" name="customer" id="customer">
+                                                    <option value="">Select DSM</option>
+                                                    {% for customer in customers %}
+                                                        <option {% if entity.customer is not empty and entity.customer.id ==  customer.id %} selected="selected" {% endif %} value="{{ customer.id }}">{{ customer.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <a href="javascript:" class="pull-right btn green addCustomer inputs"><i class="icon-user"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid customer" id="">
+                                            <div class="span12 input-append-border">
+                                                <div class="row-fluid">
+                                                    <div class="input-icon left input-height">
+                                                        <i class="icon-user"></i>
+                                                        <input type="text" id="customerName" name="customerName" class="m-wrap span12 customer-input" autocomplete="off" placeholder="Customer name/company" value="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid customer">
+                                            <div class="span12 input-append-border">
+                                                <div class="row-fluid">
+                                                    <div class="input-icon left input-height">
+                                                        <i class="icon-phone"></i>
+                                                        <input type="text" id="customerMobile" name="customerMobile" class="m-wrap span12 mobile customer-input" autocomplete="off" placeholder="Customer mobile no" value="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid customer">
+                                            <div class="span12 input-append-border">
+                                                <div class="row-fluid">
+                                                    <textarea id="customerAddress" name="customerAddress" class="m-wrap span12 customer-input" rows="2" placeholder="Enter customer details"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="row-fluid">
+                                            <div class="span12" >
+                                                <select name="area" id="area" class="span12 m-wrap">
+                                                    <option>--Select one Marketing area</option>
+                                                    {% if areas is not empty %}
+                                                        {% for area in areas %}
+                                                            <option  {% if entity.area is not empty and entity.area.id ==  area.id %} selected="selected" {% endif %} value="{{ area.id }}">{{ area.name }}</option>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        {% if entity.businessConfig.tloCommission == 1 %}
+                                            <div class="row-fluid">
+                                                <div class="span12" >
+                                                    <select name="vendor" id="vendor" class="span12 m-wrap">
+                                                        <option value="">--Select TLO Vendor</option>
+                                                        {% if vendors is not empty %}
+                                                            {% for vendor in vendors %}
+                                                                <option {% if entity.vendor is not empty and entity.vendor.id ==  vendor.id %} selected="selected" {% endif %} value="{{ vendor.id }}">{{ vendor.companyName }}</option>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        <div class="row-fluid">
+                                            <div class="span12" >
+                                                <select name="marketing" id="marketing" class="span12 m-wrap">
+                                                    <option>--Select one Marketing Executive</option>
+                                                    {% if marketings is not empty %}
+                                                        {% for marketing in marketings %}
+                                                            <option {% if entity.marketing is not empty and entity.marketing.id ==  marketing.id %} selected="selected" {% endif %} value="{{ marketing.id }}">{{ marketing.name }}</option>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName"><span class="label">Discount Type</span> <span class="pull-right sales-right">{{ form_widget(form.discountType) }}</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" style="background: #26a69a" for="firstName"><span class="label" style="color:#fff">Previous Due</span> <span class="pull-right sales-right" id="outstanding" style="text-align:left;width:110px;color:#fff" >{{ balance }}</span></label>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                        <div class="clearfix"></div>
+                                         <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName"><span class="label">Discount TK.</span> <span class="pull-right sales-right">{{ form_widget(form.discountCalculation) }}</span></label>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName"><span class="label">SubTotal TK.</span> <span class="pull-right sales-right subTotal" style="text-align:right;width:110px">{{ entity.subTotal|number_format(2) }}</span></label>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        {% if entity.businessConfig.tloCommission == 1 %}
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName"><span class="label">TLO TK.</span> <span class="pull-right sales-right tloPrice" style="text-align:right;width:110px">{{ entity.tloPrice|number_format(2) }}</span></label>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                        {% endif %}
+                                        {% if entity.businessConfig.srCommission == 1 %}
+                                            <div class="row-fluid">
+                                                <div class="span12">
+                                                    <div class="control-group">
+                                                        <label class="control-label" for="firstName"><span class="label">SR Commission TK.</span> <span class="pull-right sales-right srCommission" style="text-align:right;width:110px">{{ entity.srCommission|number_format(2) }}</span></label>
+                                                    </div>
+                                                </div>
+                                                <!--/span-->
+                                            </div>
+                                        {% endif %}
+                                        <div class="clearfix"></div>
+                                        {% if entity.businessConfig.salesReturn == 1 %}
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName"><span class="label">Sales Return</span> <span class="pull-right sales-right salesReturn" style="text-align:right;width:110px">{{ entity.salesReturn|number_format(2) }}</span></label>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        {% endif %}
+                                        <div class="clearfix"></div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName"><span id="balance" class="label">Due TK.</span> <span class="pull-right sales-right due" style="text-align:right;width:110px;color:red">{{ (entity.due) |number_format(2) }}</span></label>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName"><span class="label">Receive TK.</span> <span class="pull-right sales-right">{{ form_widget(form.received) }}</span></label>
+                                                    <div class="controls">
+                                                        {{ form_errors(form.received) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="row-fluid">
+                                            <div class="span12 input-append-border">
+                                                {{ form_widget(form.transactionMethod) }}
+                                                {{ form_errors(form.transactionMethod) }}
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div id="cartMethod">
+                                            <div class="row-fluid">
+                                                <div class="span12">
+                                                    <div class="input-prepend input-append input-append-border span12">
+                                                        {{ form_widget(form.cardNo) }}
+                                                        {{ form_errors(form.cardNo) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row-fluid">
+                                                <div class="span12 input-append-border">
+                                                    {{ form_widget(form.paymentCard) }}
+                                                    {{ form_errors(form.paymentCard) }}
+                                                </div>
+                                            </div>
+                                            <div class="row-fluid">
+                                                <div class="span12 input-append-border">
+                                                    {{ form_widget(form.accountBank) }}
+                                                    {{ form_errors(form.accountBank) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="bkashMethod">
+                                            <div class="row-fluid">
+                                                <div class="span12 input-append-border">
+                                                    {{ form_widget(form.accountMobileBank) }}
+                                                    {{ form_errors(form.accountMobileBank) }}
+                                                </div>
+                                            </div>
+                                            <div class="row-fluid">
+                                                <div class="span12">
+                                                    <div class="input-prepend input-append input-append-border span12">
+                                                        {{ form_widget(form.paymentMobile) }}
+                                                        {{ form_errors(form.paymentMobile) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row-fluid">
+                                                <div class="span12">
+                                                    <div class="input-prepend input-append input-append-border span12">
+                                                        {{ form_widget(form.transactionId) }}
+                                                        {{ form_errors(form.transactionId) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="row-fluid">
+                                            <div class="span12 input-append-border">
+                                                {{ form_widget(form.salesBy) }}
+                                                {{ form_errors(form.salesBy) }}
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="row-fluid">
+                                            <div class="span12 input-append-border">
+                                                {{ form_widget(form.comment) }}
+                                                {{ form_errors(form.comment) }}
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="row-fluid error">
+                                            {{ form_widget(form.process) }}
+                                            {{ form_errors(form.process) }}
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <div class="control-group">
+                                                    <label class="control-label" for="firstName"><span class="label">Print Previous Due.</span> <span class="pull-right sales-right"><input type="checkbox" id="printPreviousDue" name="printPreviousDue" checked value=""></span></label>
+                                                </div>
+                                            </div>
+                                            <!--/span-->
+                                        </div>
+                                        <div class="clearfix"><br/></div>
+                                        <div class="row-fluid">
+                                            <div class="span6">
+                                                <input type="hidden" class="dueAmount" name="due" id="due" value="{{ entity.due - entity.tloPrice }}">
+                                                <input type="hidden" name="invoiceId" id="invoiceId" value="{{ entity.id }}">
+                                                <input type="hidden" class="netTotal" name="paymentTotal" id="paymentTotal" value="{{ entity.total - entity.tloPrice }}">
+                                                <input type="hidden" name="invoiceId" id="invoiceId" value="{{ entity.id }}" >
+                                                <button type="button" class="btn blue span12" id="receiveBtn" ><i class="icon-save"></i>&nbsp; Save</button>
+                                            </div>
+                                            <div class="span6">
+                                                <button type="reset" class="btn yellow span12" ><i class="icon-refresh"></i>&nbsp; Reset</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                            </div>
+                            {{ form_end(form) }}
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .td-inline-input{
+            height: 15px!important;
+            line-height: 13px!important;
+            font-size: 13px!important;
+            border: 2px solid #4d90fe!important;
+            width: 50px;
+            margin-bottom:0!important;
+        }
+        .td-inline-input-qnt{
+            height: 15px!important;
+            line-height: 13px!important;
+            font-size: 13px!important;
+            border: 2px solid #4d90fe!important;
+            width: 50px;
+            margin-bottom:0!important;
+        }
+        select[class*="span"].discount-type{
+            margin-bottom: 0!important;
+            border: 2px solid red!important;
+            height: 28px!important;
+            width: 90px!important;
+        }
+        .sales-right{
+            width: 120px;
+        }
+        .div-select2{
+            border: 2px solid #51a351;
+            border-right: none;
+        }
+
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@BusinessBundle/Resources/public/css/invoice.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@BusinessBundle/Resources/public/js/invoice.js'
+    '@BusinessBundle/Resources/public/js/distribution.js'
+    '@BusinessBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $('.remove-value').click(function() {
+        $(this).attr('value', '');
+    });
+{% endblock %}

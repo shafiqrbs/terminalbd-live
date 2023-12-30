@@ -1,0 +1,28 @@
+{% extends ':frontend/template/mobile:ecommerce-base.html.twig' %}
+{% block body %}
+
+<div class="bannerPane bannerPane-webbuilder"  {% if details.webPath() is defined and details.webPath() is not empty %} style="background-repeat:no-repeat!important; background-position:center center!important;background:url('{{ image(details.webPath()).resize() }}')" {% endif %} >
+    <div class="overlay"></div>
+    <div class="s-banner-content">
+        <div><img width="100" src="{{ image(globalOption.templateCustomize.webPath('logo')).resize() }}" /></div>
+       Register Form
+    </div>
+</div>
+<div id="content" class="content-margin">
+    <form class="register" id="commentform" action="{{ path("webservice_customer_login",{'subdomain':globalOption.subdomain}) }}" method="post" novalidate="novalidate">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+        <div>
+            <p><span class="fa-icon"><i class="fa  fa-mobile"></i></span>
+                <input type="text" id="_username" name="_username" required="required" class="" placeholder="Enter your mobile no">
+            </p>
+        </div>
+        <div>
+            <p><span class="fa-icon"><i class="fa  fa-lock"></i></span>
+                <input type="text" id="_password" name="_password" required="required" class="secured" placeholder="Enter your password">
+            </p>
+        </div>
+        <div><p class="form-suphobmit" style="text-align:right"><input id="signup" class="btn blue" type="submit" value="Signin" name="submit"></p></div>
+    </form>
+</div>
+{% endblock %}
+

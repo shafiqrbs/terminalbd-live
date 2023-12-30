@@ -1,0 +1,84 @@
+<div class="tm-accordion tm-style4">
+    <div class="accordion-title">
+        <h3>
+            <a href="javascript:" ><i class="fa  fa-cogs"></i>&nbsp;Common Module</a>
+        </h3>
+    </div>
+    <div class="accordion-container">
+        <div class="setting-hidden setting-tab" >
+            <p>Use the tools below to promote your mobile site and increase traffic to your site. Click on 'Next' to continue.</p>
+            <form class="design-form sitesetting" id="homepageID1" action="" method="post" >
+                <label><strong>Common Module</strong><a class="small-text align-right"  href="#"
+                                                        data-interface="tooltip"
+                                                        data-position="top"
+                                                        data-content="Enter a description of your company. This text will appear below the logo on the homepage on your mobile site."
+                                                        data-shift="10"
+                                                        data-defineClass = "bord"
+                                                        data-radius = "0px">help</a>
+                </label>
+                <div class="clear"></div>
+                <div class="checkbox block">
+                    {% for module in modules %}
+                        <label >{{ module.name }}</label><input {% if entity.siteSetting.modules is defined and entity.siteSetting.hasModule(module) %} checked="checked" {% endif %} type="checkbox" name="module[]" value="{{ module.id }}" />
+                    {% endfor %}
+                </div>
+                <div class="clear"></div>
+                <p class="align-right" ><input id="homepage" class="tm-btn mini optionBtn" type="submit" value="update" name="homepage"></p>
+                <div class="clear"></div>
+            </form>
+            <div class="clear"></div>
+        </div>
+
+    </div>
+
+    <div class="accordion-title">
+        <h3><a href="javascript:"><i class="fa  fa-cog"></i>&nbsp;Business Sector Module</a></h3>
+    </div>
+    <div class="accordion-container">
+        Promote your site with an automatically created marketing flyer and QR code.
+        <form class="design-form sitesetting" id="homepageID2" action="" method="post" >
+            <label><strong>{{ entity.syndicate.name }}</strong><a class="small-text align-right"  href="#"
+                                                             data-interface="tooltip"
+                                                             data-position="top"
+                                                             data-content="Enter a description of your company. This text will appear below the logo on the homepage on your mobile site."
+                                                             data-shift="10"
+                                                             data-defineClass = "bord"
+                                                             data-radius = "0px">help</a>
+            </label>
+            <div class="clear"></div>
+            <div class="checkbox block">
+                {% for syndicateModule in syndicateModules %}
+                    <label >{{ syndicateModule.name }}</label><input id="" {% if entity.siteSetting.syndicateModules is defined and entity.siteSetting.hasSyndicateModule(syndicateModule) %} checked="checked" {% endif %}  type="checkbox" value="{{ syndicateModule.id }}"  name="syndicateModule[]">
+                {% endfor %}
+            </div>
+            <div class="clear"></div>
+            <p class="align-right" ><input id="homepage" class="tm-btn mini optionBtn" type="submit" value="update" name="homepage"></p>
+        </form>
+        <div class="clear"></div>
+    </div>
+    <div class="accordion-title">
+        <h3><a href="javascript:"><i class="fa  fa-gears"></i>&nbsp;App Store</a></h3>
+    </div>
+    <div class="accordion-container">
+        Place ads on your site and add new revenue to your business.
+        <form class="design-form sitesetting" id="homepageID3" action="" method="post" >
+            <label><strong>App Store</strong><a class="small-text align-right"  href="#"
+                                                data-interface="tooltip"
+                                                data-position="top"
+                                                data-content="Enter a description of your company. This text will appear below the logo on the homepage on your mobile site."
+                                                data-shift="10"
+                                                data-defineClass = "bord"
+                                                data-radius = "0px">help</a>
+            </label>
+            <div class="clear"></div>
+            <div class="checkbox block">
+                {% for appModule in appModules %}
+                    <span class="checkbox-inner"><label >{{ appModule.name }}</label><input id="" {% if entity.siteSetting.appModules is defined and entity.siteSetting.hasAppModule(appModule) %}  checked="checked" {% endif %} type="checkbox" value="{{ appModule.id }}"  name="appModule[]"></span>
+                {% endfor %}
+            </div>
+            <div class="clear"></div>
+            <p class="align-right" ><input id="homepage" class="tm-btn mini optionBtn" type="submit" value="update" name="homepage"></p>
+        </form>
+        <div class="clear"></div>
+    </div>
+</div>

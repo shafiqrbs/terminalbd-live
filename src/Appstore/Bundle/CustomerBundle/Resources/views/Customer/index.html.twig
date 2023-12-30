@@ -1,0 +1,162 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+<div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Order
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('order') }}">Manage Order</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Manage Order Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Order Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                      <li><a href="{{ path('order') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <td>&nbsp;&nbsp;<i class="icon-list"></i></td>
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Delivery</th>
+                                    <th class="numeric" >Invoice</th>
+                                    <th class="numeric" >Store Name</th>
+                                    <th class="numeric" >Item</th>
+                                    <th class="numeric" >Total</th>
+                                    <th class="numeric" >Shipping</th>
+                                    <th class="numeric" >Grand Total</th>
+                                    <th class="numeric" >Process</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for entity in entities %}
+                                    <tr id="remove-tr-{{ entity.id }}">
+                                        <td><span class="badge badge-warning toggle badge-custom" id="{{ entity.id  }}" ><span>[+]</span></span></td>
+                                        <td class="numeric" >{{ entity.updated|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.deliveryDate|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.invoice }}</td>
+
+                                        <td class="numeric" >{{ entity.item }}</td>
+                                        <td class="numeric" >{{ entity.totalAmount }}</td>
+                                        <td class="numeric" >{{ entity.shippingCharge }}</td>
+                                        <td class="numeric" >{{ entity.grandTotalAmount }}</td>
+                                        <td class="" ><span class="btn purple mini">{{ entity.process|capitalize }}</span></td>
+                                        <td class="numeric" >
+                                            {% if entity.process == 'Created' %}
+                                                <a title="Are you sure went to payment ?" href="{{ path('order_payment', { 'id': entity.id }) }}" class="btn green mini " ><i class="icon-money"></i>&nbsp;Payment</a>
+                                                <a title="Are you sure went to delete ?" data-id="{{ entity.id }}" data-url="{{ path('order_delete', { 'id': entity.id }) }}" class="btn red mini remove" ><i class="icon-trash"></i></a>
+                                            {% elseif entity.process == 'WfC' %}
+                                                <a href="{{ path('order_payment', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-money"></i>&nbsp;Payment</a>
+                                            {% elseif entity.process == 'Confirm' %}
+                                                <a href="javascript:" class="btn yellow mini" ><i class="icon-eye-open"></i>&nbsp;Waiting for Delivery</a>
+                                            {% elseif entity.process == 'Delivered' %}
+                                                <a href="{{ path('order_payment', { 'id': entity.id }) }}" class="btn green mini" ><i class="icon-eye-open"></i>&nbsp;Delivered</a>
+                                            {% endif %}
+                                            <a href="{{ path('order_show', { 'id': entity.id }) }}" class="btn blue mini" ><i class="icon-eye-open"></i>&nbsp;View</a>
+                                            <a href="{{ path('order_print_invoice', { 'invoice': entity.invoice }) }} " target="_blank" class="btn purple mini" ><i class="icon-print"></i></a>
+
+                                        </td>
+                                    </tr>
+                                    <tr id="show-{{ entity.id }}" class="showing-overview" >
+                                        <td colspan="11">
+                                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                                <thead class="flip-content ">
+                                                <tr class="head-grey">
+                                                    <th class="numeric" >Item</th>
+                                                    <th class="numeric" >Size/Weight/Dimension</th>
+                                                    <th class="numeric" >Color</th>
+                                                    <th class="numeric" >Quantity</th>
+                                                    <th class="numeric" >Unit Price</th>
+                                                    <th class="numeric" >Total Price</th>
+                                                    <th class="numeric" >Action</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for item in entity.orderItems %}
+                                                    <tr id="remove-{{ item.id }}">
+                                                        <td class="numeric" >{{ item.purchaseVendorItem.masterItem.name }}-{{ item.purchaseVendorItem.name }}</td>
+                                                        <td class="numeric" >{{ item.goodsItem.size.name }}</td>
+                                                        <td class="numeric" >{% if item.color is not empty %}{{ item.color.name }}{% endif %}</td>
+                                                        <td class="numeric" >{{ item.quantity }}&nbsp;{{ item.purchaseVendorItem.masterItem.productUnit.name }}</td>
+                                                        <td class="numeric" >{{ item.price }}</td>
+                                                        <td class="numeric" >{{ item.subTotal }}</td>
+                                                        <td class="numeric" >
+                                                            {% if entity.process == 'Created'  %}
+                                                                <a title="Are you sure went to delete ?" data-id="{{ item.id }}" data-url="{{ path('order_item_delete',{'preOrder':entity.id,'id':item.id}) }}" class="btn red mini remove" ><i class="icon-trash"></i></a>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@CustomerBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    ApproveProcess();
+{% endblock %}
+

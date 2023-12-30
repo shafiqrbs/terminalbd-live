@@ -1,0 +1,148 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Customer Outstanding
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('account_sales_business') }}">Account Sales</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="javascript:">Customer Outstanding lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Customer Outstanding</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                {% set amount = searchForm.amount is defined ? searchForm.amount :'' %}
+                                <a class="btn blue" href="{{ path('report_customer_ledger') }}"><i class="icon-plus-sign"></i>&nbsp; Customer Ledger</a>
+                                <a class="btn red" href="{{ path('account_sales_new') }}"><i class="icon-plus-sign"></i>&nbsp; Add Receive</a>
+                                <a class="btn purple" target="_blank"  href="{{ path("report_customer_outstanding_pdf",{'amount':amount}) }}" >
+                                    <i class=" icon-download"></i>&nbsp;Download PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <form class="search-form" action="" method="get" name="itemSearch">
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <table class="table table-bordered table-striped table-condensed flip-content ">
+                                        <thead class="flip-content">
+                                        <tr class="head-red">
+                                            <th class="" >Sales</th>
+                                            <th class="" >Receive</th>
+                                            <th class="" >Balance</th>
+                                            <th class="" ></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td class="numeric" ><strong>{{ summary.sales|number_format(2) }}</strong></td>
+                                            <td class="numeric" ><strong>{{ summary.receive|number_format(2) }}</strong></td>
+                                            <td class="numeric" ><strong>{{ summary.balance|number_format(2) }}</strong></td>
+                                            <td>
+                                                <form class="search-form" action="" method="get" name="itemSearch">
+                                                    <div class="row-fluid">
+                                                        <div class="span9">
+                                                            <input type="text" id="mobile" name="mobile"  class="leftMargin span12 select2Customer m-wrap" value="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% endif %}"  autocomplete="off" placeholder="Customer mobile no">
+                                                        </div>
+                                                        <div class="span3">
+                                                            <div class="btn-group"><button class="btn blue" type="submit"><i class="icon-search"></i></button></div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="portlet-body flip-scroll" id="DivIdToPrint">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" ><i class="icon-reorder"></i></th>
+                                    <th class="numeric" >Customer Name</th>
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Sales</th>
+                                    <th class="numeric" >Receive</th>
+                                    <th class="numeric" >Outstanding</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <th class="numeric" >{{ entity.customerName|capitalize }}</th>
+                                        <td class="numeric" >{{ entity.customerMobile }}</td>
+                                        <th class="numeric" >{{ entity.totalAmount|number_format }}</th>
+                                        <th class="numeric" >{{ entity.amount|number_format }}</th>
+                                        <th class="numeric" >{{ entity.customerBalance|number_format }}</th>
+                                        <td class="numeric" >
+                                            <div class="btn-group">
+                                            <a class="btn blue" href="{{ path('report_customer_ledger',{'mobile':entity.customerMobile}) }}"><i class="icon-plus-sign"></i> Ledger</a>
+                                            <a  class="btn yellow ledger-print" data-action="{{ path('report_customer_ledger_print',{'mobile':entity.customerMobile}) }}" href="javascript:"><i class="icon-print"></i> Print</a>
+                                            {% if global.notificationConfig is not empty and global.notificationConfig.smsActive == 1 %}
+                                            <a  class="btn purple approve" href="javascript:" data-url="{{ path('report_sales_customer_sms',{'id':entity.customerId}) }}"><i class="icon-phone"></i> SMS</a>
+                                            {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center"  >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .leftMargin {
+            margin-left: 0!important;
+        }
+    </style>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@AccountingBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+    AccountingApproveProcess();
+{% endblock %}
+
+

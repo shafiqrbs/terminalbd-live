@@ -1,0 +1,97 @@
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}"/>
+<style>
+    .table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family:tahoma, geneva, sans-serif;
+    }
+    .table tr.head th, .table tr.head td{
+        font-size: 15px;
+        background: #333;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table tr.sub-head th, .table tr.sub-head td{
+        font-size: 15px;
+        background: #666;
+        color: #fff;
+        height: 40px;
+    }
+
+    .table th, .table td{
+        border: 1px solid #e5e5e5;
+        text-align: left;
+        padding-left: 20px;
+        height: 30px;
+        line-height: 30px;
+
+    }
+    h2 {
+        font-size: 24px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    h3 {
+        font-size: 20px;
+        display: block;
+        padding: 0;
+        margin: 0;
+        line-height: 45px;
+        height: 45px;
+    }
+    .pull-center{
+        background: #e5e5e5;
+        text-align: center!important;
+
+    }
+    .pull-right{
+        text-align: right!important;
+        display: block;
+        padding-right: 20px;
+    }
+
+</style>
+{% set startDate = searchForm.month is defined ? searchForm.month :"now"|date("d-m-Y") %}
+{% set endDate = searchForm.year is defined ? searchForm.year :"now"|date("d-m-Y") %}
+
+<table class="table">
+    <thead class="flip-content ">
+    <tr class="head-blue">
+        <td class="">&nbsp;&nbsp;<i class="icon-list"></i></td>
+        <th class="">Code</th>
+        <th class="">Particular</th>
+        <th class="">Received</th>
+        <th class="">GRN</th>
+        <th class="">Height</th>
+        <th class="">Width</th>
+        <th class="">Qnt</th>
+        <th class="">Total Qnt</th>
+        <th class="">Unit</th>
+        <th class="">PP</th>
+        <th class="">Sub-Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in entities %}
+        <tr id="remove-{{ item.id }}">
+            <td  class="">{{ loop.index }}</td>
+            <td  class="">{{ item.businessParticular.particularCode }}</td>
+            <td class="">{{ item.businessParticular.name }}</td>
+            <td class="">{{ item.businessPurchase.receiveDate|date('d-m-Y') }}</td>
+            <td class="">{{ item.businessPurchase.grn }}</td>
+            <td class="">{{ item.height }}</td>
+            <td class="">{{ item.width }}</td>
+            <td class="">{{ item.subQuantity }}</td>
+            <td class="">{{ item.quantity }}</td>
+            <td class="">{% if item.businessParticular.unit is not empty %}{{ item.businessParticular.unit.name }}{% endif %}</td>
+            <td class="">{{ item.purchasePrice }}</td>
+            <td class="">{{ item.purchaseSubTotal|number_format }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

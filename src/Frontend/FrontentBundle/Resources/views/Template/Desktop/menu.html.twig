@@ -1,0 +1,57 @@
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <section id="top-bar">
+        <div class="container" id="menu">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-6 text-left">
+                        <div class="box">
+                            <ul class="info-links">
+                                {% if globalOption.templateCustomize.showCalendar == 1 %}<li><i class="fa fa-calendar"></i>&nbsp;{{ "now"|date("F j, Y") }}</li>{% endif %}
+                                {% if globalOption.templateCustomize.showEmail == 1 %}<li><i class="fa fa-envelope"></i>&nbsp;{{ globalOption.email }}</li>{% endif %}
+                                {% if globalOption.templateCustomize.showMobile == 1 %}<li><i class="fa fa-mobile"></i>&nbsp;{{ globalOption.mobile }}</li>{% endif %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class=" col-md-6 text-right">
+                        <div class="box">
+                            <ul class="social-links">
+                                {% if globalOption.facebookPageUrl == 1 %}<li><a href="https://{{ globalOption.facebookPageUrl }}"><i class="fa fa-facebook"></i></a></li>{% endif %}
+                                {% if globalOption.templateCustomize.showSearch == 1 %}<li><a href="javascript:" id="searchEvent"><i class="fa fa-search"></i></a></li>{% endif %}
+                                <li><a href="javascript:" class="register-btn" ><i class="fa fa-sign-in"></i></a></li>
+                                {% if  app.user %}
+                                    <li><a href="{{ path('fos_user_security_logout') }}" class="" ><i class="fa fa-unlock-alt"></i></a></li>
+                                {% else %}
+                                    <li><a href="javascript:" class="login-preview" ><i class="fa fa-lock"></i></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="container" id="header">
+        <div class="navbar-header col-md-12" >
+            <a class="" href="{{ path('ecommercesubdomain') }}">{% if globalOption.templateCustomize.webPath('logo') is not empty %}<img src="{{ image(globalOption.templateCustomize.webPath('logo')).resize() }}" alt="company logo" />{% else %}{{ globalOption.name }}{% endif %}</a>
+        </div>
+    </div>
+    <section id="menu-bar" >
+        <div class="container" id="menu">
+            <div class="row">
+                <div class=" {% if globalOption.templateCustomize.showSearch == 1 %} col-md-8 {% else %}col-md-12 {% endif %}">
+                    <nav id="header-menu">{{ menuTree|raw }}</nav>
+                </div>
+                {% if globalOption.templateCustomize.showSearch == 1 %}
+                    <div class="input-group searchbar col-md-3" id="nav-search">
+                        <input type="text" class="form-control searchbar" placeholder="Search for...">
+		                        <span class="input-group-btn">
+		                        <button class="btn btn-default glyphicon glyphicon-search" type="button"></button>
+		                </span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</nav>

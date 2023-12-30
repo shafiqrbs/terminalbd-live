@@ -1,0 +1,160 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN accountbank HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="accountbank-title">
+                    Bank Account
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('accountbank') }}">Bank Payment</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Bank Payment new/edit</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END accountbank HEADER-->
+        <!-- BEGIN accountbank CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Bank Account Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn black" href="{{ path('accountbank') }}"><i class="icon-th-list"></i>&nbsp;Bank</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body form">
+                            {% include('flash-message.html.twig')  %}
+                            <!-- BEGIN FORM-->
+                            {{ form_start(form) }}
+                            {{ form_row(form._token) }}
+
+                            <div class="row-fluid">
+
+                                <div class="span4">
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="Bank">Bank Name</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.bank) }}
+                                                    {{ form_errors(form.bank) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span4">
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Branch Name</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.branch) }}
+                                                    {{ form_errors(form.branch) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="firstName">Account Type</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.accountType) }}
+                                                    {{ form_errors(form.accountType) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span4">
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="control-group">
+                                                <label class="control-label" for="Bank">Account Owner</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.accountOwner) }}
+                                                    {{ form_errors(form.accountOwner) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span6">
+                                            <div class="control-group">
+                                                <label class="control-label" for="Bank">Account No</label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.accountNo) }}
+                                                    {{ form_errors(form.accountNo) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="span6">
+                                            <div class="control-group">
+                                                <label class="control-label" for="Bank">Service Charge<span class="required">(%)</span></label>
+                                                <div class="controls">
+                                                    {{ form_widget(form.serviceCharge) }}
+                                                    {{ form_errors(form.serviceCharge) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName">Address</label>
+                                        <div class="controls">
+                                            {{ form_widget(form.address) }}
+                                            {{ form_errors(form.address) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <!--/span-->
+                            <div class="form-actions portlet box grey">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn green"><i class="icon-ok"></i>&nbsp;Save</button>
+                                    {% if(entity.id > 0 ) %}
+                                        <a href="{{ path('accountbank_delete',{'id': entity.id} ) }}"  class="btn red confirm" title="Are you sure went to delete?"><i class="icon-remove"></i> Delete</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

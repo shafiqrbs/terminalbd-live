@@ -1,0 +1,100 @@
+
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Manage Vendor : {{ entity.medicineVendor.companyName }}
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="{{ path('medicine_purchase_return') }}">Manage Medicine Purchase Return</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Medicine Purchase Return Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('medicine_purchase_return') }}"><i class="icon-th-list"></i> Purchase Return</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="clearfix"><br/></div>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Medicine Name </th>
+                                    <th class="numeric" >Quantity</th>
+                                    <th class="numeric" >Purchase Price</th>
+                                    <th class="numeric" >SubTotal</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for item in entity.medicinePurchaseReturnItems %}
+                                    <tr>
+                                        <td class="numeric" >{{ item.medicineStock.name }}</td>
+                                        <td class="numeric" >{{ item.quantity }}</td>
+                                        <td class="numeric" >{{ item.purchasePrice }}</td>
+                                        <td class="numeric" >{{ item.subTotal }}</td>
+                                        <td class="numeric" >
+                                            {% if entity.process == 'created' %}
+                                                <a title="Are you sure went to delete ?" href="{{ path('medicine_purchase_return_delete', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-trash"></i></a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                <tr><th colspan="3"><span class="pull-right">Sub-Total</span></th><th>{{ entity.subTotal }}</th><th></th></tr>
+                                <tr><th colspan="3"><span class="pull-right">Discount</span></th><th>{{ entity.discount }}</th><th>{{ entity.discountCalculation }}{% if entity.discountType == 'percentage' %}%{% else %} Flat{% endif %}</th></tr>
+                                <tr><th colspan="3"><span class="pull-right">Total</span></th><th>{{ entity.total }}</th><th></th></tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="clearfix"><br/></div>
+                        <!--/span-->
+                        <div class="form-actions portlet box grey">
+                            <div class="pull-right">
+                                {% if entity.process != 'approved' %}
+                                    <a href="javascript:" data-id="{{ entity.id }}" data-url="{{ path('medicine_purchase_return_approve',{'id':entity.id}) }}" class="btn blue confirm"><i class="icon-ok"></i> Approve</a>
+                                {% else %}
+                                    <a href="javascript:"  class="btn green"><i class="icon-ok"></i> Approved</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}

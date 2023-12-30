@@ -1,0 +1,119 @@
+<div class="page-block page-carousel-{{ globalOption.templateCustomize.sliderPosition }}" >
+    {% if  widget.moduleFeatureName is not empty %}
+        <div class="page-title">{{ widget.moduleFeatureName }}</div>
+    {% endif %}
+    {% if widget.moduleShowType == 'slider' %}
+        <div class="row">
+            <div id="category-page-slider" class="owl-carousel">
+                {% for key,category in categories  %}
+                    <div class="col-xs-6">
+                        <div class="our-team">
+                            <div class="pic">
+                                <img src="{{ image(category.webPath).forceResize(400,250) }}" alt="">
+                                <div class="social_media_team">
+                                    <ul class="team_social">
+                                        <li><a href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'module': category.module.slug,'slug':category.slug }) }}"><i class="fa fa-search"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="team-prof">
+                                <h4 class="post-title"><a href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'module': category.module.slug,'slug':category.slug }) }}">{{ category.name }}</a></h4>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            {% for key,category in categories  %}
+                <div class="col-xs-6">
+                    <div class="our-team">
+                        <div class="pic">
+                            <img src="{{ image(category.webPath).forceResize(400,250) }}" alt="">
+                            <div class="social_media_team">
+                                <ul class="team_social">
+                                    <li><a href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'module':category.module.slug,'slug':category.slug }) }}"><i class="fa fa-search"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="team-prof">
+                            <h4 class="post-title"><a href="{{ path(globalOption.subDomain ~ '_webservice_module_category',{'module': category.module.slug,'slug':category.slug }) }}">{{ category.name }}</a></h4>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+<style>
+    .our-team{
+        text-align: center;
+    }
+    .pic{
+        position: relative;
+        overflow: hidden;
+    }
+    .pic img{
+        width: 100%;
+        height: auto;
+    }
+    .social_media_team{
+        position: absolute;
+        top:100%;
+        width: 100%;
+        height: 100%;
+        background-color:rgba(222, 79, 0, 0.8);
+        transition: all 0.35s ease 0s;
+    }
+    .team_social{
+        list-style: none;
+        padding: 0;
+        height: 100%;
+        position: relative;
+        top:40%;
+    }
+    .team_social > li{
+        display: inline-block;
+        margin: 0 5px 5px 0;
+    }
+    .team_social > li > a{
+        width: 45px;
+        height: 45px;
+        line-height: 45px;
+        border: 1px solid #fff;
+        display: block;
+        color:#fff;
+        font-size: 18px;
+        transition: all 1.3s ease 0s;
+    }
+    .team_social > li > a:hover{
+        background: #fff;
+        color:#de4f00;
+        transition: all 1.3s ease 0s;
+    }
+    .team-prof{
+        margin-top: 10px;
+    }
+    .post-title > a{
+        text-transform: capitalize;
+        color:#424242;
+        transition: all 0.2s ease 0s;
+    }
+    .post-title > a:hover{
+        text-decoration: none;
+        color:#de4f00;
+    }
+    .post{
+        color:#de4f00;
+        font-size: 18px;
+    }
+    .pic:hover .social_media_team{
+        top:0;
+    }
+    @media screen and (max-width: 990px){
+        .our-team{
+            margin-bottom: 30px;
+        }
+    }
+</style>

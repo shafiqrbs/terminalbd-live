@@ -1,0 +1,233 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Diagnostic Report Prepared
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Diagnostic Report Prepared</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Diagnostic Report Prepared</div>
+                        {% if searchForm.particular is defined and searchForm.particular is not empty %}
+                            <div class="actions">
+                                <div class="btn-group">
+                                    <a class="btn red addPatient" href="javascript:"><i class="icon-plus-sign"></i> Generate Reports</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid" >
+                                <form action="javascript:" method="post" class="patient-global-search">
+                                    <div class="row-fluid">
+                                        <div class="span9">
+                                            <input type="text" id="select2Invoice" name="select2Invoice"  class="m-wrap span12 select2Invoice" value=""  autocomplete="off" placeholder="Global Search For : Diagnostic,Visit,Admission for Patient Details">
+                                        </div>
+                                        <div class="span3">
+                                            <input type="text" id="barcode2Invoice" name="barcode2Invoice"  class="m-wrap span12" value=""  autocomplete="off" placeholder="Scan invoice barcode for invoice details">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="row-fluid" >
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                    <div class="row-fluid" style="margin-bottom: 10px">
+                                        <div class="span3">
+                                            <div class="input-icon left">
+                                                <i class="icon-user"></i>
+                                                <input class="m-wrap span12 search-input" name="name" id="name" value="{% if searchForm.name is defined %}{{ searchForm.name }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.name is defined %}{{ searchForm.name }}{% else %}Patient ID{% endif %}">
+                                            </div>
+                                        </div>
+                                        <div class="span3">
+                                            <div class="input-icon left">
+                                                <i class="icon-phone"></i>
+                                                <input class="m-wrap span12 search-input" name="mobile" id="mobile" value="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.mobile is defined %}{{ searchForm.mobile }}{% else %}Patient mobile{% endif %}">
+                                            </div>
+                                        </div>
+                                        <div class="span3">
+                                            <div class="input-icon left">
+                                                <i class="icon-calendar"></i>
+                                                <input class="m-wrap span12 search-input dateCalendar" name="created" id="created" value="{% if searchForm.created is defined %}{{ searchForm.created }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.created is defined %}{{ searchForm.created }}{% else %}Created Date{% endif %}" >
+                                            </div>
+                                        </div>
+                                        <div class="span3">
+                                            <div class="input-icon left">
+                                                <i class="icon-calendar"></i>
+                                                <input class="m-wrap span12 search-input dateCalendar" name="deliveryDate" id="deliveryDate" value="{% if searchForm.deliveryDate is defined %}{{ searchForm.deliveryDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.deliveryDate is defined %}{{ searchForm.deliveryDate }}{% else %}Delivery Date{% endif %}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="row-fluid">
+                                        <div class="span3">
+                                            <select name="particular" id="particular" class="m-wrap span12 select2">
+                                                <option value="">Select Test Name</option>
+                                                {% for service in particularService %}
+                                                    <option {% if searchForm.particular is defined and searchForm.particular == service.id %} selected="selected" {% endif %} value="{{ service.id }}" >{{ service.particularCode }} - {{ service.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="span3">
+                                            <select name="doctor" id="doctor" class="m-wrap span12 select2">
+                                                <option value="" >--Assign Doctor--</option>
+                                                {% for doctor in assignDoctors %}
+                                                    <option {% if searchForm.doctor is defined and searchForm.doctor == doctor.id %} selected="selected" {% endif %} value="{{ doctor.id }}" >{{ doctor.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="span3">
+                                            <select name="referred" id="referred" class="m-wrap span12 select2">
+                                                <option value="" >--Patient Referred--</option>
+                                                {% for referred in referredDoctors %}
+                                                    <option {% if searchForm.referred is defined and searchForm.referred == referred.id %} selected="selected" {% endif %} value="{{ referred.id }}" >{{ referred.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="span3">
+                                            <div class="controls">
+                                                <div class="input-append span11">
+                                                    <input type="text" id="invoice" name="invoice"  class="m-wrap span10" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% else %}Patient invoice no{% endif %} ">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="" >
+                                    {% if searchForm.particular is defined and searchForm.particular is not empty %}
+                                       <input type="checkbox" id="checkAll" data-checkwhat="chkSelect">
+                                    {% endif %}
+                                    </th>
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Mode</th>
+                                    <th class="numeric" >Invoice No</th>
+                                    <th class="numeric" >Patient Name</th>
+                                    <th class="numeric" >Test Name </th>
+                                    <th class="numeric" >Delivery Date</th>
+                                    <th class="numeric" >Process</th>
+                                    <th class="numeric" >Status</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% set processes = ['Collected','In-progress'] %}
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td class="" >
+                                            {% if searchForm.particular is defined and searchForm.particular is not empty and entity.particularDeliveredBy is empty and entity.process != 'Done' %}
+                                            <input type="checkbox" class="chkSelect" id="checkItem-{{ entity.id }}" >
+                                            {% endif %}
+                                        </td>
+
+                                        <td class="numeric" >{{ entity.hmsInvoice.created|date('d-m-Y h:i a') }}</td>
+                                        <td class="numeric" >{{ entity.hmsinvoice.invoiceMode|capitalize }}</td>
+                                        <td class="numeric" >{{ entity.hmsInvoice.invoice }}</td>
+                                        <td class="numeric" >{% if entity.hmsInvoice.customer is defined and entity.hmsInvoice.customer is not empty %}{{ entity.hmsInvoice.customer.name }}{% endif %}</td>
+                                        <td class="numeric" >{{ entity.particular.particularCode }}-{{ entity.particular.name }}</td>
+                                        <td class="numeric" >{{ entity.hmsInvoice.deliveryDateTime }}</td>
+                                        <td class="numeric" >{{ entity.process|capitalize }}</td>
+                                        <td class="numeric" >
+                                            <div class="btn-group">
+                                                {% if entity.hmsinvoice.due == 0 and entity.process == 'Done' and entity.particularDeliveredBy is empty %}
+                                                    <a class="btn mini green confirm" href="javascript:" data-url="{{ path('hms_invoice_particular_delivery', {'id': entity.id}) }}"><i class="icon-truck"></i>&nbsp;Delivery</a>
+                                                {% endif %}
+                                            {% if entity.process == 'Done' and entity.particularDeliveredBy is not empty %}
+                                                <a class="btn mini red"   href="javascript:"><i class="icon-truck"></i>&nbsp;Delivered </a>
+                                            {% endif %}
+                                            {% if app.user.granted("ROLE_DOMAIN_HOSPITAL_REPORT_PRINT") and entity.process == 'Done' and entity.hmsInvoice.process == 'Done' %}
+                                                <a target="_blank" class="btn mini yellow" href="{{ path('hms_invoice_particular_report_print', {'id': entity.id}) }}"><i class="icon-print"></i>&nbsp;Print </a>
+                                            {% endif %}
+                                            {% if app.user.granted("ROLE_DOMAIN_HOSPITAL_LAB") and entity.process == 'Done' and entity.particularDeliveredBy is empty %}
+                                                <a class="btn mini purple" href="{{ path('hms_invoice_particular_preparation', {'id': entity.id}) }}"><i class="icon-pencil"></i>&nbsp;Edit </a>
+                                            {% endif %}
+                                            </div>
+                                        </td>
+                                        <td class="numeric" >
+                                            <div class="btn-group">
+                                            {% if entity.sampleCollectedBy is empty %}
+                                                <a class="btn mini green" target="_blank"  href="{{ path('hms_invoice_particular_collection_barcode',{'id':entity.id}) }}" ><i class="icon-barcode"></i> Tag</a>
+                                                <a class="btn mini blue confirm"  data-url="{{ path('hms_invoice_particular_collection_confirm',{'id':entity.id}) }}" href="javascript:"><i class="icon-ok"></i>&nbsp;Confirm</a>
+                                            {% elseif entity.process in processes %}
+                                                <a target="_blank" class="btn mini green"  href="{{ path('hms_invoice_particular_collection_barcode',{'id':entity.id}) }}" ><i class="icon-barcode"></i> Tag</a>
+                                                <a class="btn mini purple " href="{{ path('hms_invoice_particular_preparation', {'id': entity.id}) }}"><i class="icon-retweet"></i>&nbsp;Generate Report</a>
+                                                {% if entity.particular.isMachineFormat == 1 %}
+                                                <a class="btn mini red confirm" href="javascript:" data-url="{{ path('hms_invoice_particular_machine_format', {'id': entity.id}) }}"><i class="icon-retweet"></i>&nbsp;Machine Report</a>
+                                                {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {{ knp_pagination_render(entities) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+        '@InventoryBundle/Resources/public/css/jquery-ui.css'
+        '@HospitalBundle/Resources/public/css/invoice.css'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HospitalBundle/Resources/public/js/invoice.js'
+    '@HospitalBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $("#checkAll").click(function(){
+    $('input:checkbox').not(this).prop('checked', this.checked);
+    checkwhat  = $(this).data("checkwhat");
+    $('input:checkbox.'+checkwhat).not(this).prop('checked', this.checked);
+    });
+
+{% endblock %}

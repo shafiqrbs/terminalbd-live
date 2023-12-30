@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8"/>
+    <title>{% if app.user.globaloption is not empty and app.user.globaloption is defined %}{{ app.user.globaloption.name }}{% else %} {{ app.user.profile.name }} {% endif %} | MANAGE PANEL</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="google-site-verification" content="syISMv7mxTevfDNUFQb71C9vybrXTBAvr1WfeN0lAaw" />
+    <meta name="MobileOptimized" content="320">
+    <link rel="shortcut icon"  href="{{ asset('assets/img/favicon/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('assets/img/favicon/apple-icon-57x57.png') }}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{{ asset('assets/img/favicon/apple-icon-60x60.png') }}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('assets/img/favicon/apple-icon-72x72.png') }}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets/img/favicon/apple-icon-76x76.png') }}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ asset('assets/img/favicon/apple-icon-114x114.png') }}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('assets/img/favicon/apple-icon-120x120.png') }}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ asset('assets/img/favicon/apple-icon-144x144.png') }}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('assets/img/favicon/apple-icon-152x152.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/img/favicon/apple-icon-180x180.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192"  href="{{ asset('assets/img/favicon/android-icon-192x192.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/img/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('assets/img/favicon/favicon-96x96.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/img/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('assets/img/favicon/manifest.json') }}">
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+    {% stylesheets filter='cssrewrite'
+        'assets/plugins/bootstrap/css/bootstrap.min.css'
+        'assets/plugins/bootstrap/css/bootstrap-responsive.min.css'
+        'assets/plugins/font-awesome/css/font-awesome.min.css'
+        'assets/plugins/font-awesome/css/font-awesome-4.7.0.min.css'
+        'assets/plugins/font-awesome/css/fa-font-awesome.css'
+        'assets/css/style.css'
+        'assets/css/style-responsive.css'
+        'assets/css/style-metro.css'
+        'assets/css/themes/darkblue.css'
+        'assets/plugins/chosen-bootstrap/chosen/chosen.css'
+        'assets/plugins/select2/select2_metro.css'
+        'assets/plugins/bootstrap-multiselect/css/bootstrap-multiselect.css'
+        'assets/plugins/bootstrap-datetimepicker/css/datetimepicker.css'
+        'assets/plugins/jquery-multi-select/css/multi-select.css'
+        'assets/plugins/clockface/css/clockface.css'
+        'assets/plugins/bootstrap-datepicker/css/datepicker.css'
+        'assets/plugins/glyphicons/css/glyphicons.css'
+        'assets/plugins/glyphicons_halflings/css/halflings.css'
+        'assets/plugins/bootstrap-editable/bootstrap-editable/css/bootstrap-editable.css'
+        'assets/plugins/bootstrap-editable/inputs-ext/address/address.css'
+        'assets/plugins/colorpicker/css/evol.colorpicker.min.css'
+        'assets/plugins/jquery-nestable/jquery.nestable.css'
+        'assets/plugins/jquery-ui/jquery-ui-1.12.1.min.css'
+        'assets/plugins/jquery-tree/src/css/jquery.tree.css'
+        'assets/plugins/bootstrap-modal/css/bootstrap-modal.css'
+        'assets/plugins/remodal/css/remodal.css'
+        'assets/plugins/remodal/css/remodal-default-theme.css'
+        'assets/plugins/bootstrap-modal/css/bootstrap-modal.css'
+        'assets/plugins/calculator/SimpleCalculadorajQuery.css'
+        'assets/plugins/pop-modal/popModal.min.css'
+        'assets/plugins/jquery-checkradios/css/jquery.checkradios.css'
+        'assets/template/desktop/css/css-loader.css'
+        'assets/css/comments.css'
+        'assets/css/overwrite.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+    {% block cssBlock %}
+    {% endblock %}
+ </head>
+<body class="page-header-fixed  page-footer-fixed  {% if app.user.globaloption.isSidebar != 1 %} page-sidebar-closed {% endif %} {{ app.request.locale }}{% block bodyClass %}{% endblock bodyClass %}">
+<!-- BEGIN HEADER -->
+<div class="header navbar navbar-inverse navbar-fixed-top">
+<!-- BEGIN TOP NAVIGATION BAR -->
+<div class="navbar-inner">
+    <div class="container-fluid">
+    <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+        <ul class="nav pull-center" style="margin-top: -5px!important;">
+            <li class="" id="header_notification_bar">
+                <a href="{{ path('homepage') }}" class="btn blue mini"><i class="icon-th-large"></i> Dashboard</a>
+            </li>
+            <li class="" id="header_notification_bar">
+                <a  href="{{ path('inventory_item') }}" class="btn yellow mini"><i class="icon-file"></i> Stock Item</a>
+            </li>
+            <li class="" id="header_notification_bar">
+                <a  href="{{ path('inventory_salesonline') }}" class="btn purple mini"><i class="icon-th-large"></i> Sales</a>
+            </li>
+            <!-- END USER LOGIN DROPDOWN -->
+        </ul>
+        <ul class="nav pull-right" style="margin-top: -5px!important;">
+            <li class="" id="header_notification_bar">
+                <a href="javascript:" data-id="Order" data-action="{{ path('pos_order',{'mode':'order'}) }}" value="order" class="btn blue invoice-list mini list-load"><i class="icon-th-large"></i> Orders</a>
+            </li>
+            <li class="" id="header_notification_bar">
+                <a  href="javascript:" data-id="Hold" data-action="{{ path('pos_hold',{'mode':'hold'}) }}" value="hold" class="btn yellow invoice-list mini list-load"><i class="icon-file"></i> Holds</a>
+            </li>
+            <li class="dropdown user" style="margin-top: 11px!important;">
+                <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+                   data-close-others="true">
+                    <span class="username">{{ app.user }}</span>
+                    <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ path('domain_edit_profile') }}"><i class="icon-user"></i> My Profile</a></li>
+                    <li><a href="{{ path('fos_user_security_logout') }}"><i class="icon-key"></i> Logout</a></li>
+                </ul>
+            </li>
+            <!-- END USER LOGIN DROPDOWN -->
+        </ul>
+    <!-- END RESPONSIVE MENU TOGGLER -->
+</div>
+</div>
+<!-- END TOP NAVIGATION BAR -->
+</div>
+<!-- END HEADER -->
+<div id="print-container" style="display:none"><div id="print-area"></div></div>
+<div class="page-container row-fluid" style="background:#ffffff!important;">
+    {% block body %}{% endblock %}
+    <div id="confirm-content" style="display:none">
+        <div class="confirmModal_content">
+            Are you sure to confirm this record?
+        </div>
+        <div class="confirmModal_footer">
+            <button type="button" class="btn red" data-confirmmodal-but="cancel">Cancel</button>
+            <button type="button" class="btn green" data-confirmmodal-but="ok">Confirm</button>
+        </div>
+    </div>
+    <div id="dialog_content" class="dialog_content" style="display:none">
+        <div class="dialogModal_header"></div>
+        <div class="dialogModal_content"></div>
+    </div>
+</div>
+{% javascripts
+'assets/plugins/jquery-1.10.2.min.js'
+'assets/plugins/jquery-migrate-1.2.1.min.js'
+'assets/plugins/jquery-ui/jquery-ui-1.10.2.custom.min.js'
+'assets/plugins/jquery-ui/jquery.ui.droppable.js'
+'assets/plugins/jquery-ui/jquery.ui.autocomplete.js'
+'assets/plugins/jquery-ui/jquery.ui.menu.min.js'
+'assets/plugins/jquery-ui/jquery.ui.position.min.js'
+'assets/plugins/jquery-ui/jquery.ui.widget.min.js'
+'assets/plugins/jquery-tree/src/js/jquery.tree.js'
+'assets/plugins/bootstrap/js/bootstrap.min.js'
+'assets/plugins/bootstrap/js/bootstrap.typeahead.js'
+'assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js'
+'assets/plugins/select2/select2.min.js'
+'assets/plugins/bootstrap-multiselect/js/bootstrap-multiselect.js'
+'assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js'
+'assets/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js'
+'assets/plugins/jquery.confirm.min.js'
+'assets/plugins/pop-modal/popModal.js'
+'assets/template/plugin/matchHeight/height-match.js'
+'assets/module/numeric/jquery.numeric.js'
+'assets/js/jquery.cookie-1.4.1.min.js'
+'assets/scripts/ui-jqueryui.js'
+'assets/scripts/input-box.js'
+'assets/print/js/kinzi.print.min.js'
+'assets/scripts/app.js'
+%}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% block javascriptBlock %}
+{% endblock %}
+<script type="text/javascript">
+
+    jQuery(document).ready(function () {
+        {% block documentready %}
+        App.init();
+        $('.multiselect').multiselect();
+        $('.mobileBankHide').hide();
+        $('.bankHide').hide();
+        var winHeight = $(window).height();
+        var docHeight = $(document).height();
+        if(docHeight > winHeight){
+            $(".page-container").height(winHeight-30).css({'overflow':'hidden'});
+        }
+        var invoiceMode = "{{ app.request.cookies.get('invoiceMode') }}";
+        {% if invoiceMode == 'search'  %}
+            var productBox      = (winHeight-220);
+            var transactionBox  = (winHeight-320);
+        {% else %}
+            var productBox      = (winHeight-160);
+            var transactionBox  = (winHeight-220);
+        {% endif %}
+
+        $('.productBox').slimScroll({
+            height: productBox+'px'
+        });
+        $('.transactionBox').slimScroll({
+            height: transactionBox+'px'
+        });
+        {% endblock %}
+    });
+
+</script>
+<style>
+    .action li a.btn{
+        text-align: left!important;
+    }
+    .header .brand{
+        width: auto!important;
+    }
+    .ui-autocomplete{
+        width: 90% !important;
+    }
+    div.checker {
+        margin-right: 15px;
+    }
+    .navbar-inverse .brand, .navbar-inverse .nav>li>a {
+        color: #ffffff!important;
+    }
+    .page-sidebar.in{
+        height: auto!important;
+    }
+    .fb-messenger , .calculator-messenger {
+        position: fixed;
+        bottom: 32px;
+        right: 20px;
+        z-index: 100;
+    }
+    .panel-messenger {
+        border-color: #4d90fe;
+    }
+    .page-footer-fixed .page-container{
+        margin-bottom: 0!important;
+    }
+    .panel-messenger > .panel-heading , .panel-calculator > .panel-heading {
+        color: #fff;
+        background-color: #4d90fe;
+        border-color: #4d90fe;
+        padding: 10px;
+    }
+    .panel {
+        position: relative;
+    }
+    #messenger-block , #calculator-block{
+        display: none;
+        width: 400px;
+    }
+    .mbottom:nth-child(5),.mbottom:nth-child(9) ,.mbottom:nth-child(13) {
+       margin-left: 0!important;
+    }
+    .txtr{
+        margin-top: 10px;
+    }
+
+    ul.page-sidebar-menu > li.current_ancestor > ul > li.current_ancestor > a{
+        background: #000!important;
+    }
+
+    .confirmModal .confirmModal_body{
+        border: 1px solid #0362fd;
+    }
+    @media (max-width: 979px) {
+        .navbar .brand {
+            display: none !important;
+        }
+        ul.page-sidebar-menu > li.current_ancestor > ul > li.current_ancestor > a{
+            background: #000!important;
+        }
+        .page-content .breadcrumb{
+            display:none !important;
+        }
+        .page-title{
+            margin: 0!important;
+        }
+        .showing-overview{
+            display: none !important;
+        }
+        .pagination ul>li>a, .pagination ul>li>span{
+            padding: 4px 23px;
+        }
+    }
+
+    .dialogModal .dialogModal_top .dialogModal_header{
+        width: 100%!important;
+    }
+    .dialogModal .dialogModal_top .dialogModal_header .close{
+        background-image: none!important;
+    }
+    .dialogModal .dialogModal_body{
+        width: 100%!important;
+    }
+    .dialogModal .dialogModal_content{
+
+    }
+    .dialogModal_content .mini{
+        height: 20px!important;
+    }
+    .select2-results .select2-highlighted {
+        background: #217ebd !important;
+        color: #ffffff;
+    }
+    input[type="text"].inline-medium-wrap {
+        width: 60px;
+        font-size: 12px;
+        border: 2px solid #0362fd;
+        margin-bottom: 0;
+        text-align: center;
+        font-weight: bold;
+        height: 22px;
+    }
+
+</style>
+</body>
+</html>

@@ -1,0 +1,490 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Setting Components
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('globaloption') }}">Setting</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Setting Component</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Setting Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    App Store
+                                    <i class="icon-angle-down"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+
+                                    <li class="divider"></li>
+                                    <li><a href="#">AirAsia</a></li>
+                                    <li><a href="#">Cruise</a></li>
+                                    <li><a href="#">HSBC</a></li>
+                                    <li class="divider"></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    Tools
+                                    <i class="icon-angle-down"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+
+                                    <li class="divider"></li>
+                                    <li><a href="#">AirAsia</a></li>
+                                    <li><a href="#">Cruise</a></li>
+                                    <li><a href="#">HSBC</a></li>
+                                    <li class="divider"></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    Feature
+                                    <i class="icon-angle-down"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li class="divider"></li>
+                                    <li><a href="#">Call me back</a></li>
+                                    <li><a href="#">Leave message</a></li>
+                                    <li><a href="#">Call us</a></li>
+                                    <li><a href="#">Find us</a></li>
+                                    <li class="divider"></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="{{ path('templatecustomize_edit',{ 'id': entity.id }) }}" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    Design
+                                    <i class="icon-angle-down"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li class="divider"></li>
+                                    <li><a href="{{ path('homepage_modify') }}">Description</a></li>
+                                    <li><a href="{{ path('templatecustomize_edit',{ 'id': entity.id }) }}">Customize template</a></li>
+                                    <li><a href="{{ path('templatecustomize_edit',{ 'id': entity.id }) }}#logo">Logo</a></li>
+                                    <li><a href="{{ path('templatecustomize_edit',{ 'id': entity.id }) }}/#footer">Footer</a></li>
+                                    <li class="divider"></li>
+
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="tabbable portlet-tabs" >
+
+                            <ul class="nav nav-tabs" style="display: block">
+                                <li class=""><a  href="{{ path('globaloption') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                <li class="active"><a  href="javascript:"><i class="icon-edit"></i>&nbsp;Add/Edit</a></li>
+
+                            </ul>
+                            <div class="tab-content1" style="padding-top: 30px">
+
+                                <div class="portlet-body form">
+                                    {% include('flash-message.html.twig')  %}
+                                    <!-- BEGIN FORM-->
+                                    {{ form_start(edit_form) }}
+                                    {{ form_row(edit_form._token) }}
+
+                                    <div class="row-fluid">
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" >Name</label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        <i class="icon-font"></i>
+                                                        {{ form_widget(edit_form.name) }}
+                                                        {{ form_errors(edit_form.name) }}
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" >Syndication name</label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        {{ form_widget(edit_form.syndicate) }}
+                                                        {{ form_errors(edit_form.syndicate) }}
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                    <!--/row-->
+                                    <div class="row-fluid">
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" >Mobile no</label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        <i class="icon-font"></i>
+                                                        {{ form_widget(edit_form.mobile) }}
+                                                        {{ form_errors(edit_form.mobile) }}
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" >Location</label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        {{ form_widget(edit_form.location) }}
+                                                        {{ form_errors(edit_form.location) }}
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                    <!--/row-->
+                                    <div class="row-fluid">
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" >Domain</label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        <i class="icon-font"></i>
+                                                        {{ form_widget(edit_form.domain) }}
+                                                        {{ form_errors(edit_form.domain) }}
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" >Sub-domain</label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        <i class="icon-font"></i>
+                                                        {{ form_widget(edit_form.subDomain) }}
+                                                        {{ form_errors(edit_form.subDomain) }}
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                    <!--/row-->
+                                    <!--/row-->
+                                    <div class="row-fluid">
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" ></label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        {{ form_widget(edit_form.customizeDesign) }}
+                                                        {{ form_errors(edit_form.customizeDesign) }}
+                                                        Customize design
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" ></label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        {{ form_widget(edit_form.promotion) }}
+                                                        {{ form_errors(edit_form.promotion) }}
+                                                        Promotion
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                    <!--/row-->
+                                    <!--/row-->
+                                    <div class="row-fluid">
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" >Mobile theme</label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        {{ form_widget(edit_form.siteSetting.mobileTheme) }}
+                                                        {{ form_errors(edit_form.siteSetting.mobileTheme) }}
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" >Web theme</label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        {{ form_widget(edit_form.siteSetting.webTheme) }}
+                                                        {{ form_errors(edit_form.siteSetting.webTheme) }}
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                    <!--/row-->
+                                    <!--/row-->
+                                    <div class="row-fluid">
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" ></label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        {{ form_widget(edit_form.facebookApps) }}
+                                                        {{ form_errors(edit_form.facebookApps) }}
+                                                        FaceBook apps
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" >FaceBook URL</label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        <i class="icon-font"></i>
+                                                        {{ form_widget(edit_form.facebookPageUrl) }}
+                                                        {{ form_errors(edit_form.facebookPageUrl) }}
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                    <!--/row-->
+                                    <!--/row-->
+                                    <div class="row-fluid">
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" ></label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        {{ form_widget(edit_form.facebookAds) }}
+                                                        {{ form_errors(edit_form.facebookAds) }}
+                                                        Facebook Ads
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" ></label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        {{ form_widget(edit_form.googleAds) }}
+                                                        {{ form_errors(edit_form.googleAds) }}
+                                                        Google Ads
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                    <!--/row-->
+                                    <div class="row-fluid">
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" ></label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        {{ form_widget(edit_form.smsIntegration) }}
+                                                        {{ form_errors(edit_form.smsIntegration) }}
+                                                        SMS Integration
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" ></label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        {{ form_widget(edit_form.emailIntegration) }}
+                                                        {{ form_errors(edit_form.emailIntegration) }}
+                                                        Email Integration
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                    <!--/row-->
+                                    <div class="row-fluid">
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" >Twitter URL</label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        <i class="icon-font"></i>
+                                                        {{ form_widget(edit_form.twitterUrl) }}
+                                                        {{ form_errors(edit_form.twitterUrl) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" >Google Plus</label>
+                                                <div class="controls">
+                                                    <div class="input-icon left">
+                                                        <i class="icon-font"></i>
+                                                        {{ form_widget(edit_form.googlePlus) }}
+                                                        {{ form_errors(edit_form.googlePlus) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--/span-->
+                                    </div>
+                                    <!--/row-->
+                                    <div class="form-actions portlet box grey">
+                                        <div class="portlet-title">
+                                            <div class="caption"><i class="icon-reorder"></i>Module Setup</div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">&nbsp;</div>
+                                    <!--/row-->
+                                    <div class="row-fluid">
+                                        <!--/span-->
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" >Syndicate Modules</label>
+                                                <div class="controls">
+
+                                                    {{ form_widget(edit_form.siteSetting.syndicateModules) }}
+                                                    {{ form_errors(edit_form.siteSetting.syndicateModules) }}
+
+
+                                                </div>
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label" >App Modules</label>
+                                                <div class="controls">
+
+                                                    {{ form_widget(edit_form.siteSetting.appModules) }}
+                                                    {{ form_errors(edit_form.siteSetting.appModules) }}
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--/span-->
+                                        <div class="span6 ">
+                                            <div class="control-group">
+                                                <label class="control-label" >Modules</label>
+                                                <div class="controls">
+
+                                                    {{ form_widget(edit_form.siteSetting.modules) }}
+                                                    {{ form_errors(edit_form.siteSetting.modules) }}
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!--/row-->
+                                    <div class="form-actions portlet box grey">
+                                        <div class="pull-center">
+                                            <button type="submit" class="btn green"><i class="icon-ok"></i> Save</button>
+                                            <button type="submit" class="btn purple"><i class="icon-refresh"></i> Reset</button>
+                                        </div>
+                                    </div>
+                                    {{ form_end(edit_form) }}
+                                    <!-- END FORM-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        .check-list{
+            margin-top: 12px;
+        }
+        .check-list .checker{
+            float: left;
+        }
+        .check-list label{
+            float: left;
+            width: 90%;
+        }
+    </style>
+{% endblock %}
+{% block documentready %}
+
+    {{ parent() }}
+
+    $('#subSyandicate').tree({
+    onCheck: { node: 'expand' },
+    onUncheck: { node: 'collapse' }
+    }).on('change', 'input[type=checkbox]', function(){
+    App.updateUniform();
+    });
+{% endblock %}
+
+

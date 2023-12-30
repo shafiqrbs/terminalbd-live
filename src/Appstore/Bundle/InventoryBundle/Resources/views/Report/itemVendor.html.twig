@@ -1,0 +1,93 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN purchase_order HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="purchase_order-title">
+                    Purchase
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('purchase') }}">Purchase</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Add/Edit purchase</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END purchase_order HEADER-->
+        <!-- BEGIN purchase_order CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box blue tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Stock & Price Overview</div>
+
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('inventory_report_overview',{'group':'vendor'}) }}"><i class="icon-th-list"></i>&nbsp;Vendor Base</a></li>
+                                    <li><a href="{{ path('inventory_report_overview',{'group':'item'}) }}"><i class="icon-th-list"></i>&nbsp;SKU Base</a></li>
+                                    <li><a href="{{ path('inventory_report_overview',{'group':'product'}) }}" ><i class="icon-th-list"></i>&nbsp;Master Item</a></li>
+                                    <li><a href="{{ path('inventory_report_overview',{'group':'category'}) }}" ><i class="icon-th-list"></i>&nbsp;Category Base</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="portlet-body form">
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-green">
+                                    <th class="numeric" ><i class="icon-reorder"></i></th>
+                                    <th class="numeric" >Item  Name</th>
+                                    <th class="numeric" >Size</th>
+                                    <th class="numeric" >Color</th>
+                                    <th class="numeric" >Vendor</th>
+                                    <th class="numeric" >Quantity</th>
+                                    <th class="numeric" >Purchase</th>
+                                    <th class="numeric" >Sales</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entity in entities %}
+                                        <tr>
+                                            <td class="numeric" >{{ loop.index }}.</td>
+                                            <td class="numeric" >{{ entity.masterName }}</td>
+                                            <td class="numeric" >{{ entity.sizeName }}</td>
+                                            <td class="numeric" >{{ entity.colorName }}</td>
+                                            <td class="numeric" >{{ entity.vendor }}</td>
+                                            <td class="numeric" >{{ entity.quantity }}</td>
+                                            <td class="numeric" >{{ entity.purchasePrice }}</td>
+                                            <td class="numeric" >{{ entity.salesPrice }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

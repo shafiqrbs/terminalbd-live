@@ -1,0 +1,90 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    {{ branches.name }} Employee Lists
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('domain_branches') }}">Branch</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">Branch Employee lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Branch :{{ branches.name }}</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-cogs"></i>&nbsp;Tools
+                                    <i class="icon-tasks"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="{{ path('domain_branches') }}"><i class="icon-th-list"></i>&nbsp;Lists</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+
+                                <thead class="flip-content ">
+                                <tr class="head-grey">
+                                    <th class="numeric" >Name </th>
+                                    <th class="numeric" >User</th>
+                                    <th class="numeric" >Designation</th>
+                                    <th class="numeric" >Mobile</th>
+                                    <th class="numeric" >Joining Date</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for profile in branches.profiles %}
+                                    <tr>
+                                        <td class="numeric" >{{ profile.name }}</td>
+                                        <td class="numeric" >{{ profile.user }}</td>
+                                        <td class="numeric" >{{ profile.designation }}</td>
+                                        <td class="numeric" >{{ profile.mobile }}</td>
+                                        <td class="numeric" >{{ profile.joiningDate|date('d-m-Y') }}</td>
+                                        <td class="numeric" >
+                                            <a href="{{ path('domain_show',{'id':profile.user.id}) }}" class="btn purple mini" ><i class="icon-eye-open"></i>&nbsp;View</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+

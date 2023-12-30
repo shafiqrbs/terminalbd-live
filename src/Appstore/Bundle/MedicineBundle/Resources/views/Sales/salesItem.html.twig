@@ -1,0 +1,134 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                   Manage Sales Item
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li>
+                        <a href="{{ path('medicine_sales') }}">Sales Sales Item</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="#">View Lists</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="portlet box green tabbable">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Manage Sales Item</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="btn red"  href="{{ path('medicine_sales_return') }}"><i class="icon-th-list"></i> Sales Return</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div class="portlet-body flip-scroll">
+                            {% include('flash-message.html.twig')  %}
+                            <div class="row-fluid">
+                                <form class="search-form" action="" method="get" name="itemSearch">
+                                     <div class="row-fluid">
+                                        <div class="span4">
+                                            <input type="text" id="customer" name="customer"  class="span8 m-wrap select2Customer" value="{% if searchForm.customer is defined %}{{ searchForm.customer }}{% endif %}"  autocomplete="off" placeholder="Enter customer mobile no ">
+                                            <input type="text" id="invoice" name="invoice"  class="span4 m-wrap" value="{% if searchForm.invoice is defined %}{{ searchForm.invoice }}{% endif %}"  autocomplete="off" placeholder="Enter invoice no ">
+                                        </div>
+                                         <div class="span5">
+                                             <input type="text" id="medicineName" name="medicineName"  class="span9 m-wrap select2StockMedicineName" value="{% if searchForm.medicineName is defined %}{{ searchForm.medicineName }}{% endif %}"  autocomplete="off" placeholder="Enter medicine name">
+                                             <input type="text" id="quantity" name="quantity"  class="span3 m-wrap " value="{% if searchForm.quantity is defined %}{{ searchForm.quantity }}{% endif %}"  autocomplete="off" placeholder="Enter quantity ">
+                                         </div>
+                                         <div class="span3">
+                                            <div class="controls">
+                                                <div class="input-append span11">
+                                                    <input type="text" id="startDate" name="startDate"  class="span6 m-wrap date-picker" value="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% endif %}"  autocomplete="off" placeholder="{% if searchForm.startDate is defined %}{{ searchForm.startDate }}{% else %}Start date{% endif %} ">
+                                                    <input type="text" id="endDate"  name="endDate"  class="span5 m-wrap date-picker" value="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% endif %}"  autocomplete="off"  placeholder="{% if searchForm.endDate is defined %}{{ searchForm.endDate }}{% else %}End date{% endif %}  ">
+                                                    <div class="btn-group">
+                                                        <button class="btn blue" type="submit"><i class="icon-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <table class="table table-bordered table-striped table-condensed flip-content ">
+                                 <thead class="flip-content ">
+                                <tr class="head-blue">
+                                    <th class="numeric" >Created</th>
+                                    <th class="numeric" >Invoice</th>
+                                    <th class="numeric span3">Medicine Name</th>
+                                    <th class="numeric">Sales Price</th>
+                                    <th class="numeric">Quantity</th>
+                                    <th class="numeric">Return</th>
+                                    <th class="numeric">Sub-total</th>
+                                    <th class="numeric" >Sales By</th>
+                                    <th class="numeric" >Process</th>
+                                    <th class="numeric" >Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if entities is not empty %}
+                                {% for entity in entities %}
+                                    <tr id="delete-{{ entity.id }}">
+                                        <td class="numeric" >{{ entity.medicineSales.created|date('d-m-Y') }}</td>
+                                        <td class="numeric" >{{ entity.medicineSales.invoice }}</td>
+                                        <td class="span3">{{ entity.medicineStock.name }}</td>
+                                        <td class="numeric">{{ entity.salesPrice }}</td>
+                                        <td class="numeric">{{ entity.quantity }}</td>
+                                        <td class="numeric">{% if entity.medicineSalesReturn is defined and entity.medicineSalesReturn is not empty %}{{ entity.medicineSalesReturn.quantity }}{% endif %}</td>
+                                        <td class="numeric">{{ entity.subTotal|number_format }}</td>
+                                        <td class="numeric" >{{ entity.medicineSales.salesBy }}</td>
+                                        <td class="numeric" >{{ entity.medicineSales.process|capitalize }}</td>
+                                        <td class="numeric" >
+                                            {% if entity.medicineSalesReturns is empty and entity.medicineSales.process == 'Done' %}
+                                            <a href="{{ path('medicine_sales_return_new', { 'id': entity.id }) }}" class="btn red mini" ><i class="icon-retweet"></i> Return</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                {% endif %}
+                                </tbody>
+                            </table>
+                            <div class="pagination pull-center" >
+                                {% if entities is not empty %}
+                                    {{ knp_pagination_render(entities) }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@MedicineBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}

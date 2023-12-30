@@ -1,0 +1,16 @@
+{% for subItem in entity.goodsItems  %}
+    <tr>
+        <td class="numeric" >{{ loop.index }}</td>
+        <td class="numeric" >{% if subItem.size is not empty %}{{ subItem.size.name }}{% endif %}</td>
+        <td class="numeric" >{% if subItem.productUnit is not empty %}{{ subItem.productUnit.name }}{% endif %}</td>
+        <td class="numeric" >{% if subItem.colors is not empty %}{% for color in subItem.colors %}{{ color.name }} {% if not loop.last %},{% endif %}{% endfor %}{% endif %}</td>
+        <td class="numeric" >{{ subItem.quantity }}</td>
+        <td class="numeric" >{{ subItem.purchasePrice|number_format() }}</td>
+        <td class="numeric" >{{ subItem.salesPrice|number_format() }}</td>
+        <td>
+            {% if  subItem.masterItem == 0 %}
+            <a class="btn red remove mini" data-url="{{ path('inventory_goods_subItem_delete',{'id':subItem.id}) }}"><i class="icon-trash"></i> Delete</a>
+            {% endif %}
+        </td>
+    </tr>
+{% endfor %}

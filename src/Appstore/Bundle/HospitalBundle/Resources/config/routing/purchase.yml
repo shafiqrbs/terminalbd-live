@@ -1,0 +1,136 @@
+hms_purchase:
+    path:     /
+    defaults: { _controller: "HospitalBundle:Purchase:index" }
+
+hms_purchase_item:
+    path:     /stock-item-details
+    defaults: { _controller: "HospitalBundle:Purchase:purchaseItem" }
+
+hms_expiry_item:
+    path:     /medicine-expiration-item
+    defaults: { _controller: "HospitalBundle:Purchase:medicineExpiry" }
+
+hms_purchase_show:
+    path:     /{id}/show
+    defaults: { _controller: "HospitalBundle:Purchase:show" }
+
+hms_purchase_new:
+    path:     /new
+    defaults: { _controller: "HospitalBundle:Purchase:new" }
+
+hms_purchase_opening:
+    path:     /opening
+    defaults: { _controller: "HospitalBundle:Purchase:vendorOpening" }
+
+hms_purchase_opening_create:
+    path:     /opening/create
+    defaults: { _controller: "HospitalBundle:Purchase:openingCreate" }
+    methods:  [POST, PUT]
+
+hms_purchase_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "HospitalBundle:Purchase:edit" }
+
+hms_purchase_update:
+    path:     /{id}/update
+    defaults: { _controller: "HospitalBundle:Purchase:update" }
+    methods:  [POST, PUT]
+
+hms_purchase_status:
+    path:     /{id}/status
+    defaults: { _controller: "HospitalBundle:Purchase:edit" }
+
+hms_purchase_vendor_update:
+    path:     /vendor-update
+    defaults: { _controller: "HospitalBundle:Purchase:vendorUpdate" }
+    methods:  [POST, PUT]
+    options:
+        expose: true
+
+
+hms_purchase_approve:
+    path:     /{id}/approve
+    defaults: { _controller: "HospitalBundle:Purchase:approve" }
+
+hms_purchase_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "HospitalBundle:Purchase:delete" }
+
+hms_purchase_particular_search:
+    path:     /{id}/medicine-stock-search
+    defaults: { _controller: "HospitalBundle:Purchase:particularSearch" }
+    options:
+            expose: true
+
+hms_purchase_particular_add:
+    path:     /{invoice}/particular-add
+    defaults: { _controller: "HospitalBundle:Purchase:addParticular" }
+    methods:  POST
+    options:
+            expose: true
+
+
+hms_stock_item_create:
+    path:     /{id}/stock-item-create
+    defaults: { _controller: "HospitalBundle:Purchase:stockItemCreate" }
+    methods:  POST
+    options:
+            expose: true
+
+hms_purchase_discount_update:
+    path:     /purchase/dicount-update
+    defaults: { _controller: "HospitalBundle:Purchase:invoiceDiscountUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+hms_purchase_item_update:
+    path:     /item-update
+    defaults: { _controller: "HospitalBundle:Purchase:purchaseItemUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+hms_purchase_approved:
+    path:     /{id}/invoice-approved
+    defaults: { _controller: "HospitalBundle:Purchase:approved" }
+
+hms_purchase_vendor_merge:
+    path:     /{id}/invoice-merge
+    defaults: { _controller: "HospitalBundle:Purchase:vendorMerge" }
+
+
+hms_purchase_particular_delete:
+    path:     /{invoice}/{id}/particular-delete
+    defaults: { _controller: "HospitalBundle:Purchase:invoiceParticularDelete" }
+
+hms_purchaseitem_inline_update:
+    path:     /purchase-item-inline-update
+    defaults: { _controller: "HospitalBundle:Purchase:inlineUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+hms_purchaseitem_inline_update_purchase_price:
+    path:     /purchase-item-inline-update-purchase-price
+    defaults: { _controller: "HospitalBundle:Purchase:inlineUpdatePurchasePrice" }
+    methods:  POST
+    options:
+            expose: true
+
+hms_expiration_inline:
+    path:     /purchase-item-inline-update
+    defaults: { _controller: "HospitalBundle:Purchase:inlineExpirationUpdate" }
+    methods:  POST
+    options:
+            expose: true
+
+
+hms_purchase_android:
+    path:     /android
+    defaults: { _controller: "HospitalBundle:Purchase:androidPurchase" }
+
+
+hms_device_purchase_import:
+    path:      /device-sales-delete-import/{android}
+    defaults: { _controller: "HospitalBundle:Purchase:insertGroupApiPurchaseImport" }

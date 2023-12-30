@@ -1,0 +1,45 @@
+account_profit_withdrawal:
+    path:     /
+    defaults: { _controller: "AccountingBundle:ProfitWithdrawal:index" }
+
+account_profit_withdrawal_new:
+    path:     /new
+    defaults: { _controller: "AccountingBundle:ProfitWithdrawal:new" }
+
+account_profit_withdrawal_create:
+    path:     /create
+    defaults: { _controller: "AccountingBundle:ProfitWithdrawal:create" }
+    methods:  POST
+
+account_profit_withdrawal_reverse:
+    path:     /{id}/reverse
+    defaults: { _controller: "AccountingBundle:ProfitWithdrawal:journalReverse" }
+
+account_profit_withdrawal_approve:
+    path:     /{id}/payment-approve
+    defaults: { _controller: "AccountingBundle:ProfitWithdrawal:approve" }
+    options:
+           expose: true
+
+account_profit_withdrawal_inline:
+    path:     /inline-update
+    defaults: { _controller: "AccountingBundle:ProfitWithdrawal:inlineUpdate" }
+
+
+account_profit_withdrawal_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "AccountingBundle:ProfitWithdrawal:delete" }
+    options:
+           expose: true
+
+
+account_profit_withdrawal_stakeholder:
+    path:     /{id}/profit-withdrawal-stakeholder
+    defaults: { _controller: "AccountingBundle:ProfitWithdrawal:stakeholderProfit" }
+    options:
+           expose: true
+
+account_profit_withdrawal_pdf:
+    path:     /report-pdf
+    defaults: { _controller: "AccountingBundle:ProfitWithdrawal:journalPdf" }
+

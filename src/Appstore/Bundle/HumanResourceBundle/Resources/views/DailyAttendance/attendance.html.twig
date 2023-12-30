@@ -1,0 +1,148 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row-fluid">
+            <div class="span12">
+                <h3 class="page-title">
+                    Attendance
+                </h3>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home"></i>
+                        <a href="{{ path('homepage') }}">Home</a>
+                        <span class="icon-angle-right"></span>
+                    </li>
+                    <li><a href="{{ path('daily_attendance') }}">Attendance</a></li>
+                    <li class="pull-right btn blue disabled mini">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <!-- BEGIN PAGE CONTENT-->
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box green tabbable">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Attendance Information</div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <a class="red btn" href="{{ path('daily_attendance') }}"><i class="icon-th-list"></i>&nbsp; Attendance</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        {% include('flash-message.html.twig')  %}
+
+                        <table id="attendancex" class="stripe row-border order-column" cellspacing="0" width="100%">
+                            <thead class="head-blue">
+                            <tr>
+                                <th class="span2" >Name of Employee</th>
+                                {% set max =  "now"|date("t") %}
+                                {% set today =  "now"|date("d") %}
+                                {% set month =  "now"|date("Y/m/") %}
+                                {% set year =  "now"|date("Y") %}
+                                {% set currentMonth =  "now"|date("F") %}
+                                {% for i in 1..max %}
+                                    {% set blackO = date(month~i)|date('m/d/Y') %}
+                                    <td class="numeric {% if blackO  in  blackoutdate %} red {% endif %}" >
+                                        <div class="row-fluid">
+                                            <span class="span12 pull-center"><strong>{{ i }}</strong></span>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <span class="span12 pull-center">IN</span>
+                                        </div>
+                                    </td>
+                                {% endfor %}
+                                <th>Yes</th>
+                            </tr>
+                            </thead>
+                           {# <tbody>
+                            {% for user in employees  %}
+                                <tr>
+                                <th class=""><span class="">{{ user.profile.name }}<br/><sub>{{ user.profile.designation.name }}</sub></span></th>
+                                {% for i in 1..max %}
+                                {% set blackO = date(month~i)|date('m/d/Y') %}
+                                {% if blackO  in  blackoutdate %}
+                                <td class="red" >&nbsp;</td>
+                                {% else %}
+                                    <td>
+                                    <span class="row-fluid pull-center">
+                                    <input type="checkbox" {% if i != today %} disabled {% endif %} {% if i in user.userAttendanceMonth(year,currentMonth) %} checked="checked" {% endif %} data-id="{{ i }}" id="{{ i }}" class="attendance" data-url="{{ path('daily_attendance_add',{'user':user.id}) }}" name="present"  value="{{ i }}" >
+                                    </span>
+                                    </td>
+                                {% endif %}
+                                {% endfor %}
+                                <td>{{ user.monthlyPresentDay(year,currentMonth) }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>#}
+                            <tbody>
+                            {% for entity in currentMonthEmployeeAttendance  %}
+                                <tr>
+                                    <th class=""><span class="">{{ entity.employee.profile.name }}<br/><sub>{% if entity.employee.profile.designation is not empty %}{{ entity.employee.profile.designation.name }}{% endif %}</sub></span></th>
+                                    {% for i in 1..max %}
+                                        {% set blackO = date(month~i)|date('m/d/Y') %}
+                                        {% if blackO  in  blackoutdate %}
+                                            <td class="red" >&nbsp;</td>
+                                        {% else %}
+                                            <td>
+                                            <span class="row-fluid pull-center">
+                                            {#<input type="checkbox" data-id="{{ i }}" {% if i != today %} disabled {% endif %} id="{{ i }}" {{ (entity.monthlyPresentDays and i in entity.monthlyPresentDays) ? "checked='checked'" : ''  }} class="attendance" data-url="{{ path('daily_attendance_add',{'id':entity.id}) }}" name="present"  value="{{ i }}" >#}
+                                            <input type="checkbox" data-id="{{ i }}"  id="{{ i }}" {{ (entity.monthlyPresentDays and i in entity.monthlyPresentDays) ? "checked='checked'" : ''  }} class="attendance" data-url="{{ path('daily_attendance_add',{'id':entity.id}) }}" name="present"  value="{{ i }}" >
+                                            </span>
+                                            </td>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <td class="text-center">{{ entity.present }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        td, th {
+            margin: 0;
+            border: 1px solid grey;
+            white-space: nowrap;
+            border-top-width: 0px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        div.checker {
+            margin-right: 0!important;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    {% stylesheets filter='cssrewrite'
+    '@HumanResourceBundle/Resources/public/css/style.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock  %}
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@HumanResourceBundle/Resources/public/js/approveProcess.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{% endblock %}
+
+
+
+
+

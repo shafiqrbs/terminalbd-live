@@ -1,0 +1,65 @@
+{% extends '::base-report.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 print-bar">
+            <form action="" method="get">
+                <div class="row">
+                    <div class="col-md-3 margin-top"></div>
+                    <div class="col-md-3 margin-top">
+                        <label>Referred Doctors/Others</label>
+                        <select name="referred" id="referred" class="search-input select2 span12 m-wrap">
+                            <option value="" >--Patient Referred--</option>
+                            {% for referred in referredDoctors %}
+                                <option {% if searchForm.referred is defined and searchForm.referred == referred.id %} selected="selected" {% endif %} value="{{ referred.id }}" >{{ referred.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 margin-top">
+                        <label>Month</label>
+                        {% set currentMonth = "now"|date("m") %}
+                        {% set currentYear = "now"|date("Y") %}
+                        {%  set months = ['January','February','March','April','May','June','July','August','September','October','November','December'] %}
+                        <select class="search-input  span12 m-wrap" name="month" id='month'>
+                            {% for month in months %}
+                                <option value='{{ month }}' {% if (searchForm.month is defined and searchForm.month == month) or (month == currentMonth) %} selected="selected" {% endif %} >{{ month }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2 margin-top">
+                        <label>Year</label>
+                        {% set years = [2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030] %}
+                        <select class="span12 search-input m-wrap" name="year" id='year'>
+                            {% for year in years %}
+                                <option value='{{ year }}' {% if (searchForm.year is defined and searchForm.year == year) or (year == currentYear) %} selected="selected" {% endif %} >{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-1 margin-top">
+                        <label>&nbsp;</label>
+                        <button class='btn btn-download btn-margin-left' value="search" name="submit" ><i class='fa fa-search'></i> Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="print-area">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+                <p><strong style="font-size: 16px">{{ option.name }}</strong></p>
+                <p>Name of Report: Diseases Profile</p>
+            </div>
+            <div class="col-md-4 text-right">Printed: {{ "now"|date('d-m-Y') }}
+                <p><strong>Start Date:&nbsp;</strong><strong>{% if searchForm['startDate'] is defined and searchForm['startDate'] is not empty %}{{ searchForm['startDate']|date('d-m-Y') }}{% endif %}</strong>
+                    <strong>End Date:&nbsp;<strong>{% if searchForm['endDate'] is defined and searchForm['endDate'] is not empty %}{{ searchForm['endDate']|date('d-m-Y') }}{% endif %}</strong></strong>
+                </p>
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

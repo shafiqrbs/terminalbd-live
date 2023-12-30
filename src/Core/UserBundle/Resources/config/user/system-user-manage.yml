@@ -1,0 +1,50 @@
+system_user_manager:
+    pattern:  /{page}
+    defaults: { _controller: UserBundle:ManageUser:index, page: 1 }
+    requirements:
+            page:  \d+
+
+system_user_manager_create:
+    pattern:  /new
+    defaults: { _controller: UserBundle:SystemUser:create }
+
+system_user_manager_update:
+    pattern:  /account/update
+    defaults: { _controller: UserBundle:SystemUser:update }
+    methods:  [POST]
+    options:
+       expose: true
+
+system_user_manager_credential:
+    pattern:  /account/credential
+    defaults: { _controller: UserBundle:SystemUser:credential }
+    methods:  [POST]
+    options:
+       expose: true
+
+system_user_manager_change_password:
+    pattern:  /change-password/{id}
+    defaults: { _controller: UserBundle:ManageUser:changeUserPassword }
+    methods:  [POST]
+    options:
+            expose: true
+
+system_user_manager_delete:
+    pattern:  /delete/{id}
+    defaults: { _controller: UserBundle:ManageUser:delete }
+
+system_user_manager_duplicacy_check_user:
+    pattern:  /check/credential
+    defaults: { _controller: UserBundle:ManageUser:checkDuplicate }
+    methods:  [POST]
+    options:
+            expose: true
+
+system_user_manager_duplicacy_check_mobile:
+    pattern:  /check/mobile
+    defaults: { _controller: UserBundle:ManageUser:checkMobileDuplicate }
+    methods:  [POST]
+    options:
+            expose: true
+
+
